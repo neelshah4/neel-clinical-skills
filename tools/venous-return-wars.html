@@ -1089,5 +1089,17 @@ $("r3reset").addEventListener("click",()=>{$("r3f").value=5;$("r3v").value=5000;
 }));
 window.addEventListener("resize",()=>{rig1();rig2();rig3();},{passive:true});
 </script>
+
+<style>
+/* readable floor: mobile. Functional text stays legible on a phone; the design
+   system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
+@media (max-width: 768px) {
+  .chip .k { font-size: 11px; }
+  .numeral small { font-size: 11px; }
+  .readout .k { font-size: 11px; }
+  .readout .v small { font-size: 11px; }
+  .tagline { font-size: 11px; }
+}
+</style>
 </body>
 </html>

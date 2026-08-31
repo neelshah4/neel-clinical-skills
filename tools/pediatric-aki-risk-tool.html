@@ -1081,5 +1081,16 @@ window.__akiBooted = true;
 const bootEl = document.getElementById("boot");
 if(bootEl) bootEl.remove();
 </script>
+
+<style>
+/* readable floor: mobile. Functional text stays legible on a phone; the design
+   system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
+@media (max-width: 768px) {
+  .card-label { font-size: 11px; }
+  .overline { font-size: 11px; }
+  .tab small { font-size: 11px; }
+  .tbadge { font-size: 11px; }
+}
+</style>
 </body>
 </html>

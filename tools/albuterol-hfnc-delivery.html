@@ -494,5 +494,16 @@ new Chart(document.getElementById('chartRatio'), {
   }]
 });
 </script>
+
+<style>
+/* readable floor: mobile. Functional text stays legible on a phone; the design
+   system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
+@media (max-width: 768px) {
+  .footnote { font-size: 11px; }
+  .scope-tag { font-size: 11px; }
+  .unsourced-tag { font-size: 11px; }
+  /* Provenance + disclosure */ .derived-tag { font-size: 11px; }
+}
+</style>
 </body>
 </html>

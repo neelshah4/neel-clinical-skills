@@ -247,5 +247,13 @@ document.getElementById('sim-step-btns').addEventListener('click',e=>{const el=e
 
 renderProtocolSteps();newSimPatient();setTimeout(initWaveChart,100);
 </script>
+
+<style>
+/* readable floor: mobile. Functional text stays legible on a phone; the design
+   system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
+@media (max-width: 768px) {
+  .pmid { font-size: 11px; }
+}
+</style>
 </body>
 </html>

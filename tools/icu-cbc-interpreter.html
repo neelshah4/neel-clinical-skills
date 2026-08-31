@@ -1872,5 +1872,28 @@ function Footer() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
+
+<style>
+/* readable floor: mobile. Functional text stays legible on a phone; the design
+   system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
+@media (max-width: 768px) {
+  .card h3 { font-size: 11px; }
+  .chip .label { font-size: 11px; }
+  .chip .val .unit { font-size: 11px; }
+  .disclaimer { font-size: 11px; }
+  .ev-finding .ev-state { font-size: 11px; }
+  .ev-num strong { font-size: 11px; }
+  .footer .pill { font-size: 11px; }
+  .input-row .hint { font-size: 11px; }
+  .input-row label { font-size: 11px; }
+  .pattern-sev { font-size: 11px; }
+  .peds-note .ptag { font-size: 11px; }
+  .ribbon .nlr-hero .label { font-size: 11px; }
+  .top .overline { font-size: 11px; }
+  .verdict-tile .label { font-size: 11px; }
+  .warn .head { font-size: 11px; }
+  sup.cite { font-size: 11px; }
+}
+</style>
 </body>
 </html>
