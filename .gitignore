@@ -1,0 +1,7 @@
+_work/
+.DS_Store
+*.r1
+*.r2
+.claude/
+tools/.orig-check.html
+.orig-check*

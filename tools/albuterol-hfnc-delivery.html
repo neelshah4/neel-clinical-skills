@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Albuterol Aerosol Delivery During HFNC</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: #1a1a1a; background: #fff; padding: 28px;
+    max-width: 920px; margin: 0 auto; -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  .subtitle { font-size: 12px; color: #6b7280; margin-top: 2px; margin-bottom: 14px; }
+  .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; }
+  .tab-btn {
+    padding: 8px 16px; font-size: 13px; background: none; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -2px;
+    font-family: inherit; color: #6b7280; font-weight: 400;
+  }
+  .tab-btn.active { color: #2980B9; font-weight: 600; border-bottom-color: #2980B9; }
+  .chart-wrap {
+    background: #f9fafb; border-radius: 8px; padding: 16px;
+    border: 1px solid #e5e7eb;
+  }
+  .chart-container { position: relative; height: 340px; }
+  .caption { font-size: 11px; color: #6b7280; margin-top: 8px; font-style: italic; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  h2 { font-size: 15px; font-weight: 600; margin-top: 28px; margin-bottom: 10px; }
+  .table-wrap { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f0f4f8; }
+  th { padding: 8px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #d1d5db; white-space: nowrap; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  tbody tr:nth-child(even) { background: #f9fafb; }
+  .td-flow { font-weight: 600; white-space: nowrap; }
+  .td-mesh { color: #2980B9; font-weight: 500; }
+  .td-jet { color: #E8735A; font-weight: 500; }
+  .td-pif { font-style: italic; color: #4b5563; }
+  .td-none { color: #9ca3af; font-style: italic; font-weight: 400; }
+  .key-box {
+    margin-top: 20px; padding: 14px; background: #f0f7ff;
+    border-radius: 8px; border: 1px solid #bfdbfe;
+  }
+  .key-box h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #1e40af; }
+  .key-box .content { font-size: 12px; line-height: 1.7; color: #1e3a5f; }
+  .key-box p { margin: 0 0 8px; }
+  .key-box ul { margin: 4px 0 0 18px; }
+  .key-box li { margin-bottom: 3px; }
+  .footnote { font-size: 10px; color: #9ca3af; margin-top: 14px; line-height: 1.6; }
+  .legend-row { display: flex; justify-content: center; gap: 20px; margin-top: 8px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4b5563; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  /* Provenance + disclosure */
+  .derived-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: #fef3c7; color: #92400e;
+    vertical-align: middle;
+  }
+  .unsourced-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: #fee2e2; color: #991b1b;
+    vertical-align: middle;
+  }
+  .scope-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: #e0e7ff; color: #3730a3;
+    vertical-align: middle;
+  }
+  .col-warn {
+    margin: 0 0 10px; padding: 9px 12px; background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 6px; font-size: 11.5px; line-height: 1.6; color: #78350f;
+  }
+  .disclaimer {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 20px; font-size: 11.5px; line-height: 1.6; color: #78350f;
+  }
+  .disclaimer .bar { width: 4px; align-self: stretch; background: #d97706; border-radius: 2px; flex: none; }
+  .disclaimer strong { color: #451a03; }
+  .corr {
+    margin-top: 20px; padding: 12px 14px; background: #fef2f2;
+    border: 1px solid #fecaca; border-radius: 8px; font-size: 11.5px;
+    line-height: 1.65; color: #7f1d1d;
+  }
+  .corr h3 { font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #991b1b; }
+  .refs { font-size: 11px; color: #4b5563; line-height: 1.65; margin: 0 0 0 20px; }
+  .refs li { margin-bottom: 4px; }
+  .tool-footer {
+    border-top: 1px solid #e5e7eb; margin-top: 30px; padding-top: 12px;
+    font-size: 11px; color: #9ca3af; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1>Albuterol Aerosol Delivery During HFNC</h1>
+<p class="subtitle">Reported inhaled / lung dose as % of the nominal nebulizer dose &bull; Study-level values from in vitro and in vivo HFNC aerosol studies, 2011&ndash;2026</p>
+
+<div class="disclaimer">
+  <div class="bar"></div>
+  <div><strong>Educational reference only &mdash; not for clinical decision-making.</strong> This is a teaching tool. It is not a dosing calculator, is not FDA-cleared, and has not been externally validated. Most of the underlying values come from bench models and healthy-volunteer studies, which do not predict delivered dose in a specific sick child. Defer to clinical judgment, your institution's respiratory-therapy protocols, and local guidelines.</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-flow" data-tab="flow">A. Delivery vs. Flow Rate</button>
+  <button class="tab-btn" id="tab-ratio" data-tab="ratio">B. Delivery vs. HFNC:PIF Ratio</button>
+</div>
+
+<div id="panel-flow" class="panel active">
+  <div class="chart-wrap">
+    <div class="chart-container"><canvas id="chartFlow"></canvas></div>
+  </div>
+  <p class="caption">Figure A. Individual reported values from named studies &mdash; not a fitted curve, and not interpolated. Every point is a measured inhaled or lung dose at a stated gas flow; hover to see the study and model. At 3 L/min alone, bench models span 0.6% to 12.6%, so the flow axis by itself does not determine delivery. Delivery falls with rising flow once gas flow exceeds the patient's inspiratory flow, but the crossover is <strong>not</strong> at 10&ndash;15 L/min in small patients. Measured mean peak tidal inspiratory flow in 44 infants up to 6 months old with bronchiolitis (median weight 4.3 kg) was 7.45 L/min (95% CI 6.51&ndash;8.39), i.e. 1.68 L/kg/min (95% CI 1.51&ndash;1.85) &mdash; so a routine infant setting of 8&ndash;10 L/min is already <em>above</em> inspiratory flow, not below it (Milesi 2021, PMID 33333115). For children beyond infancy the crossover is <span class="unsourced-tag">UNSOURCED</span>: no measured peak inspiratory flow for that age range appears anywhere in the cited literature, and weight-indexed extrapolation would place it far higher, so no pediatric band is asserted here in either direction. The adult and adolescent crossover is well above 15 L/min (Dailey 2017; Li 2019 &mdash; both adult models; neither measured a pediatric inspiratory flow). Read the pediatric bench points above accordingly: they sit at 0.1&ndash;0.6% at 10&ndash;20 L/min, not at the ~20% reported in adult work at the same flows. Vibrating mesh nebulizers outperform jet nebulizers during HFNC, but the advantage is not universal across interfaces: with a low-flow nasal cannula there was no significant difference between mesh and jet in either infant (p=.643) or pediatric (p=.255) models (Ari 2019). Only one flow-paired jet-nebulizer value during HFNC was located in the literature (1.0% at 30 L/min, Dugernier 2017).</p>
+</div>
+
+<div id="panel-ratio" class="panel">
+  <div class="chart-wrap">
+    <div class="chart-container"><canvas id="chartRatio"></canvas></div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:#5B9A6E"></div>GF:IF 0.1&ndash;0.5 (plateau, highest delivery)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2EBFA5"></div>GF:IF 0.51&ndash;1.0 (still favourable)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E8735A"></div>GF:IF &gt; 1.0 (delivery falls)</div>
+    </div>
+  </div>
+  <p class="caption">Figure B. Inhaled dose falls monotonically as the ratio of cannula gas flow to peak inspiratory flow rises. <strong>There is no peak at a ratio of 1.0.</strong> The line is the reported regression from an adult in vitro model spanning 30 ratios from 0.10 to 4.44 (inhaled dose = 24.99 &minus; 6.20 &times; GF:IF); the two markers are that study's measured group means. Inhaled dose was higher with GF:IF &lt; 1 than &gt; 1 (21.8 &plusmn; 3.8% vs 9.0 &plusmn; 3.7%, p&lt;0.001), and within the sub-1 region it plateaued at 0.1&ndash;0.5 <em>above</em> the value at 0.51&ndash;1.0 (23.4 &plusmn; 3.3% vs 18.3 &plusmn; 2.2%, p&lt;0.001). Above PIF, excess gas flushes aerosol out through the nares. Below PIF, entrained room air does <strong>not</strong> dilute the delivered aerosol mass: inhaled dose in that regime is similar between quiet and distressed breathing (21.3 &plusmn; 2.7% vs 22.3 &plusmn; 5.0%, p=0.379), whereas above PIF it is flow- and effort-dependent (Li 2019).</p>
+</div>
+
+<h2>Summary Table: Reported Albuterol Delivery by HFNC Flow Range</h2>
+<div class="col-warn"><strong>Read the two weight columns as answering two different questions.</strong> The left one asks &ldquo;which patient is normally <em>on</em> this flow?&rdquo; and uses routine HFNC settings of about 1.5&ndash;2 L/kg/min. The right one asks &ldquo;for which patient would this flow equal 0.25 L/kg/min?&rdquo;, the weight-indexed flow that maximized deposition in a bench model &mdash; a flow chosen to optimize aerosol, not to support a patient. They therefore differ by roughly 6- to 8-fold <em>by construction</em>, and neither is a substitute for the other. Worked example: a 5 kg infant on a routine 8&ndash;10 L/min belongs in the 5&ndash;10 L/min row, and the left column places him there correctly (2.5&ndash;7 kg). The right-hand column labels that same row 20&ndash;40 kg. <strong>Locate a patient with the left column; the right one is there only to show what flow the bench optimum would imply.</strong></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>HFNC Flow (LPM)</th><th>Patient size at <em>routine</em> HFNC<br><span style="font-weight:400;font-size:10px">&asymp; 1.5&ndash;2 L/kg/min</span> <span class="derived-tag">DERIVED</span></th><th>Mesh Neb &mdash; reported</th>
+      <th>Jet Neb &mdash; reported</th><th>Weight at 0.25 L/kg/min<br><span style="font-weight:400;font-size:10px">aerosol-optimizing flow, <em>not</em> a therapeutic setting</span> <span class="derived-tag">DERIVED</span></th><th>Clinical Note</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-flow">2&ndash;5</td>
+        <td>&asymp; 1&ndash;3 kg &mdash; neonate / small infant</td>
+        <td class="td-mesh">0.6&ndash;12.6%<br><span style="font-weight:400;color:#6b7280">Perry 2013, Ari 2011, Moody &amp; Ari 2020, R&eacute;miniac 2017</span></td>
+        <td class="td-none">Not established</td>
+        <td class="td-pif">&asymp; 8&ndash;20 kg</td>
+        <td>Widest reported spread of any band. Model, cannula and nebulizer choice matter more than the flow number.</td>
+      </tr>
+      <tr>
+        <td class="td-flow">5&ndash;10</td>
+        <td>&asymp; 2.5&ndash;7 kg &mdash; infant</td>
+        <td class="td-mesh">0.2&ndash;2.5%<br><span style="font-weight:400;color:#6b7280">Perry 2013, Ari 2011, DiBlasi 2024</span></td>
+        <td class="td-none">Not established</td>
+        <td class="td-pif">&asymp; 20&ndash;40 kg</td>
+        <td>Flow is already at or above inspiratory flow for most children this size.</td>
+      </tr>
+      <tr>
+        <td class="td-flow">10&ndash;20</td>
+        <td>&asymp; 5&ndash;13 kg &mdash; infant / toddler <span class="unsourced-tag">EXTRAPOLATED</span></td>
+        <td class="td-mesh"><strong>Pediatric:</strong> 0.1% at 10 L/min and 0.0% at 20 L/min (Perry 2013, pediatric cannula); 0.8% and 0.4% at the same flows with the adult cannula. DiBlasi 2024 gives 0.2&ndash;2.2% for the small-child model.<br><span class="scope-tag">ADULT ONLY</span> 17.2 &plusmn; 6.8% at 10 L/min in 23 healthy <em>adults</em> by planar scintigraphy (Alcoforado 2019); 20.8 &plusmn; 0.7% at 10 L/min in an <em>adult</em> in vitro model when simulated inspiratory flow was 27 L/min (Li 2019).<br><span style="font-weight:400;color:#6b7280">No pediatric study reports a 17&ndash;21% lung dose via HFNC at any flow.</span></td>
+        <td class="td-none">Not established</td>
+        <td class="td-pif">&asymp; 40&ndash;80 kg</td>
+        <td>A single band is not defensible here, and the adult and pediatric values must not be read as one range: at these same flows the pediatric-cannula bench values are 0.1% and 0.0%, roughly two orders of magnitude below the adult values beside them. The earlier &ldquo;factor of ~25&rdquo; has been removed &mdash; pairing the stated bounds gives anywhere from 21&times; to 52&times;, so no single multiplier is reproducible from the numbers shown.</td>
+      </tr>
+      <tr>
+        <td class="td-flow">20&ndash;40</td>
+        <td>&asymp; 10&ndash;27 kg &mdash; young child <span class="unsourced-tag">EXTRAPOLATED</span><br><span style="font-size:10px;color:#6b7280">also the usual adult range, where flow is set in absolute L/min, not per kg</span></td>
+        <td class="td-mesh">3.6&ndash;5.7% in vivo at 30 L/min<br>2&ndash;10% bench (30&ndash;60 L/min)<br><span style="font-weight:400;color:#6b7280">Dugernier 2017; Alcoforado 2019; R&eacute;miniac 2016</span></td>
+        <td class="td-jet">1.0% (IQR 0.7&ndash;2.0) at 30 L/min<br><span style="font-weight:400;color:#6b7280">Dugernier 2017, SPECT-CT</span></td>
+        <td class="td-pif">&asymp; 80&ndash;160 kg</td>
+        <td>Consensus: at flows &le; 35 L/min, efficiency is similar to a nebulizer with mask or mouthpiece.</td>
+      </tr>
+      <tr>
+        <td class="td-flow">40&ndash;60</td>
+        <td>&asymp; 20&ndash;40 kg by the same arithmetic <span class="unsourced-tag">EXTRAPOLATED</span><br><span style="font-size:10px;color:#6b7280">in practice an adult / adolescent setting</span></td>
+        <td class="td-mesh">3.5% in vivo at 50 L/min<br>2&ndash;10% bench (30&ndash;60 L/min)<br>0.5&ndash;5.2% adult model<br><span style="font-weight:400;color:#6b7280">Alcoforado 2019; R&eacute;miniac 2016; DiBlasi 2024</span></td>
+        <td class="td-none">Not established</td>
+        <td class="td-pif">&asymp; 160&ndash;240 kg &mdash; above any pediatric weight</td>
+        <td>Put the mesh nebulizer at the humidifier inlet, or give a pMDI inline with the spacer close to the cannula. <span class="scope-tag">ADULT CONSENSUS</span> advises against stopping HFNC to nebulize at flows &le; 35 L/min. This row is an adult row, so that recommendation applies here as written &mdash; it does <em>not</em> transfer to the pediatric rows above. See Key Principle 5.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p class="footnote">
+  <strong>Mesh column</strong> lists the actual values reported by the named studies at flows inside each band, not a synthesized estimate. Neonatal models report lower values still (0.2&ndash;0.8%, DiBlasi 2024).
+  <strong>Jet column:</strong> &ldquo;Not established&rdquo; means no study reporting a jet-nebulizer inhaled or lung dose during HFNC at that flow band was located. The earlier version of this tool gave a number in every jet cell; four of those five had no traceable source and have been removed rather than re-estimated.
+  <strong>Both weight columns</strong> <span class="derived-tag">DERIVED</span> are arithmetic, not measurement. The right-hand column divides each flow band by 0.25 L/kg/min, the weight-indexed flow that produced the greatest deposition in an infant/toddler bench model (Li 2019, PMID 30920155) &mdash; an aerosol-optimizing flow, not a therapeutic HFNC setting. The left-hand column divides each band by 1.5&ndash;2 L/kg/min, bracketing the measured peak tidal inspiratory flow of 1.68 L/kg/min (95% CI 1.51&ndash;1.85) in 44 infants up to 6 months, whose authors recommend setting flow below 2.5 L/kg/min (Milesi 2021, PMID 33333115). <span class="unsourced-tag">EXTRAPOLATED</span> marks the rows where that infant-derived coefficient is being applied above infancy: the measurement does not extend there, and no measured peak inspiratory flow for older children appears in the cited literature. Earlier versions carried only the right-hand column while labelling the adjacent column &ldquo;Typical Patient&rdquo; with no tag and no caveat &mdash; the untagged column was the one a reader indexes on, and it disagreed with the tagged one by 6- to 8-fold.
+</p>
+
+<div class="key-box">
+  <h3>Key Principles</h3>
+  <div class="content">
+    <p><strong>1. Absolute flow is not the governing variable.</strong> Raising HFNC flow does lower delivery when the patient's inspiratory flow is held constant, but the ratio of gas flow to inspiratory flow is what governs. With a distressed adult breathing pattern the inhaled dose at 10 L/min was <em>lower</em> than at 30 and 50 L/min (Dailey 2017, p=.009 and p=.01), and in that same adult in vitro model the gas flow producing the maximum inhaled dose shifted from 10 L/min (20.8 &plusmn; 0.7%, at a simulated inspiratory flow of 27 L/min) to 20 L/min (22.0 &plusmn; 0.6% and 26.7 &plusmn; 0.7%, at simulated inspiratory flows of 42 and 52.5 L/min). The peak tracks inspiratory flow; it is not a property of the flow setting alone (Li 2019). Delivery efficiency also <em>rises</em> with age across a matched model series &mdash; 0.2&ndash;0.8% neonatal, 0.2&ndash;2.2% small child, 0.5&ndash;5.2% adult &mdash; despite far higher absolute flows in the adult (DiBlasi 2024). The &ldquo;most loss between 2&ndash;20 LPM&rdquo; framing holds only for small children, whose inspiratory flows are low.</p>
+
+    <p><strong>2. The HFNC:PIF ratio is the primary predictor &mdash; and lower is better than equal.</strong> The ratio was the primary independent predictor of inhaled dose in an adult in vitro model, with the model explaining 78.8% of the variance (Li 2019). Delivery is maximized when cannula flow is <em>below</em> peak inspiratory flow, not equal to it: the plateau of maximum delivery sits at a ratio of roughly 0.1&ndash;0.5. <strong>The only randomized clinical comparison of ratios was null on the endpoint its authors call robust.</strong> In 75 adults with documented bronchodilator reversibility randomized to GF:IF = 0.5, GF:IF = 1.0, or a fixed 50 L/min, the standard ATS/ERS response criterion (FEV<sub>1</sub> rise of 200 mL and 12%) showed <em>no difference between flows at any cumulative dose</em> &mdash; 64% vs 58% vs 42% at 1.5 mg (p=0.271) and 68% vs 75% vs 69% at 3.5 mg (p=0.848). The widely quoted 64% vs 29% vs 27% (p=0.011) is the same trial reported by a <em>second, more sensitive</em> responder definition the authors applied alongside the first: post-bronchodilator FEV<sub>1</sub> via HFNC returning to the screening post-bronchodilator level (Li 2021, PMID 34683948). Earlier versions of this tool printed only the second number. Both belong here, and the honest reading is <strong>hypothesis-generating, not demonstrated</strong>. A 2026 graded evidence summary of the <em>adult</em> literature lands in the same place, suggesting flow at about 50% of inspiratory flow (Level 2b, Grade A; Xie 2026) &mdash; but it inherits this trial, so it is not independent confirmation.</p>
+
+    <p><strong>3. Vibrating mesh outperforms jet during HFNC, by roughly 2&ndash;3&times;.</strong> The magnitude is stated directly in the Li &amp; Fink 2021 review and is consistent with the head-to-head SPECT-CT comparison (3.6% vs 1.0% at 30 L/min, Dugernier 2017); Ari 2019 reported a two- to fourfold advantage across HFNC, facemask and mouthpiece. That comparison has been made at a small number of discrete flows, so it is not established &ldquo;at every flow rate.&rdquo; The 2023 international consensus prefers a mesh nebulizer over a jet nebulizer during HFNC and notes the advantage is independent of flow and F<sub>IO2</sub>; a jet nebulizer also adds driving gas that alters the delivered flow.</p>
+
+    <p><strong>4. Practical steps at high flow.</strong></p>
+    <ul>
+      <li><strong>Nebulizer position &mdash; and the low-flow exception the headline hides.</strong> At HFNC flows <strong>&ge; 10 L/min</strong>, place the vibrating mesh nebulizer at the <em>inlet of the humidifier</em>. That flow threshold is part of the recommendation, not a footnote to it: the 2023 consensus statement reads &ldquo;nebulizers are recommended to be placed at the inlet of humidifier at HFNC flows &ge; 10 L/min&rdquo; (perfect consensus, strong recommendation), and placement before the humidifier increased deposition in both Ari 2011 and Sunbul 2015. <strong>Below 10 L/min the consensus does not apply and offers no guidance</strong> &mdash; that is the 2&ndash;5 and 5&ndash;10 L/min bands in the table above, which is where most infants and toddlers actually sit. There the direction reverses: Li and Fink 2021 write that the nebulizer should go at the humidifier inlet &ldquo;except when extremely low gas flow is set for infant,&rdquo; because at flows &le; 0.25 L/kg/min in infants a nebulizer placed <em>proximal</em> to the patient produced a higher inhaled dose than one placed distally (PMID 33987288). Proximal placement is also preferred in specific settings such as inspiration-synchronized delivery.</li>
+      <li><strong>If using a pMDI:</strong> keep it <em>inline</em> with the HFNC circuit, spacer positioned close to the nasal cannula with the plume directed toward the patient (consensus Recommendation XIX). The &ldquo;more than 10% at 30 L/min&rdquo; figure comes from one bench study and carries three qualifiers the headline drops (Szychowiak 2021, PMID 33761286). <em>First</em>, it used an <strong>adult</strong> circuit and a medium-sized cannula. <em>Second</em>, it is not a lung dose: albuterol was caught on a filter downstream of a nasopharyngeal cast, and the authors report drug &ldquo;potentially delivered to the lungs.&rdquo; <em>Third</em>, the number was obtained only under the full optimal condition set, which includes <strong>actuating the pMDI at the beginning of inspiration</strong> &mdash; the hardest of those conditions to meet in a tachypneic infant, and one an unsynchronized actuation does not meet at all. The authors conclude that further testing in a clinical setting is required.</li>
+      <li><strong>Reducing flow during nebulization</strong> is physiologically grounded and supported by the bench data &mdash; but neither its size nor its cost is usually stated, and both are large.<br>
+      <em>Magnitude.</em> Reaching the 0.1&ndash;0.5 GF:IF plateau in an infant supported at the measured 1.68 L/kg/min (95% CI 1.51&ndash;1.85; Milesi 2021) means cutting flow roughly 4- to 8-fold &mdash; from about 10 L/min to 1&ndash;2.5 L/min in a 5 kg infant, close to a 1:7 reduction against the 0.25 L/kg/min bench optimum. That is not trimming the flow; it is withdrawing most of the support.<br>
+      <em>Cost.</em> Once cannula flow drops below peak inspiratory flow you give up the nasopharyngeal dead-space washout and the flow-dependent unloading that are the indication for HFNC in the first place, and room air is entrained around the prongs, diluting the delivered F<sub>IO2</sub>. <span class="unsourced-tag">PHYSIOLOGIC REASONING</span> &mdash; no study in this reference list measures the oxygenation or work-of-breathing cost of reducing flow for the nebulization period, so the size of that cost is unquantified here.<br>
+      <em>This is the same trade-off as the derecruitment question in Key Principle 5</em>, differing only in degree: taking HFNC off forfeits all of the support, turning the flow down forfeits much of it. A reader who accepts one should not treat the other as unrelated.<br>
+      <em>Evidence.</em> The supporting RCT is the trial that was null on its robust criterion (Key Principle 2), and the same 2023 Delphi panel <em>withdrew</em> its draft statement recommending flow titration below PIF across all rounds. No consensus recommendation exists. Treat it as a reasoned option, not a guideline-endorsed step.</li>
+    </ul>
+
+    <p style="margin-top:8px"><strong>5. For comparison &mdash; conventional routes report a range, not a single number.</strong></p>
+    <ul>
+      <li><strong>pMDI + spacer + facemask, young children:</strong> 0.2% with a non-tight mask, 0.6% while screaming with a tight mask, and 4.8&ndash;8.2% breathing normally (Erzinger 2007); 1.97 &plusmn; 1.4% at mean age 21 months (Tal 1996); 5.4% of the metered dose in children &lt; 4 y (Wildhaber 1999); 18.1 &plusmn; 9.1% with a modern antistatic spacer at 3&ndash;5 y (Ditcham 2014). Mask seal and behaviour dominate this number, not the device.</li>
+      <li><strong>pMDI + spacer + mouthpiece:</strong> 9.6% of the metered dose in children &gt; 4 y (Wildhaber 1999); 22.5 &plusmn; 7.9% with an antistatic spacer at 3&ndash;5 y (Ditcham 2014); in adults, 11.5% through a static spacer vs 45.6% through a detergent-coated antistatic spacer (Pierart 1999). Static charge on the spacer moves this more than the interface does.</li>
+      <li><strong>Jet nebulizer, mask or mouthpiece, no HFNC:</strong> 5.4% of the nebulized dose in children &lt; 4 y and 11.1% in children &gt; 4 y with stable asthma (Wildhaber 1999). Lower in infants and with poor mask fit.</li>
+      <li><strong>Whether to remove HFNC in order to nebulize is not settled in children.</strong><br>
+      <span class="scope-tag">ADULT CONSENSUS</span> The 2023 consensus states that aerosol delivery efficiency with a nebulizer via HFNC at flows &le; 35 L/min is <em>similar</em> to that with a nebulizer and mask or mouthpiece, and that discontinuing HFNC to give a nebulizer by mask or mouthpiece is not recommended (very good consensus, strong recommendation); placing a mask nebulizer on a patient concurrently receiving HFNC should also be avoided. <strong>That document evaluates adult evidence only, and says so in its own limitations:</strong> the recommendations &ldquo;may not apply to aerosol delivery in infants and children receiving various forms of respiratory support&rdquo; (PMID 37436585).<br>
+      <strong>The pediatric bench data point in both directions.</strong> <em>Against removal:</em> continuous nebulization through HFNC with a vibrating mesh nebulizer delivered 14.8 &plusmn; 0.7% versus 3.2 &plusmn; 0.6% for a large-volume jet nebulizer with facemask in a pediatric manikin (Moody &amp; Ari 2020, PMID 32681768). <em>For removal:</em> in a 9-month-old infant upper-airway model, deposition was <em>greater with the HFNC taken out of the nares</em> &mdash; 6.05 &plusmn; 1.53% (jet nebulizer) and 39.54 &plusmn; 8.98% (pMDI with valved holding chamber) without HFNC, against 2.91 &plusmn; 0.23% and 6.04 &plusmn; 0.28% with it (Alalwan 2019, PMID 31468741). This tool's own numbers carry the same asymmetry: 0.2&ndash;2.5% via HFNC in the 5&ndash;10 L/min band, against 5.4&ndash;11.1% by mask or mouthpiece in children (Wildhaber 1999).<br>
+      <strong>What is settled is the trade-off, not the answer.</strong> Alalwan's own conclusion is that any gain in delivered dose must be weighed against the change in oxygen delivery and the risk of lung derecruitment when the prongs come off. In a hypoxemic child who depends on the flow, that argues for leaving it on; in a stable child for whom a brief interruption is safe, removal may well deliver more drug. One version of this tool asserted the removal rule as a directive in one direction and a later version asserted it in the other. Neither directive is supported for children, and this bullet no longer gives one.</li>
+    </ul>
+
+    <p style="margin-top:8px"><strong>6. Two caveats the flow axis hides.</strong> First, HFNC is not an established bronchodilator route in pediatric critical asthma: the 2025 AARC/PALISI GRADE guideline explicitly cannot recommend for or against HFNC versus conventional oxygen (Recommendation 7) and suggests bi-level PAP over conventional oxygen (Recommendation 8). Second, in infant HFNC, circuit condensation &mdash; not flow &mdash; is a dominant loss mechanism; decoupling temperature from humidity control, and moving the nebulizer, changes the delivered dose (Zhang 2025). Two corrections to how that has been stated here before. <strong>The 11&ndash;44% figure is upper-airway deposition &mdash; drug lost proximally, not drug delivered</strong>, and it sits one paragraph from a table of 0.2&ndash;5.7% lung doses, so it must not be read as a delivered dose. In the same neonatal model the inhaled <em>lung</em> dose was 0.2&ndash;0.8%. <strong>And the loss is attributed to the non-heated components, not the heated circuit:</strong> DiBlasi 2024 assigns the coarse-droplet dispersion, that 11&ndash;44% deposition, and the occlusion of the supine neonatal upper airway to impaction and condensation in the <em>non-heated</em> HFNC and aerosol-delivery components. The mitigation therefore runs opposite to what an earlier phrasing here implied: maintaining circuit heating is what limits rainout, and turning humidification down is the wrong response.</p>
+  </div>
+</div>
+
+<div class="corr">
+  <h3>Corrections made in v2.1</h3>
+  <p><strong>Population labels added where the evidence is adult-only.</strong> The instruction &ldquo;do not remove HFNC in order to nebulize&rdquo; rested entirely on a consensus statement that evaluates adult evidence and states in its own limitations that it may not apply to infants and children. That bullet now carries the label, reports the pediatric bench data pointing <em>both</em> ways (Moody &amp; Ari 2020 against removal; Alalwan 2019 for it), and no longer issues a directive in either direction for children. The 17.2&ndash;20.8% band in the 10&ndash;20 L/min row was likewise adult in origin while sitting under a heading that read &ldquo;Older child&rdquo;; the pediatric values Perry 2013 measured at those same flows &mdash; 0.1% and 0.0% &mdash; had been left out.</p>
+  <p style="margin-top:6px"><strong>Two weight columns that answered different questions have been separated.</strong> &ldquo;Typical Patient&rdquo; and the <span class="derived-tag">DERIVED</span> 0.25 L/kg/min column disagreed by 6- to 8-fold, and the untagged one was the column a reader indexes on. Both are now tagged, titled with the question each answers, and marked <span class="unsourced-tag">EXTRAPOLATED</span> where the infant-measured coefficient is applied above infancy.</p>
+  <p style="margin-top:6px"><strong>The 10&ndash;15 L/min crossover claim in Figure A has been withdrawn.</strong> Neither cited source measured a pediatric inspiratory flow. Measured mean peak tidal inspiratory flow in 44 infants is 7.45 L/min (Milesi 2021), so the claim was roughly twofold high for infants; for older children no measured value exists in the cited literature, so no band replaces it.</p>
+  <p style="margin-top:6px"><strong>The randomized trial is now reported by both of its endpoints.</strong> The 64% vs 29% vs 27% (p=0.011) previously shown is a secondary responder definition; on the ATS/ERS criterion the authors call robust, the trial found no difference between flows at any dose (64% vs 58% vs 42%, p=0.271 at 1.5 mg). The low-ratio strategy is labelled hypothesis-generating.</p>
+  <p style="margin-top:6px"><strong>Three source-fidelity errors fixed.</strong> The Li 2019 point in Chart A was plotted at 10 L/min under a tooltip describing 20 L/min; the value (20.8 &plusmn; 0.7%) is correct and correctly placed, and the tooltip now names its simulated inspiratory flow, with the two 20 L/min peaks added as their own points. The condensation caveat had assigned to the <em>heated</em> circuit a loss the source assigns to the <em>non-heated</em> components &mdash; an inversion that pointed the mitigation the wrong way &mdash; and printed an upper-airway deposition figure (11&ndash;44%) unlabelled among lung doses. PMID 33761286 was attributed to &ldquo;Bennett G&rdquo; and PMID 31468741 to &ldquo;Ari A&rdquo;; the first authors are Szychowiak and Alalwan.</p>
+  <p style="margin-top:6px"><strong>The footer attestation has been narrowed</strong> from &ldquo;Evidence PubMed-verified&rdquo; to a statement of what was actually checked, because an attestation is what tells a reader to stop checking.</p>
+  <h3 style="margin-top:12px">Corrections made in v2.0</h3>
+  <p><strong>&ldquo;DiBlasi 2015&rdquo; has been removed.</strong> Earlier versions of this tool cited it in the subtitle and footnote as a source of the delivery percentages. No DiBlasi HFNC aerosol-delivery study exists for 2015. The only 2015 DiBlasi aerosol publication is a narrative review (Respir Care 2015;60(6):894&ndash;914, PMID 26070582) that reports no HFNC albuterol delivery percentages; the actual DiBlasi HFNC study is DiBlasi 2024 (PMID 38981652), now cited throughout.</p>
+  <p style="margin-top:6px"><strong>Four of five jet-nebulizer cells have been removed rather than re-estimated,</strong> and both figures have been rebuilt. Chart A previously plotted a smooth interpolated curve with no underlying data; it now plots only measured, study-attributed points. Chart B previously showed a peak at HFNC:PIF = 1.0; the published relationship is monotonically decreasing with a plateau below 0.5, so the peak, its dashed &ldquo;HFNC = PIF&rdquo; optimum marker, and the &ldquo;air entrainment dilutes the aerosol&rdquo; explanation for the sub-1 region have all been replaced.</p>
+</div>
+
+<h2>References</h2>
+<ol class="refs">
+  <li>Ari A, Harwood R, Sheard M, Dailey P, Fink JB. In vitro comparison of heliox and oxygen in aerosol delivery using pediatric high flow nasal cannula. <em>Pediatr Pulmonol</em> 2011;46(8):795&ndash;801. PMID 21438178.</li>
+  <li>Perry SA, et al. Influences of cannula size and flow rate on aerosol drug delivery through the Vapotherm humidified high-flow nasal cannula system. <em>Pediatr Crit Care Med</em> 2013;14(5):e250&ndash;6. PMID 23628834. doi:10.1097/PCC.0b013e31828a7f79.</li>
+  <li>Dailey PA, et al. Aerosol delivery through adult high flow nasal cannula with heliox and oxygen. <em>Respir Care</em> 2017;62(9):1186&ndash;92. PMID 28588117.</li>
+  <li>DiBlasi RM, Engberg RJ, Poli J, et al. Aerosol delivery efficiency with high-flow nasal cannula therapy in neonatal, pediatric, and adult nasal upper-airway and lung models. <em>Respir Care</em> 2024;69(9):1150&ndash;1163. PMID 38981652. doi:10.4187/respcare.11400.</li>
+  <li>Li J, Gong L, Fink JB. The ratio of nasal cannula gas flow to patient inspiratory flow on trans-nasal pulmonary aerosol delivery for adults: an in vitro study. <em>Pharmaceutics</em> 2019;11(5):225. PMID 31083346. doi:10.3390/pharmaceutics11050225.</li>
+  <li>Li J, et al. Bronchodilator delivery via high-flow nasal cannula: a randomized controlled trial to compare the effects of gas flows. <em>Pharmaceutics</em> 2021. PMID 34683948. doi:10.3390/pharmaceutics13101655.</li>
+  <li>Li J, et al. Decrease the flow setting to improve trans-nasal pulmonary aerosol delivery via high-flow nasal cannula to infants and toddlers. <em>Pediatr Pulmonol</em> 2019. PMID 30920155.</li>
+  <li>Li J, et al. Effects of flow rate on transnasal pulmonary aerosol delivery of bronchodilators via HFNC (study protocol). <em>BMJ Open</em> 2019. PMID 31239304.</li>
+  <li>Li J, Fink JB, et al. Narrative review of practical aspects of aerosol delivery via high-flow nasal cannula. <em>Ann Transl Med</em> 2021. PMID 33987288.</li>
+  <li>Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em> 2023. PMID 37436585. doi:10.1186/s13613-023-01147-4.</li>
+  <li>Dugernier J, et al. Aerosol delivery with two nebulizers through high-flow nasal cannula: a randomized cross-over single-photon emission computed tomography&ndash;computed tomography study. <em>J Aerosol Med Pulm Drug Deliv</em> 2017. PMID 28463044.</li>
+  <li>Alcoforado L, et al. Impact of gas flow and humidity on trans-nasal aerosol deposition via nasal cannula in adults: a randomized cross-over study. <em>Pharmaceutics</em> 2019. PMID 31284680.</li>
+  <li>R&eacute;miniac F, et al. Nasal high flow nebulization in infants and toddlers: an in vitro and in vivo scintigraphic study. <em>Pediatr Pulmonol</em> 2017. PMID 27392199.</li>
+  <li>R&eacute;miniac F, et al. Aerosol therapy in adults receiving high flow nasal cannula oxygen therapy. <em>J Aerosol Med Pulm Drug Deliv</em> 2016. PMID 26196740.</li>
+  <li>Ari A, et al. Effect of nebulizer type, delivery interface, and flow rate on aerosol drug delivery to spontaneously breathing pediatric and infant lung models. <em>Pediatr Pulmonol</em> 2019. PMID 31313534.</li>
+  <li>Alalwan MA, Fink JB, Ari A. In vitro evaluation of aerosol drug delivery with and without high flow nasal cannula in children. <em>Pediatr Pulmonol</em> 2019;54(12):1968&ndash;1973. PMID 31468741. doi:10.1002/ppul.24501. <em>Listed under &ldquo;Ari A&rdquo; in earlier versions; the first author is Alalwan.</em></li>
+  <li>Ari A, Hoops JA, Koyuncu A, Fink JB. Dos and don'ts to optimize transnasal aerosol drug delivery in clinical practice. <em>Expert Opin Drug Deliv</em> 2024. PMID 39104360. doi:10.1080/17425247.2024.2388838.</li>
+  <li>Moody GB, Ari A, et al. Quantifying continuous nebulization via high flow nasal cannula and large volume nebulizer in a pediatric model. <em>Pediatr Pulmonol</em> 2020. PMID 32681768.</li>
+  <li>Aerosol delivery in models of pediatric high flow nasal oxygen and mechanical ventilation. <em>Pediatr Pulmonol</em> 2023. PMID 36478520.</li>
+  <li>Sunbul FS, et al. Comparison of HFNC, bubble CPAP and SiPAP on aerosol delivery in neonates: an in-vitro study. <em>Pediatr Pulmonol</em> 2015. PMID 25491434.</li>
+  <li>Szychowiak P, Gensburger S, Bocar T, et al. Pressurized metered dose inhaler aerosol delivery within nasal high-flow circuits: a bench study. <em>J Aerosol Med Pulm Drug Deliv</em> 2021;34(5):303&ndash;310. PMID 33761286. doi:10.1089/jamp.2020.1643. <em>Attributed to &ldquo;Bennett G&rdquo; in earlier versions of this tool; the first author is Szychowiak.</em></li>
+  <li>Aerosol delivery to an adult model via HFNC with an inspiration-synchronized small-particle vibrating mesh nebulizer. <em>J Aerosol Med Pulm Drug Deliv</em> 2025. PMID 40613197.</li>
+  <li>Zhang MX, Bem RA, Huijgen T, et al. The effect of decoupling humidity control on aerosol drug delivery during HFNC for infants. <em>Respir Care</em> 2025. PMID 39187290. doi:10.4187/respcare.12283.</li>
+  <li>White BR, Miller AG, Baker J, et al. AARC and PALISI clinical practice guideline: pediatric critical asthma. <em>Respir Care</em> 2025. PMID 40323974. doi:10.1089/respcare.12897.</li>
+  <li>Berlinski A. Aerosol delivery challenges and strategies for pediatric asthma. <em>Respir Care</em> 2025. PMID 39969940. doi:10.1089/respcare.12626.</li>
+  <li>Albuainain FA, Gong L, Luo L, Qin X, Li J. In vitro evaluation of aerosol delivery via a new high-flow nasal cannula device in adult, toddler, and neonate models. <em>Respir Care</em> 2026. PMID 41711120. doi:10.1177/19433654261418972.</li>
+  <li>Aerosol therapy during noninvasive ventilation (NIV) and nasal high-flow therapy (HFT): current technology and consensus-based recommendations. <em>Pneumologie</em> 2026. PMID 42320581. doi:10.1055/a-2873-9563.</li>
+  <li>Xie S, Li F, Zeng Z, Wen D, Du X. Summary of the best evidence for adult nasal high-flow oxygen therapy nebulization management. <em>Front Med</em> 2026. doi:10.3389/fmed.2026.1766114.</li>
+  <li>Tal A, et al. Deposition pattern of radiolabeled salbutamol inhaled from a metered-dose inhaler by means of a spacer with mask in young children with airway obstruction. <em>J Pediatr</em> 1996. PMID 8618180.</li>
+  <li>Erzinger S, et al. Facemasks and aerosol delivery in vivo. <em>J Aerosol Med</em> 2007. PMID 17411409.</li>
+  <li>Wildhaber JH, et al. Inhalation therapy in asthma: nebulizer or pressurized metered-dose inhaler with holding chamber? In vivo comparison of lung deposition in children. <em>J Pediatr</em> 1999. PMID 10393600.</li>
+  <li>Pierart F, et al. Washing plastic spacers in household detergent reduces electrostatic charge and greatly improves delivery. <em>Eur Respir J</em> 1999. PMID 10232445.</li>
+  <li>Ditcham W, et al. Lung deposition of 99mTc-radiolabeled albuterol delivered through a pressurized metered dose inhaler and spacer with facemask or mouthpiece in children with asthma. <em>J Aerosol Med Pulm Drug Deliv</em> 2014. PMID 25054483.</li>
+  <li>DiBlasi RM. Clinical controversies in aerosol therapy for infants and children. <em>Respir Care</em> 2015;60(6):894&ndash;914. PMID 26070582. <em>Cited here only to document that this review reports no HFNC albuterol delivery percentages.</em></li>
+  <li>Milesi C, Requirand A, Douillard A, et al. Assessment of peak inspiratory flow in young infants with acute viral bronchiolitis: physiological basis for initial flow setting in patients supported with high-flow nasal cannula. <em>J Pediatr</em> 2021;231:239&ndash;245.e1. PMID 33333115. doi:10.1016/j.jpeds.2020.12.020.</li>
+</ol>
+
+<p class="footnote">Exact delivery varies with cannula size and cannula-to-nares ratio, interface fit, breathing pattern and effort, circuit humidity and condensation, nebulizer position, and nebulizer brand. Values above are the numbers the cited studies report; they are not estimates of what an individual patient receives. Most are bench models or healthy-volunteer studies. Where a figure could not be traced to a source it has been removed rather than approximated, and the one derived quantity in this tool is labelled <span class="derived-tag">DERIVED</span> in place.</p>
+
+<footer class="tool-footer">
+  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-08-31 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> all 34 PMIDs cited here resolve in PubMed and match the title and journal shown, and every first-author attribution has been checked against the PubMed record. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text &mdash; but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
+</footer>
+
+<script>
+function showTab(tab) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  // A chart built inside a display:none panel is laid out at zero size and its
+  // datasets never paint. Re-measure the revealed panel's chart on every switch.
+  var canvas = document.querySelector('#panel-' + tab + ' canvas');
+  if (canvas && window.Chart && Chart.getChart) {
+    var inst = Chart.getChart(canvas);
+    if (inst) { inst.resize(); inst.update('none'); }
+  }
+}
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { showTab(btn.getAttribute('data-tab')); });
+});
+
+// --- Chart A: measured, study-attributed values vs HFNC flow ---
+// Every point below is a value reported by the named study at the stated gas flow.
+// Nothing is interpolated, smoothed, or synthesized.
+var pedBench = [
+  { x: 3,  y: 1.2,   s: 'Perry 2013 · Vapotherm, pediatric cannula' },
+  { x: 5,  y: 0.6,   s: 'Perry 2013 · Vapotherm, pediatric cannula' },
+  { x: 10, y: 0.1,   s: 'Perry 2013 · Vapotherm, pediatric cannula' },
+  { x: 20, y: 0.0,   s: 'Perry 2013 · Vapotherm, pediatric cannula' },
+  { x: 3,  y: 0.6,   s: 'Perry 2013 · Vapotherm, infant cannula' },
+  { x: 5,  y: 0.6,   s: 'Perry 2013 · Vapotherm, infant cannula' },
+  { x: 8,  y: 0.5,   s: 'Perry 2013 · Vapotherm, infant cannula' },
+  { x: 3,  y: 10.65, s: 'Ari 2011 · pediatric HFNC, mesh with oxygen (10.65 ± 0.51%)' },
+  { x: 6,  y: 1.95,  s: 'Ari 2011 · pediatric HFNC, mesh with oxygen (1.95 ± 0.50%)' },
+  { x: 3,  y: 12.6,  s: 'Moody & Ari 2020 · pediatric model, continuous nebulization (12.6 ± 0.5%)' },
+  { x: 2,  y: 3.3,   s: 'Réminiac 2017 · SAINT infant/toddler model' },
+  { x: 4,  y: 4.2,   s: 'Réminiac 2017 · SAINT infant/toddler model' },
+  { x: 2,  y: 5.80,  s: 'Pediatr Pulmonol 2023 · pediatric HFNO model, largest cannula (5.80 ± 0.17%)' }
+];
+var adultBench = [
+  { x: 5,  y: 2.5,   s: 'Perry 2013 · Vapotherm, adult cannula' },
+  { x: 10, y: 0.8,   s: 'Perry 2013 · Vapotherm, adult cannula' },
+  { x: 20, y: 0.4,   s: 'Perry 2013 · Vapotherm, adult cannula' },
+  { x: 10, y: 20.8,  s: 'Li 2019 · adult in vitro, distressed breathing — maximum inhaled dose 20.8 ± 0.7% at gas flow 10 L/min, simulated inspiratory flow 27 L/min' },
+  { x: 20, y: 22.0,  s: 'Li 2019 · adult in vitro, distressed breathing — peak inhaled dose 22.0 ± 0.6% at gas flow 20 L/min, simulated inspiratory flow 42 L/min' },
+  { x: 20, y: 26.7,  s: 'Li 2019 · adult in vitro, distressed breathing — peak inhaled dose 26.7 ± 0.7% at gas flow 20 L/min, simulated inspiratory flow 52.5 L/min' }
+];
+var inVivo = [
+  { x: 10, y: 17.2,  s: 'Alcoforado 2019 · healthy adults, planar scintigraphy (17.2 ± 6.8%)' },
+  { x: 30, y: 5.71,  s: 'Alcoforado 2019 · healthy adults, planar scintigraphy (5.71 ± 2.04%)' },
+  { x: 50, y: 3.46,  s: 'Alcoforado 2019 · healthy adults, planar scintigraphy (3.46 ± 1.24%)' },
+  { x: 30, y: 3.6,   s: 'Dugernier 2017 · healthy adults, SPECT-CT (3.6%, IQR 2.1–4.4)' }
+];
+var jetPts = [
+  { x: 30, y: 1.0,   s: 'Dugernier 2017 · healthy adults, SPECT-CT (1.0%, IQR 0.7–2.0) — the only flow-paired jet value located' }
+];
+
+new Chart(document.getElementById('chartFlow'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'Mesh — infant / pediatric bench models',
+        data: pedBench,
+        borderColor: '#2980B9', backgroundColor: '#2980B9',
+        pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 8
+      },
+      {
+        label: 'Mesh — adult bench models',
+        data: adultBench,
+        borderColor: '#2980B9', backgroundColor: 'rgba(41,128,185,0.25)',
+        borderWidth: 2, pointStyle: 'triangle', pointRadius: 7, pointHoverRadius: 10
+      },
+      {
+        label: 'Mesh — in vivo (adults, scintigraphy / SPECT-CT)',
+        data: inVivo,
+        borderColor: '#5B9A6E', backgroundColor: '#5B9A6E',
+        pointStyle: 'rectRot', pointRadius: 6, pointHoverRadius: 9
+      },
+      {
+        label: 'Jet — in vivo (adults, SPECT-CT)',
+        data: jetPts,
+        borderColor: '#E8735A', backgroundColor: '#E8735A',
+        pointStyle: 'rect', pointRadius: 6, pointHoverRadius: 9
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        type: 'linear', min: 0, max: 60,
+        title: { display: true, text: 'HFNC Flow Rate (LPM)', font: { size: 12 }, color: '#4b5563' },
+        ticks: { font: { size: 11 }, stepSize: 10 },
+        grid: { color: '#e5e7eb' }
+      },
+      y: {
+        type: 'linear', min: 0, max: 28,
+        title: { display: true, text: 'Reported inhaled / lung dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
+        ticks: { font: { size: 11 } },
+        grid: { color: '#e5e7eb' }
+      }
+    },
+    plugins: {
+      legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, boxWidth: 10 } },
+      tooltip: {
+        backgroundColor: '#fff', titleColor: '#1a1a1a', bodyColor: '#1a1a1a',
+        borderColor: '#d1d5db', borderWidth: 1, cornerRadius: 6, padding: 10,
+        titleFont: { weight: '600', size: 12 }, bodyFont: { size: 11 },
+        displayColors: false,
+        callbacks: {
+          title: function(ctx) { return ctx[0].parsed.y + '% at ' + ctx[0].parsed.x + ' L/min'; },
+          label: function(ctx) { return ctx.raw.s; }
+        }
+      }
+    }
+  }
+});
+
+// --- Chart B: inhaled dose vs gas-flow : inspiratory-flow ratio ---
+// Line = the reported regression from Li 2019 (adult in vitro, 30 ratios 0.10-4.44):
+//   inhaled dose (%) = 24.99 - 6.20 x (GF:IF). Monotonic; no peak at 1.0.
+var fitPts = [
+  { x: 0.1, y: 24.37 }, { x: 0.5, y: 21.89 }, { x: 1.0, y: 18.79 }, { x: 1.5, y: 15.69 },
+  { x: 2.0, y: 12.59 }, { x: 2.5, y: 9.49 },  { x: 3.0, y: 6.39 },  { x: 3.5, y: 3.29 },
+  { x: 4.0, y: 0.19 }
+];
+// Measured group means from the same study, plotted at the midpoint of each stated band.
+var bandPts = [
+  { x: 0.30, y: 23.4, s: 'GF:IF 0.1–0.5 · measured mean 23.4 ± 3.3% · plotted at the midpoint of the stated band' },
+  { x: 0.75, y: 18.3, s: 'GF:IF 0.51–1.0 · measured mean 18.3 ± 2.2% · plotted at the midpoint of the stated band' }
+];
+
+new Chart(document.getElementById('chartRatio'), {
+  type: 'line',
+  data: {
+    datasets: [
+      {
+        label: 'Li 2019 reported regression (24.99 − 6.20 × GF:IF)',
+        data: fitPts,
+        borderColor: '#2980B9', backgroundColor: '#2980B9',
+        borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 0, tension: 0, fill: false
+      },
+      {
+        label: 'Measured group means',
+        data: bandPts,
+        showLine: false,
+        pointBackgroundColor: ['#5B9A6E', '#2EBFA5'],
+        pointBorderColor: '#fff', pointBorderWidth: 1.5,
+        pointRadius: 8, pointHoverRadius: 10
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        type: 'linear', min: 0, max: 4.5,
+        title: { display: true, text: 'Cannula gas flow : peak inspiratory flow (GF:IF)', font: { size: 12 }, color: '#4b5563' },
+        ticks: { font: { size: 11 }, stepSize: 0.5 },
+        grid: { color: '#e5e7eb' }
+      },
+      y: {
+        type: 'linear', min: 0, max: 28,
+        title: { display: true, text: 'Inhaled dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
+        ticks: { font: { size: 11 } },
+        grid: { color: '#e5e7eb' }
+      }
+    },
+    plugins: {
+      legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, boxWidth: 10 } },
+      tooltip: {
+        backgroundColor: '#fff', titleColor: '#1a1a1a', bodyColor: '#1a1a1a',
+        borderColor: '#d1d5db', borderWidth: 1, cornerRadius: 6, padding: 10,
+        titleFont: { weight: '600', size: 12 }, bodyFont: { size: 11 },
+        displayColors: false,
+        callbacks: {
+          title: function(ctx) { return 'GF:IF = ' + ctx[0].parsed.x; },
+          label: function(ctx) {
+            return ctx.raw.s ? ctx.raw.s : 'Fitted inhaled dose: ' + ctx.parsed.y.toFixed(1) + '%';
+          }
+        }
+      }
+    }
+  },
+  plugins: [{
+    afterDraw: function(chart) {
+      var xScale = chart.scales.x;
+      var yScale = chart.scales.y;
+      var ctx = chart.ctx;
+      var guides = [
+        { v: 0.5, color: '#5B9A6E', text: 'plateau ≤ 0.5' },
+        { v: 1.0, color: '#E8735A', text: 'GF = IF' }
+      ];
+      ctx.save();
+      guides.forEach(function(g) {
+        var x = xScale.getPixelForValue(g.v);
+        ctx.beginPath();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = g.color;
+        ctx.lineWidth = 2;
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '600 11px system-ui, sans-serif';
+        ctx.fillStyle = g.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(g.text, x, yScale.top - 6);
+      });
+      ctx.restore();
+    }
+  }]
+});
+</script>
+</body>
+</html>

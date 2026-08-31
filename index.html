@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neel Clinical Skills</title>
+<meta name="description" content="Seven interactive teaching tools for pediatric and adult critical care. Each one is a single self-contained page: move the inputs and watch the physiology change.">
+<meta property="og:title" content="Neel Clinical Skills">
+<meta property="og:description" content="Seven interactive critical-care teaching tools. Educational use only.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6EE; --tint:#E7E2D6;
+    --ink:#1A1A1A; --ink-muted:#5A5550; --ink-quiet:#7C7670;
+    --slate:#4A5468; --slate-deep:#2F3744; --slate-pale:#C5CCD9;
+    --rule:#D5CFBF;
+    --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14120F; --tint:#221F1A;
+      --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-quiet:#948C80;
+      --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
+      --rule:#332F28;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; font-size:16px; line-height:1.55;
+    padding:var(--xxl) var(--lg) var(--xl); max-width:940px; margin:0 auto;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--slate); text-decoration:none; border-bottom:1px solid var(--slate-pale);
+    transition:color 160ms var(--ease-out), border-color 160ms var(--ease-out);}
+  a:hover{color:var(--slate-deep); border-color:var(--slate-deep)}
+  a:focus-visible{outline:2px solid var(--slate); outline-offset:2px; border-radius:2px}
+
+  .overline{font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-quiet)}
+  h1{font-family:'Source Serif 4',Georgia,serif; font-size:42px; line-height:1.1;
+     font-weight:600; letter-spacing:-0.01em; margin:var(--sm) 0 var(--md); max-width:18ch;}
+  .lede{font-family:'Source Serif 4',Georgia,serif; font-size:18.5px; line-height:1.6;
+        color:var(--ink-muted); max-width:62ch;}
+  .masthead{border-bottom:2px solid var(--ink); padding-bottom:var(--lg)}
+  .stamp{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-quiet);
+         margin-top:var(--md); letter-spacing:0.02em;}
+
+  .warn{
+    margin-top:var(--lg); padding:var(--md); background:var(--tint);
+    border-left:3px solid var(--slate); border-radius:0 3px 3px 0;
+    font-family:'Source Serif 4',Georgia,serif; font-size:15.5px; color:var(--ink);
+  }
+  .warn b{font-weight:600}
+
+  ol.rows{list-style:none; margin-top:var(--xs)}
+  .row{display:grid; grid-template-columns:76px 1fr; gap:0 var(--lg);
+       padding:var(--lg) 0; border-bottom:1px solid var(--rule);}
+  .numeral{font-family:'Source Serif 4',Georgia,serif; font-size:52px; line-height:0.9;
+           font-weight:400; color:var(--slate-pale); letter-spacing:-0.02em; padding-top:2px;}
+  .row h2{font-family:'Source Serif 4',Georgia,serif; font-size:23px; font-weight:600;
+          line-height:1.25; letter-spacing:-0.005em;}
+  .row h2 a{border-bottom-width:2px}
+  .domain{display:inline-block; margin-top:var(--xs); font-size:11px; font-weight:600;
+          letter-spacing:0.12em; text-transform:uppercase; color:var(--slate);
+          border:1px solid var(--slate-pale); border-radius:3px; padding:2px 7px;}
+  .does{font-family:'Source Serif 4',Georgia,serif; font-size:16.5px; line-height:1.62;
+        margin-top:var(--sm); max-width:64ch;}
+  .meta{font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.9;
+        color:var(--ink-muted); margin-top:var(--md);
+        border-top:1px solid var(--rule); padding-top:var(--sm);}
+
+  footer{margin-top:var(--xxl); padding-top:var(--lg); border-top:2px solid var(--ink);
+         font-family:'Source Serif 4',Georgia,serif; font-size:15px; color:var(--ink-muted);}
+  footer p + p{margin-top:var(--sm)}
+  footer .sig{font-style:italic; color:var(--ink-quiet); margin-top:var(--md); font-size:14px}
+
+  @media (max-width:768px){
+    body{padding:var(--xl) var(--md)}
+    h1{font-size:30px}
+    .row{grid-template-columns:1fr; gap:var(--sm)}
+    .numeral{font-size:34px}
+  }
+  @media print{
+    body{background:#fff;color:#000;max-width:none;padding:0.5in}
+    .row{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="overline">Critical care teaching tools</div>
+  <h1>Move the inputs, watch the physiology</h1>
+  <p class="lede">Seven interactive tools for pediatric and adult critical care. Each is a single self-contained page with no install, no account, and no server. Nothing you type leaves your browser.</p>
+  <div class="stamp">v2.x &middot; updated 31 August 2026 &middot; CC BY-NC 4.0</div>
+</header>
+
+<div class="warn">
+  <b>These are teaching tools, not medical devices.</b> None is externally validated or FDA-cleared, and none is for autonomous clinical decision-making. Thresholds here are risk-stratifiers drawn from specific populations, not treatment targets. Defer to your own judgment and local protocols, and do not enter protected health information. See <a href="DISCLAIMER.md">the full disclaimer</a>.
+</div>
+
+<ol class="rows">
+
+  <li class="row">
+    <div class="numeral">01</div>
+    <div>
+      <h2><a href="tools/vv-ecmo-oxygenation-calculator.html">V-V ECMO Oxygenation Calculator</a></h2>
+      <span class="domain">ECMO / gas exchange</span>
+      <p class="does">Solves the venovenous mixing equation in both directions. Enter cardiac output and it predicts arterial saturation; enter a measured SaO<sub>2</sub> and it solves for cardiac output. Recirculation fraction, hemoglobin, sweep and oxygen delivery are all live inputs, with five worked scenarios and the assumptions stated in place.</p>
+      <div class="meta">v2.1 &middot; updated 2026-08-31 &middot; <a href="tools/vv-ecmo-oxygenation-calculator.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">02</div>
+    <div>
+      <h2><a href="tools/co2-gap-scvo2-interpreter.html">CO<sub>2</sub> Gap and ScvO<sub>2</sub> Interpreter</a></h2>
+      <span class="domain">Shock / perfusion</span>
+      <p class="does">Reads PaCO<sub>2</sub>, PvCO<sub>2</sub>, ScvO<sub>2</sub> and lactate through three stacked tiers: the venoarterial gap, the macrocirculatory versus microcirculatory pattern, and anaerobic stratification. Returns a verdict, the edge cases that invalidate the gap, and the next clinical actions, each traced to its source.</p>
+      <div class="meta">v2.0 &middot; updated 2026-08-31 &middot; <a href="tools/co2-gap-scvo2-interpreter.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">03</div>
+    <div>
+      <h2><a href="tools/icu-cbc-interpreter.html">ICU CBC Interpreter</a></h2>
+      <span class="domain">Sepsis / infection</span>
+      <p class="does">Bedside CBC interpretation through a sepsis lens with the evidence graded per finding. Nine confounders can be switched on, each of which changes what the count means: steroids, G-CSF, recent chemotherapy, asplenia, hematologic malignancy, a seizure within 24 hours, late pregnancy, a beta-agonist infusion, and recent transfusion.</p>
+      <div class="meta">v2.1 &middot; updated 2026-08-31 &middot; <a href="tools/icu-cbc-interpreter.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">04</div>
+    <div>
+      <h2><a href="tools/pediatric-aki-risk-tool.html">Pediatric AKI Risk Tool</a></h2>
+      <span class="domain">Renal</span>
+      <p class="does">Renal angina index tracked day by day against its threshold, with a Bayesian layer that moves a pretest severe-AKI rate to a posttest probability using urinary NGAL and cystatin C. Derived likelihood ratios are labelled as derived rather than presented as directly reported.</p>
+      <div class="meta">v2.0 &middot; updated 2026-08-31 &middot; <a href="tools/pediatric-aki-risk-tool.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">05</div>
+    <div>
+      <h2><a href="tools/albuterol-hfnc-delivery.html">Albuterol Delivery During HFNC</a></h2>
+      <span class="domain">Asthma / aerosol</span>
+      <p class="does">Charts inhaled lung dose as a percentage of the nominal nebulizer dose against high-flow nasal cannula flow, so the tradeoff between flow and delivery is visible rather than asserted. Values that come from adult studies are flagged as adult-derived where they appear.</p>
+      <div class="meta">v2.1 &middot; updated 2026-08-31 &middot; <a href="tools/albuterol-hfnc-delivery.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">06</div>
+    <div>
+      <h2><a href="tools/prx-cppopt-map-challenge.html">PRx, CPPopt and the MAP Challenge</a></h2>
+      <span class="domain">Neurocritical care</span>
+      <p class="does">Cerebral autoregulation made concrete for fellows: animated pressure-reactivity waveforms, a PRx versus CPP U-curve you can move, a norepinephrine and MAP challenge simulator, and a walkthrough of the tiered protocol with its safety limits.</p>
+      <div class="meta">v2.1 &middot; updated 2026-08-31 &middot; <a href="tools/prx-cppopt-map-challenge.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row">
+    <div class="numeral">07</div>
+    <div>
+      <h2><a href="tools/venous-return-wars.html">The Venous Return Wars</a></h2>
+      <span class="domain">Hemodynamics</span>
+      <p class="does">An interactive teaching essay on the Guyton and Brengelmann dispute, worked from the ground up. Three live rigs let you drive the argument instead of reading it: two tanks and a pump, a venous return curve you can reshape, and a vasodilate-then-defend-blood-pressure sequence.</p>
+      <div class="meta">v2.0 &middot; updated 2026-08-31 &middot; <a href="tools/venous-return-wars.html">Open tool</a></div>
+    </div>
+  </li>
+
+</ol>
+
+<footer>
+  <p>Every quantitative claim in these tools went through a literature refresh and was then reviewed independently by readers who did not write the file. Identifiers are resolved against PubMed and Crossref rather than recalled, and a sample of each tool's verified identifiers is re-fetched blind and compared before release.</p>
+  <p>Some numbers here never had a citation: consensus thresholds, likelihood ratios derived from a pooled AUROC, delivery percentages synthesized across bench studies. Those are kept and labelled as derived rather than deleted or dressed up as directly reported. Where a tool says a number is an approximation, believe it.</p>
+  <p>Found an error? <a href="https://github.com/neelshah4/neel-clinical-skills/issues">Open an issue</a>. Corrections to clinical content are the most useful contribution anyone can make here.</p>
+  <p class="sig">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; Washington University in St. Louis &middot; <a href="LICENSE">CC BY-NC 4.0</a></p>
+</footer>
+
+</body>
+</html>

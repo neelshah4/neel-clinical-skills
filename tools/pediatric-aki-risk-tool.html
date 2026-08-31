@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Pediatric AKI Risk Tool: RAI + Bayesian-style Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Surfaces */
+    --paper: #FAF6EE;
+    --tint: #E7E2D6;
+    --tint-deep: #D5CFBF;
+    --card: #FFFFFF;
+    /* Ink */
+    --ink: #1A1A1A;
+    --ink-muted: #5A5550;
+    --ink-quiet: #8A847E;
+    /* Accent */
+    --slate: #4A5468;
+    --slate-deep: #2F3744;
+    --slate-pale: #C5CCD9;
+    --focus: #4A5468;      /* focus ring: 7.61:1 on --card, 7.14:1 on --paper */
+    /* Semantic tiers */
+    --pos: #2E7D5B;
+    --pos-bg: #E4F0E9;
+    --caution: #B88A2C;
+    --caution-bg: #F5ECD8;
+    --neg: #B23A3A;
+    --neg-bg: #F3E0DE;
+    /* Lines */
+    --hair: rgba(26,26,26,0.12);
+    --hair-strong: rgba(26,26,26,0.22);
+    /* Spacing (4px grid) */
+    --xs: 4px; --sm: 8px; --md: 16px; --lg: 24px; --xl: 36px; --xxl: 48px;
+    --radius: 8px;
+    --maxw: 1080px;
+    color-scheme: light;
+  }
+  [data-theme="dark"] {
+    --paper: #14120F;
+    --tint: #211E19;
+    --tint-deep: #2A2620;
+    --card: #1C1A16;
+    --ink: #F5F0E6;
+    --ink-muted: #B6AFA3;
+    --ink-quiet: #8A847E;
+    --slate: #97A4BF;
+    --slate-deep: #B7C2D8;
+    --slate-pale: #3A4356;
+    --focus: #97A4BF;      /* focus ring: 6.93:1 on --card, 7.46:1 on --paper */
+    --pos: #6FC79B;
+    --pos-bg: #18271F;
+    --caution: #E0B85E;
+    --caution-bg: #2A2415;
+    --neg: #E08A85;
+    --neg-bg: #2C1A19;
+    --hair: rgba(245,240,230,0.14);
+    --hair-strong: rgba(245,240,230,0.26);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); }
+  body {
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    color: var(--ink);
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    transition: background 200ms ease, color 200ms ease;
+  }
+  .sans { font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+  .tnum { font-feature-settings: "tnum" 1, "lnum" 1; }
+  h1,h2,h3,h4 { font-family: "Inter", -apple-system, "Segoe UI", sans-serif; line-height: 1.2; margin: 0; }
+  a { color: var(--slate); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--md) var(--xxl); }
+
+  /* Header */
+  header { border-bottom: 1px solid var(--hair); }
+  .header-inner { max-width: var(--maxw); margin: 0 auto; padding: var(--lg) var(--md) var(--md); display: flex; justify-content: space-between; align-items: flex-start; gap: var(--md); }
+  .overline { font-family: "Inter", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-quiet); }
+  .sig-rule { height: 1px; background: var(--slate); width: 44px; margin: 6px 0 8px; }
+  .title { font-size: clamp(22px, 4.4vw, 30px); font-weight: 700; letter-spacing: -0.01em; }
+  .subtitle { font-family: "Source Serif 4", serif; color: var(--ink-muted); font-size: 14px; margin-top: 4px; max-width: 60ch; }
+  .theme-btn { font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--card); color: var(--ink-muted); border: 1px solid var(--hair-strong); border-radius: 999px; padding: 7px 14px; white-space: nowrap; transition: all 160ms ease; }
+  .theme-btn:hover { border-color: var(--slate); color: var(--slate); }
+  .theme-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  /* Disclaimer */
+  .disclaimer { background: var(--caution-bg); border: 1px solid var(--caution); border-radius: var(--radius); padding: 10px 14px; margin: var(--md) auto 0; max-width: var(--maxw); font-size: 12.5px; color: var(--ink-muted); display: flex; gap: 10px; align-items: flex-start; }
+  .disclaimer strong { color: var(--ink); }
+  .disclaimer .bar { width: 4px; align-self: stretch; background: var(--caution); border-radius: 2px; flex: none; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; max-width: var(--maxw); margin: var(--lg) auto 0; padding: 0 var(--md); }
+  .tab { flex: 1; font-family: "Inter", sans-serif; font-size: clamp(12.5px,2.6vw,14px); font-weight: 600; cursor: pointer; background: transparent; color: var(--ink-quiet); border: none; border-bottom: 2px solid var(--hair); padding: 12px 8px; transition: all 160ms ease; text-align: center; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom: 2px solid var(--slate); }
+  .tab:hover:not([aria-selected="true"]) { color: var(--ink-muted); }
+  .tab:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+  .tab small { display:block; font-weight:400; font-size:10.5px; color:var(--ink-quiet); margin-top:2px; }
+
+  /* Cards & layout */
+  .card { background: var(--card); border: 1px solid var(--hair); border-radius: var(--radius); padding: var(--lg); margin-top: var(--md); }
+  .card-label { font-family: "Inter", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-quiet); margin-bottom: 4px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .card .hint { font-size: 13px; color: var(--ink-muted); margin: 2px 0 var(--md); }
+  .grid2 { display: grid; grid-template-columns: 1fr; gap: var(--md); }
+  @media (min-width: 760px) { .grid2 { grid-template-columns: 1.05fr 0.95fr; } }
+  .row { display: grid; grid-template-columns: 1fr; gap: var(--md); }
+  @media (min-width: 560px) { .row.cols2 { grid-template-columns: 1fr 1fr; } }
+
+  /* Toggle buttons */
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .seg button, .toggle-btn { font-family: "Inter", sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--paper); color: var(--ink-muted); border: 1px solid var(--hair-strong); border-radius: 6px; padding: 9px 12px; transition: all 140ms ease; min-height: 40px; }
+  .seg button[aria-pressed="true"], .toggle-btn[aria-pressed="true"] { background: var(--slate); color: #fff; border-color: var(--slate); }
+  [data-theme="dark"] .seg button[aria-pressed="true"], [data-theme="dark"] .toggle-btn[aria-pressed="true"] { color: var(--paper); }
+  .seg button:focus-visible, .toggle-btn:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .seg button:hover:not([aria-pressed="true"]), .toggle-btn:hover:not([aria-pressed="true"]) { border-color: var(--slate); color: var(--slate); }
+
+  /* Inputs */
+  .field { display: block; font-family: "Inter", sans-serif; font-size: 12.5px; font-weight: 600; color: var(--ink-muted); margin-bottom: 5px; }
+  .field-note { font-weight: 400; color: var(--ink-quiet); font-size: 11.5px; }
+  input[type="number"], input[type="text"], select { width: 100%; font-family: "JetBrains Mono", monospace; font-feature-settings: "tnum" 1, "lnum" 1; font-size: 15px; background: var(--paper); color: var(--ink); border: 1px solid var(--hair-strong); border-radius: 6px; padding: 10px 11px; min-height: 42px; }
+  select { font-family: "Inter", sans-serif; }
+  input::placeholder { color: var(--ink-quiet); }
+  .inline-out { font-family: "JetBrains Mono", monospace; font-feature-settings:"tnum" 1; font-size: 12.5px; color: var(--ink-muted); margin-top: 5px; }
+  .inline-out b { color: var(--ink); }
+
+  /* Result block with tier stripe */
+  .result { display: flex; gap: var(--md); align-items: stretch; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--hair); background: var(--card); }
+  .stripe { width: 8px; flex: none; }
+  .result-body { padding: var(--lg); flex: 1; }
+  .bignum { font-family: "JetBrains Mono", monospace; font-feature-settings:"tnum" 1; font-weight: 700; font-size: clamp(44px, 11vw, 64px); line-height: 1; letter-spacing: -0.02em; }
+  .bignum small { font-size: 16px; font-weight: 500; color: var(--ink-quiet); letter-spacing: 0; }
+  .verdict { font-family: "Inter", sans-serif; font-weight: 700; font-size: 15px; margin-top: 8px; display:inline-flex; align-items:center; gap:8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex:none; }
+  .interp { font-size: 14px; color: var(--ink); margin-top: 10px; max-width: 64ch; }
+  .interp .cite { font-size: 11.5px; color: var(--ink-quiet); }
+
+  .tier-pos { color: var(--pos); } .bg-pos { background: var(--pos); } .fill-pos{background:var(--pos-bg);}
+  .tier-caution { color: var(--caution); } .bg-caution { background: var(--caution); } .fill-caution{background:var(--caution-bg);}
+  .tier-neg { color: var(--neg); } .bg-neg { background: var(--neg); } .fill-neg{background:var(--neg-bg);}
+
+  .pill { display:inline-block; font-family:"Inter",sans-serif; font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px; border:1px solid var(--hair-strong); color:var(--ink-muted); }
+  .pill.drive { background: var(--tint); }
+
+  /* Trajectory list */
+  .traj-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--hair); font-family:"JetBrains Mono",monospace; font-feature-settings:"tnum" 1; font-size:13px; }
+  .traj-item .rm { margin-left:auto; cursor:pointer; background:none; border:none; color:var(--neg); font-family:"Inter",sans-serif; font-weight:600; font-size:12px; padding:4px 8px; border-radius:5px; }
+  .traj-item .rm:hover { background: var(--neg-bg); }
+
+  /* Probability ladder */
+  .ladder-row { display:grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items:center; padding:10px 0; border-bottom:1px dashed var(--hair); }
+  .ladder-row .lab { font-family:"Inter",sans-serif; font-size:13px; font-weight:600; }
+  .ladder-row .sub { font-size:11.5px; color:var(--ink-quiet); font-family:"Source Serif 4",serif; }
+  .ladder-row .lr { font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--slate); font-weight:700; }
+  .ladder-bar { grid-column: 1 / -1; height: 8px; background: var(--tint); border-radius: 4px; overflow:hidden; position:relative; }
+  .ladder-bar > span { position:absolute; left:0; top:0; bottom:0; background: var(--slate); border-radius:4px; transition: width 240ms ease; }
+  .ladder-prob { font-family:"JetBrains Mono",monospace; font-feature-settings:"tnum" 1; font-weight:700; }
+  .tbadge { display:inline-block; font-family:"Inter",sans-serif; font-size:9.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:2px 6px; border-radius:4px; margin-left:6px; vertical-align:middle; }
+  .tb-validated { background:var(--pos-bg); color:var(--pos); }
+  .tb-derived { background:var(--caution-bg); color:var(--caution); }
+  .tb-definitional { background:var(--tint); color:var(--slate); }
+  .floorbanner { background:var(--caution-bg); border:1px solid var(--caution); border-radius:var(--radius); padding:10px 14px; margin-top:var(--md); font-size:13px; color:var(--ink); }
+  .floorbanner b { color:var(--caution); }
+  .floorbanner.fb-severe { background:var(--neg-bg); border-color:var(--neg); }
+  .floorbanner.fb-severe b { color:var(--neg); }
+
+  .flag { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--hair); font-size:13.5px; }
+  .flag .fdot { width:8px; height:8px; border-radius:50%; margin-top:6px; flex:none; }
+  .flag .cite { color: var(--ink-quiet); font-size:11.5px; }
+
+  .caveat { background: var(--tint); border-left: 3px solid var(--slate); border-radius: 4px; padding: 12px 14px; font-size: 12.5px; color: var(--ink-muted); margin-top: var(--md); }
+  .caveat b { color: var(--ink); }
+  .caveat ul { margin: 6px 0 0; padding-left: 18px; } .caveat li { margin: 4px 0; }
+
+  /* References */
+  .ref { font-size: 12.5px; color: var(--ink-muted); padding: 9px 0; border-bottom: 1px solid var(--hair); }
+  .ref b { color: var(--ink); font-weight: 600; }
+  .ref .src { font-family:"Inter",sans-serif; }
+
+  footer { border-top: 1px solid var(--hair); margin-top: var(--xl); }
+  .footer-inner { max-width: var(--maxw); margin: 0 auto; padding: var(--lg) var(--md); font-size: 12px; color: var(--ink-quiet); }
+
+  .sectiongap { margin-top: var(--xl); }
+  .eyebrow { font-family:"Inter",sans-serif; font-size:11px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-quiet); margin-bottom:6px; }
+  .help { font-size:12.5px; color:var(--ink-quiet); margin-top:4px; }
+  details { margin-top: 6px; }
+  summary { cursor: pointer; font-family:"Inter",sans-serif; font-size:12.5px; font-weight:600; color: var(--slate); }
+  .check { display:flex; align-items:center; gap:8px; font-family:"Inter",sans-serif; font-size:13px; font-weight:500; color:var(--ink); padding:4px 0; }
+  summary:focus-visible, a:focus-visible, .traj-item .rm:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  /* Boot / no-JS fallback */
+  .boot-msg { max-width: 640px; margin: 48px auto; padding: 14px 18px; border: 1px solid var(--caution); background: var(--caution-bg); border-radius: var(--radius); font-size: 13.5px; line-height: 1.55; color: var(--ink); }
+  .boot-msg b { display: block; margin-bottom: 6px; font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<noscript>
+  <div class="boot-msg">
+    <b>This page needs JavaScript.</b>
+    The calculator is a client-side script, so with JavaScript disabled nothing on it can compute and no part of the tool is usable. Enable JavaScript for this page, or open the file in a browser that allows scripts. Nothing is uploaded either way: every value you type stays in the page.
+  </div>
+</noscript>
+<div id="boot" class="boot-msg">
+  <b>Loading the calculator.</b>
+  If this message is still here after a few seconds, the three libraries this page pulls from unpkg.com did not arrive. The usual causes are no network connection, a proxy or hospital firewall blocking unpkg.com, or a pinned integrity hash that no longer matches the file the CDN serves. This file needs a network connection the first time it is opened on a device.
+</div>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" integrity="sha384-AISI5AuDG6E8DeEiFMVB3rGQxhZt24OU0avMp+GMV64+tpnA3+Z6F5MT0f96iPva" crossorigin="anonymous"></script>
+<script>
+(function(){
+  function fail(missing){
+    var b = document.getElementById("boot");
+    if(!b) return;
+    b.innerHTML = "<b>The calculator could not start.</b>" +
+      "Not loaded: " + missing.join(", ") + ". This page needs react, react-dom and @babel/standalone from unpkg.com. " +
+      "Check that the machine is online and that unpkg.com is reachable, then reload. If it is reachable, the pinned integrity hash on one of the three script tags may no longer match what the CDN serves, which fails in exactly this silent way. The browser console names the failing tag.";
+  }
+  window.addEventListener("load", function(){
+    setTimeout(function(){
+      if(window.__akiBooted) return;
+      var missing = [];
+      if(typeof React === "undefined") missing.push("react");
+      if(typeof ReactDOM === "undefined") missing.push("react-dom");
+      if(typeof Babel === "undefined") missing.push("@babel/standalone");
+      if(missing.length === 0) missing.push("nothing (all three libraries loaded, so the failure is inside the page script itself; check the console)");
+      fail(missing);
+    }, 1500);
+  });
+})();
+</script>
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect, useId } = React;
+
+/* ============================================================
+   EVIDENCE CONSTANTS  (PMIDs and DOIs last checked against PubMed on
+   2026-08-31. That is a record of one check on one date, not a live status.
+   Retraction status was NOT re-checked and can change after that date;
+   nothing in this file verifies anything at load time.)
+   Every number below either traces to a citation in REFERENCES or is
+   explicitly labelled derived / author-chosen where no source exists.
+   ============================================================ */
+
+// RAI (>=8) on day 0 for Day-3 severe AKI: pooled meta-analysis
+//   (Meena 2022, PMID 34977984; 22 studies / 24 reports / 14,001 participants)
+//   sens 0.86 (0.77-0.92), spec 0.77 (0.68-0.83), AUC 0.88 (0.85-0.91).
+//   posLow/posHigh are the EXTREME CORNER combinations of the reported
+//   sensitivity and specificity CIs, a corner range, NOT a modelled bivariate
+//   LR confidence interval, and therefore wider and differently shaped than one.
+//   negLow computes to 0.096 and is shown rounded up to 0.10 (conservative).
+const RAI_LR = {
+  pos: 3.74, posLow: 2.41, posHigh: 5.41,   // LR+ = sens/(1-spec)
+  neg: 0.18, negLow: 0.10, negHigh: 0.34,   // LR- = (1-sens)/spec
+  cite: "Meena 2022 (PMID 34977984)"
+};
+// RAI >=8 AND urinary NGAL elevated: DIRECTLY POOLED joint estimate from that
+//   same meta-analysis, sens 0.76 (0.62-0.85), spec 0.89 (0.74-0.96),
+//   AUC 0.87 (0.84-0.90). Used INSTEAD of multiplying the two single-test LRs.
+//   The product assumes conditional independence and overstates the joint LR+:
+//   with the two constants THIS FILE actually uses, 3.74 x 4.37 = 16.34 against
+//   the directly pooled 6.91, a 2.4-fold overstatement.
+//   PROVENANCE of 16.34 and 2.4-fold: arithmetic on the two live constants in
+//   this file, reproducible from the numbers on screen. No source reports them.
+//   An earlier version quoted 33.1 and 4.8-fold; those came from the
+//   cardiac-surgery uNGAL:Cr LR+ of 8.86 that this file retires below, and so
+//   could not be reproduced from any constant the tool still uses.
+//   Note the combined AUC (0.87) is not higher than RAI alone (0.88): the
+//   sequential strategy buys specificity, not discrimination.
+//   Corners are the reported sens/spec CI corners.
+const RAI_NGAL_LR = {
+  pos: 6.91, posLow: 2.38, posHigh: 21.25,
+  cite: "Meena 2022 (PMID 34977984)"
+};
+// Urinary NGAL: GENERAL pediatric meta-analysis (Zou 2023, PMID 37051429;
+//   53 studies, 5,049 children): urine NGAL sens 0.83 (0.78-0.87),
+//   spec 0.81 (0.77-0.85), SROC 0.89 (0.86-0.91).
+//   Chosen over the pediatric cardiac-surgery estimate because this tool's
+//   pretest is a general PICU population. The cardiac-surgery meta
+//   (Van den Eynde 2022, PMID 35039910) reports the uNGAL-to-CREATININE RATIO
+//   (uNGAL:Cr sens 0.913 / spec 0.897 -> LR+ 8.86), which is peri-CPB, is not
+//   a raw uNGAL result, and whose published CIs (sens 91.2-91.3%) are too tight
+//   to be credible. The previous 5.0-13.0 / 0.05-0.20 bounds shown here were an
+//   undisclosed author widening of those CIs with no source, and are removed.
+const NGAL_LR = {
+  pos: 4.37, posLow: 3.39, posHigh: 5.80,
+  neg: 0.21, negLow: 0.15, negHigh: 0.29,
+  cite: "Zou 2023 (PMID 37051429)"
+};
+// Serum cystatin C: dedicated pediatric DTA meta-analysis (Alsabri 2026,
+//   PMID 41636794; 26 studies, 3,742 children, searched through June 2025):
+//   sens 78.2% (72.6-82.9), spec 79.5% (73.5-84.5), AUC 0.854; GRADE-DTA
+//   certainty moderate for sensitivity/specificity and high for AUC.
+//   This REPLACES the previous LR (2.6 / 0.38), which was approximated from the
+//   Meena 2023 pooled AUROC 0.80 at the binormal balanced operating point
+//   because no directly reported pediatric sens/spec pair existed at the time.
+//   A directly reported pair now exists, so the approximation is retired.
+const CYSTATIN_LR = {
+  pos: 3.82, posLow: 2.74, posHigh: 5.35,
+  neg: 0.27, negLow: 0.20, negHigh: 0.37,
+  cite: "Alsabri 2026 (PMID 41636794)",
+  note: "directly reported pooled sens 78.2% / spec 79.5%; accuracy is LOWER in PICU than in ward cohorts"
+};
+
+const PRETESTS = [
+  { key: "general", label: "General PICU admission", p: 0.116,
+    cite: "AWARE / NEJM 2017 (PMID 27959707): severe AKI (KDIGO 2–3) in 543 of 4,683 children, 11.6% (95% CI 10.7–12.5), assessed across the FIRST 7 ICU DAYS. Outcome mismatch: this is any-time-in-7-days severe AKI, not the Day-3 persistent outcome the likelihood ratios below predict." },
+  { key: "highacuity", label: "AWARE renal-angina cohort (whole cohort)", p: 0.231,
+    cite: "AWARE RAI cohort (PMID 30035208): OVERALL Day-3 severe AKI 23.1% (368/1,590), the whole-cohort rate, not a high-acuity subgroup. Do not pick it to represent a sicker-than-average child; the RAI risk stratum already carries acuity, and doing so double-counts it." },
+  { key: "custom", label: "Custom local rate", p: null, cite: "Enter your unit's observed Day-3 severe-AKI rate" }
+];
+
+const REFERENCES = [
+  { a: "Basu RK, Zappitelli M, Brunner L, et al.", t: "Derivation and validation of the renal angina index to improve the prediction of acute kidney injury in critically ill children.", j: "Kidney Int. 2014;85(3):659-667.", pmid: "24048379", doi: "10.1038/ki.2013.349" },
+  { a: "Basu RK, Kaddourah A, Goldstein SL; AWARE Study Investigators.", t: "Assessment of a renal angina index for prediction of severe acute kidney injury in critically ill children (AWARE): a multicentre, multinational, prospective observational study.", j: "Lancet Child Adolesc Health. 2018;2(2):112-120.", pmid: "30035208", doi: "10.1016/S2352-4642(17)30181-5" },
+  { a: "Kaddourah A, Basu RK, Bagshaw SM, Goldstein SL; AWARE Investigators.", t: "Epidemiology of acute kidney injury in critically ill children and young adults (AWARE).", j: "N Engl J Med. 2017;376(1):11-20.", pmid: "27959707", doi: "10.1056/NEJMoa1611391" },
+  { a: "Meena J, Kumar J, Thomas CC, et al.", t: "Diagnostic accuracy of renal angina index alone or in combination with biomarkers for predicting acute kidney injury in children.", j: "Pediatr Nephrol. 2022;37(6):1263-1275.", pmid: "34977984", doi: "10.1007/s00467-021-05368-2" },
+  { a: "Menon S, Goldstein SL, Mottes T, et al.", t: "Urinary biomarker incorporation into the renal angina index early in ICU admission optimizes acute kidney injury prediction in critically ill children.", j: "Nephrol Dial Transplant. 2016;31(4):586-594.", pmid: "26908772", doi: "10.1093/ndt/gfv457" },
+  { a: "Selewski DT, Gist KM, Basu RK, et al.", t: "Impact of the magnitude and timing of fluid overload on outcomes in critically ill children (AWARE).", j: "Crit Care Med. 2023;51(5):606-618.", pmid: "36821787", doi: "10.1097/CCM.0000000000005791" },
+  { a: "Kaddourah A, Basu RK, Goldstein SL, Sutherland SM.", t: "Oliguria and acute kidney injury in critically ill children: implications for diagnosis and outcomes.", j: "Pediatr Crit Care Med. 2019;20(4):332-339.", pmid: "30676490", doi: "10.1097/PCC.0000000000001866" },
+  { a: "Meena J, Thomas CC, Kumar J, Mathew G, Bagga A.", t: "Biomarkers for prediction of acute kidney injury in pediatric patients: a systematic review and meta-analysis of diagnostic test accuracy studies.", j: "Pediatr Nephrol. 2023;38(10):3241-3251.", pmid: "36862250", doi: "10.1007/s00467-023-05891-4" },
+  { a: "Van den Eynde J, Schuermans A, Verbakel JY, et al.", t: "Biomarkers of acute kidney injury after pediatric cardiac surgery: a meta-analysis of diagnostic test accuracy.", j: "Eur J Pediatr. 2022;181(5):1909-1921.", pmid: "35039910", doi: "10.1007/s00431-022-04380-4" },
+  { a: "Zou Z, Chen B, Tang F, Li X, Xiao D.", t: "Predictive value of neutrophil gelatinase-associated lipocalin in children with acute kidney injury: a systematic review and meta-analysis.", j: "Front Pediatr. 2023;11:1147033.", pmid: "37051429", doi: "10.3389/fped.2023.1147033" },
+  { a: "Alsabri M, Elkarargy MA, Aboali AA, et al.", t: "Diagnostic accuracy of serum cystatin C for pediatric acute kidney injury: a systematic review and meta-analysis.", j: "Pediatr Nephrol. 2026;41(9):2825-2839.", pmid: "41636794", doi: "10.1007/s00467-025-07117-1" },
+  { a: "Huang Y, Liu Y, Lin N, Qi G, Shao W.", t: "Optimizing pediatric AKI diagnosis: a patient-tailored meta-analysis of urinary TIMP-2/IGFBP7 performance across clinical scenarios and assay platforms.", j: "Front Pediatr. 2025;13:1678386.", pmid: "41332898", doi: "10.3389/fped.2025.1678386" },
+  { a: "Clover-Brown I, Ceschia G, Gist KM, et al.", t: "Furosemide stress test use in children at risk for acute kidney injury.", j: "Kidney Int Rep. 2025;10(12):4241-4251.", pmid: "41426025", doi: "10.1016/j.ekir.2025.09.029" },
+  { a: "Perez-Garzon M, Robayo-Amortegui H, Quintero-Altare A, et al.", t: "Renal angina index as a predictor of renal injury progression in patients on extracorporeal membrane oxygenation support: the DREAMS study.", j: "ASAIO J. 2025;72(9):e214-e221.", pmid: "41168142", doi: "10.1097/MAT.0000000000002589" },
+  { a: "Sagri MN, Rehman B, Akbar A, et al.", t: "Utility of renal angina index as compared to KDIGO in critically ill children at a tertiary care hospital in a low middle-income country.", j: "BMC Pediatr. 2026;26(1):101.", pmid: "41519694", doi: "10.1186/s12887-025-06106-5" },
+  { a: "Briassoulis G, Varda S, Marinopoulou E, Kondili E, Ilia S.", t: "Fluid overload, renal angina index, and PICU outcomes: single-center retrospective cohort, 2020-2024.", j: "Pediatr Crit Care Med. 2026;27(3):286-296.", pmid: "41460156", doi: "10.1097/PCC.0000000000003890" },
+  { a: "Zhou Y.", t: "Acute renal angina index in pediatric emergency care: the hidden impact of baseline creatinine estimation [letter].", j: "Pediatr Nephrol. 2026;41(5):1567.", pmid: "41498791", doi: "10.1007/s00467-025-07122-4" },
+  { a: "Bhaskar V, Batra P, Ahmed A.", t: "Response to letter: acute renal angina index in pediatric emergency care: the hidden impact of baseline creatinine estimation.", j: "Pediatr Nephrol. 2026;41(5):1569.", pmid: "41636795", doi: "10.1007/s00467-026-07182-0" },
+  { a: "Fuhrman DY, Stanski NL, Krawczeski CD, et al.", t: "A proposed framework for advancing acute kidney injury risk stratification and diagnosis in children: a report from the 26th Acute Disease Quality Initiative (ADQI) conference.", j: "Pediatr Nephrol. 2024;39(3):929-939.", pmid: "37670082", doi: "10.1007/s00467-023-06133-3" },
+  { a: "Selewski DT, Barhight MF, Bjornstad EC, et al.", t: "Fluid assessment, fluid balance, and fluid overload in sick children: a report from the Pediatric Acute Disease Quality Initiative (ADQI) conference.", j: "Pediatr Nephrol. 2024;39(3):955-979.", pmid: "37934274", doi: "10.1007/s00467-023-06156-w" }
+];
+
+/* ============================================================
+   PURE LOGIC
+   ============================================================ */
+function num(v){ if(v===""||v===null||v===undefined) return null; const n=Number(v); return isNaN(n)?null:n; }
+
+function injuryFromCr(curr, base){
+  // Canonical RAI injury metric (Basu 2014, PMID 24048379): % DECREASE in estimated
+  // creatinine clearance from baseline. eCrCl = 0.413·height/SCr, so the % CHANGE is
+  // height-independent and reduces to drop = 1 − SCr_baseline/SCr_current.
+  // CAVEAT: this whole stratum is hostage to how BASELINE creatinine is chosen. A
+  // published letter and author response identify baseline-creatinine estimation as a
+  // hidden driver of RAI performance (PMID 41498791 / 41636795). Prefer the lowest
+  // value in the prior 3–12 months; back-calculate from height only when none exists.
+  const c=num(curr), b=num(base);
+  if(c===null||b===null||b<=0||c<=0) return null;
+  const ratio = Math.round((c/b)*1e6)/1e6;
+  const drop = Math.round((1 - b/c)*1e6)/1e6;   // fractional eCrCl decline (negative if Cr improved)
+  let score;
+  if(drop <= 0) score=1;            // no decrease in eCrCl
+  else if(drop <= 0.25) score=2;    // 0–25% decline
+  else if(drop <= 0.50) score=4;    // 25–50% decline
+  else score=8;                      // >50% decline (i.e. SCr more than doubled)
+  return { score, ratio, drop };
+}
+function injuryFromFO(fo){
+  const f=num(fo);
+  if(f===null) return null;
+  let score;
+  if(f<=5) score=1; else if(f<=10) score=2; else if(f<=15) score=4; else score=8;
+  return { score, fo:f };
+}
+function kdigoFromCr(curr, base){
+  const c=num(curr), b=num(base);
+  if(c===null||b===null||b<=0) return null;
+  const ratio=Math.round((c/b)*1e6)/1e6, delta=Math.round((c-b)*1e6)/1e6;  // guard float boundaries
+  // The absolute SCr >=4.0 mg/dL limb is age- and size-blind, and this tool collects
+  // neither weight nor an age-specific reference range, so it is GATED here on a
+  // concurrent RELATIVE rise of at least 1.5x baseline. Ungated, a child with CKD at
+  // baseline 3.6 measured at 4.0 (ratio 1.11) was staged 3, floored at 95%, and told
+  // to treat established injury. The gate is deliberately NOT satisfied by the
+  // +0.3 mg/dL absolute-delta criterion: that same child has a delta of 0.4, so a
+  // delta-based gate would re-admit the exact case it exists to exclude. Such a child
+  // still stages 1 on the delta limb below, which is the correct read: an acute
+  // stage-1 rise on an advanced chronic baseline, not stage-3 AKI.
+  // PROVENANCE of the gate: author-chosen and deliberately stricter than the bare
+  // absolute threshold; no source supplies it.
+  if(ratio>=3.0 || (c>=4.0 && ratio>=1.5)) return 3;
+  if(ratio>=2.0) return 2;
+  if(ratio>=1.5 || delta>=0.3) return 1;
+  return 0;
+}
+// Urine-output staging REQUIRES a duration. KDIGO 2012 stages urine output by rate
+// AND time: stage 1 at <0.5 mL/kg/h for 6-12 h, stage 2 at <0.5 mL/kg/h for >=12 h,
+// stage 3 at <0.3 mL/kg/h for >=24 h or anuria for >=12 h. Earlier versions of this
+// tool read a single instantaneous mL/kg/h value and assigned stage 3 (with its 0.95
+// floor and its "treat the injury directly" banner) from it. One hour of oliguria in
+// a hypovolemic post-operative child is not stage-3 AKI, and it produced the largest
+// number the tool could display. The duration field is now required before the
+// urine-output limb stages anything at all; with it, stage 2 also becomes reachable,
+// which closes the gap this file previously disclosed but did not fix.
+function uoStage(uo, hours){
+  const u=num(uo);
+  if(u===null) return { stage:null, needsDuration:false, why:"" };
+  if(u>=0.5) return { stage:0, needsDuration:false, why:"at or above 0.5 mL/kg/h; no urine-output criterion met" };
+  const h=num(hours);
+  if(h===null || h<0) return { stage:null, needsDuration:true, why:"" };
+  if(u<=0 && h>=12) return { stage:3, needsDuration:false, why:"anuria for 12 h or longer" };
+  if(u<0.3 && h>=24) return { stage:3, needsDuration:false, why:"under 0.3 mL/kg/h for 24 h or longer" };
+  if(h>=12) return { stage:2, needsDuration:false, why:"under 0.5 mL/kg/h for 12 h or longer" };
+  if(h>=6) return { stage:1, needsDuration:false, why:"under 0.5 mL/kg/h for 6 to 12 h" };
+  return { stage:0, needsDuration:false, why:"oliguric for under 6 h, short of the stage-1 duration" };
+}
+// Current KDIGO stage from the HIGHER of creatinine or urine-output criterion.
+// REMAINING DISCLOSED GAP, surfaced in the UI: creatinine ratio only. KDIGO 2012 also
+// stages a child at 3 on an eGFR fall to <35 mL/min/1.73 m2 (patients <18 y) or on
+// initiation of kidney replacement therapy; neither is implemented, so a child on CRRT
+// with a modest creatinine ratio is UNDER-staged here. The creatinine time windows
+// (0.3 mg/dL rise within 48 h, 1.5x rise within 7 days) are also not enforced, so the
+// user must apply them. The urine-output windows now ARE enforced, via uoStage above.
+function kdigoStage(curr, base, uo, uoHours){
+  const scr = kdigoFromCr(curr, base);            // 0..3 or null
+  const u = uoStage(uo, uoHours);
+  if(scr===null && u.stage===null) return null;
+  return Math.max(scr||0, u.stage||0);
+}
+// AGE GATE. The disclaimer names an age exclusion (neonates are covered by no renal
+// angina index validation) and nothing enforced it: there was no age field anywhere in
+// the tool, so a neonate silently returned a score and a probability. Age is now
+// required before either tab computes anything. The bounds trace to the enrollment ages
+// the disclaimer already states (AWARE enrolled from 3 months; later validation cohorts
+// from 1 month). This tool asserts no validated upper age bound of its own; the 18-year
+// note exists only because the pediatric KDIGO stage-3 eGFR criterion discussed here is
+// written for patients under 18. The 30-day and 91-day cut-points are the author's
+// operational reading of those enrollment floors, not published thresholds.
+const AGE_UNIT_DAYS = { days: 1, months: 30.4375, years: 365.25 };
+function ageInDays(v, unit){
+  const n = num(v);
+  if(n===null || n<0) return null;
+  const mult = AGE_UNIT_DAYS[unit] || 1;
+  return n*mult;
+}
+function ageCheck(v, unit){
+  const d = ageInDays(v, unit);
+  if(d===null) return { block:true, level:"missing", days:null,
+    msg:"Enter the patient's age before reading any score. Nothing else on this page can tell a neonate from a teenager, and the renal angina index has no neonatal validation to fall back on." };
+  if(d < 30) return { block:true, level:"neonate", days:d,
+    msg:"This patient is a neonate (under 1 month). No renal angina index derivation or validation cohort covers neonates, so no score, probability or KDIGO floor is shown. Stage the child by KDIGO directly and use a neonatal pathway." };
+  if(d < 91) return { block:false, level:"infant", days:d,
+    msg:"Between 1 and 3 months. This is below the 3-month enrollment floor of AWARE; only later validation cohorts enrolled from 1 month, so the score is shown but rests on thinner evidence than it does above 3 months." };
+  if(d >= 6574) return { block:false, level:"adult", days:d,
+    msg:"18 years or older. The index was derived in children, and the pediatric KDIGO stage-3 eGFR criterion discussed on this page is written for patients under 18. The score is shown, but neither is aimed at this patient." };
+  return { block:false, level:"ok", days:d, msg:"" };
+}
+function oddsToProb(o){ return o/(1+o); }
+function probToOdds(p){ return p/(1-p); }
+
+/* ============================================================
+   SMALL UI PIECES
+   ============================================================ */
+function ToggleBtn({on, onClick, children, title}){
+  return <button type="button" className="toggle-btn sans" aria-pressed={on} onClick={onClick} title={title||""}>{children}</button>;
+}
+function NumField({label, note, value, onChange, placeholder, step, min, suffix}){
+  const id = useId();
+  return (
+    <div>
+      <label className="field" htmlFor={id}>{label}{note?<span className="field-note"> · {note}</span>:null}</label>
+      <input id={id} type="number" inputMode="decimal" value={value} step={step||"any"} min={min}
+             placeholder={placeholder||""} onChange={e=>onChange(e.target.value)} />
+      {suffix}
+    </div>
+  );
+}
+function AgeField({value, unit, onValue, onUnit}){
+  const id = useId();
+  return (
+    <div>
+      <label className="field" htmlFor={id}>Patient age <span className="field-note">· required; nothing is scored without it</span></label>
+      <div style={{display:"flex", gap:"8px", alignItems:"stretch"}}>
+        <input id={id} type="number" inputMode="decimal" min="0" step="any" value={value}
+               placeholder="e.g. 4" onChange={e=>onValue(e.target.value)} style={{flex:"1 1 auto", minWidth:0}} />
+        <select aria-label="Age unit" value={unit} onChange={e=>onUnit(e.target.value)} style={{flex:"0 0 auto", width:"auto"}}>
+          <option value="days">days</option>
+          <option value="months">months</option>
+          <option value="years">years</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+function AgeBanner({ag}){
+  if(ag.level==="ok") return null;
+  const head = ag.level==="missing" ? "Age required." : (ag.block ? "Out of range." : "Age note.");
+  return <div className={"floorbanner"+(ag.block?" fb-severe":"")} style={{marginTop:"var(--sm)"}}><b>{head}</b> {ag.msg}</div>;
+}
+
+/* ============================================================
+   TAB 1: RENAL ANGINA INDEX
+   ============================================================ */
+function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
+  const [transplant,setTransplant]=useState(false);
+  const [mv,setMv]=useState(false);
+  const [vaso,setVaso]=useState(false);
+  const [manualRisk,setManualRisk]=useState(null); // override
+  const [fo,setFo]=useState("");
+  const [curr,setCurr]=useState("");
+  const [base,setBase]=useState("");
+  const [manualInjury,setManualInjury]=useState(null);
+
+  const ag = ageCheck(age, ageUnit);
+
+  // derived risk
+  const derivedRisk = (mv && vaso) ? 5 : (transplant ? 3 : 1);
+  const risk = manualRisk!==null ? manualRisk : derivedRisk;
+
+  const crInj = injuryFromCr(curr, base);
+  const foInj = injuryFromFO(fo);
+  let autoInjury=null, driver=null;
+  if(crInj || foInj){
+    const cs = crInj?crInj.score:0, fs = foInj?foInj.score:0;
+    autoInjury = Math.max(cs, fs);
+    if(cs>fs) driver="creatinine"; else if(fs>cs) driver="fluid overload"; else driver="both equal";
+  }
+  const injury = manualInjury!==null ? manualInjury : autoInjury;
+
+  // Age gate: an out-of-range or missing age suppresses the score entirely.
+  const rai = (injury!==null && !ag.block) ? risk*injury : null;
+  const positive = rai!==null && rai>=8;
+
+  useEffect(()=>{ setRaiShared(rai); }, [rai]);
+
+  const tier = rai===null ? "muted" : (positive ? "neg" : "pos");
+  const stripeClass = rai===null ? "bg-caution" : (positive ? "bg-neg" : "bg-pos");
+
+  // trajectory
+  const [traj,setTraj]=useState([]);
+  const [tDay,setTDay]=useState("");
+  const [tRai,setTRai]=useState("");
+  function addEntry(useCurrent){
+    const d=num(tDay);
+    const r=useCurrent ? rai : num(tRai);
+    if(d===null||r===null) return;
+    const next=[...traj.filter(e=>e.day!==d), {day:d, rai:r}].sort((a,b)=>a.day-b.day);
+    setTraj(next); setTDay(""); setTRai("");
+  }
+  function rm(day){ setTraj(traj.filter(e=>e.day!==day)); }
+
+  return (
+    <div>
+      <div className="grid2">
+        {/* Risk */}
+        <section className="card">
+          <div className="card-label">Step 1 · Risk stratum</div>
+          <h3>Patient risk context</h3>
+          <p className="hint">Toggle the clinical facts; the stratum (1 / 3 / 5) is derived. Very-high risk requires invasive mechanical ventilation <b>and</b> a vasoactive agent at any point in the first 12 h of ICU admission, and the two need <b>not</b> be simultaneous. The index is conventionally computed <b>at</b> the 12-hour mark, not at the moment of admission.</p>
+          <AgeField value={age} unit={ageUnit} onValue={setAge} onUnit={setAgeUnit} />
+          <AgeBanner ag={ag} />
+          <div style={{height:"var(--md)"}}></div>
+          <div className="seg" role="group" aria-label="Risk factors">
+            <ToggleBtn on={transplant} onClick={()=>{setTransplant(!transplant);setManualRisk(null);}}>Solid-organ / BMT transplant</ToggleBtn>
+            <ToggleBtn on={mv} onClick={()=>{setMv(!mv);setManualRisk(null);}}>Invasive mechanical ventilation</ToggleBtn>
+            <ToggleBtn on={vaso} onClick={()=>{setVaso(!vaso);setManualRisk(null);}}>Vasoactive / inotrope</ToggleBtn>
+          </div>
+          <div className="inline-out">Derived risk stratum: <b className="tnum">{derivedRisk}</b> {derivedRisk===5?"(very high)":derivedRisk===3?"(high)":"(moderate, any PICU admission)"}</div>
+          <details>
+            <summary>Override stratum manually</summary>
+            <div className="seg" style={{marginTop:"8px"}}>
+              {[1,3,5].map(v=>(
+                <ToggleBtn key={v} on={risk===v && manualRisk!==null} onClick={()=>setManualRisk(manualRisk===v?null:v)}>{v}</ToggleBtn>
+              ))}
+            </div>
+          </details>
+        </section>
+
+        {/* Injury */}
+        <section className="card">
+          <div className="card-label">Step 2 · Injury stratum</div>
+          <h3>Early injury signal</h3>
+          <p className="hint">Score is the <b>worse</b> of estimated creatinine-clearance decline (derived from the creatinine ratio, since height cancels out) or % fluid overload. Any field may be left blank.</p>
+          <div className="row cols2">
+            <NumField label="Current SCr" note="mg/dL" value={curr} onChange={setCurr} placeholder="e.g. 0.8" />
+            <NumField label="Baseline SCr" note="mg/dL" value={base} onChange={setBase} placeholder="e.g. 0.4" />
+          </div>
+          <div style={{marginTop:"var(--md)"}}>
+            <NumField label="Fluid overload" note="%" value={fo} onChange={setFo} placeholder="e.g. 7" />
+          </div>
+          <div className="inline-out">
+            {crInj? <span>Cr {crInj.ratio.toFixed(2)}× → eCrCl {crInj.drop>=0?"↓":"↑"}{Math.abs(crInj.drop*100).toFixed(0)}% → injury <b className="tnum">{crInj.score}</b>. </span> : <span>eCrCl change: <b>–</b>. </span>}
+            {foInj? <span>FO {foInj.fo}% → injury <b className="tnum">{foInj.score}</b>. </span> : <span>FO: <b>–</b>. </span>}
+          </div>
+          <div className="inline-out">Injury stratum: <b className="tnum">{autoInjury!==null?autoInjury:"–"}</b> {driver?(<span className="pill drive">driven by {driver}</span>):null}</div>
+          <details>
+            <summary>Set injury manually (Cr / FO unavailable)</summary>
+            <div className="seg" style={{marginTop:"8px"}}>
+              {[1,2,4,8].map(v=>(
+                <ToggleBtn key={v} on={injury===v && manualInjury!==null} onClick={()=>setManualInjury(manualInjury===v?null:v)}>{v}</ToggleBtn>
+              ))}
+            </div>
+          </details>
+        </section>
+      </div>
+
+      {/* RESULT */}
+      <div className="result" style={{marginTop:"var(--md)"}}>
+        <div className={"stripe "+stripeClass}></div>
+        <div className="result-body">
+          <div className="card-label">Renal Angina Index = Risk × Injury</div>
+          <div className={"bignum tnum "+(tier==="muted"?"":("tier-"+tier))}>
+            {rai!==null? rai : "–"}<small> / 40 {rai!==null?`(${risk} × ${injury})`:""}</small>
+          </div>
+          {rai!==null ? (
+            <div className={"verdict tier-"+tier}>
+              <span className={"dot "+stripeClass}></span>
+              {positive ? "Renal angina POSITIVE (RAI ≥ 8)" : "Renal angina negative (RAI < 8)"}
+            </div>
+          ) : (
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute" : "Out of range for this index") : "Enter an injury stratum to compute"}</div>
+          )}
+          <p className="interp">
+            {positive ? (
+              <span>In the AWARE multinational cohort (n = 1,590), RAI ≥ 8 carried a <b>42.3% rate of Day-3 severe AKI</b> (KDIGO 2–3) vs 18.9% when RAI &lt; 8; relative risk <b>2.23 (95% CI 1.87–2.66)</b>; adjusted OR <b>3.21 (95% CI 2.20–4.67)</b>. Pooled diagnostic accuracy AUC ≈ <b>0.88 (95% CI 0.85–0.91)</b> across 22 studies / 14,001 participants. Consider urinary NGAL confirmation, fluid and nephrotoxin review, and closer monitoring. <span className="cite">Basu 2018 (PMID 30035208); Meena 2022 (PMID 34977984).</span></span>
+            ) : rai!==null ? (
+              <span>Two negative predictive values apply here and they are far apart, so read both before de-escalating anything. Against the <b>KDIGO 2–3 endpoint this tool uses everywhere else</b>, the AWARE cohort puts NPV at <b>81.1%</b>: 18.9% of renal-angina-negative children still had Day-3 severe AKI, about 247 of the 1,304 who scored under 8. Against the stricter derivation endpoint, a <b>&gt;200% rise in serum creatinine</b>, closer to KDIGO stage 3, the reported NPV is <b>92–99%</b> in cohorts whose Day-3 AKI rates ran 13–21%. NPV is prevalence-dependent, so a unit with a higher baseline rate will see a lower value than either. The index is built to rule out, and it does that well against the stricter endpoint; on the endpoint shown elsewhere on this page a negative index still leaves roughly one child in five who goes on to severe AKI, which is not a residual risk to de-escalate biomarker testing on without saying so out loud. <span className="cite">92–99% from Basu 2014 (PMID 24048379) and Meena 2022 (PMID 34977984). The 81.1% and the 247/1,304 are arithmetic on the rates and denominators reported in Basu 2018 (PMID 30035208), not figures printed there.</span></span>
+            ) : (
+              <span>The RAI is computed in the first 12 h of ICU admission (Day 0) to predict persistent severe AKI on Day 3. Provide creatinine or fluid-overload data, or set the injury stratum manually. Baseline creatinine should be the lowest value in the prior 3–12 months where one exists, and how it is chosen materially moves the injury stratum (PMID 41498791 / 41636795).</span>
+            )}
+          </p>
+          {positive ? <p className="interp"><span className="cite">Severe AKI in this cohort was associated with higher renal-replacement-therapy use (10.9% vs 1.5%) and mortality (7.6% vs 4.3%). Basu 2018 (PMID 30035208).</span></p> : null}
+          {rai!==null ? <p className="interp" style={{fontSize:"12px",color:"var(--ink-quiet)"}}>The pooled AUC of 0.88 is a <b>PICU-admission</b> figure and does not transport everywhere. External validations since: AUC 0.90 in a 278-child tertiary PICU cohort (PMID 41519694), but AUROC only 0.756 for AKI development on ECMO and 0.615 for RRT (DREAMS, PMID 41168142), and 0.70–0.80 for RAI as a mortality discriminator (PMID 41460156). Expect degraded discrimination on ECMO and outside the admission window.</p> : null}
+        </div>
+      </div>
+
+      {/* TRAJECTORY */}
+      <section className="card sectiongap">
+        <div className="card-label">Step 3 · RAI trajectory</div>
+        <h3>Track the score across ICU days</h3>
+        <p className="hint">Log the RAI on successive days to watch the trend relative to the renal-angina threshold (8). Session-only; nothing is saved to this device.</p>
+        <div className="floorbanner" style={{marginTop:"var(--sm)"}}><b>Serial RAI is not a validated instrument, and nothing here should be acted on.</b> The index was derived and validated as a single Day-0 measurement predicting Day-3 severe AKI (Basu 2014, PMID 24048379; Basu 2018, PMID 30035208). Neither study analysed a daily series, so no source on this page reports outcomes by RAI trajectory and no citation supports a management decision taken on the slope. Two of the three injury inputs also ratchet: cumulative percent fluid overload and cumulative eCrCl decline measured from a fixed baseline can only move upward, so in any child accumulating fluid the trajectory drifts positive by construction rather than by new injury. The warning above, that discrimination degrades outside the admission window, applies with full force here. Treat this panel as a plot of the numbers you typed.</div>
+        <div className="row cols2">
+          <NumField label="ICU day" value={tDay} onChange={setTDay} placeholder="e.g. 1" step="1" min="0" />
+          <NumField label="RAI score" note="0–40" value={tRai} onChange={setTRai} placeholder="e.g. 6" />
+        </div>
+        <div className="seg" style={{marginTop:"var(--md)"}}>
+          <button type="button" className="toggle-btn sans" onClick={()=>addEntry(false)}>Add entry</button>
+          <button type="button" className="toggle-btn sans" onClick={()=>addEntry(true)} disabled={rai===null} title={rai===null?"Compute an RAI above first":""}>Add current RAI ({rai!==null?rai:"–"})</button>
+        </div>
+
+        {traj.length>0 ? (
+          <div style={{marginTop:"var(--lg)"}}>
+            <TrajChart data={traj} />
+            <div style={{marginTop:"var(--md)"}}>
+              {traj.map(e=>(
+                <div className="traj-item" key={e.day}>
+                  <span style={{color:"var(--ink-quiet)"}}>Day</span> <b>{e.day}</b>
+                  <span style={{color:"var(--ink-quiet)",marginLeft:"10px"}}>RAI</span>
+                  <b className={e.rai>=8?"tier-neg":"tier-pos"}>{e.rai}</b>
+                  <span className="pill" style={{marginLeft:"8px"}}>{e.rai>=8?"positive":"negative"}</span>
+                  <button className="rm" onClick={()=>rm(e.day)}>remove</button>
+                </div>
+              ))}
+            </div>
+            <TrajInterp data={traj} />
+          </div>
+        ) : <p className="help" style={{marginTop:"var(--md)"}}>Add at least two day entries to render a trajectory and interpretation.</p>}
+      </section>
+    </div>
+  );
+}
+
+function TrajChart({data}){
+  const W=600, H=260, padL=42, padR=18, padT=18, padB=34;
+  const days = data.map(d=>d.day);
+  const minD=Math.min(...days), maxD=Math.max(...days);
+  const spanD = (maxD-minD)||1;
+  const yMax=40;
+  const x = d => padL + ( (d-minD)/spanD )*(W-padL-padR);
+  const y = v => padT + (1 - v/yMax)*(H-padT-padB);
+  const pts = data.map(d=>`${x(d.day)},${y(d.rai)}`).join(" ");
+  const yTicks=[0,8,16,24,32,40];
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="RAI trajectory over ICU days" style={{display:"block"}}>
+      {/* gridlines */}
+      {yTicks.map(t=>(
+        <g key={t}>
+          <line x1={padL} x2={W-padR} y1={y(t)} y2={y(t)} stroke="var(--hair)" strokeWidth="0.5" />
+          <text x={padL-8} y={y(t)+4} textAnchor="end" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-quiet)">{t}</text>
+        </g>
+      ))}
+      {/* threshold */}
+      <line x1={padL} x2={W-padR} y1={y(8)} y2={y(8)} stroke="var(--neg)" strokeWidth="1" strokeDasharray="5 4" />
+      <text x={W-padR} y={y(8)-6} textAnchor="end" fontFamily="Inter, sans-serif" fontSize="10.5" fontWeight="600" fill="var(--neg)">Renal-angina threshold (8)</text>
+      {/* line */}
+      {data.length>1 ? <polyline points={pts} fill="none" stroke="var(--slate)" strokeWidth="2" /> : null}
+      {/* points */}
+      {data.map(d=>(
+        <g key={d.day}>
+          <circle cx={x(d.day)} cy={y(d.rai)} r="4.5" fill={d.rai>=8?"var(--neg)":"var(--pos)"} stroke="var(--card)" strokeWidth="1.5" />
+          <text x={x(d.day)} y={H-padB+18} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fill="var(--ink-quiet)">D{d.day}</text>
+        </g>
+      ))}
+      <text x={(padL+W-padR)/2} y={H-4} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="10.5" fill="var(--ink-quiet)">ICU day</text>
+    </svg>
+  );
+}
+
+function TrajInterp({data}){
+  if(data.length<2) return null;
+  const first=data[0], last=data[data.length-1];
+  const delta = last.rai - data[data.length-2].rai;
+  const overall = last.rai - first.rai;
+  let crossed=null;
+  for(let i=1;i<data.length;i++){
+    const prev=data[i-1].rai, cur=data[i].rai;
+    if(prev<8 && cur>=8) crossed="up";
+    else if(prev>=8 && cur<8) crossed="down";
+  }
+  let tier="pos", msg="";
+  // Descriptive only. No management directive is issued from a serial RAI, because no
+  // source in this file derives or validates one. See the card banner above.
+  if(last.rai>=8){
+    tier = overall>0 ? "neg":"caution";
+    if(crossed==="up") msg=`The logged values cross the renal-angina threshold (RAI now ${last.rai}). What a crossing means after Day 0 is not established: the index was validated as a single Day-0 measurement.`;
+    else if(overall>0) msg=`The logged values sit at or above 8 and are rising (Day ${first.day}: ${first.rai} to Day ${last.day}: ${last.rai}). Part of any rise may be the ratchet in cumulative fluid overload and cumulative eCrCl decline rather than new injury, and no source here reports outcomes by trajectory.`;
+    else msg=`The logged values sit at or above 8 without rising (RAI ${last.rai}).`;
+  } else {
+    tier="pos";
+    if(crossed==="down") msg=`The logged values fall back below the threshold (RAI now ${last.rai}). The two ratcheting injury inputs cannot produce a fall, so this reflects a lower risk stratum, a lower creatinine, or a manually entered value.`;
+    else msg=`The logged values have stayed below 8 (Day ${first.day}: ${first.rai} to Day ${last.day}: ${last.rai}). The negative predictive value that would support reading this as low risk was measured on the Day-0 index, not on a series.`;
+  }
+  const arrow = delta>0?"▲":delta<0?"▼":"–";
+  return (
+    <div className="caveat" style={{borderLeftColor:`var(--${tier})`}}>
+      <b className={"tier-"+tier}>Logged trend {arrow} (last step {delta>0?"+":""}{delta}).</b> {msg}
+      <div style={{marginTop:"6px",fontSize:"11.5px",color:"var(--ink-quiet)"}}>The RAI ≥ 8 threshold and its negative predictive value come from Day-0 measurements (Basu 2018, PMID 30035208; Basu 2014, PMID 24048379). Neither source reports a serial-RAI analysis, so no citation on this page supports reading the slope.</div>
+    </div>
+  );
+}
+
+/* ============================================================
+   TAB 2: COMPREHENSIVE BAYESIAN-STYLE PREDICTOR
+   ============================================================ */
+function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
+  const [s,setS]=useState({
+    raiMode: "auto",               // auto | pos | neg | ignore
+    ngal: "unknown",               // elevated | normal | unknown
+    fo:"", curr:"", base:"", uo:"", uoHrs:"",
+    cystatin:"none",               // elevated | normal | none
+    transplant:false, mv:false, vaso:false,
+    pretestKey:"general", customP:""
+  });
+  const up = (k,v)=> setS(p=>({...p,[k]:v}));
+  const ag = ageCheck(age, ageUnit);
+
+  const pre = PRETESTS.find(p=>p.key===s.pretestKey);
+  let p0 = pre.p;
+  if(s.pretestKey==="custom"){ const cp=num(s.customP); p0 = cp!==null ? cp/100 : null; }
+
+  // ---- Auto-derive the RAI from THIS tab's own inputs (validated instrument) ----
+  const transplant = s.transplant;
+  const raiRisk = (s.mv && s.vaso) ? 5 : (transplant ? 3 : 1);
+  const crInj = injuryFromCr(s.curr, s.base), foInj = injuryFromFO(s.fo);
+  let raiInjury=null, raiDriver=null;
+  if(crInj || foInj){
+    const cs=crInj?crInj.score:0, fs=foInj?foInj.score:0;
+    raiInjury=Math.max(cs,fs); raiDriver = cs>fs?"creatinine" : fs>cs?"fluid overload" : "Cr=FO";
+  }
+  // Age gate: an out-of-range or missing age suppresses every computed output.
+  const autoRAI = (raiInjury!==null && !ag.block) ? raiRisk*raiInjury : null;
+  let raiStatus=null, raiSource="";
+  if(s.raiMode==="pos"){ raiStatus="pos"; raiSource="forced positive"; }
+  else if(s.raiMode==="neg"){ raiStatus="neg"; raiSource="forced negative"; }
+  else if(s.raiMode==="ignore"){ raiStatus=null; raiSource="excluded"; }
+  else if(autoRAI!==null){ raiStatus = autoRAI>=8?"pos":"neg"; raiSource=`auto = ${autoRAI} (risk ${raiRisk} × injury ${raiInjury})`; }
+
+  // ---- KDIGO current stage ----
+  const uoRes = uoStage(s.uo, s.uoHrs);
+  const kStage = ag.block ? null : kdigoStage(s.curr, s.base, s.uo, s.uoHrs);
+
+  // ---- Risk model (monotonic): POSITIVE findings raise from the pretest; current
+  //      injury sets a FLOOR. The estimate never falls below the population baseline;
+  //      worsening inputs can only raise it. Negative findings become reassurance notes
+  //      (rule-out / de-escalation lives on Tab 1's renal-angina NPV). ----
+  const steps=[]; const reassuring=[];
+  let posterior=null, postLow=null, postHigh=null, floorApplied=null;
+  if(p0!==null && p0>0 && p0<1 && !ag.block){
+    let odds=probToOdds(p0), oddsLo=odds, oddsHi=odds;
+    steps.push({ lab:"Pretest probability", sub:pre.cite, lr:null, tier:null, prob:p0 });
+    // The RAI and urinary NGAL are NOT conditionally independent. When both are
+    // positive, apply the DIRECTLY POOLED joint LR from Meena 2022 rather than the
+    // product of the two single-test LRs, which with this file's own constants
+    // overstates the joint LR+ 2.4-fold (3.74 x 4.37 = 16.34 against 6.91).
+    const jointRaiNgal = (raiStatus==="pos" && s.ngal==="elevated");
+    if(jointRaiNgal){
+      odds*=RAI_NGAL_LR.pos; oddsLo*=RAI_NGAL_LR.posLow; oddsHi*=RAI_NGAL_LR.posHigh;
+      steps.push({ lab:"Renal angina ≥ 8 + urinary NGAL elevated", sub:`${raiSource} · directly pooled joint estimate, sens 0.76 / spec 0.89 · ${RAI_NGAL_LR.cite}; one combined LR, not the product of the two single-test LRs`, lr:RAI_NGAL_LR.pos, tier:"validated", prob:oddsToProb(odds) });
+    } else {
+      if(raiStatus==="pos"){
+        odds*=RAI_LR.pos; oddsLo*=RAI_LR.posLow; oddsHi*=RAI_LR.posHigh;
+        steps.push({ lab:"Renal Angina Index ≥ 8 (positive)", sub:`${raiSource} · pooled accuracy ${RAI_LR.cite}`, lr:RAI_LR.pos, tier:"validated", prob:oddsToProb(odds) });
+      }
+      if(s.ngal==="elevated"){
+        odds*=NGAL_LR.pos; oddsLo*=NGAL_LR.posLow; oddsHi*=NGAL_LR.posHigh;
+        steps.push({ lab:"Urinary NGAL elevated", sub:`general pediatric pooled sens 0.83 / spec 0.81 · ${NGAL_LR.cite}`, lr:NGAL_LR.pos, tier:"validated", prob:oddsToProb(odds) });
+      }
+    }
+    if(raiStatus==="neg"){
+      reassuring.push(`Renal angina negative (${raiSource}). Negative predictive value is high against the >200% creatinine-rise endpoint of the derivation cohorts and about 81% against the KDIGO 2–3 endpoint this tab uses. Read both on Tab 1 before de-escalating anything.`);
+    }
+    if(s.ngal==="normal"){ reassuring.push("Urinary NGAL normal: reassuring (Zou 2023, PMID 37051429; LR− ≈ 0.21). It does not rule out evolving AKI in a critically ill child."); }
+    if(s.cystatin==="elevated"){
+      odds*=CYSTATIN_LR.pos; oddsLo*=CYSTATIN_LR.posLow; oddsHi*=CYSTATIN_LR.posHigh;
+      steps.push({ lab:"Serum cystatin C elevated", sub:`${CYSTATIN_LR.note} · ${CYSTATIN_LR.cite}`, lr:CYSTATIN_LR.pos, tier:"validated", prob:oddsToProb(odds) });
+    } else if(s.cystatin==="normal"){ reassuring.push("Serum cystatin C normal: reassuring functional marker (Alsabri 2026, PMID 41636794; LR− ≈ 0.27)."); }
+    posterior=oddsToProb(odds); postLow=oddsToProb(oddsLo); postHigh=oddsToProb(oddsHi);
+
+    // ---- Current-injury floor: the estimate cannot read below established injury ----
+    const foN=num(s.fo);
+    let floorP=0, floorTitle="", floorDetail="", definitional=false;
+    if(kStage===3){ floorP=0.95; definitional=true; floorTitle="Meets KDIGO stage 3 on the values entered."; floorDetail="The estimate now reflects injury that is present rather than injury that is predicted. Check what fired it before acting: the urine-output limb requires the rate AND the hours you entered, but the creatinine limb still assumes you have applied the KDIGO time windows yourself, and its absolute 4.0 mg/dL criterion is honoured here only alongside a creatinine ratio of at least 1.5. The floor VALUE of 95% is author-chosen: what is definitional is that severe AKI is present, not that the probability is 0.95."; }
+    else if(kStage===2){ floorP=0.90; definitional=true; floorTitle="Meets KDIGO stage 2 on the values entered."; floorDetail="Stage 2 is severe AKI by definition, so the estimate reflects established injury rather than a prediction. The urine-output limb reaching stage 2 depends on the duration you entered; the creatinine time windows remain yours to apply. The floor VALUE of 90% is author-chosen; no published source supplies it."; }
+    else if(kStage===1){ floorP=Math.min(0.80, p0*2); floorTitle="Established stage-1 AKI: progression-risk floor."; floorDetail="This child already meets KDIGO stage 1 (creatinine 1.5–1.9× baseline, +0.3 mg/dL, or oliguria). The estimate is floored at ≈2× the baseline rate as a clinical-judgment progression floor, not a validated rate; the renal angina index's statistical estimate for such patients is often lower."; }
+    if(foN!==null){
+      if(foN>15 && floorP < Math.min(0.80,p0*2)){ floorP=Math.min(0.80,p0*2); if(!floorTitle){ floorTitle="Severe fluid overload (>15%): risk floor."; floorDetail="The >15% cut-point is the top band of the RAI INJURY scale (Basu 2014, PMID 24048379), not an outcomes threshold: Selewski 2023 tested only 5% and 10%, and the pediatric ADQI consensus recommends moving away from absolute accumulation thresholds toward timing and trajectory (PMID 37934274). The ≈2× baseline floor is clinical judgment."; } }
+      else if(foN>10 && floorP < Math.min(0.80,p0*1.5)){ floorP=Math.min(0.80,p0*1.5); if(!floorTitle){ floorTitle="Fluid overload 10–15%: risk floor."; floorDetail="Fluid overload ≥10% is associated with higher mortality and fewer ICU/ventilator-free days (Selewski 2023); floored at ≈1.5× baseline (clinical judgment)."; } }
+    }
+    if(floorP > posterior){
+      floorApplied={ floorP, definitional, title:floorTitle, detail:floorDetail };
+      posterior=floorP; postLow=Math.max(postLow, floorP); postHigh=Math.max(postHigh, definitional?0.97:floorP);
+      steps.push({ lab: definitional?"Floor: established severe AKI":"Floor: established early injury", sub: floorTitle, lr:null, tier:"definitional", prob:posterior, floor:true });
+    }
+  }
+
+  // ---- Context flags (NOT in the numeric chain) ----
+  const flags=[];
+  if(s.raiMode==="auto" && autoRAI===null) flags.push({t:"RAI incomplete", d:"Enter a current + baseline creatinine or a % fluid overload (and toggle ventilation/vasoactive) so the renal angina index can compute and drive the estimate.", c:"Basu 2018 (PMID 30035208)", tier:"caution"});
+  if((s.mv && !s.vaso) || (!s.mv && s.vaso)) flags.push({t:"Single organ-support factor", d:"The RAI very-high-risk stratum (5) requires invasive mechanical ventilation AND a vasoactive agent, at any point in the first 12 h and not necessarily at the same time. One alone does not reach stratum 5; the stratum falls back to 3 if the child is a transplant recipient, otherwise to 1.", c:"Basu 2014 (PMID 24048379)", tier:"caution"});
+  const uoN=num(s.uo);
+  if(uoRes.needsDuration) flags.push({t:`Oliguria with no duration entered (UO ${uoN} mL/kg/h)`, d:"KDIGO stages urine output by rate AND time, so a single instantaneous value stages nothing. Until you enter how many hours the child has held this rate, the urine-output limb contributes no stage and no floor to the estimate. One hour of oliguria in a hypovolemic post-operative child is not stage-3 AKI.", c:"KDIGO 2012 urine-output criteria; the 12-hour limb also underpins the AWARE severe-AKI definition (PMID 27959707)", tier:"caution"});
+  else if(uoN!==null && uoN<0.5 && uoRes.stage!==null) flags.push({t:`Oliguria (UO ${uoN} mL/kg/h for ${num(s.uoHrs)} h)`, d:`On rate and duration together the urine-output limb reads KDIGO stage ${uoRes.stage} (${uoRes.why}). Oliguric AKI carries mortality comparable to creatinine-defined AKI (28-day mortality 7.8% vs 6.7%).`, c:"Kaddourah 2019 (PMID 30676490)", tier: uoRes.stage>=2 ? "neg" : "caution"});
+
+  const band = (p)=> p<0.10?"pos": p<=0.30?"caution":"neg";
+  const tier = (typeof posterior==="number") ? band(posterior) : "muted";
+
+  return (
+    <div>
+      <div className="caveat" style={{marginTop:"var(--md)",borderLeftColor:"var(--slate)"}}>
+        <b>How this works.</b> The estimate starts at the population baseline and is <b>monotonic</b>: worsening inputs only raise it, never lower it. <b>Positive</b> findings multiply it up: a renal angina index ≥ 8 (auto-computed from organ support + creatinine + fluid overload), elevated urinary NGAL, or elevated cystatin C. <b>Current injury sets a floor</b>: KDIGO stage 2–3 (established severe AKI) floors at 90–95%; stage 1, oliguria, or fluid overload floor above baseline. <b>Negative findings do not lower the number below baseline</b>; they appear as reassurance notes, and formal rule-out / de-escalation uses the renal angina index's negative predictive value on Tab 1. Blank fields contribute nothing; each factor is badged by evidence tier. Chaining likelihood ratios assumes the tests are <b>conditionally independent</b>, which they are not: where a directly pooled joint estimate exists, as it does for renal angina plus urinary NGAL, this tool applies that single combined LR instead of the product.
+      </div>
+
+      <div className="grid2">
+        <section className="card">
+          <div className="card-label">Inputs · baseline</div>
+          <h3>Pretest severe-AKI rate</h3>
+          <p className="hint">The starting probability before any patient findings. Pick the closest population, or enter your unit's observed Day-3 severe-AKI rate.</p>
+          <AgeField value={age} unit={ageUnit} onValue={setAge} onUnit={setAgeUnit} />
+          <AgeBanner ag={ag} />
+          <label className="field" htmlFor="pretest-select" style={{marginTop:"var(--md)"}}>Baseline (pretest) rate</label>
+          <select id="pretest-select" value={s.pretestKey} onChange={e=>up("pretestKey",e.target.value)}>
+            {PRETESTS.map(pt=> <option key={pt.key} value={pt.key}>{pt.label}{pt.p!==null?` · ${(pt.p*100).toFixed(1)}%`:""}</option>)}
+          </select>
+          {s.pretestKey==="custom"? <div style={{marginTop:"8px"}}><NumField label="Custom rate" note="%" value={s.customP} onChange={v=>up("customP",v)} placeholder="e.g. 18" /></div> : null}
+          <div className="help">{pre.cite}</div>
+        </section>
+
+        <section className="card">
+          <div className="card-label">Inputs · clinical factors</div>
+          <h3>These drive the estimate</h3>
+          <p className="hint">Renal angina is auto-computed from organ support + creatinine + fluid overload. Any field may be blank.</p>
+          <div className="field" id="lbl-organ-support">Organ support & risk context <span className="field-note">· ventilation + vasoactive → RAI risk 5; transplant → risk 3</span></div>
+          <div className="seg" role="group" aria-labelledby="lbl-organ-support">
+            <ToggleBtn on={s.mv} onClick={()=>up("mv",!s.mv)}>Invasive ventilation</ToggleBtn>
+            <ToggleBtn on={s.vaso} onClick={()=>up("vaso",!s.vaso)}>Vasoactive / inotrope</ToggleBtn>
+            <ToggleBtn on={s.transplant} onClick={()=>up("transplant",!s.transplant)}>Solid-organ / BMT transplant</ToggleBtn>
+          </div>
+          <div className="row cols2" style={{marginTop:"var(--md)"}}>
+            <NumField label="Current SCr" note="mg/dL" value={s.curr} onChange={v=>up("curr",v)} placeholder="optional" />
+            <NumField label="Baseline SCr" note="mg/dL" value={s.base} onChange={v=>up("base",v)} placeholder="optional" />
+          </div>
+          <div className="row cols2" style={{marginTop:"var(--md)"}}>
+            <NumField label="Fluid overload" note="%" value={s.fo} onChange={v=>up("fo",v)} placeholder="optional" />
+            <NumField label="Urine output" note="mL/kg/h, averaged over the hours below; you supply the weight normalization" value={s.uo} onChange={v=>up("uo",v)} placeholder="optional" />
+          </div>
+          <div className="row cols2" style={{marginTop:"var(--md)"}}>
+            <NumField label="Hours held at that urine output" note="h · required before urine output stages anything" value={s.uoHrs} onChange={v=>up("uoHrs",v)} placeholder="e.g. 14" min="0" />
+          </div>
+          <div className="inline-out" style={{marginTop:"var(--md)"}}>
+            Computed RAI: <b className="tnum">{autoRAI!==null?autoRAI:"–"}</b>{autoRAI!==null?` (risk ${raiRisk} × injury ${raiInjury}${raiDriver?`, ${raiDriver}`:""})`:", needs Cr or %FO"}
+            {raiStatus?<span className="pill drive" style={{marginLeft:"8px"}}>{raiStatus==="pos"?"renal angina +":"renal angina −"}{s.raiMode!=="auto"?` · ${s.raiMode}`:""}</span>:null}
+          </div>
+          <details>
+            <summary>Override renal angina input</summary>
+            <div className="seg" style={{marginTop:"8px"}} role="group" aria-label="RAI mode">
+              <ToggleBtn on={s.raiMode==="auto"} onClick={()=>up("raiMode","auto")}>Auto</ToggleBtn>
+              <ToggleBtn on={s.raiMode==="pos"} onClick={()=>up("raiMode","pos")}>Force +</ToggleBtn>
+              <ToggleBtn on={s.raiMode==="neg"} onClick={()=>up("raiMode","neg")}>Force −</ToggleBtn>
+              <ToggleBtn on={s.raiMode==="ignore"} onClick={()=>up("raiMode","ignore")}>Ignore</ToggleBtn>
+            </div>
+            {raiShared!==null?<div className="help">Tab 1 RAI for reference: {raiShared}.</div>:null}
+          </details>
+
+          <h3 style={{marginTop:"var(--lg)"}}>Biomarkers</h3>
+          <div className="field" id="lbl-ngal">Urinary NGAL <span className="field-note">· ≥ 150 ng/mL in the published RAI-triggered pathway (PMID 41426025); confirm against your local assay · validated LR</span></div>
+          <div className="seg" role="group" aria-labelledby="lbl-ngal">
+            <ToggleBtn on={s.ngal==="elevated"} onClick={()=>up("ngal","elevated")}>elevated</ToggleBtn>
+            <ToggleBtn on={s.ngal==="normal"} onClick={()=>up("ngal","normal")}>normal</ToggleBtn>
+            <ToggleBtn on={s.ngal==="unknown"} onClick={()=>up("ngal","unknown")}>unknown</ToggleBtn>
+          </div>
+          <div className="field" id="lbl-cystatin" style={{marginTop:"var(--md)"}}>Serum cystatin C <span className="field-note">· validated LR (pooled sens 78.2% / spec 79.5%, AUC 0.854)</span></div>
+          <div className="seg" role="group" aria-labelledby="lbl-cystatin">
+            <ToggleBtn on={s.cystatin==="elevated"} onClick={()=>up("cystatin", s.cystatin==="elevated"?"none":"elevated")}>elevated</ToggleBtn>
+            <ToggleBtn on={s.cystatin==="normal"} onClick={()=>up("cystatin", s.cystatin==="normal"?"none":"normal")}>normal</ToggleBtn>
+          </div>
+          {kStage!==null ? (
+            <div className="inline-out" style={{marginTop:"var(--md)"}}>
+              Current KDIGO stage: <b className="tnum">{kStage===0?"none":kStage}</b>.
+              <div style={{fontFamily:"'Source Serif 4',serif",fontSize:"11.5px",color:"var(--ink-quiet)",marginTop:"4px",maxWidth:"56ch"}}>
+                Creatinine-ratio and urine-output only, per KDIGO 2012. Urine output is staged on rate <b>and</b> duration, so it contributes nothing until you enter both; with both, it can reach stage 2. Two pediatric stage-3 criteria are <b>not</b> implemented, eGFR falling below 35 mL/min/1.73 m² in a child under 18 and initiation of kidney replacement therapy, so a child on CRRT may be under-staged. Creatinine time windows (0.3 mg/dL rise within 48 h; 1.5× within 7 days) are assumed to have been applied by you. The absolute stage-3 criterion of 4.0 mg/dL is honoured here only alongside a creatinine ratio of at least 1.5, an author-chosen gate: this tool records no weight and no age-specific reference range, and an ungated absolute threshold stages a child with advanced chronic kidney disease at 3 by arithmetic alone. Such a child still reaches stage 1 on the +0.3 mg/dL limb, which is the correct read.
+              </div>
+            </div>
+          ): null}
+        </section>
+      </div>
+
+      {/* POSTERIOR */}
+      <div className="result" style={{marginTop:"var(--md)"}}>
+        <div className={"stripe "+(tier==="muted"?"bg-caution":"bg-"+tier)}></div>
+        <div className="result-body">
+          <div className="card-label">Estimated probability of Day-3 severe AKI (KDIGO 2–3)</div>
+          {typeof posterior==="number" ? (
+            <div>
+              <div className={"bignum tnum tier-"+tier}>{(posterior*100).toFixed(0)}<small>%</small></div>
+              <div className="inline-out">Approximate range {(postLow*100).toFixed(0)}–{(postHigh*100).toFixed(0)}%{floorApplied?" · injury floor applied":" · from each factor's reported CI"}.</div>
+              <div className={"verdict tier-"+tier} style={{marginTop:"8px"}}>
+                <span className={"dot bg-"+tier}></span>
+                {tier==="pos"?"Lower than the average PICU admission":tier==="caution"?"Intermediate predicted risk":"High predicted risk"}
+              </div>
+              {floorApplied? <div className={"floorbanner"+(floorApplied.definitional?" fb-severe":"")}><b>{floorApplied.title}</b> {floorApplied.detail}</div> : null}
+              <p className="interp" style={{fontSize:"12.5px",color:"var(--ink-quiet)"}}>Interpretive bands (low &lt;10%, intermediate 10–30%, high &gt;30%) are heuristics anchored to the AWARE severe-AKI incidence (11.6%) and the RAI-positive rate (~42%); they are not validated decision cutoffs.</p>
+            </div>
+          ) : (
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool.") : "Set a valid pretest rate to compute a probability."}</div>
+          )}
+        </div>
+      </div>
+
+      {/* LADDER */}
+      {typeof posterior==="number" && steps.length>0 ? (
+        <section className="card">
+          <div className="card-label">Evidence ladder · how the probability moves</div>
+          <h3>Pretest → posttest</h3>
+          {steps.map((st,i)=>(
+            <div className="ladder-row" key={i}>
+              <div>
+                <div className="lab">{st.lab}{st.tier?<span className={"tbadge tb-"+st.tier}>{st.tier}</span>:null}</div>
+                <div className="sub">{st.sub}</div>
+              </div>
+              <div style={{textAlign:"right"}}>
+                {st.lr!==null? <div className="lr">× {st.lr.toFixed(2)}</div>:<div className="lr">{st.floor?"floor":"prior"}</div>}
+                <div className="ladder-prob tnum">{(st.prob*100).toFixed(0)}%</div>
+              </div>
+              <div className="ladder-bar"><span style={{width:`${Math.min(100,st.prob*100)}%`}}></span></div>
+            </div>
+          ))}
+          {steps.length===1 ? <p className="help" style={{marginTop:"var(--md)"}}>No factors set yet: the estimate equals the pretest. Enter creatinine / fluid overload (computes the RAI), urine output (KDIGO floor), or a biomarker above.</p> : null}
+        </section>
+      ): null}
+
+      {/* REASSURING */}
+      {reassuring.length>0 ? (
+        <section className="card">
+          <div className="card-label">Reassuring findings · noted; do not lower the estimate below baseline</div>
+          {reassuring.map((r,i)=>(
+            <div className="flag" key={i}>
+              <span className="fdot bg-pos"></span>
+              <div>{r}</div>
+            </div>
+          ))}
+        </section>
+      ): null}
+
+      {/* CONTEXT FLAGS */}
+      {flags.length>0 ? (
+        <section className="card">
+          <div className="card-label">Context · interpreted, not multiplied into the number</div>
+          {flags.map((f,i)=>(
+            <div className="flag" key={i}>
+              <span className={"fdot bg-"+f.tier}></span>
+              <div><b className="sans">{f.t}.</b> {f.d} <span className="cite">{f.c}.</span></div>
+            </div>
+          ))}
+        </section>
+      ): null}
+
+      {/* CAVEATS */}
+      <div className="caveat">
+        <b>Read the number with these caveats:</b>
+        <ul>
+          <li><b>Not a validated single model.</b> This pools likelihood ratios from separate studies in heterogeneous populations; it is a Bayesian-style aggregator for teaching and reasoning, not a locked, externally validated predictor. The specific assumption it makes is <b>conditional independence</b> between tests, and that assumption is measurably false for the pair it most often sees: multiplying this tool's own RAI and urinary-NGAL likelihood ratios (3.74 × 4.37) gives a joint LR+ of ≈16.3, against ≈6.9 for the directly pooled estimate in ref 4, a 2.4-fold overstatement. Both the 16.3 and the 2.4 are arithmetic on the two constants this page displays, reproducible from the evidence ladder above; no source reports either. An earlier version of this page quoted ≈33 and 4.8-fold, which came from a cardiac-surgery uNGAL:creatinine LR+ of 8.86 that the tool no longer uses, and so could not be reproduced from anything on screen. Where a pooled joint estimate exists, this tool uses it.</li>
+          <li><b>Monotonic and floor-at-baseline by design.</b> Only positive findings multiply the estimate up; the number never falls below the population baseline, so worsening inputs can only raise it. This deliberately favors not under-calling injury: a normal screening test does not rule out evolving AKI in a critically ill child (use Tab 1's renal-angina NPV for de-escalation).</li>
+          <li><b>Every floor value is author-chosen, including the definitional ones.</b> The KDIGO stage-1 / fluid-overload floor (≈1.5–2× the baseline rate) is a disclosed judgment value, not a validated progression rate; for these patients the renal angina index's statistical estimate is often lower. What is <i>definitional</i> about the stage 2–3 floors is that severe AKI is already present; the numbers 90% and 95% themselves come from no source and were chosen by the author. The &gt;15% fluid-overload band is likewise an RAI injury-stratum boundary (ref 1), not an outcomes threshold; only the ≥10% band is an outcomes finding (ref 6). Pediatric ADQI recommends moving away from absolute accumulation thresholds toward timing and trajectory (ref 20).</li>
+          <li><b>Where the biomarker numbers come from.</b> The urinary-NGAL LR is the <i>general</i> pediatric estimate (53 studies, 5,049 children; sens 0.83 / spec 0.81; ref 10), chosen because this tool's pretest is a general PICU population. The pediatric cardiac-surgery meta (ref 9) gives a much stronger LR+ of 8.86, but it measures the uNGAL-to-<b>creatinine ratio</b> rather than raw uNGAL, is peri-cardiopulmonary-bypass, and reports CIs (sens 91.2–91.3%) too tight to be credible; a prior version of this tool applied it to a general-PICU pretest with hand-widened bounds that had no source. Meena 2023's urinary-NGAL AUROC of 0.82 is an <b>all-pediatric-settings pooled</b> figure (92 studies, every setting), not a general-PICU subgroup (ref 8). The cystatin C LR is now a directly reported pooled sensitivity/specificity pair (ref 11) rather than the binormal approximation used previously, but that source found accuracy significantly <b>lower in PICU than in ward cohorts</b>, so expect the low end here, and cystatin C still correlates with creatinine (minor double-count).</li>
+          <li><b>Cell-cycle-arrest markers are no longer unweighted for want of evidence.</b> An earlier version of this tool said factors such as nephrotoxin burden and NephroCheck lacked a defensible pediatric weight. For urinary TIMP-2/IGFBP7 that is now out of date: a 2025 pediatric meta-analysis (15 studies, 1,338 children, 337 AKI cases) reports sens 0.84 / spec 0.85 and AUROC 0.91, with a critically-ill/sepsis subgroup AUROC of 0.88 and a NephroCheck-platform subgroup AUROC of 0.79, with an LR+ of ≈5.6 and LR− of ≈0.19 (ref 12). It is not implemented as an input here, and its funnel-plot asymmetry suggests publication bias, but the evidence gap has closed.</li>
+          <li><b>Calibration and currency.</b> The pretest anchors to a multinational cohort enrolled in 2014, so enter your local rate when known, and note that the two supplied pretests measure different endpoints from each other and from the Day-3 outcome the likelihood ratios predict. Staging implements <b>KDIGO 2012</b>: the 2026 KDIGO AKI/AKD guideline, the first revision since 2012, adding structural/damage biomarkers alongside functional criteria and carrying pediatric and neonatal sections, went to public review in March 2026 with comment extended to 11 May 2026, and is <b>not finally published as of 2026-08-31</b>. The proposed staging language was not readable this run and is therefore not asserted here.</li>
+          <li><b>The natural next step is not in this tool.</b> In the published RAI → uNGAL pathway, a furosemide stress test in RAI+/uNGAL+ children predicted new or persistent severe AKI with AUROC 0.89; non-responders had 89% vs 37% severe AKI and 43% vs 8% RRT two days later (ref 13). The pediatric ADQI risk-stratification framework (ref 19) covers the same ground this tool does and is worth reading alongside it.</li>
+        </ul>
+      </div>
+
+      {/* REFERENCES */}
+      <section className="card sectiongap">
+        <div className="card-label">References</div>
+        <h3>Evidence base</h3>
+        <p className="hint">Identifiers below were <b>last checked</b> against PubMed on <b>2026-08-31</b>, when author, title, journal, year and DOI matched. That is a record of one check on one date, not a live status. This page runs no verification when it loads, it cannot know whether a paper has since been corrected, retracted or reassigned, and retraction status was not re-checked. Follow the links and confirm for yourself before citing or acting on any of it.</p>
+        {REFERENCES.map((r,i)=>(
+          <div className="ref" key={i}>
+            <b>{i+1}.</b> {r.a} <i>{r.t}</i> <span className="src">{r.j}</span>{" "}
+            PMID <a href={`https://pubmed.ncbi.nlm.nih.gov/${r.pmid}/`} target="_blank" rel="noopener">{r.pmid}</a>{" · "}
+            <a href={`https://doi.org/${r.doi}`} target="_blank" rel="noopener">doi:{r.doi}</a>
+          </div>
+        ))}
+        <p className="help" style={{marginTop:"var(--md)"}}>Likelihood ratios: RAI alone from Meena 2022 pooled sensitivity 0.86 / specificity 0.77 → LR+ 3.74, LR− 0.18 (ref 4); RAI <i>plus</i> urinary NGAL from the directly pooled combination in that same meta-analysis, sensitivity 0.76 / specificity 0.89 → single joint LR+ 6.91 (ref 4); urinary NGAL alone from Zou 2023 pooled sensitivity 0.83 / specificity 0.81 → LR+ 4.37, LR− 0.21 (ref 10); serum cystatin C from Alsabri 2026 pooled sensitivity 78.2% / specificity 79.5% → LR+ 3.82, LR− 0.27 (ref 11). Confidence bounds shown for each are the <b>corner combinations</b> of the reported sensitivity and specificity CIs, not modelled bivariate LR intervals. Sequential RAI → urinary-NGAL strategy follows Menon 2016 (ref 5), whose AUC gain from 0.80 to 0.97 rests on 15 Day-3 AKI events in 156 patients with a pre-NGAL CI spanning 0.58–1.00; read it as fragile. The KDIGO stage 2–3 floor applies the KDIGO 2012 creatinine/urine-output definition (refs 3, 7): when met, severe AKI is established rather than predicted, though the floor percentages themselves are author-chosen.</p>
+      </section>
+    </div>
+  );
+}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+function App(){
+  const [tab,setTab]=useState("rai");
+  const [raiShared,setRaiShared]=useState(null);
+  // Age lives in the shell so the gate is the same on both tabs and is entered once.
+  const [age,setAge]=useState("");
+  const [ageUnit,setAgeUnit]=useState("years");
+  const [theme,setTheme]=useState(()=> (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark":"light");
+  useEffect(()=>{ document.documentElement.setAttribute("data-theme", theme); },[theme]);
+
+  return (
+    <div>
+      <header>
+        <div className="header-inner">
+          <div>
+            <div className="overline">Pediatric critical care · nephrology · decision support</div>
+            <div className="sig-rule"></div>
+            <div className="title sans">Pediatric AKI Risk Tool</div>
+            <div className="subtitle">Renal angina index and a Bayesian-style, multi-trial severe-AKI predictor for critically ill children. Every likelihood ratio traces to a cited source; the values that do not, the injury floors and the interpretive bands, are labelled author-chosen where they appear.</div>
+          </div>
+          <button className="theme-btn" onClick={()=>setTheme(theme==="dark"?"light":"dark")} aria-label="Toggle color theme">
+            {theme==="dark"?"☼ Light":"☾ Dark"}
+          </button>
+        </div>
+        <div className="disclaimer">
+          <div className="bar"></div>
+          <div><strong>Educational use only. Not for clinical decision-making.</strong> A teaching and reasoning aid for bedside reference; not FDA-cleared, not externally validated for deployment, and not to be used to direct the care of an individual patient. <strong>Defer to clinical judgment and local protocols.</strong> The renal angina index was derived and validated in children from roughly 1–3 months of age upward (AWARE enrolled from 3 months, later validation cohorts from 1 month); <strong>neonates are excluded and are covered by no RAI validation</strong>, and an age under 1 month now blocks the score rather than being left to the reader. <strong>Do not enter protected health information.</strong> All values stay in this browser session and are never saved or transmitted.</div>
+        </div>
+        <div className="tabs" role="tablist">
+          <button className="tab" role="tab" aria-selected={tab==="rai"} onClick={()=>setTab("rai")}>Renal Angina Index<small>Score · interpret · trajectory</small></button>
+          <button className="tab" role="tab" aria-selected={tab==="comp"} onClick={()=>setTab("comp")}>Comprehensive predictor<small>Bayesian-style · multi-trial</small></button>
+        </div>
+      </header>
+
+      <main className="wrap">
+        {tab==="rai"
+          ? <RaiTab raiShared={raiShared} setRaiShared={setRaiShared} age={age} setAge={setAge} ageUnit={ageUnit} setAgeUnit={setAgeUnit} />
+          : <CompTab raiShared={raiShared} age={age} setAge={setAge} ageUnit={ageUnit} setAgeUnit={setAgeUnit} />}
+      </main>
+
+      <footer>
+        <div className="footer-inner">
+          Neel Shah, MD · Pediatric Critical Care Medicine · v2.0 · Updated 2026-08-31 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
+          <div style={{marginTop:"6px"}}>Evidence: renal angina index, AWARE, and pediatric biomarker meta-analyses. Identifiers were last checked against PubMed on 2026-08-31; this page performs no check of its own when it loads. Staging implements KDIGO 2012; the 2026 KDIGO AKI/AKD revision was in public review through 11 May 2026 and is not finally published as of this date. Session-only; no data leaves this device.</div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+window.__akiBooted = true;
+const bootEl = document.getElementById("boot");
+if(bootEl) bootEl.remove();
+</script>
+</body>
+</html>

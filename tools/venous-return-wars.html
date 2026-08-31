@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Venous Return Wars, worked from the ground up</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.2.8/index.css" integrity="sha384-ZTIcl2CmY0wyM9ANOhomBco7rEUIlWztf6lGcLKCocKUrIgGCsfisuZyE+hadW8K" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4@5.3.0/index.css" integrity="sha384-BcqMxSEWy7T7vR491w5jVpKFG0b3TfgKXXPd5v6bFEHwlI6bbjKOM8VQL0FY+jmp" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.8/index.css" integrity="sha384-bNykZ+bGB4FclZiYvLmgUfE8clWCvZlLOJ3v63czgIEgamTe0EhkaLXIbptJkvmW" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+:root{
+  --paper:#FAF6EE; --tint:#E7E2D6; --tint-deep:#D5CFBF;
+  --ink:#1A1A1A; --ink-muted:#5A5550; --ink-faint:#6E6862;
+  --slate:#4A5468; --slate-deep:#2F3744; --slate-pale:#C5CCD9;
+  --rule:rgba(26,26,26,.16); --hair:rgba(26,26,26,.10);
+  --pos:#2E7D5B; --caution:#B88A2C; --neg:#B23A3A;
+  --sans:'Inter Variable',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue','Liberation Sans',sans-serif;
+  --serif:'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono Variable','JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
+  --maxw:1140px; --col:minmax(0,1fr);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:1.55;
+  font-optical-sizing:auto; -webkit-font-smoothing:antialiased;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--lg)}
+h1,h2,h3,h4,.ov,.num,button,label,input,table,.mono{font-family:var(--sans)}
+h1{font-size:clamp(38px,5.4vw,62px); line-height:1.06; font-weight:650; letter-spacing:-.022em; margin:0 0 var(--md); text-wrap:balance; max-width:22ch}
+h2{font-size:clamp(26px,3.1vw,36px); line-height:1.14; font-weight:640; letter-spacing:-.016em; margin:0 0 var(--sm); text-wrap:balance}
+h3{font-size:21px; line-height:1.25; font-weight:620; letter-spacing:-.008em; margin:var(--lg) 0 var(--sm)}
+h4{font-size:16px; font-weight:640; letter-spacing:-.003em; margin:0 0 var(--xs)}
+p{margin:0 0 var(--md); max-width:70ch; text-wrap:pretty}
+.lede{font-size:20px; line-height:1.5; color:var(--ink); max-width:62ch}
+.ov{font-size:11.5px; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
+.mono{font-family:var(--mono); font-size:12.5px; letter-spacing:-.01em}
+a{color:var(--slate); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{color:var(--slate-deep)}
+:focus-visible{outline:2px solid var(--slate); outline-offset:2px; border-radius:2px}
+hr{border:0; border-top:1px solid var(--rule); margin:var(--xxl) 0}
+
+/* ---------- header, top-left lead ---------- */
+header{padding:var(--xxl) 0 var(--xl); border-bottom:1px solid var(--rule)}
+.chips{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--xl)}
+.chip{background:var(--paper); padding:12px 14px}
+.chip .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px}
+.chip .v{font-family:var(--sans); font-size:14px; font-weight:560; line-height:1.25}
+
+/* ---------- sections ---------- */
+section{padding:var(--xxl) 0; border-bottom:1px solid var(--hair)}
+section:last-of-type{border-bottom:0}
+.split{display:grid; grid-template-columns:96px var(--col); gap:var(--lg); align-items:start}
+.numeral{font-family:var(--serif); font-size:82px; line-height:.8; font-weight:400; color:var(--slate-pale); letter-spacing:-.03em; font-variant-numeric:normal; user-select:none}
+.numeral small{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
+
+/* ---------- cards ---------- */
+.grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:var(--md)}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--md)}
+.card{border-top:1.5px solid var(--ink); padding-top:12px}
+.card .ov{margin-bottom:6px}
+.card p{font-size:16px; margin-bottom:0}
+.facts{display:grid; gap:0; border-top:1px solid var(--rule)}
+.fact{display:grid; grid-template-columns:44px var(--col); gap:var(--md); padding:var(--md) 0; border-bottom:1px solid var(--hair); align-items:start}
+.fact .n{font-family:var(--mono); font-size:13px; color:var(--slate); padding-top:3px}
+.fact p{margin:0; font-size:16.5px}
+.fact b{font-weight:600; font-family:var(--sans); font-size:16px}
+
+blockquote{margin:var(--xl) 0; padding:0 0 0 var(--lg); border-left:2px solid var(--slate); max-width:60ch}
+blockquote p{font-size:21px; line-height:1.38; font-style:italic; margin-bottom:var(--sm)}
+blockquote cite{font-family:var(--sans); font-style:normal; font-size:13px; color:var(--ink-muted)}
+
+.callout{background:var(--tint); padding:var(--lg); margin:var(--lg) 0}
+.callout p:last-child{margin-bottom:0}
+.eq{font-family:var(--mono); font-size:16px; background:var(--tint); padding:12px 16px; display:inline-block; margin:var(--sm) 0 var(--md); letter-spacing:-.01em}
+.eq.big{font-size:19px; display:block; text-align:center; padding:18px}
+
+/* ---------- rig ---------- */
+.rig{border:1px solid var(--rule); background:#fff; margin:var(--lg) 0}
+.rig-head{padding:14px var(--md); border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:baseline; gap:var(--md); flex-wrap:wrap}
+.rig-head .t{font-family:var(--sans); font-weight:620; font-size:15px}
+.rig-head .s{font-family:var(--mono); font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.07em}
+.rig-body{display:grid; grid-template-columns:290px var(--col); gap:0}
+.rig-ctrl{padding:var(--md); border-right:1px solid var(--rule); background:var(--paper)}
+.rig-view{padding:var(--md); min-width:0}
+.rig-foot{padding:12px var(--md); border-top:1px solid var(--rule); font-size:14px; color:var(--ink-muted); font-family:var(--serif)}
+.rig-foot b{color:var(--ink); font-family:var(--sans); font-size:13.5px; font-weight:600}
+
+.ctl{margin-bottom:var(--md)}
+.ctl label{display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:560; margin-bottom:6px; gap:8px}
+.ctl label .val{font-family:var(--mono); font-size:12.5px; color:var(--slate); font-weight:400}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:28px; background:transparent; cursor:pointer; margin:0; display:block}
+input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--tint-deep); border-radius:2px}
+input[type=range]::-moz-range-track{height:3px; background:var(--tint-deep); border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--slate); margin-top:-9.5px; border:2px solid #fff; transition:background 140ms var(--ease-out)}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--slate); border:2px solid #fff}
+input[type=range]:hover::-webkit-slider-thumb{background:var(--slate-deep)}
+input[type=range]:active::-webkit-slider-thumb{background:var(--slate-deep)}
+input[type=range]:disabled{cursor:not-allowed; opacity:.45}
+input[type=range]:disabled::-webkit-slider-thumb{background:var(--ink-faint)}
+
+.toggles{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:var(--md)}
+.tg{font-family:var(--sans); font-size:12.5px; font-weight:560; padding:9px 8px; min-height:44px; background:var(--paper); border:1px solid var(--rule); color:var(--ink); cursor:pointer; transition:background 140ms var(--ease-out), border-color 140ms var(--ease-out); border-radius:2px; line-height:1.2}
+.tg:hover{background:var(--tint)}
+.tg:active{background:var(--tint-deep)}
+.tg[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:#F5F0E6}
+.tg:disabled{opacity:.45; cursor:not-allowed}
+.reset{width:100%; min-height:44px; font-family:var(--sans); font-size:12.5px; font-weight:560; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:2px; transition:background 140ms var(--ease-out)}
+.reset:hover{background:var(--tint); color:var(--ink)}
+
+.readout{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--md)}
+.readout div{background:var(--paper); padding:9px 10px}
+.readout .k{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block}
+.readout .v{font-family:var(--mono); font-size:17px; font-weight:500; color:var(--ink); letter-spacing:-.02em}
+.readout .v small{font-size:10.5px; color:var(--ink-muted); font-weight:400}
+.pin{background:var(--tint) !important}
+
+svg{display:block; width:100%; height:auto; overflow:visible}
+svg text{font-family:var(--mono); font-size:11px; fill:var(--ink-muted)}
+svg text.lbl{font-family:var(--sans); font-size:11.5px; fill:var(--ink); font-weight:560}
+
+/* ---------- cases ---------- */
+.case{border-top:1px solid var(--rule)}
+.case:last-child{border-bottom:1px solid var(--rule)}
+.case-btn{width:100%; text-align:left; background:transparent; border:0; padding:var(--md) 0; cursor:pointer; display:grid; grid-template-columns:34px var(--col) 26px; gap:var(--md); align-items:baseline; font-family:var(--sans); min-height:44px}
+.case-btn:hover .case-t{color:var(--slate-deep)}
+.case-btn .case-n{font-family:var(--mono); font-size:12px; color:var(--slate)}
+.case-t{font-size:17px; font-weight:600; line-height:1.3; color:var(--ink)}
+.case-sub{font-size:14px; color:var(--ink-muted); font-family:var(--serif); font-weight:400; margin-top:3px; display:block}
+.case-mk{font-family:var(--mono); font-size:15px; color:var(--slate); justify-self:end; transition:transform 180ms var(--ease-out)}
+.case[open] .case-mk{transform:rotate(45deg)}
+.case-body{padding:0 0 var(--lg) 50px; max-width:78ch}
+.case-body h4{margin-top:var(--md)}
+.case-body h4:first-child{margin-top:0}
+.case-body p{font-size:16px}
+.tagline{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; padding:3px 7px; margin-bottom:6px}
+.t-reflex{background:var(--tint-deep); color:var(--ink)}
+.t-real{background:var(--slate); color:#F5F0E6}
+.t-do{background:#DDE9E2; color:#215A41}
+
+table{border-collapse:collapse; width:100%; font-size:14.5px; font-family:var(--sans); margin:var(--md) 0}
+caption{text-align:left; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-muted); padding-bottom:8px}
+th,td{text-align:left; padding:10px 12px 10px 0; border-bottom:1px solid var(--hair); vertical-align:top}
+th{font-weight:620; font-size:12.5px; letter-spacing:.02em; border-bottom:1px solid var(--rule)}
+td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding-right:18px}
+
+ol.steps{padding-left:0; list-style:none; counter-reset:s; max-width:74ch}
+ol.steps li{counter-increment:s; padding:12px 0 12px 42px; border-bottom:1px solid var(--hair); position:relative; font-size:16.5px}
+ol.steps li::before{content:counter(s); position:absolute; left:0; top:12px; font-family:var(--mono); font-size:12px; color:var(--slate)}
+
+.srconly{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-muted); font-size:14px}
+footer ol{padding-left:20px; max-width:82ch}
+footer li{margin-bottom:10px; font-size:14px; line-height:1.45}
+footer .mono{color:var(--ink-faint)}
+
+@media (max-width:900px){
+  .rig-body{grid-template-columns:1fr}
+  .rig-ctrl{border-right:0; border-bottom:1px solid var(--rule)}
+  /* keep figure labels above the readable floor: scroll rather than shrink */
+  .rig-view{overflow-x:auto; overscroll-behavior-x:contain}
+  .rig-view svg{min-width:560px}
+  #r3svg{min-width:620px}
+}
+@media (max-width:768px){
+  body{font-size:16px}
+  .wrap{padding:0 var(--md)}
+  .split{grid-template-columns:1fr; gap:var(--sm)}
+  .numeral{font-size:54px}
+  .numeral small{display:inline; margin-left:12px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .chips{grid-template-columns:1fr 1fr}
+  .case-body{padding-left:0}
+  .case-btn{grid-template-columns:26px var(--col) 22px}
+  input,select,textarea{font-size:16px}
+  input[type=range]{height:44px}
+  input[type=range]::-webkit-slider-thumb{width:22px; height:22px; margin-top:-9.5px}
+  input[type=range]::-moz-range-thumb{width:22px; height:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:1ms !important; animation-duration:1ms !important}
+  html{scroll-behavior:auto}
+}
+@media print{ .rig-ctrl{display:none} body{font-size:11pt} }
+</style>
+</head>
+<body>
+
+<header>
+ <div class="wrap">
+  <p class="ov">Thirty-five papers, one seventy-year argument</p>
+  <h1>The venous return wars, taken apart slowly</h1>
+  <p class="lede">Guyton drew the most useful diagram in cardiovascular physiology, then attached the wrong verbs to it.</p>
+  <div class="chips">
+    <div class="chip"><span class="k">Sources</span><span class="v">Peer-reviewed literature only, 1955 to 2026</span></div>
+    <div class="chip"><span class="k">Primary papers</span><span class="v">Guyton 1955 &times;2, Levy 1979, Rothe 1983 and 1993, Brengelmann 2003</span></div>
+    <div class="chip"><span class="k">Simulations</span><span class="v">Reproduce Brengelmann 2019 Tables 1 and 2</span></div>
+    <div class="chip"><span class="k">Read as</span><span class="v">Plain language first, then PICU</span></div>
+  </div>
+ </div>
+</header>
+
+<main>
+
+<!-- ============ PART 0 ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">0<small>Ground floor</small></div>
+   <div>
+    <h2>Five things that are just true</h2>
+    <p>Levy noticed the problem in 1979. Rothe explained what the container was actually doing. Brengelmann closed it with conservation of energy. What follows is that whole argument built from five plain facts, with three working rigs and seven PICU cases at the end.</p>
+    <p>Everything that follows is an argument about which of these five facts causes which. Nobody disputes the facts themselves. If you hold all five in your head at once, most of the seventy-year fight dissolves on its own.</p>
+
+    <div class="facts">
+      <div class="fact"><span class="n">01</span><p><b>The loop is closed, and the blood volume in it is fixed.</b> Over the next thirty seconds, no blood is created or destroyed. Whatever piles up in one place came out of another place.</p></div>
+      <div class="fact"><span class="n">02</span><p><b>Blood vessels are stretchy bags, not rigid pipes.</b> A stretchy bag holds more when the pressure inside it is higher. Veins are floppy and hold a lot. Arteries are stiff and hold a little.</p></div>
+      <div class="fact"><span class="n">03</span><p><b>There is one engine.</b> The heart is the only thing continuously adding energy to the blood. (Breathing muscles and leg muscles add some, and that matters later.)</p></div>
+      <div class="fact"><span class="n">04</span><p><b>Pushing fluid through a narrow place costs pressure.</b> The size of the drop is flow times resistance. The drop is the <i>price</i> of the flow, not the reason for it.</p></div>
+      <div class="fact"><span class="n">05</span><p><b>In a steady state, what leaves the heart per minute enters it per minute.</b> Cardiac output and venous return are one number measured in two places.</p></div>
+    </div>
+
+    <h3>The one analogy to keep</h3>
+    <p>You are riding a bicycle at 25 miles an hour and there is wind in your face. Two ways to describe this:</p>
+    <p style="margin-left:0"><span class="eq">"There is wind in my face, therefore I am going fast."</span><br><span class="eq">"I am going fast, therefore there is wind in my face."</span></p>
+    <p>The second one is right. The wind is the price of the speed. Your legs are the engine. If you doubled the wind by riding into a gale, you would not speed up.</p>
+    <p>Every pressure difference in the circulation is that wind. It is real, it is measurable, it is proportional to the flow, and it is not the engine. Hold that thought through part II, because it is the entire argument.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ RIG 1 ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">A<small>Rig one</small></div>
+   <div>
+    <h2>Two tanks and a pump</h2>
+    <p>Before any physiology vocabulary, build the whole circulation out of two buckets. A narrow stiff bucket (the arteries) and a wide floppy bucket (the veins), joined by a narrow pipe (the resistance vessels). A pump lifts water from the floppy bucket into the stiff one. Water leaks back through the narrow pipe.</p>
+    <p>The total amount of water never changes. That is fact 01, and it is the only trick in the entire argument.</p>
+
+    <div class="rig" id="rig1">
+      <div class="rig-head"><span class="t">Rig 1. Fixed water, two buckets, one pump</span><span class="s">Turn the pump. Watch the floppy bucket.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="ctl"><label for="r1f">Pump speed <span class="val" id="r1fv">5.0 L/min</span></label>
+            <input type="range" id="r1f" min="0" max="9" step="0.1" value="5"></div>
+          <div class="ctl"><label for="r1v">Total water <span class="val" id="r1vv">2000 mL</span></label>
+            <input type="range" id="r1v" min="600" max="3200" step="25" value="2000"></div>
+          <div class="ctl"><label for="r1r">Pipe narrowness <span class="val" id="r1rv">20.9 units</span></label>
+            <input type="range" id="r1r" min="8" max="34" step="0.1" value="20.9"></div>
+          <button class="reset" id="r1reset" type="button">Reset rig 1</button>
+          <div class="readout">
+            <div><span class="k">Stiff bucket</span><span class="v" id="r1pa">104<small> mmHg</small></span></div>
+            <div><span class="k">Floppy bucket</span><span class="v" id="r1pv">2.7<small> mmHg</small></span></div>
+            <div class="pin"><span class="k">Total water</span><span class="v" id="r1tot">2000<small> mL</small></span></div>
+            <div><span class="k">Zero-flow level</span><span class="v" id="r1pms">11.4<small> mmHg</small></span></div>
+          </div>
+        </div>
+        <div class="rig-view"><svg id="r1svg" viewBox="0 0 560 300" role="img" aria-labelledby="r1title"><title id="r1title">Two connected tanks showing water levels shifting from the floppy tank to the stiff tank as pump speed rises, with total water pinned</title></svg></div>
+      </div>
+      <div class="rig-foot"><b>What the rig shows.</b> You never touched the floppy bucket. Its level fell because the pump ran faster and moved water into the stiff one. Set the pump to zero and both levels meet at one number: that is mean systemic pressure. This lumps all the veins into one tank, so the venous reading sits above a real central venous pressure; rig 3 separates them. <b>One caveat the model hides.</b> In a living animal the convergence is not this clean. Recording zero-flow pressures for ten minutes in 14 pigs, van Loon and colleagues found the equilibrium depended on how the arrest was produced and on residual reflexes: pentobarbital equilibrated quickly (mean arterial pressure 47 &plusmn; 3.7 to 16 &plusmn; 2.5 mmHg), while ventricular fibrillation left a persistent retrograde gradient of 5 &plusmn; 2.1 mmHg with central venous pressure above arterial. Their conclusion is that mean circulatory filling pressure is not a stable, universal value (ref 27).</div>
+    </div>
+
+    <p>Two things worth doing before moving on. Set the pump to zero and watch both levels converge; the level they meet at is the pressure the whole system settles to when flow stops. Then hold the pump steady and pull water out; every level falls together. Those are the only two ways to change that zero-flow number, and they will come back as Rothe's central point.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ EPISODE I ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">I<small>Guyton, 1955</small></div>
+   <div>
+    <h2>A new gradient</h2>
+    <p>Guyton faced a genuinely hard problem. The circulation is a closed loop, so every measurement contaminates every other one. Speed the heart up and the vessels change; change the vessels and the heart's filling changes. There is no clean place to stand.</p>
+    <p>His solution was to cut the loop. In the laboratory he took the heart out of the circuit and replaced it with a mechanical pump. Now the vascular system could be characterised on its own: set a flow, read the pressure at the right atrium, repeat.</p>
+    <p>The result was a straight line sloping down. At high flow, right atrial pressure was low. At low flow it was higher. At zero flow everything equilibrated at one number, which he called the mean circulatory filling pressure. That number was not new; the insight was that it told you something real about the vessels themselves, independent of the heart.</p>
+
+    <p class="eq">VR = (MCFP &minus; RAP) / ZVR</p>
+
+    <p>Then came the move that made him famous. He put that line on the same axes as Starling's cardiac function curve. Where they crossed was the only state that both the heart and the vessels would accept. Cardiac output and right atrial pressure were not chosen by either half. They fell out of the intersection.</p>
+
+    <h3>What was genuinely brilliant</h3>
+    <p>Neither the heart nor the circulation independently sets cardiac output. That is true, it was a real advance, and it is still the reason the diagram is taught. Change the volume and the vascular line shifts; change contractility and the cardiac curve shifts; the new crossing point tells you where the patient will land.</p>
+
+    <h3>Where it went wrong, and it went wrong in the same paper</h3>
+    <p>The mathematics described a relationship. The words described a mechanism. Guyton wrote that right atrial pressure was not a primary determinant of cardiac output, that it was settled simultaneously with output by the interaction of heart and vessels. He also wrote, a few pages away, that right atrial pressure was a back pressure opposing venous return, and that mean circulatory filling pressure promoted it.</p>
+
+    <blockquote>
+      <p>It is quite obvious that the greater the right atrial pressure, the greater is the back pressure in the veins preventing the return of blood to the heart.</p>
+      <cite>Guyton, Physiological Reviews 1955</cite>
+    </blockquote>
+
+    <p>That second sentence is what stuck, because it is easy. A pressure difference, a resistance, a flow. It sounds like a garden hose. And a graph naturally reads as a causal story: something on the horizontal axis, something rising on the vertical, a line between them. But an axis is not an arrow. The direction of causation was never in the plot.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ RIG 2 ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">B<small>Rig two</small></div>
+   <div>
+    <h2>The famous diagram, live</h2>
+    <p>Here is Guyton's picture with working knobs. The vascular function line comes from the three-compartment model in his 1955 paper (arterial, peripheral venous, central venous, joined by two resistances). The cardiac function curve is a schematic Starling relationship with a contractility term, drawn to behave sensibly rather than fitted to any particular dataset.</p>
+
+    <div class="rig" id="rig2">
+      <div class="rig-head"><span class="t">Rig 2. Cardiac function against vascular function</span><span class="s">Find the slider for right atrial pressure. There isn't one.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="ctl"><label for="r2v">Blood volume (distending) <span class="val" id="r2vv">2000 mL</span></label>
+            <input type="range" id="r2v" min="900" max="3400" step="25" value="2000"></div>
+          <div class="ctl"><label for="r2t">Venous tone <span class="val" id="r2tv">baseline</span></label>
+            <input type="range" id="r2t" min="-40" max="40" step="1" value="0"></div>
+          <div class="ctl"><label for="r2c">Contractility <span class="val" id="r2cv">normal</span></label>
+            <input type="range" id="r2c" min="25" max="185" step="1" value="100"></div>
+          <div class="ctl"><label for="r2r">Arteriolar resistance <span class="val" id="r2rv">20.0 units</span></label>
+            <input type="range" id="r2r" min="8" max="40" step="0.5" value="20"></div>
+          <button class="reset" id="r2reset" type="button">Reset rig 2</button>
+          <div class="readout">
+            <div><span class="k">Cardiac output</span><span class="v" id="r2co">5.0<small> L/min</small></span></div>
+            <div><span class="k">Right atrial P</span><span class="v" id="r2ra">2.7<small> mmHg</small></span></div>
+            <div><span class="k">Pms (zero flow)</span><span class="v" id="r2ms">11.4<small> mmHg</small></span></div>
+            <div><span class="k">Slope, 1/RVR</span><span class="v" id="r2sl">0.58<small> L/min/mmHg</small></span></div>
+          </div>
+        </div>
+        <div class="rig-view"><svg id="r2svg" viewBox="0 0 560 340" role="img" aria-labelledby="r2title"><title id="r2title">Cardiac function curve and vascular function curve crossing at a single operating point; moving the volume, tone, contractility and resistance sliders moves the crossing</title></svg></div>
+      </div>
+      <div class="rig-foot"><b>What the rig shows.</b> There is no control for right atrial pressure or for cardiac output. You can only set volume, tone, contractility and resistance. Everything else is an output. That was Guyton's actual claim, and it is correct. <b>Calibration.</b> The compliances here (8.75 arterial, 140 peripheral venous, 26.25 central venous, 175 mL/mmHg in total) are appendix parameters, not human measurements, and they run roughly 2.5 times measured human systemic compliance. That is why the rig settles at a Pms near 11 mmHg while human bedside estimates return roughly 19 to 21. Read rigs 1 and 2 as schematic, the same way the cardiac function curve is schematic; the provenance note under the references gives the numbers.</div>
+    </div>
+
+    <p>Try this: drop contractility to 40 and watch right atrial pressure climb while output falls. Nothing pushed back on the veins. The failing ventricle simply stopped clearing what arrived, so blood stacked up on the compliant side, and the crossing moved.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ EPISODE II ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">II<small>Levy, 1979</small></div>
+   <div>
+    <h2>The numerator strikes back</h2>
+    <p>Levy did not attack the equation. He rewrote it, which is worse.</p>
+    <p class="eq big">VR = (Pms &minus; RAP) / RVR &nbsp;&nbsp;&nbsp;becomes&nbsp;&nbsp;&nbsp; Pms &minus; RAP = VR &times; RVR</p>
+    <p>Identical algebra, opposite story. On the left it looks like a gradient producing a flow. On the right it looks like a flow producing a gradient. Nothing in the mathematics chooses between them.</p>
+    <p>But the experiment does choose. In Guyton's preparation, the investigator turned a knob on a mechanical pump and then measured the pressure at the right atrium. Flow was set. Pressure was read. That is the definition of an independent and a dependent variable, and the venous return curve had them backwards.</p>
+
+    <h3>So where do the pressures come from?</h3>
+    <p>Levy's answer is fact 01 and fact 02 together. The heart moves blood from the venous side to the arterial side. As flow rises, arterial pressure rises, and because arteries are stretchy, the arterial compartment now holds <i>more</i> blood. Total volume is fixed. That extra arterial blood had to come out of the veins. Venous pressure falls, and right atrial pressure with it.</p>
+    <p>Right atrial pressure did not limit anything. It fell because the pump moved blood uphill and there was less left to distend the veins.</p>
+
+    <h3>The disappearing gradient</h3>
+    <p>Then Levy pointed at the numbers. Take mean systemic pressure at about 7 mmHg and right atrial pressure at about 2 mmHg. The famous gradient for venous return is 5 mmHg. Now look at what the heart actually generated: 100 mmHg at the aorta against 2 at the right atrium, a difference roughly twenty times larger.</p>
+    <p style="font-size:14px; color:var(--ink-muted)">Read those as the classical animal-preparation figures, not as patient values. The 5 mmHg gradient holds up: Magder puts the difference between mean systemic filling pressure and right atrial pressure at 3 to 6 mmHg (ref 15). A Pms of 7 mmHg does not hold up; human bedside estimates run roughly 19 to 21 mmHg, as part III sets out. The comparison itself is unaffected, since 98 over 5 is about twenty either way. Levy's full text could not be retrieved this run to confirm that these are the numbers he used, so treat them as the figures the argument is conventionally told with rather than as quoted values.</p>
+    <p>If the 5 mmHg gradient were really the engine, then raising right atrial pressure by 5 mmHg would stop the circulation entirely. It does not. Patients live at a central venous pressure of 15. The small number was never the energy source; it was a pressure difference created inside the circulation as blood passed through it.</p>
+
+    <h3>The reply this page cannot source</h3>
+    <p>The story usually told next is that the editors sent Levy's paper to Guyton, that Guyton's response ran alongside it, and that he conceded almost every conceptual point. No such reply is indexed. A PubMed author search returns nine Guyton items for 1979, none of them in <i>Circulation Research</i> and none about venous return, and Brengelmann's 2019 review lists no Guyton comment accompanying Levy 1979. The one 1979 <i>Circulation Research</i> defence of the concept that does exist is by someone else: Alexander, "In defense of 'venous return'" (ref 11). Levy's own full text returned HTTP 403 and has no open-access copy, so an appended editorial note can be neither confirmed nor ruled out. Until somebody produces it, this page does not rely on it.</p>
+    <p>What Guyton did put in print, and what the argument here rests on instead, is in the 1955 review: right atrial pressure is not one of the primary determinants of cardiac output but is itself determined simultaneously along with cardiac output (ref 2). That is the concession the story wants, in his own words, twenty-four years earlier.</p>
+    <p>The point carried by the story is worth making on its own terms. Levy's preparation made flow independent because an investigator was holding the knob. The intact heart holds no such knob. It cannot select an output and impose it. The variables that really are upstream are contractility, heart rate, vascular resistance, vascular capacitance, and blood volume; output, venous return, arterial pressure and venous pressure are all downstream of those, resolved together. Attribute that to the physiology, not to a letter nobody can produce.</p>
+
+    <div class="callout">
+      <p><b style="font-family:var(--sans)">The actual state of play after 1979.</b> Both men were doing legitimate "what if" analyses. Guyton temporarily froze right atrial pressure as independent to draw one curve; Levy temporarily froze flow as independent to draw the other. Neither freezing describes the intact circulation. Pressure does not determine flow alone. Flow does not determine pressure alone. The system resolves them together.</p>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ EPISODE III ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">III<small>Rothe, 1983 and 1993</small></div>
+   <div>
+    <h2>Return of the elastic state</h2>
+    <p>If pressure and flow are both outputs, what are they outputs <i>of</i>? Rothe's answer: the shape of the container.</p>
+
+    <h3>Three words people use interchangeably and should not</h3>
+    <table>
+      <caption>The vocabulary that makes the rest of it possible.</caption>
+      <thead><tr><th scope="col" style="width:22%">Term</th><th scope="col">What it actually means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Capacity</b></td><td>How much blood is in that compartment right now. A number, in mL.</td></tr>
+        <tr><td><b>Compliance</b></td><td>The slope, C = &Delta;V / &Delta;P. How much extra volume it takes to raise the pressure by one unit.</td></tr>
+        <tr><td><b>Capacitance</b></td><td>The whole volume-pressure relationship, including where it starts. Two vessels can share a slope and still be wildly different sizes.</td></tr>
+      </tbody>
+    </table>
+    <p>Rothe's linear description of a vascular segment:</p>
+    <p class="eq big">V = V<sub>u</sub> + C &times; P</p>
+    <p>V<sub>u</sub> is the unstressed or rest volume: how much the container holds when the distending pressure is zero. C times P is the extra volume associated with actually stretching the wall.</p>
+
+    <h3>The flat firehose</h3>
+    <p>Take an empty firehose and start filling it. At first the cross section just goes from squashed oval to round. The circumference never changes, so the wall never stretches, so the pressure barely rises. That filling is the rest volume, and it is a lot: roughly three quarters of the blood in the body sits in vessels at or near this state. Berger and Takala put the stressed fraction at around 25% of total blood volume (ref 13), and Brengelmann's model, the one rig 3 reimplements, is built on the same assumed quarter (ref 6).</p>
+    <p>Only once the hose is round does adding more force the circumference open, stretch the wall, and drive the pressure up. That extra is what people call stressed volume.</p>
+
+    <div class="callout">
+      <p><b style="font-family:var(--sans)">The correction almost everyone needs.</b> Stressed and unstressed volume are not two pools of blood sitting in separate compartments. Inside a pressurised vessel, every millilitre is at the same pressure and every millilitre is equally under stress. The split is a bookkeeping line drawn on one contained volume, a way of separating the resting size of the container from the extra associated with stretching it. There is no hidden reserve tank waiting to be tapped.</p>
+    </div>
+
+    <h3>What mean systemic pressure actually is</h3>
+    <p class="eq big">P<sub>ms</sub> = &Sigma;V<sub>s</sub> / &Sigma;C</p>
+    <p>Total stressed volume divided by total compliance. Not the pressure of any one vessel, and not the average of the pressures you measure during flow. It is a property of the whole elastic container: how full it is relative to how big it is.</p>
+    <p>Which gives exactly two ways to raise it. Put more blood in. Or make the container smaller.</p>
+
+    <h3>What the number measures out at, which is not the textbook figure</h3>
+    <p>Animal zero-flow measurements sit below 10 mmHg. Human bedside estimates do not. In mechanically ventilated post-cardiac-surgery patients, Pmsf by inspiratory hold was 18.8 &plusmn; 4.5 mmHg at baseline and rose to 29.1 &plusmn; 5.2 after 500 mL of colloid (ref 23). A later series in the same population gave Pmsf 20.9 &plusmn; 5.6, stop-flow arm pressure 19.8 &plusmn; 5.7 and the model analogue 14.9 &plusmn; 4.0 mmHg (ref 24). In healthy awake preoperative patients the stop-flow arm pressure was 22 &plusmn; 5 mmHg (ref 25). Reviewing the field, Berger and Takala put living critically ill patients at 18 to 33 mmHg against animal values below 10 (ref 13).</p>
+    <p>Magder's 2025 review sets a target rather than reporting a measurement: mean systemic filling pressure should ideally sit under 10 mmHg to limit capillary drainage, with the gradient from it to right atrial pressure generally 3 to 6 mmHg (ref 15). That last point deserves more room than the argument on this page gives it. The same number read as the upstream pressure for venous return is also the downstream pressure for capillary filtration, so a high one carries an edema cost whatever you believe about causation.</p>
+    <p style="font-size:14px; color:var(--ink-muted)">The classical "7 to 10 mmHg" range could not be traced to Rothe this run. His 1993 abstract reports no numeric value and the full text returned HTTP 403. The animal half of that figure is supported only indirectly, through ref 13; the human half is contradicted by refs 23 to 25.</p>
+
+    <h3>Passive versus active, and why it matters clinically</h3>
+    <div class="grid2">
+      <div class="card"><p class="ov">Passive redistribution</p><p>The heart works harder, blood shifts from veins to arteries, venous volume and pressure fall. The veins recoil onto a lower point of their existing curve. Their properties never changed. No venoconstriction happened. Pms is unchanged.</p></div>
+      <div class="card"><p class="ov">Active venoconstriction</p><p>Venous smooth muscle contracts and the container itself changes, usually by reducing unstressed volume and sometimes by changing compliance too. The same blood now sits at a higher pressure. Pms rises with no change in blood volume.</p></div>
+    </div>
+    <p style="margin-top:var(--md)">Rothe's warning is that these look similar in an experiment and are frequently confused. A vascular bed that loses inflow will passively empty and can be mistaken for one that actively constricted.</p>
+
+    <h3>The pivot, and the step too far</h3>
+    <p>During flow, pressure falls all the way from aorta to right atrium. Arterial pressure is above Pms and right atrial pressure is below it, so somewhere along the way the local pressure must cross the numerical value of Pms. Stop the heart and the compartments above that point lose volume while the ones below it gain; near the crossover, almost nothing moves. The name usually attached to it is the pivot pressure, and it is usually attributed to Rothe. His 1993 abstract does not use the word, and Brengelmann's 2019 paper does not discuss a pivot at all; the phrasing turns up in Berger and Takala's 2018 review, in their own voice and unattributed (ref 13). As a descriptive marker it is fine, and because most volume and compliance live in the small veins and venules, that is usually where it falls.</p>
+    <p>Then he went further. Because the pressure in the small veins during flow happens to be close to the number Pms, he treated Pms as an estimate of their distending pressure, and therefore as the upstream pressure driving venous return. His 1993 abstract says exactly that.</p>
+    <p>That is a coincidence of magnitude being promoted to a physical identity. An equilibrium property of the entire container was given an anatomical address it does not have. Which is where the next rig comes in.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ RIG 3 ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">C<small>Rig three</small></div>
+   <div>
+    <h2>The pressure staircase</h2>
+    <p>This is the picture that settles it. The circulation is drawn as thirteen segments in series, from aorta to vena cava, using Rothe's tabulated volumes, pressures and resistances. Each step is one segment. The <b>width</b> of a step is its compliance. The <b>height</b> is its distending pressure. So the <b>area</b> of a step is its distending volume, and the total shaded area is the total distending volume in the body.</p>
+    <p>That total is pinned. It cannot change when you move flow, because blood is neither created nor destroyed. Everything else follows.</p>
+
+    <div class="rig" id="rig3">
+      <div class="rig-head"><span class="t">Rig 3. Thirteen segments, one fixed volume</span><span class="s">Total shaded area is constant. Only its distribution moves.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="ctl"><label for="r3f">Flow <span class="val" id="r3fv">5.0 L/min</span></label>
+            <input type="range" id="r3f" min="0" max="8" step="0.1" value="5"></div>
+          <div class="ctl"><label for="r3v">Total blood volume <span class="val" id="r3vv">5000 mL</span></label>
+            <input type="range" id="r3v" min="4000" max="6200" step="50" value="5000"></div>
+          <div class="toggles">
+            <button class="tg" id="r3dil" type="button" aria-pressed="false">Vasodilate</button>
+            <button class="tg" id="r3bp" type="button" aria-pressed="false">Defend BP</button>
+            <button class="tg" id="r3curve" type="button" aria-pressed="true">VR curve</button>
+          </div>
+          <button class="reset" id="r3reset" type="button">Reset rig 3</button>
+          <div class="readout">
+            <div><span class="k">Aortic P</span><span class="v" id="r3pa">136<small> cmH&#8322;O</small></span></div>
+            <div><span class="k">Right atrial P</span><span class="v" id="r3pra">1.77<small> cmH&#8322;O</small></span></div>
+            <div><span class="k">Pms (zero flow)</span><span class="v" id="r3pms">3.74<small> cmH&#8322;O</small></span></div>
+            <div class="pin"><span class="k">Total distending vol</span><span class="v" id="r3vd">1251<small> mL</small></span></div>
+          </div>
+          <div class="readout" style="margin-top:1px">
+            <div><span class="k">Arterial Vd</span><span class="v" id="r3va">189<small> mL</small></span></div>
+            <div><span class="k">Periph venous Vd</span><span class="v" id="r3vpv">830<small> mL</small></span></div>
+            <div><span class="k">Central venous Vd</span><span class="v" id="r3vcv">233<small> mL</small></span></div>
+            <div><span class="k">CV vol vs reference</span><span class="v" id="r3marg">100<small>%</small></span></div>
+          </div>
+          <div class="readout" style="margin-top:1px">
+            <div><span class="k">Pivot position</span><span class="v" id="r3piv" style="font-size:14px">31.4<small>% of compliance</small></span></div>
+          </div>
+        </div>
+        <div class="rig-view">
+          <svg id="r3svg" viewBox="0 0 620 430" role="img" aria-labelledby="r3title"><title id="r3title">Segmental distending pressure plotted against cumulative compliance for arterial and venous segments, with a derived venous return curve; raising flow tilts the staircase and moves volume from venous to arterial segments while total area stays fixed</title></svg>
+        </div>
+      </div>
+      <div class="rig-foot" id="r3note"><b>What the rig shows.</b> Raise the flow and the staircase tilts: the arterial steps rise, the venous steps sink, and the total area never budges. The classic venous return curve on the right is not measured here, it is <i>generated</i> by that redistribution alone. Press "Vasodilate" to reduce venous resistances by half and raise venous rest volumes by a quarter, then push the flow back up to restore an aortic pressure of 136. The clay marker is the pivot, the point where the flowing profile crosses the numerical value of Pms. Hold the vessels fixed and it does not move at all, however hard you drive the flow. Switch on "Defend BP", so arteriolar resistance adjusts to hold aortic pressure the way a real circulation would, and it starts to travel.</div>
+    </div>
+
+    <div class="callout">
+      <p><b style="font-family:var(--sans)">Verification.</b> This rig is not a cartoon. It reimplements Brengelmann's 2019 multicompartment model from Rothe's tabulated data and reproduces the published values: total compliance 334 against 333.91 mL/cmH&#8322;O, Pms 3.74 cmH&#8322;O, compartment distending volumes 189, 830 and 233 mL against the published 189, 829 and 233. The readout labelled total distending volume, 1251 mL, is the sum of the rig's own compartments; the published Total row reads 1,250, so it runs one millilitre high for the same rounding reason that shows 830 against 829 in the peripheral venous compartment. The vasodilation case reproduces the 796 mL rest-volume shift, the fall of Pms to 1.36, and the finding that restoring aortic pressure requires 6.1 L/min and drives the central venous distending volume down to 10 mL with a terminal pressure that goes negative.</p>
+      <p><b style="font-family:var(--sans)">A derived result, flagged as derived.</b> The pivot position in the readout is this rig's own output. It is not a published value, and it is not a check against one: reference 6 does not express a pivot or crossover point as a percentage of cumulative compliance anywhere in the paper, so there is no printed number to compare it with. What the model gives, with vascular properties held constant, is a crossing that does not move. It sits at 31.4% of cumulative compliance at every flow from 1 to 8 L/min. That is algebra rather than a bug: the crossing occurs where accumulated resistance equals the ratio of two constants, and no flow term survives. Let arteriolar resistance adjust to defend aortic pressure and the pivot does travel, from 28.2% at 3 L/min to 32.8% at 7 L/min. So a pivot that moves with flow needs a circulation with working reflexes and does not appear in one with frozen properties. The deeper point is untouched either way: a crossing point is not a compartment held at Pms, and its stability under fixed conditions is precisely why the coincidence was mistaken for an anatomical fact.</p>
+      <p style="margin-bottom:0"><b style="font-family:var(--sans)">What it does not model.</b> The segments here stay linearly compliant at all pressures, so nothing collapses. Real venous return curves flatten at strongly negative right atrial pressure because the great veins partially collapse and further falls in pressure stop changing anything upstream. That plateau is absent from this rig by construction. Treat the negative terminal pressures as the model telling you the terminal segment has run out of volume, not as a pressure a vein would actually hold.</p>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ EPISODE IV ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">IV<small>Brengelmann, 2003</small></div>
+   <div>
+    <h2>The phantom pressure</h2>
+    <p>Rothe had given Pms an address in the small veins. Brengelmann went back to the apparatus to ask whether anything actually lived there.</p>
+
+    <h3>What the machine actually did</h3>
+    <p>Guyton drained the right atrium through an external collapsible tube, a Starling resistor, into a mechanical pump. The pump delivered into the pulmonary artery and the left heart returned the same flow to the systemic circulation. An external reservoir was connected but closed while each curve was recorded, so the volume inside the peripheral vasculature stayed fixed. There was one flowmeter, on the pump outflow, and every point was taken after a new steady state had settled.</p>
+    <p>Read that last sentence again. At steady state, pump output and cardiac output and venous return are necessarily the same number. So the experiment never measured venous return as a flow distinct from cardiac output. It measured the steady flow through the vascular subsystem and the right atrial pressure that came with it.</p>
+
+    <h3>Why the curve looks causal, and why that is a drawing convention</h3>
+    <p>Here is the cleanest thing in the 2003 paper. When you graph negative feedback between two subsystems, one of the two input-output relationships has to be plotted backwards, with its input variable on the vertical axis. In Guyton's diagram, the venous return curve is the one drawn backwards. It has to be, or the two curves could not share a set of axes.</p>
+    <p>So the visual impression that right atrial pressure is doing something to flow is an artefact of the plotting convention that makes the intersection possible in the first place. Brengelmann's specific target is the claim this encourages: that raising right atrial pressure to the level of mean systemic pressure would stop venous return.</p>
+
+    <h3>You cannot move right atrial pressure by itself</h3>
+    <p>Raise the Starling resistor and right atrial pressure has to settle higher. But the right atrium and the nearby great veins must then contain more blood to hold that higher pressure, and total volume is fixed, so that blood comes from somewhere upstream. The whole distribution shifts and flow cannot stay where it was. Whether Guyton reset the pump by hand or the collapsing tube throttled its filling turns out not to matter. Either way the recorded point is just the flow and pressure jointly compatible with the resistor height, the vascular properties and the fixed blood volume.</p>
+
+    <h3>The ledger experiment</h3>
+    <p>Then Brengelmann proposed a different apparatus that produces the same curve. Take out the Starling resistor. Let blood from the right atrium spill through an open tube into an external reservoir, with the tube height setting right atrial pressure. A pump draws from the reservoir and returns blood to the pulmonary artery. The reservoir is not an energy source. It is a visible ledger of how much blood has entered or left the peripheral vasculature.</p>
+    <ol class="steps">
+      <li>Stop the pump. Set the tube so right atrial pressure equals Pms. Everything equilibrates and the vasculature holds a reference volume, call it V<sub>0</sub>.</li>
+      <li>Start the pump at some flow with the tube unmoved. Upstream pressures rise above Pms and those compliant compartments expand, so the vasculature now holds <i>more</i> than V<sub>0</sub>. The extra came out of the reservoir.</li>
+      <li>Lower the tube. Right atrial pressure falls, outflow briefly exceeds inflow, and blood drains back into the reservoir until the vasculature holds exactly V<sub>0</sub> again.</li>
+      <li>You now have one point: a flow, and the right atrial pressure that goes with it at volume V<sub>0</sub>. Repeat at a new flow. The order can be reversed with no difference.</li>
+    </ol>
+    <p>Trace the points and you get Guyton's curve. Nothing in the apparatus was ever held at Pms. All it took was paired changes in flow and right atrial pressure, real segmental pressure differences, compliant compartments, conservation of blood volume, and the discipline of returning to the same vascular volume at every point.</p>
+
+    <h3>The equation survives. The picture does not.</h3>
+    <p>Brengelmann then ran a three-compartment model with an ideal pump. At zero flow all three compartments sat at Pms. The moment flow started, none of them did: arterial pressure rose above it, both venous pressures fell below it, and volume moved accordingly. The model still produced the familiar near-linear flow against right atrial pressure relationship, and its algebra still rearranged into flow equals (Pms minus right atrial pressure) over an effective resistance.</p>
+    <p>Pms is in that derivation for one reason: total vascular volume was stipulated to be fixed, and at zero flow that volume sits across the combined compliances at one common pressure. Pms is the compact way of writing that constraint. The derivation never found a vessel held at Pms; it introduced the zero-flow pressure while doing volume accounting under flow.</p>
+    <p>The denominator misleads in the same way. Once Pms was placed in the small veins, the resistance to venous return invited reading as a physical venous resistance sitting between it and the right atrium. It is not. It is a composite of arterial and venous resistances together with how compliance is distributed across the network, which is exactly why Guyton first called it an impedance.</p>
+
+    <h3>So what is the phantom</h3>
+    <p>Local pressure gradients are entirely real. Neighbouring segments hold different pressures at the same instant, blood passes through real resistive pathways, and pressure falls along them as energy is dissipated. None of that is in question.</p>
+    <p>The gradient from Pms to right atrial pressure has a different status. Right atrial pressure is a local pressure in a flowing circulation. Pms is the common pressure reached when flow stops. The equation sets them side by side as though they were opposite ends of one physical pathway. This is not water running downhill, where the high and low points exist at the same moment and gravity releases the stored energy. In the circulation the heart supplies the energy and sets up the whole flowing profile.</p>
+    <div class="callout">
+      <p><b style="font-family:var(--sans)">The chain, and where it breaks.</b> A local venular pressure numerically approximates Pms. That pressure is therefore called Pms. Pms is then assumed to persist there during flow. It therefore supplies an upstream driving pressure opposed by right atrial pressure across a resistance to venous return. Only the first step follows from the data.</p>
+    </div>
+    <p>The pivot keeps its descriptive value. It marks the crossover between regions that gain and lose volume as the circulation changes state, and it sits among the small veins because that is where the volume and the compliance are. But a crossover that moves is not an equilibrium pressure with an address. The pivot is real as a crossing point. The pressure is real as a local pressure. The phantom is the identity assigned to it.</p>
+    <p>One loose end, deferred to the next section. Brengelmann's pump imposed flow, so the model shows how a fixed volume redistributes at different flow rates without asking how much flow a real heart could sustain at a given vascular state. If Pms is not a pressure source, why does the elastic state of the circulation so obviously constrain achievable output? That is where the other side of the argument makes its case, and the current statement of it is Magder's 2025 review (ref 15), not the 2006 Point.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ CODA ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">V<small>Brengelmann, 2019</small></div>
+   <div>
+    <h2>The energy argument, which is the one that actually closes it</h2>
+    <p>The last section ends with this objection previewed and deferred, so here it is. Everything above is about interpretation. This one is about physics, and Brengelmann made it central sixteen years after the paper the last section was built on.</p>
+    <p>Picture the standard diagram: an elastic bag at Pms, draining through a resistance against a back pressure at the right atrium. Ask where the energy for that outflow comes from. The bag is elastic, so it stores energy in its stretched walls. But to <i>release</i> that energy it would have to shrink, and it is not shrinking. It is being refilled at exactly the rate it drains, at constant volume and constant pressure, forever.</p>
+    <p>A container held at fixed volume and fixed pressure cannot supply the work of driving its own outflow. It is a passive element in the pathway. Whatever drives its inflow is the engine. That is the heart, and only the heart.</p>
+
+    <h3>The symmetry that gives the game away</h3>
+    <p>Guyton's expression comes from one algebraic step: writing every compartment pressure as right atrial pressure plus the intervening pressure drops, then imposing the constraint that total volume is constant. Do that and you get (Pms &minus; Pra) / F on one side and a ratio of resistance-times-compliance terms on the other, which has the units of resistance. Call it the resistance to venous return.</p>
+    <p>Now write the same compartment pressures as arterial pressure <i>minus</i> the intervening drops. Same constraint, same algebra, and you get:</p>
+    <p class="eq big">F = (P<sub>a</sub> &minus; P<sub>ms</sub>) / R<sub>AD</sub></p>
+    <p>Equally valid. Equally derivable. Had Guyton plotted flow against arterial pressure instead, we would have spent seventy years teaching that the way to raise cardiac output is to lower Pms, the back pressure opposing arterial pressure. Nobody says that, because it sounds absurd. It is exactly as absurd as the version we do teach.</p>
+    <p>The appearance of Pms in either expression has nothing to do with what drives flow. It is there because you stipulated that total volume is constant, and Pms is just total distending volume divided by total compliance. It is bookkeeping.</p>
+
+    <h3>The fair caveats, because this is not one-sided</h3>
+    <ol class="steps">
+      <li><b>The diagram still predicts well.</b> Bleed a patient and the vascular curve shifts left at unchanged slope; the new intersection is lower output at lower filling pressure. That is right. The objection is to the mechanism, not the forecast.</li>
+      <li><b>Acutely dropping right atrial pressure does transiently raise venous return.</b> Brengelmann grants this explicitly. That is exactly why we keep a separate word for venous return. What he denies is that the imbalance persists into the new steady state.</li>
+      <li><b>Muscle pumps are real engines.</b> Respiratory and skeletal muscle pumping genuinely add energy. The criticism is aimed narrowly at steady-state elastic recoil at fixed volume.</li>
+      <li><b>The argument is live, and the other side has the more recent papers.</b> Magder's 2006 Point holds that the classical Guyton view is correct, and his 2025 review restates it (ref 15). Two different experimental preparations get run together here and should not be. M&oslash;ller and colleagues used a closed-chest, centrally cannulated porcine heart-bypass model on VA ECMO and concluded that right atrial pressure acts as back pressure to venous return (ref 18); Berger and colleagues used right atrial balloon occlusion in pigs with an intact circulation, which is a different design answering a different question (ref 19). Beard and Feigl argue the concept should be removed from teaching outright. Sunagawa argues it should be taught, conceding the causal point and denying that it matters, since at constant stressed volume venous return and venous pressure hold a fixed reciprocal relationship (ref 12). This is not settled.</li>
+    </ol>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ CASES ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">VI<small>Bedside</small></div>
+   <div>
+    <h2>Seven PICU cases, worked</h2>
+    <p>Each one has a reflex answer that most of us were taught, what is physically happening instead, and what actually changes about the plan. Open them one at a time.</p>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">01</span><span><span class="case-t">Six-month-old in septic shock, 20 mL/kg over 15 minutes</span><span class="case-sub">CVP goes 4 to 9. What did the bolus do?</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>The bolus raised mean systemic pressure, which widened the gradient for venous return, so more blood came back and output rose.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>You added volume to a container of fixed size, so the total distending volume rose. Nearly all the compliance is on the venous side, so nearly all of the new volume landed there and raised venous distending pressure, including in the segments that fill the right ventricle. Right ventricular end-diastolic volume rose.</p>
+        <p>Whether output rises now depends on one thing only: where that ventricle sits on its own Starling curve. The heart is what converts filling into flow. The bolus did not push blood forward. It made more blood available for a ventricle that may or may not be able to use it.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>Measure the output, not the filling pressure. If CVP rises and stroke volume does not, you did not buy flow, you bought congestion, and you should stop. Then look downstream for the cost: portal vein pulsatility, hepatic vein and renal venous Doppler patterns, urine output over the next several hours. A rising CVP with a flat stroke volume is the clearest signal in the room that the next bolus is a bad idea.</p>
+        <p>Read the Doppler and the filling pressure as complementary rather than interchangeable. A 2026 review makes the distinction cleanly: CVP is a continuous readout of the <i>risk</i> of congestion, while VExUS is an intermittent organ-level look at congestion that has already happened, and neither substitutes for the other (ref 31).</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">02</span><span><span class="case-t">Pediatric ARDS, PEEP up from 8 to 14, CVP 8 to 14, cardiac index falls</span><span class="case-sub">The number went up and the flow went down. Why?</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>PEEP raised right atrial pressure, which opposes mean systemic pressure, so the gradient narrowed and venous return fell.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>Three separate things, and none of them is a back pressure.</p>
+        <p>First, juxtacardiac pressure rose. The measured CVP went up while the transmural pressure that actually distends the right ventricle went <i>down</i>. The number rose and the filling fell, at the same time, for the same reason.</p>
+        <p>Second, the intrathoracic great veins are among the most compliant and lowest-pressure segments on the staircase. Squeezing them from outside shrinks the container exactly where the margin is thinnest, and pushes volume out of the chest into the abdomen and periphery.</p>
+        <p>Third, if any lung is now overdistended, pulmonary vascular resistance rises and right ventricular afterload rises with it. That is a separate mechanism and it is often the dominant one.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>Stop reading absolute CVP under high PEEP. Read the trend, and interpret it against pleural pressure. Ask whether the PEEP step is recruiting or overdistending by looking at driving pressure and compliance at each step; if compliance stopped improving and output fell, the PEEP bought nothing and cost flow.</p>
+        <p>This case also explains why bedside estimation of Pms from inspiratory hold maneuvers is on shakier ground than it looks. Brengelmann's own caution is that the maneuver may change segmental rest volumes and compliances on both sides of the diaphragm, which changes Pms by definition, and may recruit reflex changes in segmental resistance. His simulation shows that adjusting arteriolar resistance alone shifts both the extrapolated Pms and the apparent slope, with no change in any other resistance in the model.</p>
+        <p>That is no longer only a simulation. Measured in pigs against right atrial balloon occlusion, the inspiratory-hold estimate overshot true mean systemic filling pressure by 3.0 (SD 5.1) mmHg, and raising PEEP from 5 to 10 raised the true value from 12.9 to 14.0 mmHg with no change in flow (ref 19). A later study in the same laboratory found all three indirect estimates ran low against the zero-flow measurement, with volume status changing the size of the error (ref 20).</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">03</span><span><span class="case-t">VA ECMO circuit chatter at target flow</span><span class="case-sub">The single best demonstration in the whole argument</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>The patient is hypovolemic. Give volume.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>On VA ECMO you <i>are</i> Guyton's preparation. You are literally holding the pump knob, and right atrial pressure is the reading. So the causal direction is not in dispute here, it is in your hand.</p>
+        <p>Raise the flow and volume redistributes uphill toward the arterial side, exactly as in rig 3. The last step on the staircase, the cavae at your drainage cannula, has the lowest distending pressure and the smallest margin. It empties first. When its distending pressure reaches zero the vessel starts to change shape, the geometry interferes with flow, and you get chatter.</p>
+        <p>The model puts numbers on it. In the reference state the central venous compartment holds 233 mL of distending volume. Vasodilate the venous bed, which is what sepsis and most of your sedation does, and that falls to 37 mL. Now push the flow back up to restore an aortic pressure of 136, and it falls to 10 mL with a computed terminal pressure that goes slightly negative. That is the vasoplegic child who chatters the instant you approach target flow, and it happens with a completely normal total blood volume.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>You have four levers, and only one of them is volume.</p>
+        <p>Add volume, which raises total distending volume. Reduce flow, which unwinds the redistribution. Give a venoconstrictor, which reduces venous rest volume and is the lever that addresses the actual pathology rather than the symptom. Or change the local geometry: reposition, upsize, or add a second drainage cannula.</p>
+        <p>The reason this matters is that reflexively volume-loading every chattering circuit is how a vasoplegic child ends up 3 litres positive by day two with the same chatter.</p>
+        <p>The four-lever problem has been run experimentally rather than only simulated. A running-hemodynamics analogue of mean systemic pressure was validated against true zero-flow measurement in porcine VA ECMO across vasoconstriction and volume-expansion states (ref 21), and an earlier study in the same model compared vasoconstriction with volume expansion as ways to raise circuit flow (ref 22). Neither replaces the judgment at the bedside. Both beat the reflex.</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">04</span><span><span class="case-t">Fontan circulation, CVP 18, low output, recurrent effusions</span><span class="case-sub">Where the gradient language is closest to true, and still misleads</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>Pulmonary flow is driven by the transpulmonary gradient, so raise CVP with volume and you will drive more flow through the lungs.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>This is the honest hard case, because there genuinely is no pump between the systemic veins and the lungs, so a pressure difference really is what moves blood across that bed. But the energy still comes from one place. The single ventricle has to drive blood through the pulmonary and systemic resistances arranged in series, and everything it generates has to carry all the way around.</p>
+        <p>Adding volume raises CVP and therefore raises the transpulmonary gradient arithmetically. Whether it raises <i>flow</i> depends on whether the ventricle is preload responsive and on what pulmonary vascular resistance is doing. Past a point, more volume buys hepatic congestion, effusions, ascites and protein-losing enteropathy, and buys no output at all.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>The levers that work are the ones that change the system rather than the reading. Lower pulmonary vascular resistance: keep mean airway pressure low, extubate to spontaneous negative-pressure breathing as early as it is safe, consider inhaled nitric oxide or a pulmonary vasodilator. Protect ventricular filling: sinus rhythm, AV valve competence, adequate diastolic time. Rule out anatomic obstruction in the pathway or a stenotic branch pulmonary artery before you accept a physiologic explanation.</p>
+        <p>And note the one place where the classical picture is more right than the critics: the respiratory pump adds real energy. Spontaneous negative-pressure ventilation genuinely augments Fontan flow, and Brengelmann explicitly exempts respiratory and skeletal muscle pumping from his argument. Extubating a Fontan is a hemodynamic intervention.</p>
+        <p>The closest modelling support for the first half of this case removed the right ventricle from a validated circulatory model and found pulmonary vascular resistance dominant, with volume expansion by any route of limited benefit (ref 29), which is the conclusion above arrived at from the other direction. For the ventilation half, see Magder and Lai on the hemodynamic consequences of positive-pressure ventilation (ref 30).</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">05</span><span><span class="case-t">Norepinephrine started in warm septic shock, cardiac output goes up</span><span class="case-sub">A vasoconstrictor that increases flow is not a paradox</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>It squeezed the arteries and raised the pressure. The rise in output is a happy accident, or it came from recruiting unstressed volume out of a venous reservoir.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>Alpha-1 receptors are dense on splanchnic venous capacitance vessels, which are the biggest and most compliant part of the container. Contracting that smooth muscle reduces the resting size of the container. The same blood volume now occupies a smaller vascular space, so distending volume and distending pressure rise throughout, including in the segments that fill the right heart. If the ventricle is preload responsive, output rises despite the higher afterload.</p>
+        <p>Be precise about the mechanism, because the usual phrasing carries a picture that does not survive inspection. Nothing was released from a reserve tank. There is no pool of unstressed blood sitting apart from a stressed pool. The container changed shape, so the bookkeeping split between rest volume and distending volume changed, and blood genuinely did move between compartments as the system settled into its new state. Those are different claims.</p>
+        <p>Say that as a dispute about what the bookkeeping means, though, because that is what it is, and not as a fact most authors have wrong. Reservoir-and-recruitment language is standard in current reviews: Persichini and colleagues describe unstressed blood as a reservoir that can be recruited by endogenous or exogenous sympathetic stimulation (ref 14), and M&oslash;ller and colleagues frame vasoconstriction on VA ECMO as recruitment of blood volume (ref 22). The argument here is that the recruitment is a change in the geometry of the container rather than the opening of a tap. That the volume moves is not in dispute.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>In a cold, high-afterload child the same drug does the opposite: the afterload term dominates and output falls. So "does norepinephrine help or hurt here" is not a question about the drug. It is a question about where that particular ventricle sits, and you answer it by measuring output before and after, not by watching the mean arterial pressure improve.</p>
+        <p>There is a second reason not to chase the pressure here, and this page does not otherwise engage it. Pinsky and colleagues frame tissue perfusion in septic shock as a vascular waterfall whose upstream end is the arteriolar critical closing pressure and whose downstream end is mean systemic filling pressure. In vasoplegia the critical closing pressure falls toward Pmsf, the waterfall collapses, and autoregulation is abolished at a normal mean arterial pressure and a normal cardiac output (ref 34).</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">06</span><span><span class="case-t">Post-op day 1, CVP 18, cardiac index 1.8, pulsus on the arterial line</span><span class="case-sub">When a high filling pressure means the opposite of full</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>CVP is 18. This child is full. Stop the fluid and start an inotrope.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>The constraint is around the heart, not in the veins. Pericardial or mediastinal pressure is high, so the measured CVP is high while the transmural pressure actually distending the ventricle is low. The ventricle is a container being squeezed from outside; it cannot accept volume, and the CVP is reporting the squeeze rather than the filling. Every step of the venous return story is intact and irrelevant, because the failure is at the last compartment.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>Fluid may help transiently, because it raises total distending volume faster than it raises pericardial pressure, and that is worth doing while you get to the answer. But the answer is drainage or reopening. The trap is letting a high CVP argue you out of the diagnosis, which is exactly what the back-pressure mental model encourages.</p>
+      </div>
+    </details>
+
+    <details class="case">
+      <summary class="case-btn"><span class="case-n">07</span><span><span class="case-t">Adolescent trauma, class III hemorrhage</span><span class="case-sub">The case where the classical picture is simply correct</span></span><span class="case-mk">+</span></summary>
+      <div class="case-body">
+        <span class="tagline t-reflex">The reflex answer</span>
+        <p>Blood loss lowers mean systemic pressure, shifts the vascular function curve left, and the new intersection is lower output at lower filling pressure.</p>
+        <span class="tagline t-real">What is actually happening</span>
+        <p>Exactly that. Reduce total volume and total distending volume falls, every segment's distending pressure falls together, the curve shifts left at unchanged slope, and the crossing moves down and to the left. Guyton's diagram predicts this precisely, which is a large part of why it survived seventy years of criticism.</p>
+        <p>The only thing the newer reading changes is the sentence underneath. CVP fell because there is less blood distending the container, not because a driving gradient collapsed. Same prediction, different mechanism carried forward into cases 02 through 06 where the two accounts diverge.</p>
+        <span class="tagline t-do">What changes about the plan</span>
+        <p>Nothing. Give blood. This case is here to be fair to Guyton, and to make the point that a model can forecast correctly while explaining incorrectly. That is precisely why the wrong explanation survived: it kept getting the right answer.</p>
+      </div>
+    </details>
+
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ BEDSIDE SUMMARY ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">VII<small>Carry-out</small></div>
+   <div>
+    <h2>What actually changes on rounds tomorrow</h2>
+    <ol class="steps">
+      <li><b>CVP is a readout, not a knob.</b> There is no intervention that sets it. It is where the heart's ability to clear volume meets the container's ability to hold it.</li>
+      <li><b>A rising CVP with a flat stroke volume is a completed experiment.</b> You bought congestion and no flow. That is the moment to stop, not to repeat.</li>
+      <li><b>Fluid responsiveness is a property of the ventricle, not of the gradient.</b> Where that ventricle sits on its Starling curve is the only thing being tested.</li>
+      <li><b>Under positive pressure ventilation, measured CVP is not transmural CVP.</b> The number can rise while the filling falls. Read trends against pleural pressure.</li>
+      <li><b>Vasopressors act on the container, not just the pipes.</b> That is why a vasoconstrictor can raise cardiac output, and it is the same physiology whether the effect is welcome or not.</li>
+      <li><b>On ECMO, chatter is a volume-distribution problem with four possible fixes.</b> Volume, flow, venous tone and cannula geometry. Reaching for volume every time is how children end up massively positive.</li>
+      <li><b>Treat bedside Pms estimates as soft, and know roughly by how much.</b> The maneuvers used to obtain them can alter the very properties they are meant to measure. Against right atrial balloon occlusion in pigs, the inspiratory-hold estimate overshot by 3.0 (SD 5.1) mmHg (ref 19); against zero-flow measurement, all three indirect estimates ran low, and volume status changed the error (ref 20).</li>
+      <li><b>Keep the diagram, drop the verbs.</b> The intersection is a good predictor. "Back pressure" and "the gradient drives return" are the parts that mislead.</li>
+    </ol>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ SETTLED VS CONTESTED ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">VIII<small>Epistemics</small></div>
+   <div>
+    <h2>What is settled and what is not</h2>
+    <div class="grid2">
+      <div class="card">
+        <p class="ov">Settled</p>
+        <p>In both Guyton's and Levy's preparations, flow was imposed by an investigator and right atrial pressure was the response. Guyton wrote in 1955 that right atrial pressure is not one of the primary determinants of cardiac output but is itself determined simultaneously along with it (ref 2); the widely repeated 1979 reply to Levy is not indexed anywhere and this page no longer rests on it. The upstream variables are contractility, heart rate, resistance, capacitance and volume. Stressed and unstressed volume are a mathematical partition of one contained volume, not two anatomically separate pools.</p>
+      </div>
+      <div class="card">
+        <p class="ov">Contested</p>
+        <p>Whether the (Pms &minus; Pra) / RVR formulation should be abandoned. Magder defends the classical view, most recently in a 2025 review (ref 15) and in two 2024 papers on using the framework for fluid decisions (refs 16, 17). M&oslash;ller and colleagues read a porcine heart-bypass preparation as supporting a back-pressure role (ref 18); Berger and colleagues' balloon-occlusion work is a separate design and is often cited as though it were the same one (ref 19). Brengelmann, Beard and Feigl argue for removing venous return curves from teaching entirely, and Sunagawa argues the opposite (ref 12). One thing has changed: the exchange has gone quiet on one side. No publication by Brengelmann is indexed after his 2021 reply, while Magder has published in 2024, 2025 and 2026.</p>
+      </div>
+    </div>
+    <p style="margin-top:var(--lg)">If you want the strongest version of the opposing case, start with Magder's 2025 review (ref 15) rather than the 2006 Point, which is twenty years stale as a statement of his position. Pair it with Brengelmann's Counterpoint from the same 2006 issue (ref 9), then read the two porcine preparations side by side (refs 18, 19). This page argues the critics' side, and argues it hard. It is not the defence, and it should not be read as though the defence had been heard.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+</main>
+
+<footer>
+ <div class="wrap">
+  <p class="ov">Primary sources, each verified against PubMed</p>
+  <ol>
+    <li>Guyton AC, Lindsey AW, Kaufmann BN. Effect of mean circulatory filling pressure and other peripheral circulatory factors on cardiac output. <i>Am J Physiol</i> 1955;180(3):463-8. <span class="mono">PMID 14376522 &middot; doi 10.1152/ajplegacy.1955.180.3.463</span></li>
+    <li>Guyton AC. Determination of cardiac output by equating venous return curves with cardiac response curves. <i>Physiol Rev</i> 1955;35(1):123-9. <span class="mono">PMID 14356924 &middot; doi 10.1152/physrev.1955.35.1.123</span></li>
+    <li>Levy MN. The cardiac and vascular factors that determine systemic blood flow. <i>Circ Res</i> 1979;44(6):739-47. <span class="mono">PMID 428068 &middot; doi 10.1161/01.res.44.6.739</span></li>
+    <li>Rothe CF. Reflex control of veins and vascular capacitance. <i>Physiol Rev</i> 1983;63(4):1281-342. <span class="mono">PMID 6361810 &middot; doi 10.1152/physrev.1983.63.4.1281</span></li>
+    <li>Rothe CF. Mean circulatory filling pressure: its meaning and measurement. <i>J Appl Physiol</i> 1993;74(2):499-509. <span class="mono">PMID 8458763 &middot; doi 10.1152/jappl.1993.74.2.499</span></li>
+    <li>Brengelmann GL. Venous return and the physical connection between distribution of segmental pressures and volumes. <i>Am J Physiol Heart Circ Physiol</i> 2019;317(5):H939-53. <span class="mono">PMID 31518160 &middot; PMC6879926 &middot; doi 10.1152/ajpheart.00381.2019</span></li>
+    <li>Brengelmann GL. A critical analysis of the view that right atrial pressure determines venous return. <i>J Appl Physiol</i> 2003;94(3):849-59. <span class="mono">PMID 12391065 &middot; doi 10.1152/japplphysiol.00868.2002</span></li>
+    <li>Magder S. Point: the classical Guyton view that mean systemic pressure, right atrial pressure, and venous resistance govern venous return is/is not correct. <i>J Appl Physiol</i> 2006;101(5):1523-5. <span class="mono">PMID 16825521 &middot; doi 10.1152/japplphysiol.00698.2006</span></li>
+    <li>Brengelmann GL. Counterpoint: the classical Guyton view that mean systemic pressure, right atrial pressure, and venous resistance govern venous return is not correct. <i>J Appl Physiol</i> 2006;101(5):1525-6. <span class="mono">PMID 17043330 &middot; doi 10.1152/japplphysiol.00698a.2006</span></li>
+    <li>Beard DA, Feigl EO. Understanding Guyton's venous return curves. <i>Am J Physiol Heart Circ Physiol</i> 2011;301(3):H629-33. <span class="mono">PMID 21666119 &middot; doi 10.1152/ajpheart.00228.2011</span></li>
+  </ol>
+  <p class="ov" style="margin-top:var(--xl)">Added when this page was revised, 2026-08-31</p>
+  <ol start="11">
+    <li>Alexander RS. In defense of "venous return". <i>Circ Res</i> 1979;45(5):691-2. <span class="mono">PMID 487532 &middot; doi 10.1161/01.res.45.5.691</span></li>
+    <li>Sunagawa K. Guyton's venous return curves should be taught at medical schools (complete English translation of Japanese version). <i>J Physiol Sci</i> 2017;67(4):447-58. <span class="mono">PMID 28349325 &middot; PMC10717807 &middot; doi 10.1007/s12576-017-0533-0</span></li>
+    <li>Berger D, Takala J. Determinants of systemic venous return and the impact of positive pressure ventilation. <i>Ann Transl Med</i> 2018;6(18):350. <span class="mono">PMID 30370277 &middot; PMC6186556 &middot; doi 10.21037/atm.2018.05.27</span></li>
+    <li>Persichini R, et al. Venous return and mean systemic filling pressure: physiology and clinical applications. <i>Crit Care</i> 2022;26(1):150. <span class="mono">PMID 35610620 &middot; PMC9128096 &middot; doi 10.1186/s13054-022-04024-x</span></li>
+    <li>Magder S, Slobod D, Vieillard-Baron A. Physiological and clinical significance of mean circulatory and mean systemic filling pressure. <i>Ann Intensive Care</i> 2025;15(1):187. <span class="mono">PMID 41283961 &middot; PMC12644377 &middot; doi 10.1186/s13613-025-01595-0</span></li>
+    <li>Magder S. The use of Guyton's approach to the control of cardiac output for clinical fluid management. <i>Ann Intensive Care</i> 2024;14(1):105. <span class="mono">PMID 38963533 &middot; PMC11224168 &middot; doi 10.1186/s13613-024-01316-z</span></li>
+    <li>Magder S. Right atrial pressure and Guyton's approach to fluid management. <i>Ann Intensive Care</i> 2024;14(1):181. <span class="mono">PMID 39694967 &middot; doi 10.1186/s13613-024-01402-2</span></li>
+    <li>M&oslash;ller PW, et al. Right atrial pressure and venous return during cardiopulmonary bypass. <i>Am J Physiol Heart Circ Physiol</i> 2017;313(2):H408-20. <span class="mono">PMID 28550170 &middot; doi 10.1152/ajpheart.00081.2017</span></li>
+    <li>Berger D, et al. Effect of PEEP, blood volume, and inspiratory hold maneuvers on venous return. <i>Am J Physiol Heart Circ Physiol</i> 2016;311(3):H794-806. <span class="mono">PMID 27422991 &middot; doi 10.1152/ajpheart.00931.2015</span></li>
+    <li>Werner-M&oslash;ller P, et al. Effect of volume status on the estimation of mean systemic filling pressure. <i>J Appl Physiol</i> 2019;126(6):1503-13. <span class="mono">PMID 30817243 &middot; doi 10.1152/japplphysiol.00897.2018</span></li>
+    <li>Werner-M&oslash;ller P, et al. Experimental validation of a mean systemic pressure analog against zero-flow measurements in porcine VA-ECMO. <i>J Appl Physiol</i> 2022;132(3):726-36. <span class="mono">PMID 35085032 &middot; doi 10.1152/japplphysiol.00804.2021</span></li>
+    <li>M&oslash;ller PW, et al. The effects of vasoconstriction and volume expansion on veno-arterial ECMO flow. <i>Shock</i> 2019;51(5):650-8. <span class="mono">PMID 29877960 &middot; doi 10.1097/SHK.0000000000001197</span></li>
+    <li>Maas JJ, et al. Assessment of venous return curve and mean systemic filling pressure in postoperative cardiac surgery patients. <i>Crit Care Med</i> 2009;37(3):912-8. <span class="mono">PMID 19237896 &middot; doi 10.1097/CCM.0b013e3181961481</span></li>
+    <li>Maas JJ, et al. Estimation of mean systemic filling pressure in postoperative cardiac surgery patients with three methods. <i>Intensive Care Med</i> 2012;38(9):1452-60. <span class="mono">PMID 22584797 &middot; doi 10.1007/s00134-012-2586-0</span></li>
+    <li>Yastrebov K, et al. The stop-flow arm equilibrium pressure in preoperative patients: stressed volume and correlations with echocardiography. <i>Acta Anaesthesiol Scand</i> 2019;63(5):594-600. <span class="mono">PMID 30648262 &middot; doi 10.1111/aas.13318</span></li>
+    <li>Wijnberge M, et al. Feasibility to estimate mean systemic filling pressure with inspiratory holds at the bedside. <i>Front Physiol</i> 2022;13:1041730. <span class="mono">PMID 36523553 &middot; doi 10.3389/fphys.2022.1041730</span></li>
+    <li>van Loon LM, et al. Challenges in zero-flow blood pressure as a measure of mean circulatory filling pressure: experimental and computational perspectives. <i>Physiol Rep</i> 2025;13(19):e70599. <span class="mono">PMID 41044906 &middot; PMC12495131 &middot; doi 10.14814/phy2.70599</span></li>
+    <li>van Loon LM, Donker DW, Lemson J. Estimating mean circulatory filling pressure in humans: physiological constraints on equilibrium-based methods. <i>Physiol Rep</i> 2026;14(6):e70824. <i>Listed for its citation only; the full text was not retrievable when this page was revised, so nothing on this page is drawn from its contents.</i> <span class="mono">PMID 41839748 &middot; doi 10.14814/phy2.70824</span></li>
+    <li>Beaus&eacute;jour-Ladouceur V, et al. Fontan heart: insight into the physiological role of the right heart. <i>Heart Lung Circ</i> 2023;32(8):1017-25. <span class="mono">PMID 37291000 &middot; doi 10.1016/j.hlc.2023.05.009</span></li>
+    <li>Magder S, Lai C. Hemodynamic impacts of mechanical ventilation: assessment and intervention. <i>Clin Chest Med</i> 2026;47(3):551-61. <span class="mono">PMID 42486563 &middot; doi 10.1016/j.ccm.2026.04.009</span></li>
+    <li>Si X, et al. VExUS versus CVP for assessing venous congestion: oasis or mirage? <i>Crit Care</i> 2026;30(1). <span class="mono">PMID 42098778 &middot; doi 10.1186/s13054-026-06016-7</span></li>
+    <li>Dalmau R. Venous return: a fresh start. <i>Am J Physiol Heart Circ Physiol</i> 2019;317(5):H1102-4. Published in the same issue as reference 6. <span class="mono">PMID 31651182 &middot; doi 10.1152/ajpheart.00575.2019</span></li>
+    <li>Mamorita N, Takeuchi A, Kamata H. An interactive simulator to deepen the understanding of Guyton's venous return curve. <i>J Physiol Sci</i> 2024;74(1):21. Prior art for rigs 1 and 2. <span class="mono">PMID 38555424 &middot; doi 10.1186/s12576-024-00912-9</span></li>
+    <li>Pinsky MR, G&oacute;mez H, Hernandez G. Assessing tissue perfusion during septic shock resuscitation through the vascular waterfall lens. <i>Am J Respir Crit Care Med</i> 2026 Jul 29 (online ahead of print). <span class="mono">PMID 42523186 &middot; doi 10.1093/ajrccm/aamag397</span></li>
+    <li>Lai C, Shaikhain T, Magder S. Hidden effects of dobutamine on cardiac output. <i>Intensive Care Med Exp</i> 2026;14(1). <span class="mono">PMID 42384361 &middot; doi 10.1186/s40635-026-00929-x</span></li>
+  </ol>
+
+  <p class="ov" style="margin-top:var(--xl)">Numbers on this page that carry no citation</p>
+  <p style="font-size:13px">Three sets of figures here are <b style="font-family:var(--sans); color:var(--ink)">derived from the models on this page</b> rather than reported in any paper, and are labelled as derived wherever they appear.</p>
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">1. The compliance of rigs 1 and 2.</b> Total compliance is 175 mL/mmHg (8.75 arterial plus 166.25 venous in rig 1; 8.75 plus 140 plus 26.25 in rig 2). These are schematic appendix parameters, not human measurements, and they run roughly 2.5 times measured human systemic compliance, reported as 0.98 mL/mmHg/kg, about 69 mL/mmHg at 70 kg (ref 23), and as a median of 73 mL/mmHg, IQR 56 to 133 (ref 26). The 2000 mL default for distending volume is inside the measured range (1677 mL in ref 23; median 2029 mL in ref 26). The rigs' Pms of 11.4 mmHg is arithmetic on those two inputs, 2000 divided by 175, which is why the rigs sit below the 19 to 21 mmHg human bedside estimates. This is a disclosed approximation, not a reported value.</p>
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">2. The pivot position.</b> The figures of 31.4% of cumulative compliance at fixed vascular properties, and 28.2% to 32.8% under defended aortic pressure, are computed by rig 3. Reference 6 does not express a pivot or crossover point as a percentage of cumulative compliance, so no published number exists to check them against. This is a novel derivation from a published model, not a reproduction of a published result.</p>
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">3. The "roughly twenty times larger" comparison in part II.</b> That is arithmetic on the classical animal-preparation figures, 98 divided by 5. Levy's full text could not be retrieved when this page was revised, so those inputs are the numbers the argument is conventionally told with rather than values quoted from the paper. The 3 to 6 mmHg gradient half of the comparison is separately supported (ref 15); the 7 mmHg Pms half is not, and human bedside values are three times higher (refs 23 to 25).</p>
+  <p style="font-size:13px">One further gap is recorded rather than papered over: the classical claim that Rothe measured normal filling pressures of 7 to 10 mmHg could not be traced to Rothe. The 1993 abstract carries no numeric value and the full text was unreachable. The animal figure survives only indirectly, through ref 13.</p>
+
+  <p style="margin-top:var(--xl); font-size:13px">Rigs 1 and 3 implement the models in reference 6 using the segmental data of reference 4 as tabulated there. Rig 2 uses the three-compartment appendix parameters of reference 6 for the vascular function line; its cardiac function curve is a schematic Starling relationship, not a fitted dataset.</p>
+
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">Educational use only.</b> This page is a teaching tool about a disputed area of cardiovascular physiology. It is not clinical decision support, it gives no patient-specific advice, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators, and every case here is a teaching vignette rather than a protocol. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
+
+  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; updated 2026-08-31 &middot; CC BY-NC 4.0</p>
+ </div>
+</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const INK="#1A1A1A", MUT="#5A5550", SLATE="#4A5468", PALE="#C5CCD9", RULE="rgba(26,26,26,.16)", HAIR="rgba(26,26,26,.10)", TINT="#E7E2D6", CLAY="#B88A2C";
+const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const txt=(x,y,s,a={})=>{const t=el("text",Object.assign({x,y},a));t.textContent=s;return t;};
+const fmt=(v,d=1)=>v.toFixed(d);
+
+/* ============================================================
+   RIG 1 — two compartments, one resistance, fixed volume
+   Pa = Pv + F*R ;  Ca*Pa + Cv*Pv = Vd   (mmHg, mL, L/min)
+   ============================================================ */
+const R1 = {Ca:8.75, Cv:166.25};
+function rig1(){
+  const F=+$("r1f").value, Vd=+$("r1v").value, R=+$("r1r").value;
+  const {Ca,Cv}=R1, Ct=Ca+Cv;
+  const Pv=(Vd-Ca*F*R)/Ct, Pa=Pv+F*R, Pms=Vd/Ct;
+  $("r1fv").textContent=fmt(F)+" L/min"; $("r1vv").textContent=Vd+" mL"; $("r1rv").textContent=fmt(R)+" units";
+  $("r1pa").innerHTML=fmt(Pa,0)+"<small> mmHg</small>";
+  $("r1pv").innerHTML=fmt(Pv)+"<small> mmHg</small>";
+  $("r1tot").innerHTML=Vd+"<small> mL</small>";
+  $("r1pms").innerHTML=fmt(Pms)+"<small> mmHg</small>";
+
+  const s=$("r1svg"); s.textContent=""; s.appendChild(el("title")).textContent="Two tank levels and a pinned total volume bar";
+  const H=300, base=232, top=26, maxP=170;
+  const y=p=>base-Math.max(0,Math.min(p,maxP))/maxP*(base-top);
+  // stiff (arterial) tank: narrow. floppy (venous): wide.
+  const tanks=[{x:40,w:74,P:Pa,C:Ca,lab:"Stiff tank",sub:"arteries"},{x:190,w:250,P:Pv,C:Cv,lab:"Floppy tank",sub:"veins"}];
+  s.appendChild(el("line",{x1:24,y1:base,x2:536,y2:base,stroke:INK,"stroke-width":1}));
+  tanks.forEach(t=>{
+    s.appendChild(el("rect",{x:t.x,y:top,width:t.w,height:base-top,fill:"none",stroke:RULE,"stroke-width":1}));
+    const yy=y(Math.max(t.P,0));
+    s.appendChild(el("rect",{x:t.x,y:yy,width:t.w,height:base-yy,fill:SLATE,opacity:.24}));
+    s.appendChild(el("line",{x1:t.x,y1:yy,x2:t.x+t.w,y2:yy,stroke:SLATE,"stroke-width":2}));
+    s.appendChild(txt(t.x+t.w/2,base+18,t.lab,{class:"lbl","text-anchor":"middle"}));
+    s.appendChild(txt(t.x+t.w/2,base+31,t.sub,{"text-anchor":"middle"}));
+    s.appendChild(txt(t.x+t.w/2,Math.max(yy-8,top-6),fmt(t.P,1)+" mmHg",{"text-anchor":"middle",fill:SLATE}));
+  });
+  if(Pv<=0){
+    s.appendChild(el("rect",{x:190,y:base-4,width:250,height:4,fill:"#B23A3A"}));
+    s.appendChild(txt(315,base-12,"floppy tank empty: flow cannot be sustained",{"text-anchor":"middle",fill:"#B23A3A","font-size":10}));
+  }
+  // Pms reference line
+  const ym=y(Pms);
+  s.appendChild(el("line",{x1:24,y1:ym,x2:470,y2:ym,stroke:CLAY,"stroke-width":1,"stroke-dasharray":"5 4"}));
+  s.appendChild(txt(476,ym+4,"Pms",{fill:CLAY}));
+  // pinned total bar
+  s.appendChild(txt(24,272,"TOTAL WATER (pinned)",{fill:MUT}));
+  const bx=24,bw=512,byy=280,bh=13, aFrac=Ca*Math.max(Pa,0)/Vd, vFrac=1-aFrac;
+  s.appendChild(el("rect",{x:bx,y:byy,width:bw,height:bh,fill:"none",stroke:RULE}));
+  s.appendChild(el("rect",{x:bx,y:byy,width:bw*Math.max(0,Math.min(aFrac,1)),height:bh,fill:SLATE,opacity:.55}));
+  s.appendChild(el("rect",{x:bx+bw*Math.max(0,Math.min(aFrac,1)),y:byy,width:bw*Math.max(0,Math.min(vFrac,1)),height:bh,fill:PALE}));
+  s.appendChild(txt(bx+bw*Math.min(aFrac,1)/2,byy+10,"arterial",{"text-anchor":"middle",fill:"#F5F0E6","font-size":10}));
+  s.appendChild(txt(bx+bw*(aFrac+vFrac/2),byy+10,"venous",{"text-anchor":"middle",fill:INK,"font-size":10}));
+}
+
+/* ============================================================
+   RIG 2 — Guyton 3-compartment vascular function + Starling
+   Brengelmann 2019 appendix params (mmHg, mL, L/min)
+   ============================================================ */
+function rig2(){
+  const Vd=+$("r2v").value, tone=+$("r2t").value, con=+$("r2c").value, Ra=+$("r2r").value;
+  // venous tone: shrinks the container (compliance down, and rest volume down => more distending volume)
+  const k=1-tone/100;
+  const Ca=8.75, Cpv=140*k, Ccv=26.25*k, Rv=0.87;
+  const Vd_eff = Vd + tone*7;            // reduced rest volume converts to distending volume
+  const Ct=Ca+Cpv+Ccv;
+  const Pms=Vd_eff/Ct;
+  const RVR=(Ra*Ca + Rv*Ca + Rv*Cpv)/Ct;  // Eq A3
+  const slope=1/RVR;
+  // cardiac function: saturating Starling, Pra0 = -1 mmHg
+  const COmax=(con/100)*7.6, kk=2.6, P0=-1.5;
+  const cardiac=p=>{const d=p-P0; return d<=0?0:COmax*d/(kk+d);};
+  const vascular=p=>Math.max(0,(Pms-p)*slope);
+  // intersect
+  let lo=P0, hi=Pms;
+  for(let i=0;i<70;i++){const m=(lo+hi)/2; (cardiac(m)<vascular(m))?lo=m:hi=m;}
+  const Pra=(lo+hi)/2, CO=cardiac(Pra);
+
+  $("r2vv").textContent=Vd+" mL";
+  $("r2tv").textContent = tone===0?"baseline":(tone>0?"+"+tone+" constricted":tone+" dilated");
+  $("r2cv").textContent = con===100?"normal":(con<100?con+"% depressed":con+"% augmented");
+  $("r2rv").textContent = fmt(Ra)+" units";
+  $("r2co").innerHTML=fmt(CO)+"<small> L/min</small>";
+  $("r2ra").innerHTML=fmt(Pra)+"<small> mmHg</small>";
+  $("r2ms").innerHTML=fmt(Pms)+"<small> mmHg</small>";
+  $("r2sl").innerHTML=fmt(slope,2)+"<small> L/min/mmHg</small>";
+
+  const s=$("r2svg"); s.textContent="";
+  const L=54,Rr=536,T=22,B=278, xmax=26, ymax=11;
+  const X=p=>L+(p+4)/(xmax+4)*(Rr-L), Y=f=>B-f/ymax*(B-T);
+  s.appendChild(el("line",{x1:L,y1:B,x2:Rr,y2:B,stroke:INK,"stroke-width":1}));
+  s.appendChild(el("line",{x1:L,y1:T,x2:L,y2:B,stroke:INK,"stroke-width":1}));
+  for(let f=2;f<=10;f+=2){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
+  for(let p=0;p<=24;p+=4){const xx=X(p); s.appendChild(el("line",{x1:xx,y1:B,x2:xx,y2:B+4,stroke:INK,"stroke-width":.5})); s.appendChild(txt(xx,B+16,p,{"text-anchor":"middle"}));}
+  s.appendChild(txt((L+Rr)/2,B+34,"Right atrial pressure (mmHg)",{class:"lbl","text-anchor":"middle"}));
+  const yl=txt(0,0,"Flow (L/min)",{class:"lbl","text-anchor":"middle"}); yl.setAttribute("transform","translate(16,"+((T+B)/2)+") rotate(-90)"); s.appendChild(yl);
+
+  // vascular function line
+  let d=""; for(let p=-4;p<=xmax;p+=.25){const f=vascular(p); if(f<=ymax+.2) d+=(d?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));}
+  s.appendChild(el("path",{d,fill:"none",stroke:SLATE,"stroke-width":2.2}));
+  // cardiac function curve
+  let d2=""; for(let p=-4;p<=xmax;p+=.25){const f=cardiac(p); if(f<=ymax+.2) d2+=(d2?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));}
+  s.appendChild(el("path",{d:d2,fill:"none",stroke:INK,"stroke-width":2.2,"stroke-dasharray":"7 4"}));
+  // Pms intercept
+  s.appendChild(el("circle",{cx:X(Pms),cy:Y(0),r:3.2,fill:CLAY}));
+  s.appendChild(txt(X(Pms),B+30,"Pms",{"text-anchor":"middle",fill:CLAY}));
+  // operating point
+  s.appendChild(el("line",{x1:X(Pra),y1:Y(CO),x2:X(Pra),y2:B,stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
+  s.appendChild(el("line",{x1:L,y1:Y(CO),x2:X(Pra),y2:Y(CO),stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
+  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:SLATE}));
+  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:"none",stroke:"#fff","stroke-width":1.4}));
+  // direct labels, no legend
+  const lp=Math.max(2,Pms*0.42);
+  s.appendChild(txt(X(lp)+6,Y(vascular(lp))-9,"vascular function",{class:"lbl",fill:SLATE}));
+  s.appendChild(txt(X(Math.min(xmax-9,Pra+7)),Y(cardiac(Math.min(xmax-9,Pra+7)))+16,"cardiac function",{class:"lbl",fill:INK}));
+  s.appendChild(txt(X(Pra)+9,Y(CO)-11,"operating point "+fmt(CO)+" L/min at "+fmt(Pra)+" mmHg",{class:"lbl",fill:SLATE}));
+  s.appendChild(txt(L,B+52,"Vascular line from the 3-compartment model of Guyton et al. 1955 as derived in Brengelmann 2019 appendix.",{fill:MUT,"font-size":10}));
+  s.appendChild(txt(L,B+64,"Cardiac curve is a schematic Starling relationship, not a fitted dataset.",{fill:MUT,"font-size":10}));
+}
+
+/* ============================================================
+   RIG 3 — Brengelmann 2019 13-segment model (Rothe data)
+   Table 1 verbatim. Verified against published Table 1 / Table 2.
+   ============================================================ */
+const SEG=[
+ ["Aorta",2.0,136.00,0.82,"A"],["Lg arteries",4.0,131.92,1.17,"A"],["Main br",3.4,126.07,3.51,"A"],
+ ["Term br",1.7,108.53,0.90,"A"],["Sm arteries",2.7,104.04,5.68,"A"],["Arterioles",1.0,75.62,8.30,"A"],
+ ["Capillaries",0.3,34.14,5.60,"A"],["Postcap ven",3.6,6.12,0.11,"PV"],["Venules",25.6,5.58,0.08,"PV"],
+ ["Sm veins",18.6,5.17,0.46,"PV"],["Main ven br",18.6,2.86,0.11,"PV"],["Lg veins",15.2,2.31,0.11,"CV"],
+ ["Vena cava",3.4,1.77,0.00,"CV"]];
+const VT0=5000, RESTF=0.75, PA_REF=136.02;
+const Vt0=SEG.map(s=>s[1]/100*VT0), Vr0=Vt0.map(v=>v*RESTF), R0=SEG.map(s=>s[3]);
+const Pe0=SEG.map(s=>s[2]);
+const Pd0=Pe0.map((p,i)=> i<12 ? (p+Pe0[i+1])/2 : p);
+const CC=Vt0.map((v,i)=>(v-Vr0[i])/Pd0[i]);
+const SUMC=CC.reduce((a,b)=>a+b,0);
+
+function solve3(F,R,targetVd){
+  const tail=new Array(14).fill(0);
+  for(let i=12;i>=0;i--) tail[i]=tail[i+1]+R[i];
+  const k=Pe0.map((_,i)=> i<12 ? (tail[i]+tail[i+1])/2 : tail[12]);
+  let num=0; for(let i=0;i<13;i++) num+=CC[i]*k[i];
+  const Pra=(targetVd-F*num)/SUMC;
+  const Pd=k.map(ki=>Pra+F*ki);
+  const Vd=Pd.map((p,i)=>CC[i]*p);
+  const Pe=Pe0.map((_,i)=>Pra+F*tail[i]);
+  return {Pra,Pd,Vd,Pe,Pa:Pra+F*tail[0]};
+}
+function rig3(){
+  const F=+$("r3f").value, VT=+$("r3v").value;
+  const dil=$("r3dil").getAttribute("aria-pressed")==="true";
+  const showC=$("r3curve").getAttribute("aria-pressed")==="true";
+  const scale=VT/VT0;
+  const Vt=Vt0.map(v=>v*scale), Vr=Vt0.map(v=>v*RESTF);   // rest volume is a container property, not scaled by blood volume
+  let R=R0.slice(), VrL=Vr.slice();
+  if(dil){ R[5]*=0.5; for(let i=7;i<13;i++){R[i]*=0.5; VrL[i]*=1.25;} }
+  const bp=$("r3bp").getAttribute("aria-pressed")==="true";
+  const rawTarget=Vt.reduce((a,b)=>a+b,0)-VrL.reduce((a,b)=>a+b,0);
+  const belowRest = rawTarget < 30;
+  const target = belowRest ? 30 : rawTarget;
+  let clamped=false;
+  if(bp && F>0.2){                      // reproduces the arteriolar-adjustment simulation of Brengelmann 2019 Fig 6
+    let lo=0.02, hi=90;
+    for(let i=0;i<70;i++){ const mid=(lo+hi)/2; const t=R.slice(); t[5]=mid;
+      (solve3(F,t,target).Pa < PA_REF) ? lo=mid : hi=mid; }
+    R[5]=(lo+hi)/2;
+    if(R[5]<0.03||R[5]>89) clamped=true;
+  }
+  const st=solve3(F,R,target), Pms=target/SUMC;
+  const grp={A:0,PV:0,CV:0}; SEG.forEach((s,i)=>grp[s[4]]+=st.Vd[i]);
+
+  $("r3fv").textContent=fmt(F)+" L/min"; $("r3vv").textContent=VT+" mL";
+  $("r3pa").innerHTML=fmt(st.Pa,0)+"<small> cmH\u2082O</small>";
+  $("r3pra").innerHTML=fmt(st.Pra,2)+"<small> cmH\u2082O</small>";
+  $("r3pms").innerHTML=fmt(Pms,2)+"<small> cmH\u2082O</small>";
+  $("r3vd").innerHTML=fmt(target,0)+"<small> mL</small>";
+  $("r3va").innerHTML=fmt(grp.A,0)+"<small> mL</small>";
+  $("r3vpv").innerHTML=fmt(grp.PV,0)+"<small> mL</small>";
+  $("r3vcv").innerHTML=fmt(grp.CV,0)+"<small> mL</small>";
+  const note=$("r3note");
+  let warn=$("r3warn");
+  if(belowRest){
+    if(!warn){ warn=document.createElement("p"); warn.id="r3warn";
+      warn.style.cssText="margin:0 0 8px;color:#B23A3A;font-family:var(--sans);font-size:13.5px;font-weight:560";
+      note.prepend(warn); }
+    warn.textContent="Total volume is now at or below the container's rest volume. There is nothing left to distend it, so no flow could be sustained. The plot is held at a floor.";
+  } else if(warn){ warn.remove(); }
+
+  const CV_REF=233, pct=grp.CV/CV_REF*100;
+  const m=$("r3marg");
+  const col = pct<=0 ? "#B23A3A" : pct<25 ? "#B88A2C" : INK;
+  const tag = pct<=0 ? " below rest" : pct<25 ? " marginal" : "";
+  m.innerHTML = '<span style="color:'+col+'">'+fmt(pct,0)+'<small>% of reference'+tag+'</small></span>';
+
+  const s=$("r3svg"); s.textContent="";
+  const cum=[0]; CC.forEach(c=>cum.push(cum[cum.length-1]+c));
+  // pivot: where the descending entrance-pressure profile crosses the numerical value of Pms
+  let piv=null;
+  for(let i=0;i<12;i++){
+    if(st.Pe[i]>=Pms && st.Pe[i+1]<Pms){
+      const f=(st.Pe[i]-Pms)/((st.Pe[i]-st.Pe[i+1])||1);
+      piv={i, x:cum[i]+f*(cum[i+1]-cum[i]), name:SEG[Math.min(i+1,12)][0]};
+      break;
+    }
+  }
+  $("r3piv").innerHTML = (F<=0.05) ? '<span style="color:#5A5550" >all at Pms</span>'
+      : piv ? fmt(piv.x/SUMC*100,1)+'<small>% of compliance</small>' : '<span style="color:#5A5550">outside range</span>';
+  const PW = showC ? 400 : 596;
+  const drawPanel=(y0,y1,i0,i1,pmax,label)=>{
+    const L=48,Rr=PW;
+    const xs=cum[i0], xe=cum[i1+1];
+    const X=c=>L+(c-xs)/(xe-xs)*(Rr-L), Y=p=>y1-Math.max(0,Math.min(p,pmax))/pmax*(y1-y0);
+    s.appendChild(el("line",{x1:L,y1:y1,x2:Rr,y2:y1,stroke:INK,"stroke-width":1}));
+    s.appendChild(el("line",{x1:L,y1:y0,x2:L,y2:y1,stroke:INK,"stroke-width":1}));
+    const step = pmax>50 ? Math.ceil(pmax/4/20)*20 : Math.max(1,Math.ceil(pmax/4));
+    for(let t=0;t<=pmax-step*0.4;t+=step){const yy=Y(t); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.18,"stroke-width":.5})); s.appendChild(txt(L-6,yy+3.5,t,{"text-anchor":"end"}));}
+    // Pms reference
+    if(Pms<=pmax){const ym=Y(Pms); s.appendChild(el("line",{x1:L,y1:ym,x2:Rr,y2:ym,stroke:CLAY,"stroke-width":1.2,"stroke-dasharray":"5 4"}));
+      s.appendChild(txt(Rr-2,ym-5,"Pms "+fmt(Pms,2),{"text-anchor":"end",fill:CLAY}));}
+    // staircase
+    let path="";
+    for(let i=i0;i<=i1;i++){
+      const xa=X(cum[i]), xb=X(cum[i+1]), yy=Y(st.Pd[i]);
+      s.appendChild(el("rect",{x:xa,y:Math.min(yy,y1),width:Math.max(xb-xa,0.6),height:Math.abs(y1-yy),fill:SLATE,opacity:.22}));
+      s.appendChild(el("line",{x1:xa,y1:y1,x2:xa,y2:yy,stroke:"#fff","stroke-width":.6}));
+      path+=(path?"L":"M")+xa+" "+yy+"L"+xb+" "+yy;
+    }
+    s.appendChild(el("path",{d:path,fill:"none",stroke:SLATE,"stroke-width":2}));
+    if(piv && piv.x>=xs && piv.x<=xe && Pms<=pmax && F>0.05){
+      const px=X(piv.x), py=Y(Pms);
+      s.appendChild(el("line",{x1:px,y1:py-11,x2:px,y2:py+11,stroke:CLAY,"stroke-width":2}));
+      s.appendChild(el("circle",{cx:px,cy:py,r:4,fill:CLAY,stroke:"#fff","stroke-width":1.2}));
+      s.appendChild(txt(px,py+24,"pivot",{"text-anchor":"middle",fill:CLAY}));
+    }
+    s.appendChild(txt(L,y0-7,label,{class:"lbl"}));
+    return {X,Y,L,Rr};
+  };
+  const aMax=Math.max(40,Math.ceil(Math.max(st.Pd[0],Pms)*1.10/20)*20);
+  const vMax=Math.max(4,Math.ceil(Math.max(st.Pd[7],Pms)*1.18));
+  const p1=drawPanel(30,168,0,6,aMax,"Arterial segments  (aorta to capillaries)");
+  s.appendChild(txt(p1.Rr,23,"width = compliance, height = distending pressure, area = volume",{"text-anchor":"end",fill:MUT,"font-size":10}));
+  const p2=drawPanel(216,352,7,12,vMax,"Venous segments  (postcapillary venules to vena cava)");
+  s.appendChild(txt(p2.L,372,"cumulative compliance  \u2192   (mL / cmH\u2082O)",{class:"lbl"}));
+  // annotate terminal segment
+  const xa=p2.X(cum[12]), xb=p2.X(cum[13]);
+  s.appendChild(el("line",{x1:(xa+xb)/2,y1:p2.Y(Math.max(st.Pd[12],0)),x2:(xa+xb)/2,y2:196,stroke:SLATE,"stroke-width":.75}));
+  s.appendChild(txt((xa+xb)/2,192,"vena cava "+fmt(st.Pd[12],2),{"text-anchor":"middle",fill:SLATE}));
+
+  // pinned volume ledger
+  const bx=48,bw=PW-48,byy=392,bh=15, tot=target;
+  s.appendChild(txt(bx,386,"DISTENDING VOLUME  (total pinned at "+fmt(tot,0)+" mL)",{fill:MUT,"font-size":10}));
+  let acc=0;
+  [["A",grp.A,SLATE,.62],["PV",grp.PV,SLATE,.30],["CV",grp.CV,PALE,1]].forEach(([n,v,c,o])=>{
+    const w=bw*Math.max(0,v)/tot;
+    s.appendChild(el("rect",{x:bx+acc,y:byy,width:Math.max(w,0),height:bh,fill:c,opacity:o}));
+    if(w>34) s.appendChild(txt(bx+acc+w/2,byy+11,n+" "+fmt(v,0),{"text-anchor":"middle",fill:(n==="A"?"#F5F0E6":INK),"font-size":10}));
+    acc+=w;
+  });
+  s.appendChild(el("rect",{x:bx,y:byy,width:bw,height:bh,fill:"none",stroke:RULE}));
+
+  // derived venous return curve
+  if(showC){
+    const L=436,Rr=610,T=30,B=352;
+    const pts=[]; for(let f=0;f<=8;f+=0.1){ pts.push([solve3(f,R,target).Pra,f]); }
+    const pmin=Math.min(...pts.map(p=>p[0]),-1), pmax=Math.max(...pts.map(p=>p[0]),Pms);
+    const X=p=>L+(p-pmin)/(pmax-pmin||1)*(Rr-L), Y=f=>B-f/8.4*(B-T);
+    s.appendChild(el("line",{x1:L,y1:B,x2:Rr,y2:B,stroke:INK,"stroke-width":1}));
+    s.appendChild(el("line",{x1:L,y1:T,x2:L,y2:B,stroke:INK,"stroke-width":1}));
+    s.appendChild(txt(L,T-16,"Derived VR curve",{class:"lbl"}));
+    s.appendChild(txt(L,T-5,"flow vs right atrial P",{fill:MUT,"font-size":10}));
+    let d=""; pts.forEach(([p,f])=>{d+=(d?"L":"M")+X(p)+" "+Y(f);});
+    s.appendChild(el("path",{d,fill:"none",stroke:SLATE,"stroke-width":2}));
+    s.appendChild(el("circle",{cx:X(Pms),cy:Y(0),r:3.2,fill:CLAY}));
+    s.appendChild(txt(X(Pms),B+13,"Pms",{"text-anchor":"middle",fill:CLAY}));
+    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:SLATE}));
+    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:"none",stroke:"#fff","stroke-width":1.3}));
+    s.appendChild(txt(Rr,B+26,"right atrial P (cmH\u2082O)",{"text-anchor":"end",fill:MUT,"font-size":10}));
+  }
+}
+
+/* ---------- wiring ---------- */
+function bind(ids,fn){ ids.forEach(i=>{const e=$(i); e.addEventListener("input",fn); e.addEventListener("change",fn);}); fn(); }
+bind(["r1f","r1v","r1r"],rig1);
+bind(["r2v","r2t","r2c","r2r"],rig2);
+bind(["r3f","r3v"],rig3);
+$("r1reset").addEventListener("click",()=>{$("r1f").value=5;$("r1v").value=2000;$("r1r").value=20.9;rig1();});
+$("r2reset").addEventListener("click",()=>{$("r2v").value=2000;$("r2t").value=0;$("r2c").value=100;$("r2r").value=20;rig2();});
+$("r3reset").addEventListener("click",()=>{$("r3f").value=5;$("r3v").value=5000;$("r3dil").setAttribute("aria-pressed","false");$("r3bp").setAttribute("aria-pressed","false");$("r3curve").setAttribute("aria-pressed","true");rig3();});
+["r3dil","r3bp","r3curve"].forEach(id=>$(id).addEventListener("click",e=>{
+  const b=e.currentTarget; b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true"); rig3();
+}));
+window.addEventListener("resize",()=>{rig1();rig2();rig3();},{passive:true});
+</script>
+</body>
+</html>
