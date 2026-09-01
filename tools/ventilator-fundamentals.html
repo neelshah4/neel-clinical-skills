@@ -237,7 +237,24 @@ svg text{font-family:var(--mono); font-size:11px}
 svg text.lbl{font-family:var(--sans); font-size:11.5px; font-weight:560}
 svg text.ax{font-size:10px}
 
-/* ---------- self-test ---------- */
+/* ---------- self-test ----------
+   The report is collapsed by default so it is not part of the reading
+   experience. It is NOT optional: runSelfTest() runs on every load either way,
+   and renderSelfTest() force-opens this block and turns the summary red the
+   moment a single check fails. Hiding a passing report is a reading decision;
+   hiding a failing one would be a lie, so the code cannot do it. */
+details#selftest-details{border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); margin:var(--md) 0}
+details#selftest-details > summary{font-family:var(--sans); font-size:13.5px; font-weight:600; color:var(--ink-muted); padding:12px var(--md); cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:var(--sm); min-height:44px}
+details#selftest-details > summary::-webkit-details-marker{display:none}
+details#selftest-details > summary::before{content:"\25B8"; margin-right:8px; color:var(--ink-faint)}
+details#selftest-details[open] > summary::before{content:"\25BE"}
+details#selftest-details > summary:hover{background:var(--tint); color:var(--ink)}
+details#selftest-details > summary:focus-visible{outline:2px solid var(--focus); outline-offset:-2px}
+details#selftest-details .stcount{font-family:var(--mono); font-size:11.5px; color:var(--pos); margin-left:auto}
+details#selftest-details.failing{border-color:var(--neg)}
+details#selftest-details.failing > summary{color:var(--neg)}
+details#selftest-details.failing .stcount{color:var(--neg)}
+details#selftest-details .st{border:0; margin:0; border-top:1px solid var(--rule); border-radius:0}
 .st{border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); padding:var(--md); margin:var(--md) 0}
 .st-h{font-family:var(--sans); font-size:14px; font-weight:620; margin-bottom:10px}
 .st-h.pass{color:var(--pos)}
@@ -277,7 +294,15 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   body{font-size:16px}
   .wrap{padding:0 var(--md)}
   .toc ol{columns:1}
-  .split{grid-template-columns:1fr; gap:var(--sm)}
+  /* minmax(0,1fr), never a bare 1fr: a bare 1fr is minmax(auto,1fr), so the
+     min-content width of a nowrap citation string or an inline equation pushes
+     the whole grid wider than the viewport and the PAGE scrolls sideways.
+     Measured at 375px before this fix: scrollWidth 656 against clientWidth 375. */
+  .split{grid-template-columns:minmax(0,1fr); gap:var(--sm)}
+  /* Wide content scrolls inside its own container; prose and citation strings
+     are allowed to wrap instead. Never shrink a font to fix an overflow. */
+  .cite{white-space:normal; overflow-wrap:anywhere}
+  .eq{max-width:100%; overflow-x:auto; overscroll-behavior-x:contain}
   .numeral{font-size:50px}
   .numeral small{display:inline; margin-left:12px}
   .chips{grid-template-columns:1fr 1fr}
@@ -320,7 +345,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="chips">
     <div class="chip"><span class="k">Model</span><span class="v">Single compartment, linear, one R and one C</span></div>
     <div class="chip"><span class="k">Solver</span><span class="v">Exact exponential update, 1 ms step, 100 Hz display</span></div>
-    <div class="chip"><span class="k">Evidence</span><span class="v">28 sources, every PMID resolved against PubMed</span></div>
+    <div class="chip"><span class="k">Evidence</span><span class="v">30 papers, every PMID resolved against PubMed; 2 manufacturer documents</span></div>
     <div class="chip"><span class="k">Population</span><span class="v">Adult data unless a row says otherwise</span></div>
   </div>
  </div>
@@ -339,14 +364,14 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <nav class="toc" aria-label="Sections">
     <h2>Sections</h2>
     <ol>
-      <li><span class="n">00</span><a href="#s00">Waveform reading is a trained skill, not an earned one</a></li>
+      <li><span class="n">00</span><a href="#s00">Waveform reading has to be taught</a></li>
       <li><span class="n">01</span><a href="#s01">The equation of motion</a></li>
       <li><span class="n">02</span><a href="#s02">Compliance</a></li>
       <li><span class="n">03</span><a href="#s03">Resistance</a></li>
       <li><span class="n">04</span><a href="#s04">The time constant</a></li>
       <li><span class="n">05</span><a href="#s05">Volume control: what is held constant</a></li>
       <li><span class="n">06</span><a href="#s06">Pressure control: what is held constant</a></li>
-      <li><span class="n">07</span><a href="#s07">PRVC, and what actually happens between breaths</a></li>
+      <li><span class="n">07</span><a href="#s07">PRVC, and what happens between breaths</a></li>
       <li><span class="n">08</span><a href="#s08">The three modes side by side</a></li>
       <li><span class="n">09</span><a href="#s09">Triggering</a></li>
       <li><span class="n">10</span><a href="#s10">Assist-control versus SIMV</a></li>
@@ -357,7 +382,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <li><span class="n">15</span><a href="#s15">Resistance problem or compliance problem</a></li>
       <li><span class="n">16</span><a href="#s16">What this model cannot show</a></li>
       <li><span class="n">17</span><a href="#s17">Where the rest of this lives</a></li>
-      <li><span class="n">18</span><a href="#s18">How the rig computes, and every choice that is not physiology</a></li>
+      <li><span class="n">18</span><a href="#s18">How the simulator works</a></li>
       <li><span class="n">19</span><a href="#s19">Analytic checks the model must pass</a></li>
     </ol>
   </nav>
@@ -376,7 +401,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">A<small>The rig</small></div>
    <div>
     <h2>A lung with one compliance and one resistance</h2>
-    <p>Everything below the fold is an explanation of what this rig is doing. Move a control and the three scalars redraw from the same two equations; nothing here is scripted, animated by hand, or drawn from a stored picture. Ineffective triggering, double triggering, air trapping and the flow-starvation dip all appear on their own when the parameters call for them.</p>
+    <p>Everything below explains what this rig is doing. Move a control and the three scalars redraw from the same two equations; nothing here is scripted or drawn from a stored picture. Ineffective triggering, double triggering, air trapping and the flow-starvation dip appear on their own when the parameters call for them.</p>
 
     <div class="rig" id="rig">
       <div class="rig-head">
@@ -562,10 +587,20 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">00<small>Why this exists</small></div>
    <div>
-    <h2>Waveform reading is a trained skill, not an earned one</h2>
+    <h2>Waveform reading has to be taught</h2>
     <p>In 53 tertiary hospitals, 191 clinicians were screened and 109 qualified as competent on the concepts of patient-ventilator asynchrony. Asked then to match asynchrony waveforms to those same concepts, they averaged 3.45 correct out of 8. Formal training in waveform analysis and respiratory mechanics predicted performance: recognition of ineffective triggering was 76.7% in trained versus 59.2% in untrained clinicians, auto-triggering 26.7% versus 12.2%, reverse triggering 30.8% versus 12.2%. Neither years of experience managing invasive ventilation nor professional title predicted anything. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/39905371/" target="_blank" rel="noopener">Liu 2025, PMID 39905371</a> <span class="tag t-adult">adult ICU clinicians</span></p>
-    <p>You cannot pattern-match your way to waveform literacy, because the patterns are consequences of one equation. Learn the equation and the patterns become derivable. That is the whole design of this page: a live solver, and text that only ever explains what the solver is doing.</p>
+    <p>The patterns are consequences of one equation, so learning the equation makes them derivable. This page is built that way: a live solver, and text that explains what the solver is doing.</p>
     <p>The honest caveat on that study: it measured concept-to-picture matching on a remote platform, not bedside performance, and the sample is adult-ICU clinicians in one country. It is a reason to teach mechanics deliberately, not a measurement of any individual reader.</p>
+
+    <p>Start from a baseline. Every abnormal trace later on this page is a departure from one of the two below.</p>
+
+    <figure class="fg">
+      <p class="fgh">Baseline: one normal passive breath, volume control and pressure control</p>
+      <div class="fgwrap">
+      <svg id="figBase" viewBox="0 0 880 486" role="img" aria-labelledby="figBaseT"><title id="figBaseT">Two columns of three stacked tracings sharing one four-second time axis and one set of y scales. The left column is a volume-control breath: airway pressure steps off PEEP by the resistive term and then climbs as a straight ramp to peak, inspiratory flow is a square block, and volume rises linearly. The right column is a pressure-control breath at a driving pressure chosen to deliver the same tidal volume: airway pressure is a rectangle held at PEEP plus driving pressure, flow starts at driving pressure over resistance and decays exponentially, and volume rises along the complementary exponential. Both columns show expiration as a passive exponential decay of flow and volume back to baseline, and a band beneath each marks the inspiratory and expiratory phases.</title></svg>
+      </div>
+      <figcaption>Both breaths are solved by the same code as the rig, at fixed reference values printed under the figure, so this panel does not move when you touch a slider. The driving pressure of the right-hand breath is computed so that the two breaths deliver the same tidal volume; every other difference between the columns is the control variable.</figcaption>
+    </figure>
    </div>
   </div>
  </div>
@@ -583,14 +618,14 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 
     <div class="facts">
       <div class="fact"><span class="n">P<sub>v</sub></span><p><b>P<sub>vent</sub>, cmH<sub>2</sub>O.</b> Pressure the ventilator applies at the airway opening. This is the trace on the top scalar.</p></div>
-      <div class="fact"><span class="n">P<sub>m</sub></span><p><b>P<sub>mus</sub>, cmH<sub>2</sub>O.</b> Pressure generated by the patient's inspiratory muscles. Positive here means it adds to the ventilator's effort. It is invisible on the airway pressure trace; you infer it from the <i>shape</i> of that trace, which is the single hardest inference in the whole subject.</p></div>
+      <div class="fact"><span class="n">P<sub>m</sub></span><p><b>P<sub>mus</sub>, cmH<sub>2</sub>O.</b> Pressure generated by the patient's inspiratory muscles. Positive here means it adds to the ventilator's effort. It is invisible on the airway pressure trace; you infer it from the <i>shape</i> of that trace, which is the hardest inference on this page.</p></div>
       <div class="fact"><span class="n">el</span><p><b>V<sub>T</sub>/C<sub>RS</sub>, the elastic term.</b> What it costs to distend the respiratory system by this volume. Depends on volume, not on flow.</p></div>
       <div class="fact"><span class="n">res</span><p><b>R<sub>aw</sub> &times; V&#775;<sub>I</sub>, the resistive term.</b> What it costs to drive this flow through the airways and the tube. Depends on flow, not on volume.</p></div>
       <div class="fact"><span class="n">base</span><p><b>PEEP + PEEP<sub>i</sub>.</b> The baseline the breath starts from: what you set, plus what the patient did not finish exhaling.</p></div>
     </div>
 
     <div class="callout">
-      <p><b>The operative sentence.</b> The elastic term is a function of volume and the resistive term is a function of flow, and every waveform finding in critical care follows from separating them. Stop the flow and the resistive term vanishes; what is left is elastic. That is an inspiratory hold. Stop the volume change and the elastic term stops moving; what is left is the baseline. That is an expiratory hold.</p>
+      <p><b>How the two holds work.</b> The elastic term is a function of volume and the resistive term is a function of flow, and every waveform finding in critical care follows from separating them. Stop the flow and the resistive term vanishes; what is left is elastic. That is an inspiratory hold. Stop the volume change and the elastic term stops moving; what is left is the baseline. That is an expiratory hold.</p>
     </div>
 
     <p>Chatburn's taxonomy is the reason to bother learning it as an equation rather than a list: the classification of every mode on every ventilator is built on specifying the means of assisting breaths using control variables specified by the equation of motion, and a mode is fully named by control variable, breath sequence and targeting scheme. Modes proliferate; the equation does not. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25118309/" target="_blank" rel="noopener">Chatburn 2014, PMID 25118309</a> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/17328828/" target="_blank" rel="noopener">Chatburn 2007, PMID 17328828</a> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21128755/" target="_blank" rel="noopener">Chatburn 2010, PMID 21128755</a></p>
@@ -676,31 +711,31 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <text class="ax" x="14" y="16">A &#183; lung and chest wall are springs in series</text>
         <line x1="30" y1="30" x2="150" y2="30" stroke="currentColor" stroke-opacity=".5"></line>
         <path d="M90 30 L90 44 L74 52 L106 66 L74 80 L106 94 L74 108 L90 116 L90 128" fill="none" stroke="currentColor" stroke-width="1.7"></path>
-        <text class="ax" x="118" y="82">C<tspan font-size="9" dy="4">L</tspan></text>
+        <text class="ax" x="118" y="82">C<tspan font-size="11" dy="4">L</tspan></text>
         <line x1="60" y1="128" x2="120" y2="128" stroke="currentColor" stroke-opacity=".5"></line>
         <path d="M90 128 L90 140 L74 148 L106 162 L74 176 L90 184 L90 194" fill="none" stroke="currentColor" stroke-width="1.7"></path>
-        <text class="ax" x="118" y="166">C<tspan font-size="9" dy="4">CW</tspan></text>
+        <text class="ax" x="118" y="166">C<tspan font-size="11" dy="4">CW</tspan></text>
         <line x1="60" y1="194" x2="120" y2="194" stroke="currentColor" stroke-opacity=".5"></line>
         <line x1="185" y1="30" x2="185" y2="194" stroke="currentColor" stroke-opacity=".45"></line>
         <path d="M181 186 L185 194 L189 186" fill="none" stroke="currentColor" stroke-opacity=".45"></path>
         <path d="M181 38 L185 30 L189 38" fill="none" stroke="currentColor" stroke-opacity=".45"></path>
         <text class="ax" x="196" y="108">total displacement</text>
-        <text class="ax" x="196" y="122">= C<tspan font-size="9" dy="4">RS</tspan></text>
+        <text class="ax" x="196" y="122">= C<tspan font-size="11" dy="4">RS</tspan></text>
         <text class="ax" x="14" y="216">1/C_RS = 1/C_CW + 1/C_L</text>
         <text class="tiny" x="14" y="228">Schematic; not driven by the simulator.</text>
 
       </svg>
-      <svg id="figPlat" viewBox="0 0 430 292" role="img" aria-labelledby="figPlatT"><title id="figPlatT">Driving pressure, meaning plateau pressure minus PEEP, plotted against respiratory-system compliance on a logarithmic axis at the tidal volume currently set in the rig; halving compliance doubles the height of the marker. A dashed horizontal line marks the 15 cmH2O driving-pressure limit PALICC-2 suggests for pediatric ARDS, and the marker turns red above it.</title></svg>
+      <svg id="figPlat" viewBox="0 0 430 330" role="img" aria-labelledby="figPlatT"><title id="figPlatT">Driving pressure, meaning plateau pressure minus PEEP, plotted against respiratory-system compliance on a logarithmic axis at the tidal volume currently set in the rig; halving compliance doubles the height of the marker. A dashed horizontal line marks the 15 cmH2O driving-pressure limit PALICC-2 suggests for pediatric ARDS, and the marker turns red above it.</title></svg>
       </div>
       <figcaption>Figure A is fixed. Figure B is live: it redraws from the tidal volume set in the rig above, and the marker sits at the compliance you have selected. Halve the compliance and the marker must double its height, which is analytic check 2 made visible.</figcaption>
     </figure>
 
-    <h3>The number that axis is measured against</h3>
+    <h3>The driving-pressure limit</h3>
     <p>Plateau minus PEEP is driving pressure, and the pediatric guideline puts a limit on it directly. PALICC-2 clinical recommendation 3.3.2 <b>suggests limiting driving pressure to 15 cmH<sub>2</sub>O, measured under static conditions</b>, in patients with PARDS. It is a conditional recommendation carrying very low certainty of evidence and 82% panel agreement, which is a weaker instrument than the roundness of the number suggests. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">Emeriaud 2023, PMID 36661420</a> <span class="tag t-peds">pediatric, PARDS</span></p>
     <p>Two companion numbers travel with it and are easy to confuse with it. Recommendation 3.3.1 suggests an inspiratory <i>plateau</i> pressure at or below 28 cmH<sub>2</sub>O in the absence of transpulmonary pressure measurements, with a remark allowing 29 to 32 where chest-wall compliance is reduced; that is an absolute airway pressure and therefore includes PEEP, so it belongs on a different axis from this one and appears on one in section 12. Recommendation 3.2 suggests tidal volumes of 6 to 8 mL/kg, with the explicit remark that volumes below 6 mL/kg should be used where that is what it takes to stay under the plateau and driving-pressure limits. Both are conditional with very low certainty, at 92% and 98% agreement.</p>
-    <p>Where the pediatric evidence for the driving-pressure limit came from is worth saying plainly. The guideline group reviewing invasive ventilation in PARDS found 26 pediatric studies and had to import 36 adult meta-analyses and systematic reviews to address driving pressure and mechanical power at all. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661436/" target="_blank" rel="noopener">Fern&aacute;ndez 2023, PMID 36661436</a> Of the three numbers quoted above, the driving-pressure limit carries the lowest panel agreement. Ventilate toward it; do not treat it as a measured threshold in children.</p>
+    <p>Where the pediatric evidence for that limit came from: the guideline group reviewing invasive ventilation in PARDS found 26 pediatric studies and had to import 36 adult meta-analyses and systematic reviews to address driving pressure and mechanical power at all. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661436/" target="_blank" rel="noopener">Fern&aacute;ndez 2023, PMID 36661436</a> Of the three numbers quoted above, the driving-pressure limit carries the lowest panel agreement. Ventilate toward it; do not treat it as a measured threshold in children.</p>
 
-    <h3>The pediatric correction, and it matters</h3>
+    <h3>The pediatric correction</h3>
     <p>The adult teaching is that when C<sub>L</sub> and C<sub>CW</sub> are equal, pleural pressure is half of alveolar pressure. Hess gives P<sub>pl</sub>/P<sub>alv</sub> = C<sub>L</sub>/(C<sub>L</sub> + C<sub>CW</sub>) = C<sub>RS</sub>/C<sub>CW</sub>. <span class="tag t-adult">adult</span></p>
     <p>In 207 mechanically ventilated children with PARDS studied with esophageal manometry over 750 patient-days, the ratio of lung elastance to respiratory-system elastance had a <b>median of 0.83, IQR 0.72 to 0.87</b>. In those children roughly five-sixths of the airway driving pressure appeared across the lung, not half. Respiratory-system compliance tracked lung compliance closely (r = 0.94) and chest-wall compliance only moderately (r = 0.53), and the authors' conclusion was that clinical data cannot reliably substitute for esophageal manometry in separating the two. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40815194/" target="_blank" rel="noopener">Ito 2025, PMID 40815194</a> <span class="tag t-peds">pediatric, PARDS</span></p>
     <p>So do not import "half goes to the pleural space" into a PICU bedside. The transpulmonary content of a plateau pressure is a measurement, not a constant.</p>
@@ -726,20 +761,20 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <li>Hess's worked example: R<sub>I</sub> = (43 &minus; 40)/0.33 = 9 cmH<sub>2</sub>O/L/s; R<sub>E</sub> = (40 &minus; 26)/0.83 = 17 cmH<sub>2</sub>O/L/s.</li>
       <li>Common causes of a rise: bronchospasm, secretions, and a small internal-diameter endotracheal tube.</li>
     </ol>
-    <p>The third of those is the pediatric one and it deserves its own sentence. Resistance through a tube scales steeply with internal diameter, so the tube can be the dominant resistor in a small child in a way it never is in an adult, and a resistance problem on the waveform may be a tube problem rather than a lung problem. This tool models tube and airway together as one lumped R; it cannot separate them, and neither can the ventilator.</p>
+    <p>The third of those is the pediatric one. Resistance through a tube scales steeply with internal diameter, so the tube can be the dominant resistor in a small child in a way it never is in an adult, and a resistance problem on the waveform may be a tube problem rather than a lung problem. This tool models tube and airway together as one lumped R; it cannot separate them, and neither can the ventilator.</p>
     <p>A note on the phrase "high resistance". Marini's caution is that absolute R and C values must be referenced to the size of the aerated compartment. In ARDS, R is high and C is low in absolute units while the specific R and specific C per unit of air-containing lung are much closer to normal. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> <span class="tag t-adult">adult</span> The same caution applies with force across the pediatric age range, where absolute compliance in mL/cmH<sub>2</sub>O spans more than an order of magnitude between a neonate and an adolescent for reasons that have nothing to do with disease.</p>
     <figure class="fg">
       <p class="fgh">Peak moves with flow. Plateau does not.</p>
       <div class="fgwrap">
-      <svg id="figRes" viewBox="0 0 780 280" role="img" aria-labelledby="figResT"><title id="figResT">Peak inspiratory pressure and plateau pressure plotted against set inspiratory flow. The plateau is a horizontal line that does not move with flow; the peak is a straight line whose slope is the resistance, and a second dashed line shows the peak at double the resistance.</title></svg>
+      <svg id="figRes" viewBox="0 0 780 306" role="img" aria-labelledby="figResT"><title id="figResT">Peak inspiratory pressure and plateau pressure plotted against set inspiratory flow. The plateau is a horizontal line that does not move with flow; the peak is a straight line whose slope is the resistance, and a second dashed line shows the peak at double the resistance.</title></svg>
       </div>
-      <figcaption>The whole discrimination is in this picture. Resistance changes a slope; compliance changes an intercept. At an inspiratory flow of exactly 1 L/s the vertical gap in cmH<sub>2</sub>O is numerically the resistance in cmH<sub>2</sub>O/L/s, which is the fastest arithmetic at any bedside.</figcaption>
+      <figcaption>Resistance changes a slope; compliance changes an intercept. At an inspiratory flow of exactly 1 L/s the vertical gap in cmH<sub>2</sub>O is numerically the resistance in cmH<sub>2</sub>O/L/s.</figcaption>
     </figure>
 
     <h3>The tube is part of the resistance, and in a child it is a large part</h3>
     <p>An in-vitro model of the intubated respiratory system in pressure-control ventilation measured the difference between the peak inspiratory pressure at the Y-piece under flow and the plateau pressure under zero flow, across endotracheal tubes from 3.0 to 8.0 mm, at pressures above PEEP of 10, 15 and 20 cmH<sub>2</sub>O, at three airway resistances and a range of compliances from normal to extremely severe. <b>Peak pressure overestimated plateau at every tube size.</b> The gap widened with higher compliance, higher resistance, higher set pressure above PEEP and shorter inspiratory time, and inspiratory time was the strongest single variable; the contribution of airway resistance became more prominent as tube size increased. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31688716/" target="_blank" rel="noopener">Ilia 2020, PMID 31688716</a> <span class="tag t-peds">bench, pediatric-sized tubes</span></p>
     <p>The univariate coefficients as published, for scale rather than for use: <span class="mono">compliance &beta; &minus;1.5 (95% CI &minus;1.7 to &minus;1.4) &middot; resistance &beta; 1.7 (1.5 to 2.0) &middot; pressure above PEEP &beta; 1.7 (1.4 to 2.0) &middot; inspiratory time &beta; &minus;0.7 (&minus;1.0 to &minus;0.4), all p &lt; 0.001</span>. That paper also fits multiple-regression models stratified by tube size. <b>Those per-tube models are not implemented here and no predictive equation from that paper is reproduced</b>, because the stratified coefficient tables were not retrieved; the finding is used qualitatively and nothing on this page is back-calculated from it.</p>
-    <p>The bedside consequence is the one to carry: <b>in pressure control a Y-piece peak is not a plateau, and the smaller the child and the shorter the inspiratory time, the further apart the two are.</b> That is why this rig refuses to print a plateau in any mode until flow has actually stopped, either because you held the breath or because the exponential finished on its own.</p>
+    <p>The bedside consequence: <b>in pressure control a Y-piece peak is not a plateau, and the smaller the child and the shorter the inspiratory time, the further apart the two are.</b> That is why this rig refuses to print a plateau in any mode until flow has actually stopped, either because you held the breath or because the exponential finished on its own.</p>
 
     <p>Aerosol delivery through the circuit, which is where a resistance problem is often treated, is worked through separately in <a href="albuterol-hfnc-delivery.html">albuterol and high-flow nasal cannula delivery</a>.</p>
    </div>
@@ -755,7 +790,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div>
     <h2>The time constant</h2>
     <span class="eq big">&tau; = R &times; C</span>
-    <p>One number that says how fast a lung unit fills and empties. Both directions are exponential with the same &tau;, but they are not the same exponential. Emptying decays, V(t) = V<sub>i</sub> &times; e<sup>&minus;t/&tau;</sup>; filling is its complement, V(t) = V<sub>&infin;</sub> &times; (1 &minus; e<sup>&minus;t/&tau;</sup>), which is the form used for delivered volume in section 06 and the form the solver integrates. The table below is the fraction of the change <i>completed</i>, so it reads the same in either direction. The completion figures are worth memorising, because every expiratory-time decision runs on them.</p>
+    <p>One number that says how fast a lung unit fills and empties. Both directions are exponential with the same &tau;, but they are not the same exponential. Emptying decays, V(t) = V<sub>i</sub> &times; e<sup>&minus;t/&tau;</sup>; filling is its complement, V(t) = V<sub>&infin;</sub> &times; (1 &minus; e<sup>&minus;t/&tau;</sup>), which is the form used for delivered volume in section 06 and the form the solver integrates. The table below is the fraction of the change <i>completed</i>, so it reads the same in either direction. Every expiratory-time decision runs on those figures.</p>
     <div class="scrollx"><table>
       <caption>Fraction of the volume change completed, by time constant. A property of the exponential once the single-compartment model is granted. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014</a></caption>
       <thead><tr><th>Time</th><th class="num">1&tau;</th><th class="num">2&tau;</th><th class="num">3&tau;</th><th class="num">4&tau;</th><th class="num">5&tau;</th></tr></thead>
@@ -766,16 +801,16 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <figure class="fg">
       <p class="fgh">Emptying against the clock you actually have</p>
       <div class="fgwrap">
-      <svg id="figTau" viewBox="0 0 780 300" role="img" aria-labelledby="figTauT"><title id="figTauT">Left: the fraction of the tidal volume still in the lung during passive expiration, with vertical lines at one through five time constants labelled with the fraction already exhaled, and a shaded band marking the expiratory time the current rate and inspiratory time do not leave. Right: the same expiration as a flow trace, with the tangent at time zero crossing the axis at exactly one time constant.</title></svg>
+      <svg id="figTau" viewBox="0 0 780 360" role="img" aria-labelledby="figTauT"><title id="figTauT">Left: the fraction of the tidal volume still in the lung during passive expiration, with vertical lines at one through five time constants labelled with the fraction already exhaled, and a shaded band marking the expiratory time the current rate and inspiratory time do not leave. Right: the same expiration as a flow trace, with the tangent at time zero crossing the axis at exactly one time constant.</title></svg>
       </div>
       <figcaption>Doubling either resistance or compliance doubles the spacing of the five hairlines and doubles the volume still trapped when the next breath starts. The shaded region is the part of the exponential the ventilator is not giving the patient time to finish.</figcaption>
     </figure>
 
-    <h3>The bedside estimate, and why it is exact here for the wrong reason</h3>
+    <h3>The bedside estimate, and why it is exact here</h3>
     <span class="eq">&tau;<sub>E</sub> = exhaled V<sub>T</sub> / peak expiratory flow</span>
     <p>In this tool's model the estimate is not approximate, it is exact. In a passive single-compartment exhalation, flow at the instant expiration begins is (V<sub>T</sub>/C)/R = V<sub>T</sub>/&tau;, so V<sub>T</sub> divided by that peak flow returns &tau; identically. <b>That exactness is a property of the assumption, not evidence that the estimate is good.</b> Hess: the method treats the lungs as a single compartment and thus does not account for time constant heterogeneity in the lungs. A real lung is a population of time constants, and the fast units dominate the peak flow while the slow ones dominate the trapping. The method was originally validated on a lung simulator and 10 greyhound dogs. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/7774225/" target="_blank" rel="noopener">Brunner 1995, PMID 7774225</a> <span class="tag t-adult">bench and animal</span></p>
     <p>Why it is worth measuring anyway: the expiratory time constant estimated from the passive expiratory flow curve has been used to derive plateau pressure, compliance and total resistance in real time without an inspiratory pause, in 92 adults across volume-control CMV, volume-control SIMV, volume control plus, and pressure support. That is the only route to those numbers in a spontaneously breathing patient, where a plateau maneuver is invalid. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/23384402/" target="_blank" rel="noopener">Al-Rawas 2013, PMID 23384402</a> <span class="tag t-adult">adult</span></p>
-    <div class="callout"><p><b>The rule this whole page returns to.</b> Expiratory time must be long enough relative to &tau;, and "long enough" means about 3&tau; for 95% emptying. Everything about auto-PEEP is that sentence.</p></div>
+    <div class="callout"><p><b>The rule behind every auto-PEEP question.</b> Expiratory time must be long enough relative to &tau;, and "long enough" means about 3&tau; for 95% emptying. Everything about auto-PEEP is that sentence.</p></div>
    </div>
   </div>
  </div>
@@ -800,7 +835,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <button class="btn" type="button" id="btnStarve" aria-pressed="false">Show flow starvation</button>
       </div>
       <div class="fgwrap">
-      <svg id="figVC" viewBox="0 0 780 240" role="img" aria-labelledby="figVCT"><title id="figVCT">Three volume-control pressure traces drawn side by side from real solver output at the same tidal volume and flow: the current mechanics, then resistance doubled, then compliance halved. The resistance case raises the peak and leaves the plateau where it was; the compliance case raises both by the same amount.</title></svg>
+      <svg id="figVC" viewBox="0 0 780 268" role="img" aria-labelledby="figVCT"><title id="figVCT">Three volume-control pressure traces drawn side by side from real solver output at the same tidal volume and flow: the current mechanics, then resistance doubled, then compliance halved. The resistance case raises the peak and leaves the plateau where it was; the compliance case raises both by the same amount.</title></svg>
       </div>
       <figcaption>Compare thumbnails one and two: same plateau, different peak. Compare one and three: both raised by the same amount, gap unchanged. Every cell is solved, not drawn, at the parameters printed beneath it.</figcaption>
     </figure>
@@ -826,25 +861,25 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <p><b>Held constant: applied pressure and inspiratory time. Free to vary: volume and flow.</b></p>
     <p>The ventilator holds P<sub>aw</sub> = PEEP + &Delta;P for the whole of T<sub>I</sub>. Flow and alveolar pressure follow decaying exponentials with the same time constant. All three expressions are Hess's. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">PMID 25336536</a></p>
     <span class="eq big">V&#775;(t) = (&Delta;P/R) &times; e<sup>&minus;t/&tau;</sup> &nbsp;&nbsp;&nbsp; P<sub>alv</sub>(t) = PEEP + &Delta;P &times; (1 &minus; e<sup>&minus;t/&tau;</sup>) &nbsp;&nbsp;&nbsp; V<sub>T</sub> = C &times; &Delta;P &times; (1 &minus; e<sup>&minus;T<sub>I</sub>/&tau;</sup>)</span>
-    <p>Three consequences the rig lets you discover by moving sliders.</p>
+    <p>Three consequences you can check by moving sliders.</p>
     <ol class="steps">
       <li><b>Peak flow is set by &Delta;P/R, not by any flow control.</b> Raise resistance and the initial flow falls; you have no knob for it.</li>
-      <li><b>Whether the set volume arrives depends entirely on T<sub>I</sub> relative to &tau;.</b> At T<sub>I</sub> = 1&tau; only 63% of the achievable volume is delivered. At 3&tau; the breath is 95% complete and the residual peak-to-plateau gap is 5% of &Delta;P; at 5&tau; it is 99.3% complete and the gap is 0.7%. Neither is zero, so say the number rather than a threshold: the figure below and self-test 14 both use 5&tau; for "PIP equals P<sub>plat</sub>", because 5% of a 20 cmH<sub>2</sub>O driving pressure is 1 cmH<sub>2</sub>O, which is a difference a bedside reader would act on. This is the correct way to teach "is your inspiratory time long enough": as a ratio, not as a number of seconds.</li>
-      <li><b>When flow reaches zero before T<sub>I</sub> ends, PIP and P<sub>plat</sub> are equal</b>, and the breath has an intrinsic plateau without any hold maneuver. That is a real convenience and a real trap: it is only true when flow actually reaches zero, and in an obstructed patient it never does.</li>
+      <li><b>Whether the set volume arrives depends entirely on T<sub>I</sub> relative to &tau;.</b> At T<sub>I</sub> = 1&tau; only 63% of the achievable volume is delivered. At 3&tau; the breath is 95% complete and the residual peak-to-plateau gap is 5% of &Delta;P; at 5&tau; it is 99.3% complete and the gap is 0.7%. Neither is zero, so say the number rather than a threshold: the figure below and self-test 14 both use 5&tau; for "PIP equals P<sub>plat</sub>", because 5% of a 20 cmH<sub>2</sub>O driving pressure is 1 cmH<sub>2</sub>O, which is a difference a bedside reader would act on. Ask whether the inspiratory time is long enough as a ratio to &tau;, not as a number of seconds.</li>
+      <li><b>When flow reaches zero before T<sub>I</sub> ends, PIP and P<sub>plat</sub> are equal</b>, and the breath has an intrinsic plateau without any hold maneuver. It is only true when flow actually reaches zero, and in an obstructed patient it never does.</li>
     </ol>
 
     <figure class="fg">
       <p class="fgh">Delivered volume is a question about T<sub>I</sub> divided by tau</p>
       <div class="fgwrap">
-      <svg id="figPC" viewBox="0 0 780 300" role="img" aria-labelledby="figPCT"><title id="figPCT">Delivered tidal volume as a fraction of compliance times driving pressure, plotted against inspiratory time in seconds, with vertical lines at one through five time constants. The region left of three time constants is shaded and labelled as the region where flow has not reached zero, so the peak pressure seen is not a plateau. An inset shows the matching inspiratory flow decay whose initial peak is driving pressure divided by resistance.</title></svg>
+      <svg id="figPC" viewBox="0 0 780 350" role="img" aria-labelledby="figPCT"><title id="figPCT">Delivered tidal volume as a fraction of compliance times driving pressure, plotted against inspiratory time in seconds, with vertical lines at one through five time constants. The region left of three time constants is shaded and labelled as the region where flow has not reached zero, so the peak pressure seen is not a plateau. An inset shows the matching inspiratory flow decay whose initial peak is driving pressure divided by resistance.</title></svg>
       </div>
-      <figcaption>Raising resistance or compliance stretches the curve to the right and drops the marker at a fixed inspiratory time. Halving the driving pressure does not move the curve at all, because the y axis is normalised to it: that is the point, not an omission.</figcaption>
+      <figcaption>Raising resistance or compliance stretches the curve to the right and drops the marker at a fixed inspiratory time. Halving the driving pressure does not move the curve at all, because the y axis is normalised to it.</figcaption>
     </figure>
 
-    <p>The third of those is not a curiosity in a small patient. In the bench model of the intubated respiratory system across endotracheal tubes from 3.0 to 8.0 mm, peak pressure at the Y-piece overestimated plateau at every tube size, most of all with a short inspiratory time or a high airway resistance. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31688716/" target="_blank" rel="noopener">Ilia 2020, PMID 31688716</a> <span class="tag t-peds">bench, pediatric-sized tubes</span> Reading a pressure-control peak as though it were a plateau is therefore an error that gets worse as the patient gets smaller.</p>
+    <p>The third of those matters most in a small patient. In the bench model of the intubated respiratory system across endotracheal tubes from 3.0 to 8.0 mm, peak pressure at the Y-piece overestimated plateau at every tube size, most of all with a short inspiratory time or a high airway resistance. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31688716/" target="_blank" rel="noopener">Ilia 2020, PMID 31688716</a> <span class="tag t-peds">bench, pediatric-sized tubes</span> Reading a pressure-control peak as though it were a plateau is therefore an error that gets worse as the patient gets smaller.</p>
 
     <h3>Limitations</h3>
-    <p>Volume is unprotected. Compliance falls, volume falls, and nothing on the ventilator alarms unless a volume alarm is set. Marini adds the interaction that catches people: because auto-PEEP subtracts from the effective driving pressure in a mode whose set pressure is referenced to the applied PEEP, raising the frequency can be accompanied by a <i>falling</i> tidal volume, so minute ventilation does not rise as much as expected. Conversely, slowing the rate reduces auto-PEEP, restores driving pressure, and can produce an unintended rise in tidal volume. Patients with severe airflow obstruction show greater tidal-volume sensitivity to both inspiratory time and frequency than patients with restrictive disease. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> <span class="tag t-adult">adult, obstruction-weighted</span></p>
+    <p>Volume is unprotected. Compliance falls, volume falls, and nothing on the ventilator alarms unless a volume alarm is set. Marini adds an interaction: because auto-PEEP subtracts from the effective driving pressure in a mode whose set pressure is referenced to the applied PEEP, raising the frequency can be accompanied by a <i>falling</i> tidal volume, so minute ventilation does not rise as much as expected. Conversely, slowing the rate reduces auto-PEEP, restores driving pressure, and can produce an unintended rise in tidal volume. Patients with severe airflow obstruction show greater tidal-volume sensitivity to both inspiratory time and frequency than patients with restrictive disease. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> <span class="tag t-adult">adult, obstruction-weighted</span></p>
     <p><b>Poor candidate: changing compliance.</b> Any process where compliance is moving fast, such as resolving atelectasis, a chest tube going in, a recruitment maneuver, developing edema, or an abdomen being closed, makes pressure control a mode that silently changes the dose. If compliance is the thing that is changing, do not choose the mode that lets volume float.</p>
    </div>
   </div>
@@ -857,13 +892,13 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">07<small>PRVC</small></div>
    <div>
-    <h2>PRVC, and what actually happens between breaths</h2>
+    <h2>PRVC, and what happens between breaths</h2>
     <p><b>Held constant within a breath: pressure. Held constant across breaths: a tidal-volume target. Free to vary: the applied pressure, breath to breath.</b></p>
     <p>PRVC is a pressure-control breath wrapped in a slow outer loop. Every individual breath obeys the pressure-control equations above exactly. After each breath the ventilator compares the measured tidal volume to the target and adjusts &Delta;P for the next one. The rig implements this control law:</p>
     <span class="eq big">&Delta;P<sub>next</sub> = clamp(&Delta;P + (V<sub>T,target</sub> &minus; V<sub>T,measured</sub>)/C<sub>est</sub>, &Delta;P &minus; 3, &Delta;P + 3), then clamped to [0, P<sub>max</sub> &minus; PEEP &minus; 5]</span>
     <p><span class="tag t-model">model choice</span> The step limit of 3 cmH<sub>2</sub>O per breath and the 5 cmH<sub>2</sub>O headroom below the pressure limit are representative of how vendors implement adaptive pressure control. They are not a published constant, and vendors differ from one another in ways that change patient outcomes. The step limit is exposed as a slider in the rig so you can watch an aggressive loop oscillate and a conservative one lag.</p>
 
-    <h3>Which tidal volume is measured is the entire question</h3>
+    <h3>Which tidal volume the controller measures</h3>
     <p>Vendors differ on whether the controller reads inspiratory volume, expiratory volume, volume at the ventilator, or volume at the airway opening, and on whether leak compensation is applied. In a surfactant-deficient, spontaneously breathing juvenile rabbit model (n = 12, 1.61 &plusmn; 0.20 kg) run at identical settings with and without an endotracheal-tube leak, the three brands were indistinguishable with no leak. With a moderate leak introduced, the volume-guarantee modes that used proximal volume monitoring and adaptive leak compensation delivered a higher percentage of successfully triggered breaths, higher peak inspiratory pressure, higher minute ventilation, higher pH and lower PaCO<sub>2</sub> than the PRVC mode that measured at the ventilator without leak compensation. In that comparison PRVC <b>under-supported</b> the animal. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/30723169/" target="_blank" rel="noopener">DiBlasi 2019, PMID 30723169</a> <span class="tag t-peds">animal, neonatal analogue</span></p>
     <p>The opposite failure, in which the controller reads a falsely low exhaled volume, concludes the lung is stiffening, and escalates pressure to chase gas that is going out around the tube, is the mechanism most often taught. It follows directly from the control law above when the measured volume is expiratory and uncompensated. <span class="tag t-derived">inference from the control law</span> It is stated here as a mechanistic inference, not as a sourced observation, because the one controlled comparison found the other direction on the ventilator it tested. Both are real; which one a given ventilator does is a property of that ventilator's software.</p>
 
@@ -876,9 +911,9 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <button class="btn" type="button" id="btnPrvcN">Steady</button>
       </div>
       <div class="fgwrap">
-      <svg id="figPrvc" viewBox="0 0 780 310" role="img" aria-labelledby="figPrvcT"><title id="figPrvcT">A breath-by-breath trend strip. The upper band plots the set pressure above PEEP for each of the last forty breaths as a step line with the controller ceiling drawn as a dashed limit; the lower band plots the delivered tidal volume per breath against the dashed target. Three scripted events can be introduced at breath ten.</title></svg>
+      <svg id="figPrvc" viewBox="0 0 780 356" role="img" aria-labelledby="figPrvcT"><title id="figPrvcT">A breath-by-breath trend strip. The upper band plots the set pressure above PEEP for each of the last forty breaths as a step line with the controller ceiling drawn as a dashed limit; the lower band plots the delivered tidal volume per breath against the dashed target. Three scripted events can be introduced at breath ten.</title></svg>
       </div>
-      <figcaption>Every demonstration runs the real solver breath by breath; none is a stored array. The leak case is the one to sit with: the controller is behaving correctly and still walks to its ceiling, because the number it is chasing is wrong.</figcaption>
+      <figcaption>Every demonstration runs the real solver breath by breath; none is a stored array. In the leak case the controller behaves correctly and still walks to its ceiling, because the number it is chasing is wrong.</figcaption>
     </figure>
 
     <h3>Poor candidates</h3>
@@ -888,8 +923,8 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <li><b>A patient with strong, variable effort.</b> The loop reads volume, and a patient's own effort adds volume. A big effort produces a big breath, the controller reads target-exceeded, and support is withdrawn on the next breath, so support falls exactly when the patient is working hardest. <span class="tag t-derived">inference from the control law</span></li>
     </ol>
 
-    <h3>The honest headline finding</h3>
-    <p>In 14 adults with acute lung injury or ARDS studied in a randomized crossover at a 6.4 &plusmn; 0.5 mL/kg target, work of breathing trended non-significantly higher on PCV (1.27 &plusmn; 0.58 J/L) and PRVC (1.35 &plusmn; 0.60 J/L) than on volume control with a high fixed peak flow of 75 L/min (1.09 &plusmn; 0.59 J/L), and <b>in 40% of patients tidal volume markedly exceeded the lung-protective target during PRVC and PCV</b>. The authors concluded that PCV and PRVC offer no advantage in reducing work of breathing compared with volume control at a high flow rate, and in some patients did not allow tidal volume to be controlled as precisely. The common belief that a pressure-targeted breath is inherently kinder to a working patient did not survive its own test. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/16318643/" target="_blank" rel="noopener">Kallet 2005, PMID 16318643</a> <span class="tag t-adult">adult ALI/ARDS, n = 14</span></p>
+    <h3>What the head-to-head trial found</h3>
+    <p>In 14 adults with acute lung injury or ARDS studied in a randomized crossover at a 6.4 &plusmn; 0.5 mL/kg target, work of breathing trended non-significantly higher on PCV (1.27 &plusmn; 0.58 J/L) and PRVC (1.35 &plusmn; 0.60 J/L) than on volume control with a high fixed peak flow of 75 L/min (1.09 &plusmn; 0.59 J/L), and <b>in 40% of patients tidal volume markedly exceeded the lung-protective target during PRVC and PCV</b>. The authors concluded that PCV and PRVC offer no advantage in reducing work of breathing compared with volume control at a high flow rate, and in some patients did not allow tidal volume to be controlled as precisely. A pressure-targeted breath is widely assumed to be kinder to a working patient; this trial did not find that. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/16318643/" target="_blank" rel="noopener">Kallet 2005, PMID 16318643</a> <span class="tag t-adult">adult ALI/ARDS, n = 14</span></p>
    </div>
   </div>
  </div>
@@ -919,7 +954,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <tr><td><b>Poor candidate</b></td><td>High PIP that has not been decomposed with a hold</td><td>Changing compliance</td><td>ETT leak; high variable resistance; strong variable effort</td></tr>
       </tbody>
     </table></div>
-    <p>The mode is a choice about <i>which variable you are willing to let move</i>. There is no mode that protects both pressure and volume, because the equation of motion does not permit one. Choosing a mode is choosing which alarm you want to be the one that tells you the patient changed.</p>
+    <p>The mode is a choice about <i>which variable you are willing to let move</i>. There is no mode that protects both pressure and volume, because the equation of motion does not permit one. Choosing a mode is choosing which alarm tells you the patient changed.</p>
    </div>
   </div>
  </div>
@@ -935,24 +970,45 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <p>Two mechanisms, one physiology.</p>
     <p><b>Pressure trigger.</b> The exhalation valve holds the circuit at PEEP. An inspiratory effort pulls circuit pressure below PEEP; when the deflection reaches the set sensitivity, the breath is delivered. Typical setting in the comparative literature: &minus;1 cmH<sub>2</sub>O.</p>
     <p><b>Flow trigger.</b> A bias flow circulates through the circuit. An inspiratory effort diverts some of it into the patient; when the difference between delivered and returned flow reaches the set sensitivity, the breath is delivered. Typical setting in the comparative literature: 0.7 to 2.0 L/min. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/9187592/" target="_blank" rel="noopener">T&uuml;t&uuml;nc&uuml; 1997, PMID 9187592</a></p>
-    <p>Before any flow can occur, the effort must first close the gap between alveolar pressure and circuit pressure. That gap is auto-PEEP. The rig models the two thresholds like this, and the teaching point falls out for free: <span class="tag t-derived">derived</span></p>
-    <span class="eq big">pressure trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>P</sub><br>flow trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>F</sub> &times; R</span>
+
+    <h3>How flow triggering works on a Servo</h3>
+    <p>The paragraph above is generic. What follows is Getinge's own account of the Servo, taken from two documents published on getinge.com and read directly: the <a class="cite" href="https://www.getinge.com/dam/hospital/documents/english/servo-i-pocketguide-trainm-_mx-8049.digital-66080-en.pdf" target="_blank" rel="noopener">Servo-i pocket guide, pp. 12&ndash;14</a> and the <a class="cite" href="https://www.getinge.com/dam/hospital/documents/english/servo-u-4.1-trainm-startup-guide-en-nonus-mx-5948_rev07_digital-67924-en.pdf" target="_blank" rel="noopener">Servo-u startup guide 4.1</a>. Steps 1 to 4 are the mechanism. Steps 5 to 8 are the parts that changed between the two generations, and they are why the number on the dial does not travel.</p>
     <ol class="steps">
-      <li><b>Flow triggering is cheaper than pressure triggering only when sensitivity<sub>F</sub> &times; R is smaller than sensitivity<sub>P</sub>.</b> At a flow sensitivity of 1 L/min (0.0167 L/s) and a resistance of 10 cmH<sub>2</sub>O/L/s, the flow trigger costs 0.17 cmH<sub>2</sub>O against a 1 cmH<sub>2</sub>O pressure trigger. At a resistance of 100 cmH<sub>2</sub>O/L/s, a small tube in a small child, the same setting costs 1.7 cmH<sub>2</sub>O and the flow trigger has become the more expensive one. Slide R in the rig and watch the two thresholds cross in the readout &mdash; but watch it as <b>this model's prediction, not as an observation</b>. <span class="tag t-derived">derived</span> Two things stand between the crossover and a bedside claim. The rig carries a single lumped R, so the whole of it is charged against the flow trigger, when at a real bedside only the part of the resistance lying between the flow sensor and the alveolus is; section 03 already says the lumping is a simplification, and this is where it bites hardest. And the only human head-to-head in this page's evidence base, T&uuml;t&uuml;nc&uuml; 1997, found no significant difference between the two triggers and <b>excluded COPD</b>, which is the population in which a high resistance would drive the crossover. No study confirming the crossover was found.</li>
+      <li><b>The circuit is never still.</b> Through expiration the ventilator delivers a continuous bias flow and measures it in the expiratory channel. On the Servo-i that flow is <b>2 L/min in the adult range and 0.5 L/min in the infant range</b>. It is a fixed specification, not a control on the screen. <span class="tag t-adult">Servo-i pocket guide p. 12</span></li>
+      <li><b>With no effort, what goes in comes back.</b> Inspiratory and expiratory flow are equal and their difference is zero. That difference, not pressure, is the signal.</li>
+      <li><b>An effort diverts part of the bias flow into the patient</b>, so the flow returning down the expiratory limb falls below the flow being delivered, and the difference goes positive.</li>
+      <li><b>The valve opens on that difference.</b> Getinge's wording: when the difference between the inspiratory and the expiratory flow equals the preset flow trigger level, the Servo-i starts a new inspiration. <span class="tag t-adult">Servo-i pocket guide p. 12</span></li>
+      <li><b>On the Servo-i the flow trigger is not set in L/min.</b> Pressure and flow triggering share one continuous slider: below zero it is a pressure trigger, settable from 0 to &minus;20 cmH<sub>2</sub>O below PEEP; above zero it is a flow trigger. The flow setting moves <b>in steps of 10%, each step more sensitive than the last</b>, so what is being set is a fraction of that bias flow rather than a number of litres per minute. <span class="tag t-adult">Servo-i pocket guide p. 13</span></li>
+      <li><b>The sensitive end of the scale is marked red</b>, because a trigger set there fires on almost nothing. Getinge's own example: with the trigger in the red area the patient only has to inhale a very small part of the trigger flow to trigger a breath, and there is a risk of auto-triggering. <span class="tag t-adult">Servo-i pocket guide p. 13</span></li>
+      <li><b>The Servo-u reversed the scale and changed the units.</b> Flow triggering now sits on the <i>left</i> of the slider, and the further left, the less effort the patient has to make, with the far left marked red for auto-triggering; pressure triggering sits on the right, where further right means more patient effort. The Servo-u sets the flow trigger <b>directly in L/min</b> &mdash; its own worked example compares a flow trigger of 1.6 L/min against a pressure trigger of &minus;1 cmH<sub>2</sub>O. <span class="tag t-adult">Servo-u startup guide &sect;1.6; Servo-u hands-on guide pp. 18&ndash;19</span></li>
+      <li><b>Two settings can move the trigger off the bias flow entirely.</b> With a Y sensor active, recommended for tidal volumes below 10 mL, the flow through that sensor replaces the bias flow as the source for flow-based triggering. In the neonatal patient category, invasive leak compensation maintains PEEP and compensates trigger and end-inspiration sensitivity. <span class="tag t-peds">Servo-u startup guide &sect;&sect;9.1 and 9.4</span></li>
+    </ol>
+    <p><b>What could not be sourced, and is therefore not claimed.</b> Getinge publishes the rule in step 4 and no more: nothing retrievable describes how the machine separates a real effort from circuit noise, a leak, or cardiac oscillation &mdash; no filter window, no debounce, no baseline tracking. Nor does any document found state the highest number the Servo-i flow dial displays, or what one step of 10% is worth in L/min at a given setting. Both were searched for and neither is written down here. The one arithmetic that does follow from the published text: half of the adult bias flow is 1.0 L/min, which is the same order as the settings used in the comparative literature.</p>
+    <p><b>What this means for the rig below.</b> The rig's flow-sensitivity slider is in L/min, which is the Servo-u convention and not the Servo-i one, and it carries no bias flow at all because a single-compartment model has no circuit. It is the generic mechanism, not a Servo.</p>
+
+    <h3>The trigger ladder</h3>
+    <p>Before any flow can occur, the effort must first close the gap between alveolar pressure and circuit pressure. That gap is auto-PEEP. The rig models the two thresholds like this: <span class="tag t-derived">derived</span></p>
+    <span class="eq big">pressure trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>P</sub><br>flow trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>F</sub> &times; R</span>
+    <h4>Three consequences</h4>
+    <ol class="steps">
+      <li><b>Flow triggering is cheaper than pressure triggering only when sensitivity<sub>F</sub> &times; R is smaller than sensitivity<sub>P</sub>.</b> At a flow sensitivity of 1 L/min (0.0167 L/s) and a resistance of 10 cmH<sub>2</sub>O/L/s, the flow trigger costs 0.17 cmH<sub>2</sub>O against a 1 cmH<sub>2</sub>O pressure trigger. At a resistance of 100 cmH<sub>2</sub>O/L/s, a small tube in a small child, the same setting costs 1.7 cmH<sub>2</sub>O and the flow trigger has become the more expensive one. Slide R in the rig and watch the two thresholds cross in the readout &mdash; but watch it as <b>this model's prediction, not as an observation</b>. <span class="tag t-derived">derived</span> Two things stand between the crossover and a bedside claim. The rig carries a single lumped R, so the whole of it is charged against the flow trigger, when at a real bedside only the part of the resistance lying between the flow sensor and the alveolus is; section 03 already says the lumping is a simplification, and this is where it bites hardest. And neither human head-to-head in this page's evidence base tested it: T&uuml;t&uuml;nc&uuml; 1997 found no significant difference between the two triggers and <b>excluded COPD</b>, the population in which a high resistance would drive the crossover, and Thiagarajan 2004 in children varied compliance rather than resistance. No study confirming the crossover was found.</li>
       <li><b>Neither setting can help with auto-PEEP</b>, because auto-PEEP sits outside the sensitivity term in both expressions. Hess makes this concrete: on an airway-pressure, flow, volume and esophageal-pressure trace in a patient with auto-PEEP, the decrease in esophageal pressure required to trigger the ventilator <i>is</i> the amount of auto-PEEP, expiratory flow does not return to zero, and the inspiratory effort shown fails to trigger at all. The fix is a shorter &tau; or a longer T<sub>E</sub>, or applied PEEP to offset the threshold load. Never a more sensitive trigger.</li>
       <li><b>Ineffective efforts are emergent, not scripted.</b> If peak P<sub>mus</sub> never exceeds auto-PEEP plus the threshold, no breath is delivered, and the only visible trace of the effort is a notch in the expiratory flow waveform. Hess names exactly this: notching in the expiratory flow waveform suggests missed trigger efforts. The rig gets this behaviour from the model; it is not special-cased anywhere in the code. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></li>
     </ol>
+    <p>Read the figure in three steps, numbered on it. <b>Step 1</b> is what the effort has to clear, split into the part that is auto-PEEP and the part that is the sensitivity setting. <b>Step 2</b> is six seconds of the effort itself against that threshold. <b>Step 3</b> is what reaches the flow trace.</p>
     <figure class="fg">
-      <p class="fgh">The trigger ladder: what the patient has to pay before the valve opens</p>
+      <p class="fgh">The trigger ladder: what the patient pays before the valve opens</p>
       <div class="fgwrap">
-      <svg id="figTrig" viewBox="0 0 780 300" role="img" aria-labelledby="figTrigT"><title id="figTrigT">A stacked bar showing the pressure a patient must generate to trigger a breath: auto-PEEP at the bottom, which must be undone before the sensor sees anything, and the set sensitivity stacked on top. Beside it, six seconds of muscle pressure plotted against the dashed total threshold, with failed efforts marked on the flow trace below.</title></svg>
+      <svg id="figTrig" viewBox="0 0 780 440" role="img" aria-labelledby="figTrigT"><title id="figTrigT">Three numbered rows. Row one is a horizontal bar in cmH2O, split into the auto-PEEP the effort must undo before the sensor sees anything and the set trigger sensitivity stacked beyond it, with a legend naming both parts and the total printed in the row title. Row two is six seconds of muscle pressure plotted against that total as a dashed line. Row three shares row two's time axis and marks each effort as either a delivered breath or an ineffective one that appears only on the flow trace.</title></svg>
       </div>
-      <figcaption>Select the flow trigger and then drag the resistance slider in the rig without touching the sensitivity: the upper segment grows on its own, because the pressure needed to produce a set flow is that flow times the resistance. Through a narrow tube the same setting is a heavier load.</figcaption>
+      <figcaption>Select the flow trigger in the rig and drag the resistance slider without touching the sensitivity. The sensitivity segment in step 1 grows on its own, because the pressure needed to produce a set flow is that flow times the resistance, so the same setting is a heavier load through a narrower tube.</figcaption>
     </figure>
 
     <h3>What the comparative evidence actually shows</h3>
     <p>In 16 orotracheally intubated adults recovering from acute respiratory failure without COPD, randomized across pressure triggering at &minus;1 cmH<sub>2</sub>O and flow triggering at 0.7 to 2.0 L/min, each at full and at 75% support, work of breathing during partial support was 0.38 &plusmn; 0.24 J/L with pressure triggering and 0.42 &plusmn; 0.26 J/L with flow triggering. Tracheal occlusion pressure and rapid shallow breathing index were likewise comparable, and total ventilation, blood gases and haemodynamics did not differ across the four conditions. The authors concluded that the choice of triggering system did not significantly affect short-term gas exchange, mechanics or inspiratory workload. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/9187592/" target="_blank" rel="noopener">T&uuml;t&uuml;nc&uuml; 1997, PMID 9187592</a> <span class="tag t-adult">adult, COPD excluded</span></p>
-    <p>On a modern ventilator in a patient without severe obstruction, <b>the trigger type is a small effect and the auto-PEEP is a large one.</b> Note the exclusion: that cohort had no COPD, which is precisely the population in which the threshold-load argument bites.</p>
+    <p>The one pediatric head-to-head runs the same way, with one subgroup exception. In <b>16 ventilated children</b>, median age 12.8 months and median weight 11.0 kg, breathing spontaneously and unsupported between SIMV breaths with work measured by esophageal balloon, flow triggering on a Servo 300 gave <b>0.8 J/L (IQR 0.5 to 1.0)</b> against <b>0.9 J/L</b> for pressure triggering on the same machine and 0.9 J/L on a Servo 900C, a difference that did not reach significance. When lung compliance was below 0.75 mL/kg/cmH<sub>2</sub>O, flow triggering fell to 0.8 J/L (IQR 0.6 to 1.1) against 1.1 and 1.2 J/L for the two pressure-trigger conditions, p &le; 0.017. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/15215009/" target="_blank" rel="noopener">Thiagarajan 2004, PMID 15215009</a> <span class="tag t-peds">pediatric, n = 16</span> The authors put it as a may, and so does this page: flow triggering may not reduce work in ventilated children generally, and may be worth choosing when compliance is low.</p>
+    <p>On a modern ventilator in a patient without severe obstruction, <b>the trigger type is a small effect and the auto-PEEP is a large one.</b> Note the exclusion in the adult trial: that cohort had no COPD, which is precisely the population in which the threshold-load argument bites. Note also what neither study did, which is vary resistance.</p>
+    <p><b>Bias-flow triggering degrades as the leak approaches the bias flow</b>, and the size of that effect is a property of the ventilator rather than of the mode. In a neonatal lung-model study across five ICU ventilators and four leak scenarios, the Servo-i carried an asynchrony index of 50% during invasive ventilation and 100% during non-invasive ventilation, with or without its proximal flow sensor, while the PB980 and V500 held at 3% or below invasively; at the 0.5 kg scenario the Servo-i did not trigger at all on non-invasive ventilation. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/27651525/" target="_blank" rel="noopener">Itagaki 2016, PMID 27651525</a> <span class="tag t-peds">bench, neonatal lung model</span> A lung model is not a baby, and the finding is about particular software versions on particular machines. It is on this page because it is the mechanism in step 1 read backwards: a trigger referenced to a 0.5 L/min bias flow has little left to reference when the leak is of the same order.</p>
    </div>
   </div>
  </div>
@@ -969,24 +1025,24 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <p><b>Assist-control</b>, continuous mandatory ventilation. Every breath is a mandatory breath. If the patient triggers it, it is a mandatory breath. If the timer triggers it, it is the same mandatory breath. The set rate is a floor, not a dose.</p>
     <p><b>SIMV</b>, intermittent mandatory ventilation. A fixed number of mandatory breaths per minute, synchronized to patient effort where one is available; between them, the patient's own breaths, either unsupported or given pressure support. A patient breathing at 30 on SIMV of 12 is doing two different kinds of breath in alternation.</p>
     <figure class="fg">
-      <p class="fgh">Twenty seconds of the same patient, two breath sequences</p>
+      <p class="fgh">The same patient and the same efforts, under each breath sequence</p>
       <div class="fgbar">
         <button class="btn" type="button" id="btnSimvPs" aria-pressed="false">Pressure support on top of SIMV</button>
       </div>
       <div class="fgwrap">
-      <svg id="figSimv" viewBox="0 0 880 340" role="img" aria-labelledby="figSimvT"><title id="figSimvT">Two airway-pressure rows sharing one twenty-second axis at the same set rate and the same neural rate. In assist-control every patient effort produces a full-size breath. In synchronised intermittent mandatory ventilation, efforts inside the synchronisation window produce a mandatory breath and efforts outside it produce either a small pressure-support breath or nothing, and a bar beneath compares the cumulative patient work of the two rows.</title></svg>
+      <svg id="figSimv" viewBox="0 0 880 576" role="img" aria-labelledby="figSimvT"><title id="figSimvT">Two blocks on one time axis, each showing airway pressure above and flow below, at the same set rate and the same neural rate. In the assist-control block every breath is labelled mandatory and carries the same tidal volume. In the SIMV block, efforts inside the synchronisation window are answered with a mandatory breath of the same size, and efforts outside it are labelled spontaneous, shaded, and carry a much smaller tidal volume, delivered by the patient through a flat pressure trace. Bars beneath compare the cumulative patient work of the two blocks.</title></svg>
       </div>
-      <figcaption>The number of breaths is not what separates the two rows. How evenly the work is distributed is.</figcaption>
+      <figcaption>Read the flow panel on the spontaneous breaths. Airway pressure is flat there, so the flow is the patient's own; the tidal volume printed on each breath is what that effort bought. Press the button to give those breaths pressure support and watch the same volumes rise.</figcaption>
     </figure>
 
     <h3>What the comparative outcome evidence shows, and in whom</h3>
     <p>A systematic review and meta-analysis of eight studies in ventilated neonates compared SIMV against modes that support every breath, meaning assist-control, pressure support and neurally adjusted ventilation. <b>Weaning duration was significantly shorter when all breaths were supported, mean difference &minus;22.67 hours (95% CI &minus;44.33 to &minus;1.01).</b> There was no significant difference in death before discharge (OR 0.74, 95% CI 0.32 to 1.74) or in bronchopulmonary dysplasia at 36 weeks (OR 0.63, 95% CI 0.33 to 1.24), and none in air leaks, extubation failure or any other outcome examined. The authors call for larger studies with explicit ventilator and weaning protocols. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36631252/" target="_blank" rel="noopener">Batra 2023, PMID 36631252</a> <span class="tag t-peds">neonatal, 8 studies meta-analysed</span></p>
-    <p>Say the population plainly: <b>neonates, not older children</b>, and a synthesis of eight small studies rather than a definitive trial. No trial of SIMV against assist-control in the PICU population was found for this page. The direction of the neonatal evidence is that supporting every breath shortens weaning without a measured cost, and the mechanism it points at is the one below.</p>
+    <p>The population is <b>neonates, not older children</b>, and the evidence is a synthesis of eight small studies rather than a definitive trial. No trial of SIMV against assist-control in the PICU population was found for this page. The direction of the neonatal evidence is that supporting every breath shortens weaning without a measured cost, and the mechanism it points at is the one below.</p>
 
     <h3>The one directly relevant piece of pediatric evidence</h3>
     <p>In six intubated preterm infants being weaned, median postnatal age 34 days, studied on a Draeger Babylog across conventional IMV and patient-triggered ventilation in assist-control at two peak pressures, <b>work of breathing fell from 0.81 J/L on IMV to 0.48 J/L (patient-triggered at 10 cmH<sub>2</sub>O) and 0.47 J/L (at 15 cmH<sub>2</sub>O), p &lt; 0.05</b>. Tidal volume rose, 7.5 then 8.2 then 8.5 mL/kg, and the infants dropped their own rate to hold minute ventilation and transcutaneous CO<sub>2</sub> constant. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8630564/" target="_blank" rel="noopener">Jarreau 1996, PMID 8630564</a> <span class="tag t-peds">neonatal, n = 6</span> For scale, normal work of breathing is 0.3 to 0.7 J/L in adults, and Hess notes it needs an esophageal balloon to quantify properly, is not frequently measured, and it is not clear that measuring it improves outcome. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014</a> <span class="tag t-adult">adult</span></p>
-    <p>Six preterm infants on one ventilator is a small and specific study, and the mode names are neonatal. But it is a real measurement in real babies of the exact question, and its direction is that synchronizing every breath costs the patient less work than supporting only some of them.</p>
-    <p>On SIMV the unsupported breaths are taken through the same endotracheal tube and the same circuit as the supported ones, so the patient pays full resistive cost on every breath the ventilator declines to assist. If you are using SIMV to exercise a patient, be explicit that the exercise is being prescribed in units of the tube.</p>
+    <p>Six preterm infants on one ventilator is a small and specific study, and the mode names are neonatal. It is still a direct measurement of the question, and its direction is that synchronizing every breath costs the patient less work than supporting only some of them.</p>
+    <p>On SIMV the unsupported breaths are taken through the same endotracheal tube and the same circuit as the supported ones, so the patient pays full resistive cost on every breath the ventilator declines to assist. If you are using SIMV to exercise a patient, the exercise is being prescribed in units of the tube.</p>
     <p>The asynchrony taxonomy itself, meaning double triggering, reverse triggering, auto-triggering, and early and late cycling by name, is the next layer up and is not covered here. This page's job is to make the trigger, target and cycle phases legible; naming what goes wrong in each is a separate exercise.</p>
    </div>
   </div>
@@ -1002,7 +1058,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <h2>Inspiratory time, rise time and cycle-off</h2>
     <p>Three different controls that the interface makes look similar and the physiology does not.</p>
     <h3>Inspiratory time</h3>
-    <p>In pressure modes it is set. In volume control it is not settable at all: it is V<sub>T</sub>/V&#775;<sub>set</sub> plus any pause, and the only way to change it is to change the volume or the flow. The rig shows the derived T<sub>I</sub> and I:E live next to the flow slider. That is the fastest way to make "raise the flow to lengthen expiration" stop being a mantra and start being arithmetic.</p>
+    <p>In pressure modes it is set. In volume control it is not settable at all: it is V<sub>T</sub>/V&#775;<sub>set</sub> plus any pause, and the only way to change it is to change the volume or the flow. The rig shows the derived T<sub>I</sub> and I:E live next to the flow slider. That turns "raise the flow to lengthen expiration" into arithmetic.</p>
     <h3>Rise time</h3>
     <p>In this rig it exists only in pressure-targeted breaths. It is how fast the ventilator drives airway pressure from PEEP to PEEP + &Delta;P. The rig models it as a linear ramp, P<sub>target</sub>(t) = PEEP + &Delta;P &times; min(1, t/t<sub>rise</sub>), settable from 0.05 to 0.4 s. A shorter rise time front-loads flow and pressurizes the circuit faster, which is what a patient with high drive is asking for; a longer one softens the onset.</p>
     <p>The direction of effect has been measured on a bench. Across six ICU ventilators at PEEP 5, pressure support of 5 and 10 cmH<sub>2</sub>O, four triggering sensitivities and inspiratory drives of 300, 500 and 700 mL, <b>a short inspiratory rise time reduced the inspiratory work load</b>, measured as the pressure-time product of airway pressure over the trigger delay, regardless of the support level, the trigger sensitivity or the inspiratory drive. It did not change the part of the delay before the pressure nadir, which is trigger latency and not a rise-time problem. The lowest work load came from a short rise time, a sharp trigger and a high support level together. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/20587100/" target="_blank" rel="noopener">Murata 2010, PMID 20587100</a> <span class="tag t-adult">bench, 6 ventilators</span></p>
@@ -1019,13 +1075,13 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <button class="btn" type="button" id="btnCycObs" aria-pressed="false">Obstruction</button>
       </div>
       <div class="fgwrap">
-      <svg id="figCyc" viewBox="0 0 780 280" role="img" aria-labelledby="figCycT"><title id="figCycT">The inspiratory flow decay of one pressure-support breath with a horizontal line at the cycle-off fraction of peak flow. Moving the cycle-off slider in the rig moves the crossing point along the curve and changes both the inspiratory time and the expiratory time that is left, both printed live. An obstruction toggle raises resistance so the crossing runs off the end of the breath.</title></svg>
+      <svg id="figCyc" viewBox="0 0 780 356" role="img" aria-labelledby="figCycT"><title id="figCycT">The inspiratory flow decay of one pressure-support breath with a horizontal line at the cycle-off fraction of peak flow. Moving the cycle-off slider in the rig moves the crossing point along the curve and changes both the inspiratory time and the expiratory time that is left, both printed live. An obstruction toggle raises resistance so the crossing runs off the end of the breath.</title></svg>
       </div>
-      <figcaption>Cycle-off is not a comfort setting in an obstructed patient. It is an expiratory-time setting wearing a different label.</figcaption>
+      <figcaption>In an obstructed patient, cycle-off is an expiratory-time setting under a different label.</figcaption>
     </figure>
 
     <div class="callout">
-      <p><b>The caveat that must sit under that formula.</b> It holds only when the patient is passive. With active effort the flow trajectory is not a clean exponential and cycling drifts: continued inspiratory effort holds flow up and delays cycling, while expiratory muscle contraction or abrupt inspiratory-muscle relaxation drives flow down and cycles early. Bench work across normal, obstructive, restrictive and mixed lung models at inspiratory efforts of &minus;2, &minus;8 and &minus;15 cmH<sub>2</sub>O found that changing the flow-cycle level from 5% to 40% did <i>not</i> abolish the late inspiratory rise in airway pressure at medium-to-high effort in most models. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25371401/" target="_blank" rel="noopener">Yu 2015, PMID 25371401</a> <span class="tag t-adult">bench</span></p>
+      <p><b>The caveat on that formula.</b> It holds only when the patient is passive. With active effort the flow trajectory is not a clean exponential and cycling drifts: continued inspiratory effort holds flow up and delays cycling, while expiratory muscle contraction or abrupt inspiratory-muscle relaxation drives flow down and cycles early. Bench work across normal, obstructive, restrictive and mixed lung models at inspiratory efforts of &minus;2, &minus;8 and &minus;15 cmH<sub>2</sub>O found that changing the flow-cycle level from 5% to 40% did <i>not</i> abolish the late inspiratory rise in airway pressure at medium-to-high effort in most models. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25371401/" target="_blank" rel="noopener">Yu 2015, PMID 25371401</a> <span class="tag t-adult">bench</span></p>
       <p>And in 16 weaning adults compared prospectively, an automatic breath-by-breath termination criterion selected an effective cycle-off of 31% (23 to 39) against 12% (6 to 23) for a fixed 5% setting, with shorter inspiratory times (1.0 &plusmn; 0.3 versus 1.3 &plusmn; 0.3 s), smaller tidal volumes (484 &plusmn; 88 versus 518 &plusmn; 102 mL), higher respiratory rate (24 &plusmn; 8 versus 19 &plusmn; 6/min), and fewer pressure overshoots and alternative cyclings. The default is not neutral. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/24612764/" target="_blank" rel="noopener">Hoff 2014, PMID 24612764</a> <span class="tag t-adult">adult, n = 16</span></p>
     </div>
    </div>
@@ -1045,16 +1101,16 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <p><b>What it requires.</b> Passive inflation. Hess is unambiguous: the measurement is valid only during passive inflation of the lungs, not during active breathing. A plateau read off a patient who is pulling is not a plateau, and the rig flags it as invalid when effort is on. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
     <p><b>How to read the decomposition.</b> In a real trace the pressure falls in two stages. Immediately on occlusion it drops to the pressure at zero flow, P<sub>z</sub>; the gap between PIP and P<sub>z</sub> is set by resistance and end-inspiratory flow. Then it continues to fall more slowly to P<sub>plat</sub>; that second, smaller gap is set by time-constant heterogeneity within the lung, meaning pendelluft, and by viscoelastic stress relaxation of the tissues.</p>
     <figure class="fg">
-      <p class="fgh">One breath, one hold, and the shoulder that is missing</p>
+      <p class="fgh">One breath, one hold, and the missing shoulder</p>
       <div class="fgwrap">
-      <svg id="figHoldI" viewBox="0 0 780 400" role="img" aria-labelledby="figHoldIT"><title id="figHoldIT">A solved single breath with an end-inspiratory hold. Leader lines mark the peak pressure at the last flowing instant, the pressure at the instant of occlusion, and the plateau at the end of the hold. In this single-compartment model the last two coincide; a dashed ghost curve between them shows the slow second decay a real heterogeneous lung would produce, explicitly labelled as not modelled here.</title></svg>
+      <svg id="figHoldI" viewBox="0 0 780 432" role="img" aria-labelledby="figHoldIT"><title id="figHoldIT">A solved single breath with an end-inspiratory hold. Leader lines mark the peak pressure at the last flowing instant, the pressure at the instant of occlusion, and the plateau at the end of the hold. In this single-compartment model the last two coincide; a dashed ghost curve between them shows the slow second decay a real heterogeneous lung would produce, explicitly labelled as not modelled here.</title></svg>
       </div>
       <figcaption>The three derived numbers are printed with the formulas that produced them. Switch spontaneous effort on in the rig and the figure refuses to print them, because a compliance computed during an inspiratory effort teaches the wrong lesson.</figcaption>
     </figure>
 
     <div class="bordered">
-      <h3>What the rig gets wrong here, on purpose</h3>
-      <p>A single-compartment linear model has exactly one time constant and no viscoelastance, so <b>this simulator collapses PIP straight to P<sub>plat</sub> in a single step with no P<sub>z</sub> shoulder</b>. That absence is itself informative: the shoulder you see at a real bedside is direct evidence that the lung is not the thing this model says it is. Run the inspiratory hold above and watch for the step that has no shoulder.</p>
+      <h3>What this model cannot show here</h3>
+      <p>A single-compartment linear model has exactly one time constant and no viscoelastance, so <b>this simulator collapses PIP straight to P<sub>plat</sub> in a single step with no P<sub>z</sub> shoulder</b>. The shoulder you see at a real bedside is direct evidence that the lung is not what this model says it is. Run the inspiratory hold above and watch for the step that has no shoulder.</p>
     </div>
     <p><b>Reference target.</b> Plateau pressure should ideally be kept at or under 30 cmH<sub>2</sub>O in mechanically ventilated adults, with some evidence supporting under 25 cmH<sub>2</sub>O in adults with ARDS. <span class="tag t-adult">adult</span> Both assume normal chest-wall compliance; a high plateau may be safe and necessary when chest-wall compliance is reduced. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014</a> The pediatric ARDS guideline limit is 28 cmH<sub>2</sub>O, again with an allowance for higher values when chest-wall compliance is poor. That is PALICC-2 clinical recommendation 3.3.1, and like the driving-pressure limit beside it, it is a <b>conditional recommendation with very low certainty of evidence, at 92% panel agreement</b>, with a remark permitting 29 to 32 cmH<sub>2</sub>O where chest-wall compliance is reduced. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">Emeriaud 2023, PMID 36661420</a> <span class="tag t-peds">pediatric</span> Ito 2025 quotes the same limit, and is cited here for the pediatric elastance partition, not as the source of the number. But the study that quantified the pediatric ratio found lung elastance was a median 83% of respiratory-system elastance in children with PARDS, which is the opposite of a large chest-wall allowance. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40815194/" target="_blank" rel="noopener">Ito 2025, PMID 40815194</a> The adult numbers and the pediatric number are printed here with their populations attached and are not blended.</p>
    </div>
@@ -1078,17 +1134,17 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <figure class="fg">
       <p class="fgh">The measurement, and the two things it cannot see</p>
       <div class="fgwrap">
-      <svg id="figHoldE" viewBox="0 0 780 400" role="img" aria-labelledby="figHoldET"><title id="figHoldET">Upper panel: the solved trace of two breaths and an end-expiratory hold, with the set PEEP and the settled hold pressure drawn as horizontal lines and the auto-PEEP gap shaded and labelled, beside the closed-form prediction and the simulated measurement. Lower panel, drawn as a schematic and marked as such: a lung containing four communicating units and one closed unit at a higher pressure, and two curves of pressure after occlusion, one settling within three seconds and one still rising at ten.</title></svg>
+      <svg id="figHoldE" viewBox="0 0 780 424" role="img" aria-labelledby="figHoldET"><title id="figHoldET">Upper panel: the solved trace of two breaths and an end-expiratory hold, with the set PEEP and the settled hold pressure drawn as horizontal lines and the auto-PEEP gap shaded and labelled, beside the closed-form prediction and the simulated measurement. Lower panel, drawn as a schematic and marked as such: a lung containing four communicating units and one closed unit at a higher pressure, and two curves of pressure after occlusion, one settling within three seconds and one still rising at ten.</title></svg>
       </div>
       <figcaption>The upper panel is solver output. The lower panel is a fixed schematic of what a single-compartment model structurally cannot produce, and it is tinted and tagged so it can never be mistaken for a measurement this page made.</figcaption>
     </figure>
 
     <div class="bordered">
-      <h3>What it will lie about, and what the rig cannot show you</h3>
+      <h3>What the maneuver can miss</h3>
       <p>The maneuver measures pressure through airways that are still open. When airways close during exhalation, which happens in severe asthma, gas is trapped behind the closure at pressures higher than the occlusion reads, and the measurement underestimates end-expiratory alveolar pressure. Hess illustrates exactly this; Marini describes the resulting signature, a pressure that keeps creeping up for many seconds after occlusion instead of settling by 3 s.</p>
-      <p><b>A single-compartment model cannot close an airway, so this simulator will always report a truthful auto-PEEP.</b> That is the model's most dangerous convenience, and it is stated here at the maneuver rather than in a footnote. The asthma-specific consequences, including why a percentage-of-auto-PEEP titration rule collapses when the denominator is falsely low, are not on this page and should not be inferred from it.</p>
+      <p><b>A single-compartment model cannot close an airway, so this simulator will always report a truthful auto-PEEP.</b> That is stated here at the maneuver rather than in a footnote. The asthma-specific consequences, including why a percentage-of-auto-PEEP titration rule collapses when the denominator is falsely low, are not on this page and should not be inferred from it.</p>
     </div>
-    <p><b>The bedside pre-test that costs nothing.</b> Auto-PEEP should be suspected whenever expiratory flow has not returned to zero when the next breath begins. The rig carries a persistent flag in the readout panel that lights whenever end-expiratory flow is non-zero, before any hold is performed.</p>
+    <p><b>A pre-test before any hold.</b> Auto-PEEP should be suspected whenever expiratory flow has not returned to zero when the next breath begins. The rig carries a persistent flag in the readout panel that lights whenever end-expiratory flow is non-zero, before any hold is performed.</p>
    </div>
   </div>
  </div>
@@ -1101,7 +1157,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">14<small>The scalars</small></div>
    <div>
     <h2>Reading the three scalars</h2>
-    <p>Pressure-time, flow-time and volume-time, sharing one x-axis, are the whole instrument. Teach each panel as an answer to one question. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
+    <p>Pressure-time, flow-time and volume-time share one x-axis. Read each panel as the answer to one question. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
     <h3>Pressure-time answers: what did it cost?</h3>
     <p>In volume control the trace decomposes visually. The vertical step off PEEP is V&#775; &times; R, the slope is V&#775;/C, the top is PIP, and a hold reveals P<sub>plat</sub>. In pressure control the trace is a rectangle by construction and answers nothing about the lung; in pressure modes the information has moved to the flow panel.</p>
     <h3>Flow-time answers: how fast, and did it finish?</h3>
@@ -1116,11 +1172,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <div class="fgwrap">
       <svg id="figGrid" viewBox="0 0 900 640" role="img" aria-labelledby="figGridT"><title id="figGridT">A grid of solved traces. Rows are pressure against time, flow against time and volume against time. Columns are normal mechanics, a resistance problem at four times the resistance, a compliance problem at a third of the compliance, and an actively breathing patient. Each cell prints the compliance, resistance and time constant that produced it, and a sentence naming what changed and what did not.</title></svg>
       </div>
-      <figcaption>Predict first is not a gimmick. The study this page opens with measured exactly this: the ability to move from a concept to a picture. Blank the grid, name the change, then reveal.</figcaption>
+      <figcaption>The study this page opens with measured exactly this: moving from a concept to a picture. Blank the grid, name the change, then reveal.</figcaption>
     </figure>
 
     <h3>Loops</h3>
-    <p>Offered as an optional toggle in the rig. Pressure-volume shows the enclosed area between inspiratory and expiratory limbs, which widens with resistance. Flow-volume shows the expiratory limb's shape directly, which is where a scooped, concave obstructive pattern reads at a glance. Loops are secondary: on a phone, the three scalars are the tool.</p>
+    <p>Offered as an optional toggle in the rig. Pressure-volume shows the enclosed area between inspiratory and expiratory limbs, which widens with resistance. Flow-volume shows the expiratory limb's shape directly, which is where a scooped, concave obstructive pattern reads at a glance. Loops are secondary; on a phone the three scalars are the tool.</p>
    </div>
   </div>
  </div>
@@ -1133,7 +1189,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">15<small>Discriminator</small></div>
    <div>
     <h2>Resistance problem or compliance problem</h2>
-    <p>This is the section the tool is for. Two tables, because the answer inverts between volume control and pressure control, and clinicians routinely carry the volume-control table into a pressure-control patient. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
+    <p>This is what the rig is for. Two tables, because the answer inverts between volume control and pressure control, and clinicians routinely carry the volume-control table into a pressure-control patient. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
 
     <h3>The procedure, in volume control with a square flow</h3>
     <ol class="steps">
@@ -1178,7 +1234,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <figure class="fg">
       <p class="fgh">The two-by-two, with your current patient on it</p>
       <div class="fgwrap">
-      <svg id="figMatrix" viewBox="0 0 780 632" role="img" aria-labelledby="figMatrixT"><title id="figMatrixT">A two-by-two matrix with plateau pressure on the horizontal axis and the peak-minus-plateau gap on the vertical. Each quadrant holds a small solved pressure trace, a verdict and a differential list. A marker shows where the mechanics currently set in the rig fall, and the containing quadrant is highlighted.</title></svg>
+      <svg id="figMatrix" viewBox="0 0 780 700" role="img" aria-labelledby="figMatrixT"><title id="figMatrixT">A two-by-two matrix with plateau pressure on the horizontal axis and the peak-minus-plateau gap on the vertical. Each quadrant holds a small solved pressure trace, a verdict and a differential list. A marker shows where the mechanics currently set in the rig fall, and the containing quadrant is highlighted.</title></svg>
       </div>
       <figcaption>The marker tracks the rig. In pressure control it is withdrawn and replaced by a note, because a matrix that silently returns an answer in a mode where the reasoning does not hold is worse than no matrix at all.</figcaption>
     </figure>
@@ -1190,9 +1246,9 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <div class="fact"><span class="n">iii</span><p><b>An active patient.</b> Every number in the procedure requires passive inflation. A patient pulling during inspiration lowers the measured airway pressure and makes the lung look more compliant than it is. The rig refuses to compute compliance from a plateau read during effort, and prints why.</p></div>
       <div class="fact"><span class="n">iv</span><p><b>Absolute versus specific mechanics.</b> In ARDS, resistance in absolute units is high and compliance is low, while specific resistance and specific compliance per unit of aerated lung are much closer to normal. Calling the airways narrowed on the strength of a high absolute resistance in ARDS is a real and common inference error. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011</a></p></div>
     </div>
-    <div class="callout"><p><b>The one line to carry away.</b> The peak is a flow question and the plateau is a volume question, and you cannot answer either without stopping the flow.</p></div>
+    <div class="callout"><p><b>In one line.</b> The peak is a flow question and the plateau is a volume question, and you cannot answer either without stopping the flow.</p></div>
 
-    <p>Do not read the tables and stop. Scroll back to the rig, press <b>Perturb</b>, and name which one changed before you press <b>Reveal</b>. The previous steady state stays underneath as a pale ghost so the comparison is on one screen. Two identical PIP rises with different plateaus is the single most transferable thing on this page.</p>
+    <p>Do not read the tables and stop. Scroll back to the rig, press <b>Perturb</b>, and name which one changed before you press <b>Reveal</b>. The previous steady state stays underneath as a pale ghost so the comparison is on one screen. Two identical PIP rises with different plateaus is the most transferable thing on this page.</p>
    </div>
   </div>
  </div>
@@ -1215,7 +1271,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <li><b>A patient.</b> P<sub>mus</sub> here is a parameterized waveform with no chemoreceptors. Real respiratory drive responds to what the ventilator does, and unloading the muscles does not reliably reduce neural output.</li>
         <li><b>Gas exchange.</b> No CO<sub>2</sub>, no oxygen, no dead space. Minute ventilation is displayed; PaCO<sub>2</sub> is not, and no version of this tool should ever display it.</li>
       </ol>
-      <p style="margin-bottom:0">The model is worth learning because the four or five places it breaks are exactly the four or five things that make real patients hard, and you can only see a break if you know what unbroken looks like.</p>
+      <p style="margin-bottom:0">The places this model breaks are the things that make real patients hard, and a break is only visible to someone who knows what unbroken looks like.</p>
     </div>
    </div>
   </div>
@@ -1229,7 +1285,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">17<small>Next</small></div>
    <div>
     <h2>Where the rest of this lives</h2>
-    <p>Nothing on this page re-teaches what a neighbouring tool already covers. Each link below names the destination and the specific topic, so you can tell before clicking whether it is the one you want.</p>
+    <p>Nothing here re-teaches what a neighbouring tool covers. Each link names the destination and the topic.</p>
     <div class="links">
       <a class="lnk" href="ventilator-advanced.html">
         <span class="lk">ventilator-advanced.html</span>
@@ -1259,19 +1315,19 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">18<small>The solver</small></div>
    <div>
-    <h2>How the rig computes, and every choice that is not physiology</h2>
+    <h2>How the simulator works</h2>
     <p>State variable is V, the lung volume above the relaxation volume at atmospheric pressure. Alveolar pressure is P<sub>alv</sub> = V/C. Muscle pressure adds to the applied pressure, with P<sub>mus</sub> &ge; 0 assisting inspiration. Governing relations, both from Hess and implemented literally: <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">PMID 25336536</a></p>
     <span class="eq big">V&#775; = (P<sub>aw</sub> + P<sub>mus</sub> &minus; P<sub>alv</sub>)/R &nbsp;&nbsp; so &nbsp;&nbsp; dV/dt = (P<sub>aw</sub> + P<sub>mus</sub> &minus; V/C)/R</span>
     <p>Over any interval in which the applied pressure is held, the rig uses the analytic solution of that linear equation rather than a numerical integrator:</p>
     <span class="eq big">V<sub>&infin;</sub> = C &times; (P<sub>applied</sub> + P<sub>mus</sub>(t + &Delta;t/2))<br>V(t+&Delta;t) = V<sub>&infin;</sub> + (V(t) &minus; V<sub>&infin;</sub>) &times; e<sup>&minus;&Delta;t/&tau;</sup></span>
-    <p>This is exact for the model, unconditionally stable, and free of the drift that makes forward Euler fail when &tau; is short. &tau; can fall to the tens of milliseconds at the stiff, low-resistance corner of the parameter space, for instance C = 1 mL/cmH<sub>2</sub>O with R = 10 cmH<sub>2</sub>O/L/s, which is 10 ms. That corner is a solver stress case, <b>not</b> a small infant on a narrow tube: a narrow tube is the reason resistance is high in a small child, so it lengthens &tau; rather than shortening it, and the rig's own infant preset (C = 5, R = 100) has a &tau; of 500 ms, ten times the adult-preset &tau; per unit compliance. The numerical argument is about the corner, and at that corner forward Euler at &Delta;t = 1 ms already carries several percent per-step error and an explicit Runge-Kutta buys accuracy the exponential update gets for free. Evaluating P<sub>mus</sub> at the step midpoint makes the treatment of a time-varying muscle pressure second-order accurate. In volume control the flow is set rather than the pressure, so volume is integrated directly, which is also exact: V(t+&Delta;t) = V(t) + V&#775;<sub>set</sub>&Delta;t and P<sub>aw</sub> = V/C + V&#775;<sub>set</sub>R &minus; P<sub>mus</sub>.</p>
+    <p>This is exact for the model, unconditionally stable, and free of the drift that makes forward Euler fail when &tau; is short. &tau; can fall to the tens of milliseconds at the stiff, low-resistance corner of the parameter space, for instance C = 1 mL/cmH<sub>2</sub>O with R = 10 cmH<sub>2</sub>O/L/s, which is 10 ms. That corner is a solver stress case, <b>not</b> a small infant on a narrow tube: a narrow tube is the reason resistance is high in a small child, so it lengthens &tau; rather than shortening it, and the rig's own infant preset (C = 5, R = 100) has a &tau; of 500 ms, ten times the adult-preset &tau; per unit compliance. The numerical argument is about the corner, and at that corner forward Euler at &Delta;t = 1 ms already carries several percent per-step error and an explicit Runge-Kutta buys accuracy the exponential update already has. Evaluating P<sub>mus</sub> at the step midpoint makes the treatment of a time-varying muscle pressure second-order accurate. In volume control the flow is set rather than the pressure, so volume is integrated directly, which is also exact: V(t+&Delta;t) = V(t) + V&#775;<sub>set</sub>&Delta;t and P<sub>aw</sub> = V/C + V&#775;<sub>set</sub>R &minus; P<sub>mus</sub>.</p>
 
     <figure class="fg">
-      <p class="fgh">The breath phase machine</p>
+      <p class="fgh">One breath, as the solver sees it</p>
       <div class="fgwrap">
-      <svg id="figSm" viewBox="0 0 880 320" role="img" aria-labelledby="figSmT"><title id="figSmT">A state diagram of the six breath phases used by the solver: expiration, pressure rise, pressure plateau, volume-control inspiration, inspiratory hold and expiratory hold. Each transition is labelled with the event that causes it, coloured by whether it is a trigger, a limit or a cycle event.</title></svg>
+      <svg id="figSm" viewBox="0 0 880 350" role="img" aria-labelledby="figSmT"><title id="figSmT">A loop read left to right and then back along the bottom. Expiration sits on the left. A dashed trigger gate leads into an inspiration group holding two boxes, one for the pressure-targeted phases and one for volume-control inspiration. A dashed cycle gate leads out of it. An inspiratory hold and an expiratory hold hang off the loop as operator-requested detours, and a return rail along the bottom and up the left margin closes the cycle back into expiration.</title></svg>
       </div>
-      <figcaption>Trigger, limit and cycle are the three questions every mode answers. The diagram is deliberately still: a moving state machine is harder to read than a stationary one.</figcaption>
+      <figcaption>Two gates, one loop. The trigger gate asks what starts a breath and the cycle gate asks what ends it; everything between them is the mode. Expiration has no gate of its own, which is why T<sub>E</sub> is an outcome rather than a setting.</figcaption>
     </figure>
 
     <h3>Every parameter that is a modelling decision, not a finding</h3>
@@ -1307,8 +1363,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">19<small>Self-test</small></div>
    <div>
     <h2>Analytic checks the model must pass</h2>
-    <p>These run against the model functions when the page loads, not against a stored answer key. A content or model edit that breaks the physiology turns a row red rather than waiting for a reader to notice. Every tolerance is printed with its check.</p>
-    <div id="selftest-mount"><div class="st"><div class="st-h">Self-test has not run. It needs JavaScript.</div></div></div>
+    <p>These run against the model functions when the page loads, not against a stored answer key. A content or model edit that breaks the physiology turns a row red. Every tolerance is printed with its check.</p>
+    <details id="selftest-details">
+      <summary id="selftest-summary">Self-test report <span class="stcount" id="selftest-count">running</span></summary>
+      <div id="selftest-mount"><div class="st"><div class="st-h">Self-test has not run. It needs JavaScript.</div></div></div>
+    </details>
    </div>
   </div>
  </div>
@@ -1393,13 +1452,22 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <li>Ilia S, van Schelven PD, Koopman AA, et al. Effect of endotracheal tube size, respiratory system mechanics, and ventilator settings on driving pressure. <i>Pediatr Crit Care Med</i> 2020. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31688716/" target="_blank" rel="noopener">PMID 31688716</a> &middot; doi 10.1097/PCC.0000000000002186</span></li>
     <li>Murata S, Yokoyama K, Sakamoto Y, et al. Effects of inspiratory rise time on triggering work load during pressure-support ventilation: a lung model study. <i>Respir Care</i> 2010. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/20587100/" target="_blank" rel="noopener">PMID 20587100</a></span></li>
     <li>Gonzales JF, Russian CJ, Marshall SG, Collins KP. Comparing the effects of rise time and inspiratory cycling criteria on 6 different mechanical ventilators. <i>Respir Care</i> 2013. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/22781498/" target="_blank" rel="noopener">PMID 22781498</a> &middot; doi 10.4187/respcare.01345</span></li>
+    <li>Thiagarajan RR, Coleman DM, Bratton SL, Watson RS, Martin LD. Inspiratory work of breathing is not decreased by flow-triggered sensing during spontaneous breathing in children receiving mechanical ventilation: a preliminary report. <i>Pediatr Crit Care Med</i> 2004. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/15215009/" target="_blank" rel="noopener">PMID 15215009</a> &middot; doi 10.1097/01.pcc.0000128604.69914.60</span></li>
+    <li>Itagaki T, Chenelle CT, Bennett DJ, Fisher DF, Kacmarek RM. Effects of leak compensation on patient-ventilator synchrony during premature/neonatal invasive and noninvasive ventilation: a lung model study. <i>Respir Care</i> 2016. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/27651525/" target="_blank" rel="noopener">PMID 27651525</a> &middot; doi 10.4187/respcare.04825</span></li>
     <li>Batra D, Jaysainghe D, Batra N. Supporting all breaths versus supporting some breaths during synchronised mechanical ventilation in neonates: a systematic review and meta-analysis. <i>Arch Dis Child Fetal Neonatal Ed</i> 2023. <span class="mono"><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36631252/" target="_blank" rel="noopener">PMID 36631252</a> &middot; doi 10.1136/archdischild-2022-324464</span></li>
   </ol>
 
+  <h3 style="margin-top:var(--lg)">Device documentation</h3>
+  <p style="font-size:13.5px">Neither of these is a peer-reviewed source and neither has a PMID. Both were fetched from the manufacturer's own domain on 2026-09-01 and read directly; the page names the document and page for each statement taken from them, and no other device behaviour on this page is attributed to any manufacturer.</p>
+  <ol start="31">
+    <li>Getinge. <i>Servo-i pocket guide</i>, ventilation modes and important settings. Bias flow, the inspiratory-minus-expiratory trigger rule, the 10% sensitivity steps and the red auto-triggering zone are taken from pp. 12&ndash;14. <span class="mono"><a class="cite" href="https://www.getinge.com/dam/hospital/documents/english/servo-i-pocketguide-trainm-_mx-8049.digital-66080-en.pdf" target="_blank" rel="noopener">getinge.com</a></span></li>
+    <li>Getinge. <i>Servo-u startup guide 4.1</i>. Trigger-scale direction is &sect;1.6; neonatal invasive leak compensation is &sect;9.1; the Y sensor replacing bias flow as the trigger source is &sect;9.4. The 1.6 L/min flow-trigger example is from the companion <i>Servo-u hands-on guide 4.1</i>, pp. 18&ndash;19. <span class="mono"><a class="cite" href="https://www.getinge.com/dam/hospital/documents/english/servo-u-4.1-trainm-startup-guide-en-nonus-mx-5948_rev07_digital-67924-en.pdf" target="_blank" rel="noopener">getinge.com</a></span></li>
+  </ol>
+
   <div class="tool-footer">
-    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.2 &middot; Updated 2026-09-01 &middot;
+    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; Updated 2026-09-01 &middot;
     Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
-    Every PMID and DOI in the reference table was resolved against PubMed E-utilities on 2026-08-31, with first author, journal and year matched. <b>Correction screening, re-run 2026-09-01.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 28 of 28 source PMIDs were screened, and none carries an erratum, a retraction or an expression of concern, so no reference row and no statement on this page is marked or changed by it. The only linkages these records carry are eleven CommentIn entries, which are commentaries and not corrections. Model parameters that no publication establishes are labelled MODEL CHOICE in place rather than dropped. Session-only; no data leaves this device.
+    Every PMID and DOI in the reference table was resolved against PubMed E-utilities on 2026-08-31, with first author, journal and year matched. <b>Correction screening, re-run 2026-09-01.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 30 of 30 source PMIDs were screened, the two added on 2026-09-01 by the same method on that date, and none carries an erratum, a retraction or an expression of concern, so no reference row and no statement on this page is marked or changed by it. The only linkages these records carry are eleven CommentIn entries, which are commentaries and not corrections. Model parameters that no publication establishes are labelled MODEL CHOICE in place rather than dropped. Session-only; no data leaves this device.
   </div>
  </div>
 </footer>
@@ -1454,7 +1522,10 @@ function trigThreshold(S,autoPeep){
 }
 
 function newBreath(M,S,kind){
-  return { kind:kind, VTi:0, VTe:0, PIP:-1e9, pkI:0, pkE:0,
+  /* patTrig records WHO opened the valve. It changes nothing in the solver; the
+     assist-control/SIMV figure needs it to label a breath, and inferring it
+     afterwards from the trace is exactly the inference the figure is teaching. */
+  return { kind:kind, VTi:0, VTe:0, PIP:-1e9, pkI:0, pkE:0, patTrig:!!M.pendPat,
            Vee:M.V, PalvEE:M.V/S.C, PalvEI:0, tI:0, tE:0, start:M.t, bi:M.bi, dp:M.dp };
 }
 function newModel(S){
@@ -1496,7 +1567,25 @@ function startBreath(M,S,kind){
   M.b = newBreath(M,S,kind);
   M.breathStart = M.t; M.insT = 0; M.pt = 0;
   M.Pplat = null; M.platIntrinsic = false; M.platActive = false;
-  M.nextMand = M.t + tTot(S);
+  /* The mandatory clock is a FIXED GRID, and only a mandatory breath consumes a
+     slot on it. Two defects lived in the single line this replaces.
+     (1) It reset the clock on a SPONTANEOUS breath too, so on SIMV every
+     patient effort pushed the next mandatory breath back by a whole T_tot and
+     the sequence degenerated into assist-control: at the page's own default
+     settings the SIMV row of the section 10 figure was breath-for-breath
+     identical to the assist-control row, which is what made that figure
+     show nothing.
+     (2) It advanced from the DELIVERY time rather than the scheduled time, so a
+     mandatory breath synchronised early to an effort dragged the whole grid
+     early with it and the mandatory rate exceeded the set rate.
+     Advancing from the scheduled time, with a catch-up guard so the grid can
+     never fall behind the clock, delivers exactly one mandatory breath per set
+     interval. In pressure support every breath is kind "ps" and this same timer
+     is the apnea backup, so it must keep advancing there. */
+  if(kind !== "ps" || S.mode === "PS"){
+    var nm = M.nextMand + tTot(S);
+    M.nextMand = (nm <= M.t) ? (M.t + tTot(S)) : nm;
+  }
   if(S.mode==="VC" && kind==="mand"){ M.phase = "VCI"; }
   else {
     M.curP = (S.mode==="PS" || kind==="ps") ? S.ps : (S.mode==="PRVC" ? M.dp : S.dp);
@@ -1545,6 +1634,7 @@ function expLogic(M,S){
     var ap = Math.max(0, M.V/S.C - S.peep);
     if(pmusAt(S,M.t) >= ap + (S.trig==="p" ? S.sensP : S.sensF*S.R)) fire = "pat";
   }
+  M.pendPat = (fire === "pat");
   if(fire === "pat"){
     if(S.mode==="PS") kind = "ps";
     else if(S.seq==="SIMV"){ var W = Math.min(0.5*Ttot, 2); kind = (M.t >= M.nextMand - W) ? "mand" : "ps"; }
@@ -1823,10 +1913,15 @@ function buildChrome(){
   }
   svg.appendChild(el("line",{x1:LX,y1:Yp(S.peep),x2:RX,y2:Yp(S.peep),stroke:C.pale,"stroke-width":1,"stroke-dasharray":"4 4"}));
   svg.appendChild(svgTxt(RX-2,Yp(S.peep)-4,"PEEP "+fmt(S.peep,0),{class:"ax","text-anchor":"end",fill:C.slate}));
-  for(var t=0;t<=WINDOW;t+=2) svg.appendChild(svgTxt(X(t),452,String(t),{class:"ax","text-anchor":"middle",fill:C.mut}));
+  /* t < WINDOW, not <=: the final tick and the "seconds" label share a baseline
+     and at the mobile 11px floor the two ran into each other. */
+  for(var t=0;t<WINDOW;t+=2) svg.appendChild(svgTxt(X(t),452,String(t),{class:"ax","text-anchor":"middle",fill:C.mut}));
   svg.appendChild(svgTxt(RX,452,"seconds",{class:"ax","text-anchor":"end",fill:C.mut}));
-  svg.appendChild(svgTxt(LX,474,"Original schematic. Traces solved from the single-compartment model of Hess 2014 (PMID 25336536); no published figure is reproduced.",{class:"ax",fill:C.faint}));
-  svg.appendChild(svgTxt(LX,488,"One compliance, one resistance, no airway closure, no viscoelastance. See section 16 for what that hides.",{class:"ax",fill:C.faint}));
+  /* WRAPPED, not emitted as one long line: at 680 viewBox units these two
+     sentences ran to x = 854 and, because svg overflow is visible, printed
+     across the readout column on any screen wide enough to show it. */
+  var pv = wrapNote(svg,LX,470,RX-LX,"Original schematic. Traces solved from the single-compartment model of Hess 2014 (PMID 25336536); no published figure is reproduced.",C.faint);
+  wrapNote(svg,LX,pv+2,RX-LX,"One compliance, one resistance, no airway closure, no viscoelastance. See section 16 for what that hides.",C.faint);
   PATHS = {};
   ["gp","gf","gv"].forEach(function(id){ var p = el("path",{d:"",fill:"none",stroke:C.pale,"stroke-width":1.4,"stroke-dasharray":"3 3"}); svg.appendChild(p); PATHS[id]=p; });
   PATHS.p = el("path",{d:"",fill:"none",stroke:C.ink,"stroke-width":1.8,"stroke-linejoin":"round"}); svg.appendChild(PATHS.p);
@@ -1876,7 +1971,10 @@ function drawLoops(){
     svg.appendChild(el("rect",{x:B.x0,y:B.y0,width:B.x1-B.x0,height:B.y1-B.y0,fill:"none",stroke:C.hair}));
     svg.appendChild(svgTxt(B.x0,B.y0-10,B.title,{class:"lbl",fill:C.ink}));
     svg.appendChild(svgTxt((B.x0+B.x1)/2,B.y1+22,B.xl,{class:"ax","text-anchor":"middle",fill:C.mut}));
-    svg.appendChild(svgTxt(B.x0-6,B.y0+10,B.yl,{class:"ax","text-anchor":"end",fill:C.mut}));
+    /* The y-axis name shares the title line, anchored to the panel's RIGHT edge.
+       Anchored END at x0-6 it ran off the left of the viewBox whenever the
+       label was longer than the 56-unit gutter: "Volume (mL)" started at -16. */
+    svg.appendChild(svgTxt(B.x1,B.y0-10,B.yl,{class:"ax","text-anchor":"end",fill:C.mut}));
     var fx=function(v){ return B.x0 + (v-B.xmin)/(B.xmax-B.xmin)*(B.x1-B.x0); };
     var fy=function(v){ return B.y1 - (v-B.ymin)/(B.ymax-B.ymin)*(B.y1-B.y0); };
     if(B.ymin<0) svg.appendChild(el("line",{x1:B.x0,y1:fy(0),x2:B.x1,y2:fy(0),stroke:C.rule}));
@@ -2589,6 +2687,14 @@ function renderSelfTest(R){
   var mount = $("selftest-mount");
   while(mount.firstChild) mount.removeChild(mount.firstChild);
   var passed = R.filter(function(r){return r.pass;}).length;
+  /* FAIL LOUDLY. The <details> is collapsed only while every check passes.
+     One failure force-opens it, reddens the summary, and leaves it open. */
+  var det = $("selftest-details"), cnt = $("selftest-count");
+  if(cnt) cnt.textContent = passed + " / " + R.length + (passed===R.length ? " passed" : " PASSED, " + (R.length-passed) + " FAILED");
+  if(det){
+    if(passed === R.length){ det.classList.remove("failing"); det.open = false; }
+    else { det.classList.add("failing"); det.open = true; }
+  }
   var box = document.createElement("div"); box.className = "st";
   var h = document.createElement("div");
   h.className = "st-h " + (passed===R.length ? "pass" : "fail");
@@ -2642,8 +2748,13 @@ function wrapNote(svg,x,y,width,t,c,lh){
     if(trial.length > max && line){ out.push(line); line = words[i]; } else { line = trial; }
   }
   if(line) out.push(line);
-  for(i=0;i<out.length;i++) note(svg,x,y+i*(lh||12),out[i],c);
-  return y + out.length*(lh||12);
+  /* Default leading is 14, not 12. These lines are class "tiny", which the
+     mobile readable-floor block at the end of this file lifts from 10px to
+     11px at <=768px; on 12-unit leading that put 11px text on 0.92 line-height
+     and consecutive lines' boxes overlapped on a phone. 14 clears the floor
+     with room to spare and costs a few units of figure height. */
+  for(i=0;i<out.length;i++) note(svg,x,y+i*(lh||14),out[i],c);
+  return y + out.length*(lh||14);
 }
 /* Keep a direct label inside the box: flip it to the left of its anchor when
    placing it on the right would run past the edge. */
@@ -2667,13 +2778,24 @@ function frame(svg,B){
   }
   fy=function(v){ return B.y1 - (v-B.ymin)/(B.ymax-B.ymin)*(B.y1-B.y0); };
   svg.appendChild(el("rect",{x:B.x0,y:B.y0,width:B.x1-B.x0,height:B.y1-B.y0,fill:"none",stroke:C.hair}));
+  /* Tick VALUES are printed to at most two decimals and a label is dropped when
+     it would land within 30 units of the last one printed. A tick list computed
+     as xmax/4 can otherwise emit 0.16666666666666666, and at a short time
+     constant the labels pile onto each other. The tick MARKS are always drawn;
+     only the numbers thin out. */
+  var lastTx = -1e9;
   (B.xticks||[]).forEach(function(t){
     svg.appendChild(el("line",{x1:fx(t),y1:B.y1,x2:fx(t),y2:B.y1+4,stroke:C.rule}));
-    lbl(svg,fx(t),B.y1+16,String(t),{"text-anchor":"middle",fill:C.mut});
+    if(fx(t) - lastTx < 30) return;
+    lastTx = fx(t);
+    lbl(svg,fx(t),B.y1+16,String(Math.round(t*100)/100),{"text-anchor":"middle",fill:C.mut});
   });
+  var lastTy = 1e9;
   (B.yticks||[]).forEach(function(t){
     svg.appendChild(el("line",{x1:B.x0-4,y1:fy(t),x2:B.x0,y2:fy(t),stroke:C.rule}));
-    lbl(svg,B.x0-7,fy(t)+3.5,String(t),{"text-anchor":"end",fill:C.mut});
+    if(lastTy - fy(t) < 17 && lastTy < 1e8) return;
+    lastTy = fy(t);
+    lbl(svg,B.x0-7,fy(t)+3.5,String(Math.round(t*1000)/1000),{"text-anchor":"end",fill:C.mut});
   });
   if(B.ymin<0 && B.ymax>0) svg.appendChild(el("line",{x1:B.x0,y1:fy(0),x2:B.x1,y2:fy(0),stroke:C.rule}));
   if(B.xlab) lbl(svg,(B.x0+B.x1)/2,B.y1+33,B.xlab,{"text-anchor":"middle",fill:C.mut});
@@ -2710,11 +2832,146 @@ function breathTrace(s,sub,nb){
   return {pts:out, m:m};
 }
 
+/* =====================  00  the baseline reference breath  =====================
+   A baseline that moved with the sliders would not be a baseline, so this is the
+   one figure on the page solved at FIXED reference values rather than at the
+   rig's current settings. It is still solved, not drawn: both columns run the
+   same newModel()/step() the rig runs, and every number printed under it is
+   read back out of the trace. */
+function drawBase(){
+  var svg = fgSvg("figBase"); if(!svg) return;
+  var C = pal();
+  var C0 = 0.050, R0 = 10, peep = 5, rate = 15, VT = 0.450, Ti = 1.0;
+  var tau = R0*C0;
+  /* Section 06: V_T = C dP (1 - e^-Ti/tau). Invert it so the pressure-control
+     breath delivers the same tidal volume as the volume-control one and the
+     only difference left between the columns is the control variable. */
+  var dp = VT/(C0*(1 - Math.exp(-Ti/tau)));
+  var sVC = baseS({C:C0, R:R0, peep:peep, rate:rate, mode:"VC", seq:"AC",
+                   vt:VT, flow:0.75, pattern:"square", pause:0, rise:0});
+  var sPC = baseS({C:C0, R:R0, peep:peep, rate:rate, mode:"PC", seq:"AC",
+                   dp:dp, ti:Ti, rise:0});
+  var DV = breathTrace(sVC, 10, 8), DP = breathTrace(sPC, 10, 8);
+
+  var pmax = 0, fmax = 0, vmax = 0, span = 0;
+  DV.pts.concat(DP.pts).forEach(function(q){
+    if(q.paw > pmax) pmax = q.paw;
+    if(Math.abs(q.flow) > fmax) fmax = Math.abs(q.flow);
+    if(q.vol > vmax) vmax = q.vol;
+    if(q.t > span) span = q.t;
+  });
+  pmax = Math.ceil(pmax*1.14/5)*5; fmax = Math.ceil(fmax*1.14/10)*10;
+  vmax = Math.ceil(vmax*1.16/50)*50; span = Math.ceil(span*10)/10;
+
+  var PY0=36, PY1=126, FY0=152, FY1=232, VY0=258, VY1=328, BY=338;
+
+  function col(D, s0, cx0, cx1, head, tag){
+    var fx = function(t){ return cx0 + clamp(t,0,span)/span*(cx1-cx0); };
+    var fp = function(v){ return PY1 - clamp(v/pmax,0,1)*(PY1-PY0); };
+    var fz = (FY0+FY1)/2;
+    var ff = function(v){ return fz - clamp(v/fmax,-1,1)*((FY1-FY0)/2); };
+    var fv = function(v){ return VY1 - clamp(v/vmax,0,1)*(VY1-VY0); };
+    var i, d, tEnd = 0, pip = 0, vte = 0;
+    /* Walk FORWARD out of inspiration and stop at the first expiratory sample.
+       Scanning the whole trace for the last inspiratory phase returns the
+       first sample of the NEXT breath, which breathTrace appends at the
+       boundary, and end-inspiration reads as the end of the whole cycle. */
+    for(i=0;i<D.pts.length;i++){
+      var ph = D.pts[i].ph;
+      if(ph!=="VCI" && ph!=="RISE" && ph!=="PINSP" && ph!=="HOLDI") break;
+      tEnd = D.pts[i].t;
+    }
+    for(i=0;i<D.pts.length;i++){
+      if(D.pts[i].paw > pip) pip = D.pts[i].paw;
+      if(D.pts[i].vol > vte) vte = D.pts[i].vol;
+    }
+    svg.appendChild(svgTxt(cx0, 15, head, {class:"lbl","font-family":"var(--sans)",fill:C.ink}));
+    lbl(svg, cx1, 15, tag, {"text-anchor":"end", fill:C.mut});
+
+    [[PY0,PY1],[FY0,FY1],[VY0,VY1]].forEach(function(r){
+      svg.appendChild(el("rect",{x:cx0,y:r[0],width:cx1-cx0,height:r[1]-r[0],fill:"none",stroke:C.hair}));
+    });
+    /* Inspiration is shaded in both columns, so the phase is read from the
+       picture before the band beneath it is read as words. */
+    svg.appendChild(el("rect",{x:fx(0),y:PY0,width:fx(tEnd)-fx(0),height:VY1-PY0,fill:C.slate,"fill-opacity":".055"}));
+    svg.appendChild(el("line",{x1:fx(tEnd),y1:PY0,x2:fx(tEnd),y2:VY1,stroke:C.rule,"stroke-dasharray":"3 3"}));
+    svg.appendChild(el("line",{x1:cx0,y1:fz,x2:cx1,y2:fz,stroke:C.rule}));
+    svg.appendChild(el("line",{x1:cx0,y1:fp(peep),x2:cx1,y2:fp(peep),stroke:C.slate,"stroke-dasharray":"4 4","stroke-opacity":".7"}));
+    lbl(svg, cx1-3, fp(peep)-4, "PEEP "+fmt(peep,0), {"text-anchor":"end", fill:C.slate});
+
+    d=[]; for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fx(D.pts[i].t).toFixed(1)+" "+fp(D.pts[i].paw).toFixed(1));
+    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.9,"stroke-linejoin":"round"}));
+    d=[]; for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fx(D.pts[i].t).toFixed(1)+" "+ff(D.pts[i].flow).toFixed(1));
+    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.9,"stroke-linejoin":"round"}));
+    d=[]; for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fx(D.pts[i].t).toFixed(1)+" "+fv(D.pts[i].vol).toFixed(1));
+    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.9,"stroke-linejoin":"round"}));
+
+    /* Phase band. Two words, once per column, under the panels. */
+    svg.appendChild(el("rect",{x:fx(0),y:BY,width:fx(tEnd)-fx(0),height:11,fill:C.slate,"fill-opacity":".28"}));
+    svg.appendChild(el("rect",{x:fx(tEnd),y:BY,width:cx1-fx(tEnd),height:11,fill:"none",stroke:C.rule}));
+    svg.appendChild(svgTxt((fx(0)+fx(tEnd))/2, BY+9, "inspiration", {class:"tiny","text-anchor":"middle",fill:C.ink,"font-family":"var(--sans)"}));
+    svg.appendChild(svgTxt((fx(tEnd)+cx1)/2, BY+9, "expiration", {class:"tiny","text-anchor":"middle",fill:C.mut,"font-family":"var(--sans)"}));
+
+    /* Time axis. */
+    [0,1,2,3,4].filter(function(t){ return t<=span; }).forEach(function(t){
+      svg.appendChild(el("line",{x1:fx(t),y1:BY+11,x2:fx(t),y2:BY+15,stroke:C.rule}));
+      lbl(svg, fx(t), BY+27, String(t), {"text-anchor":"middle", fill:C.mut});
+    });
+    lbl(svg, (cx0+cx1)/2, BY+42, "seconds", {"text-anchor":"middle", fill:C.mut});
+    return {fx:fx, fp:fp, ff:ff, fv:fv, tEnd:tEnd, pip:pip, vte:vte};
+  }
+
+  var Lx0=74, Lx1=422, Rx0=506, Rx1=854;
+  var L = col(DV, sVC, Lx0, Lx1, "Volume control", "square flow");
+  var Rr = col(DP, sPC, Rx0, Rx1, "Pressure control", "same tidal volume");
+
+  /* Y axis names above each panel, and ticks on the left column only: both
+     columns are drawn to one scale, and repeating the numbers would be four
+     more labels for no information. */
+  lbl(svg, Lx0, PY0-4, "airway pressure, cmH2O", {fill:C.faint});
+  lbl(svg, Lx0, FY0-4, "flow, L/min - inspiration above the line", {fill:C.faint});
+  lbl(svg, Lx0, VY0-4, "volume above end-expiration, mL", {fill:C.faint});
+  lbl(svg, Rx0, PY0-4, "same scales as the left column", {fill:C.faint});
+  [[PY1,0],[PY0,pmax]].forEach(function(r){
+    svg.appendChild(el("line",{x1:Lx0-4,y1:r[0],x2:Lx0,y2:r[0],stroke:C.rule}));
+    lbl(svg, Lx0-7, r[0]+3.5, String(r[1]), {"text-anchor":"end", fill:C.mut});
+  });
+  [[FY0,fmax],[(FY0+FY1)/2,0],[FY1,-fmax]].forEach(function(r){
+    svg.appendChild(el("line",{x1:Lx0-4,y1:r[0],x2:Lx0,y2:r[0],stroke:C.rule}));
+    lbl(svg, Lx0-7, r[0]+3.5, String(r[1]), {"text-anchor":"end", fill:C.mut});
+  });
+  [[VY1,0],[VY0,vmax]].forEach(function(r){
+    svg.appendChild(el("line",{x1:Lx0-4,y1:r[0],x2:Lx0,y2:r[0],stroke:C.rule}));
+    lbl(svg, Lx0-7, r[0]+3.5, String(r[1]), {"text-anchor":"end", fill:C.mut});
+  });
+
+  /* ONE short annotation per panel, all six anchored at the same fraction of
+     the cycle - halfway through expiration, where every trace has returned to
+     baseline - so no label can land on a curve or on another label at any
+     parameter value. Section 05 does the step-and-ramp decomposition properly;
+     a baseline figure only has to say what shape to expect. */
+  var ax = 0.5*span;
+  lbl(svg, L.fx(ax),  PY0+14, "ramp on a step",          {fill:C.slate});
+  lbl(svg, Rr.fx(ax), PY0+14, "rectangle at PEEP + dP",  {fill:C.slate});
+  lbl(svg, L.fx(ax),  FY0+14, "square, at the set flow", {fill:C.slate});
+  lbl(svg, Rr.fx(ax), FY0+14, "decays as e^-t/tau",      {fill:C.slate});
+  lbl(svg, L.fx(ax),  VY0+14, "linear",                  {fill:C.slate});
+  lbl(svg, Rr.fx(ax), VY0+14, "1 - e^-t/tau",            {fill:C.slate});
+
+  var g = wrapNote(svg, 20, 408, 844,
+    "Fixed reference values, adult: C = 50 mL/cmH2O, R = 10 cmH2O/L/s, tau = 0.50 s, PEEP 5, rate 15/min, passive patient. "
+    + "Volume control V_T "+fmt(VT*1000,0)+" mL at "+fmt(sVC.flow*60,0)+" L/min, T_I "+fmt(L.tEnd,2)+" s, PIP "+fmt(L.pip,1)+" cmH2O. "
+    + "Pressure control dP "+fmt(dp,1)+" cmH2O for T_I "+fmt(Ti,2)+" s, delivering "+fmt(Rr.vte,0)+" mL at a peak pressure of "+fmt(Rr.pip,1)+" cmH2O.", C.faint);
+  wrapNote(svg, 20, g+4, 844,
+    "Rise time is zero in both columns so the pressure-control step is square; section 11 covers what a real rise time does to it. "
+    + "Compliance and resistance normals are adult (Hess 2014). Everything drawn here is model output, not a recorded waveform.", C.faint);
+}
+
 /* =====================  02  plateau against compliance  ===================== */
 function drawPlat(){
   var svg = fgSvg("figPlat"); if(!svg) return;
   var VT = S.vt*1000;
-  var B = {x0:58,x1:404,y0:28,y1:176,xmin:5,xmax:120,ymin:0,ymax:60,logx:true,
+  var B = {x0:58,x1:404,y0:46,y1:190,xmin:5,xmax:120,ymin:0,ymax:60,logx:true,
            xticks:[5,10,20,40,80],yticks:[0,20,40,60],
            xlab:"compliance (mL/cmH2O), log scale", ylab:"driving pressure, P_plat - PEEP (cmH2O)"};
   var A = frame(svg,B), C = A.C, pts=[], c;
@@ -2740,12 +2997,14 @@ function drawPlat(){
   if(yNow<=B.ymax){
     var over = (yNow > 15), mc = over ? C.neg : C.ink;
     svg.appendChild(el("circle",{cx:A.fx(cNow),cy:A.fy(yNow),r:4.5,fill:mc}));
-    sideLbl(svg,A.fx(cNow),A.fy(yNow)-7,fmt(cNow,0)+" mL/cmH2O, "+fmt(yNow,1)+" cmH2O",B.x1,mc);
+    var above = A.fy(yNow)-7, below = A.fy(yNow)+16;
+    var clash = Math.abs(above - (A.fy(15)-5)) < 17;
+    sideLbl(svg,A.fx(cNow),clash?below:above,fmt(cNow,0)+" mL/cmH2O, "+fmt(yNow,1)+" cmH2O",B.x1,mc);
   } else {
     lbl(svg,clamp(A.fx(cNow),B.x0+92,B.x1-92),B.y0+14,"off scale at this compliance",{"text-anchor":"middle",fill:C.neg});
   }
-  var pn = wrapNote(svg,14,202,404,"P_plat - PEEP = V_T / C at the rig's V_T of "+fmt(VT,0)+" mL. Adult C_RS is conventionally 50 to 100 mL/cmH2O (Hess 2014, a narrative review); no pediatric range was found.",C.faint);
-  wrapNote(svg,14,pn+6,404,"Dashed line: PALICC-2 suggests driving pressure at or under 15 cmH2O, static conditions. Conditional, very low certainty, 82% agreement.",C.faint);
+  var pn = wrapNote(svg,14,246,404,"P_plat - PEEP = V_T / C at the rig's V_T of "+fmt(VT,0)+" mL. Adult C_RS is conventionally 50 to 100 mL/cmH2O (Hess 2014, a narrative review); no pediatric range was found.",C.faint);
+  wrapNote(svg,14,pn+8,404,"Dashed line: PALICC-2 suggests driving pressure at or under 15 cmH2O, static conditions. Conditional, very low certainty, 82% agreement.",C.faint);
 }
 
 /* =====================  03  peak, plateau and flow  ===================== */
@@ -2767,20 +3026,28 @@ function drawRes(){
   curve(svg,pk2,{stroke:P.caution,"stroke-width":1.6,"stroke-dasharray":"5 4","stroke-opacity":".75"});
   curve(svg,[[B.x0,A.fy(plat)],[B.x1,A.fy(plat)]],{stroke:P.slate});
   curve(svg,pk,{stroke:P.caution});
-  lbl(svg,B.x1+4,A.fy(plat)+4,"plateau",{fill:P.slate});
-  note(svg,B.x1+4,A.fy(plat)+16,"flat: no flow term",P.faint);
+  /* The three right-edge annotations sit at data-driven heights and merge as R
+     falls. sideStack() keeps a running floor and skips whatever will not fit. */
+  var stackY = -1e9;
+  var sideOK = function(y){ if(Math.abs(y-stackY) < 34) return false; stackY = y; return true; };
+  var showPlat = sideOK(A.fy(plat));
+  if(showPlat){
+    lbl(svg,B.x1+4,A.fy(plat)+4,"plateau",{fill:P.slate});
+    note(svg,B.x1+4,A.fy(plat)+18,"flat: no flow term",P.faint);
+  }
   var yPk = Math.min(plat+2*R,ymax), yPk2 = Math.min(plat+4*R,ymax);
-  lbl(svg,B.x1+4,A.fy(yPk)+4,"peak",{fill:P.caution});
-  note(svg,B.x1+4,A.fy(yPk)+16,"slope IS R",P.faint);
-  lbl(svg,B.x1+4,A.fy(yPk2)+4,"double R",{fill:P.caution,"fill-opacity":".75"});
+  if(sideOK(A.fy(yPk))){
+    lbl(svg,B.x1+4,A.fy(yPk)+4,"peak",{fill:P.caution});
+    note(svg,B.x1+4,A.fy(yPk)+18,"slope IS R",P.faint);
+  }
+  if(sideOK(A.fy(yPk2))) lbl(svg,B.x1+4,A.fy(yPk2)+4,"double R",{fill:P.caution,"fill-opacity":".75"});
   var fNow = clamp(S.flow,0,2), gap = fNow*R;
   svg.appendChild(el("rect",{x:A.fx(fNow)-5,y:A.fy(Math.min(plat+gap,ymax)),width:10,
     height:Math.max(0,A.fy(plat)-A.fy(Math.min(plat+gap,ymax))),fill:P.caution,"fill-opacity":".24"}));
   svg.appendChild(el("circle",{cx:A.fx(fNow),cy:A.fy(Math.min(plat+gap,ymax)),r:4,fill:P.ink}));
   sideLbl(svg,A.fx(fNow),A.fy(Math.min(plat+gap,ymax))-8,
       "at "+fmt(fNow,2)+" L/s the gap is "+fmt(gap,1)+" cmH2O",B.x1,P.ink);
-  note(svg,A.fx(1)+5,B.y0+13,"at 1 L/s the gap in cmH2O equals R in cmH2O/L/s",P.faint);
-  var ry = wrapNote(svg,20,242,744,"Solved from P_aw = V_T/C + flow x R + PEEP at the rig's C "+fmt(S.C*1000,0)+
+  var ry = wrapNote(svg,20,258,744,"Solved from P_aw = V_T/C + flow x R + PEEP at the rig's C "+fmt(S.C*1000,0)+
     " mL/cmH2O, R "+fmt(R,0)+" cmH2O/L/s, V_T "+fmt(VT,0)+" mL, PEEP "+fmt(peep,0)+".",P.faint);
   wrapNote(svg,20,ry,744,"Reference: R_I under 10 cmH2O/L/s in intubated adults (Hess 2014). No pediatric threshold was found.",P.faint);
 }
@@ -2791,21 +3058,29 @@ function drawTau(){
   var tau = Math.max(S.R*S.C, 1e-6);
   var TE = (M && M.last && M.last.tE>0) ? M.last.tE : Math.max(0.1, tTot(S)-S.ti);
   var xmax = Math.max(4, 6*tau, TE*1.15);
-  var B = {x0:62,x1:432,y0:30,y1:196,xmin:0,xmax:xmax,ymin:0,ymax:1,
+  /* The y-axis name is folded into the panel title instead of being emitted by
+     frame() at (x0-6, y0-9): at the mobile 11px floor it collided with the
+     title, with the 1t..5t markers, and with the top y tick. */
+  var B = {x0:62,x1:432,y0:44,y1:196,xmin:0,xmax:xmax,ymin:0,ymax:1,
            xticks:[0,Math.round(xmax/4*10)/10,Math.round(xmax/2*10)/10,Math.round(3*xmax/4*10)/10,Math.round(xmax*10)/10],
-           yticks:[0,0.5,1], xlab:"time from the start of expiration (s)", ylab:"fraction of V_T still in the lung"};
+           yticks:[0,0.5,1], xlab:"time from the start of expiration (s)", ylab:""};
   var A = frame(svg,B), P = A.C, i, t, pts=[];
-  lbl(svg,14,17,"Passive emptying",{fill:P.ink});
+  lbl(svg,14,17,"Passive emptying: fraction of V_T still in the lung",{fill:P.ink});
   if(TE < xmax){
     svg.appendChild(el("rect",{x:A.fx(TE),y:B.y0,width:B.x1-A.fx(TE),height:B.y1-B.y0,fill:P.caution,"fill-opacity":".13"}));
-    lbl(svg,A.fx(TE)+5,B.y0+14,"time you do not have",{fill:P.caution});
+    lbl(svg,A.fx(TE)+5,B.y0+32,"time you do not have",{fill:P.caution});
     svg.appendChild(el("line",{x1:A.fx(TE),y1:B.y0,x2:A.fx(TE),y2:B.y1,stroke:P.caution}));
     lbl(svg,A.fx(TE)+5,B.y1-6,"T_E = "+fmt(TE,2)+" s",{fill:P.caution});
   }
-  var fr=[63,87,95,98,99];
+  var fr=[63,87,95,98,99], lastTau=-1e9;
   for(i=1;i<=5;i++){
     t=i*tau; if(t>xmax) break;
+    /* The gridline is always drawn; its two labels are skipped when the
+       previous pair is closer than they are wide. At a short time constant all
+       five sat inside 40 units of each other. */
     svg.appendChild(el("line",{x1:A.fx(t),y1:B.y0,x2:A.fx(t),y2:B.y1,stroke:P.hair,"stroke-dasharray":"2 3"}));
+    if(A.fx(t) - lastTau < 52) continue;
+    lastTau = A.fx(t);
     lbl(svg,A.fx(t),B.y0-2,String(i)+"t",{"text-anchor":"middle",fill:P.mut});
     note(svg,A.fx(t)+3,B.y0+12,fr[i-1]+"% out",P.faint);
   }
@@ -2813,14 +3088,14 @@ function drawTau(){
   curve(svg,pts,{stroke:P.slate});
   var resid = Math.exp(-TE/tau);
   svg.appendChild(el("circle",{cx:A.fx(Math.min(TE,xmax)),cy:A.fy(resid),r:4,fill:P.ink}));
-  svg.appendChild(svgTxt(238,236,fmt(100*resid,1)+"%",{"font-size":"22px","text-anchor":"middle",fill:(resid>0.05?P.caution:P.ink),"font-family":"var(--mono)"}));
-  lbl(svg,238,252,"of the breath still in the lung when the next one starts",{"text-anchor":"middle",fill:P.mut});
+  svg.appendChild(svgTxt(238,258,fmt(100*resid,1)+"%",{"font-size":"22px","text-anchor":"middle",fill:(resid>0.05?P.caution:P.ink),"font-family":"var(--mono)"}));
+  lbl(svg,238,276,"of the breath still in the lung when the next one starts",{"text-anchor":"middle",fill:P.mut});
 
-  var B2 = {x0:500,x1:744,y0:30,y1:196,xmin:0,xmax:xmax,ymin:0,ymax:1,
+  var B2 = {x0:500,x1:744,y0:44,y1:196,xmin:0,xmax:xmax,ymin:0,ymax:1,
             xticks:[0,Math.round(xmax*10)/10],yticks:[0,1],
-            xlab:"time (s)", ylab:"expiratory flow, normalised"};
+            xlab:"time (s)", ylab:""};
   var A2 = frame(svg,B2), pts2=[];
-  lbl(svg,452,17,"The same expiration as a flow trace",{fill:P.ink});
+  lbl(svg,452,17,"The same expiration, as normalised flow",{fill:P.ink});
   for(t=0;t<=xmax;t+=xmax/240) pts2.push([A2.fx(t),A2.fy(Math.exp(-t/tau))]);
   curve(svg,pts2,{stroke:P.slate});
   if(tau<=xmax){
@@ -2828,7 +3103,7 @@ function drawTau(){
     svg.appendChild(el("circle",{cx:A2.fx(tau),cy:A2.fy(0),r:3.5,fill:P.caution}));
     sideLbl(svg,A2.fx(tau),A2.fy(0)-8,"tangent crosses zero at tau",B2.x1,P.caution);
   }
-  var ty = wrapNote(svg,14,246,752,"tau = R x C = "+fmt(S.R,0)+" x "+fmt(S.C,3)+" = "+fmt(tau,2)+" s. C in mL/cmH2O is divided by 1000 before multiplying. Both panes are properties of the exponential at the rig's R and C.",P.faint);
+  var ty = wrapNote(svg,14,296,752,"tau = R x C = "+fmt(S.R,0)+" x "+fmt(S.C,3)+" = "+fmt(tau,2)+" s. C in mL/cmH2O is divided by 1000 before multiplying. Both panes are properties of the exponential at the rig's R and C.",P.faint);
   wrapNote(svg,14,ty,752,"Fractions from Hess 2014. The V_T / peak-flow estimate was validated on a lung simulator and in 10 greyhound dogs (Brunner 1995), not in children.",P.faint);
 }
 
@@ -2839,38 +3114,51 @@ function drawPC(){
   var tiNow = (S.mode==="VC") ? vcTi(S) : S.ti;
   var B = {x0:66,x1:540,y0:34,y1:212,xmin:0,xmax:xmax,ymin:0,ymax:1.05,
            xticks:[0,Math.round(xmax/4*10)/10,Math.round(xmax/2*10)/10,Math.round(3*xmax/4*10)/10,Math.round(xmax*10)/10],
-           yticks:[0,0.63,0.87,0.95,0.99],
+           /* 0.95 and 0.99 are 0.04 apart, which is 7 units on this panel and
+              less than one line box at the mobile floor. The tau gridlines carry
+              the same information and are labelled. */
+           yticks:[0,0.63,0.87,0.99],
            xlab:"inspiratory time (s)", ylab:"delivered V_T as a fraction of C x dP"};
   var A = frame(svg,B), P = A.C, t, pts=[], i;
   if(3*tau < xmax){
     svg.appendChild(el("rect",{x:B.x0,y:B.y0,width:A.fx(Math.min(3*tau,xmax))-B.x0,height:B.y1-B.y0,fill:P.caution,"fill-opacity":".11"}));
-    lbl(svg,B.x0+6,B.y0+14,"under 3 tau: flow has not reached zero, so the peak you see is not a plateau",{fill:P.caution});
+    lbl(svg,B.x0+6,B.y0+14,"under 3 tau: the peak you see is not a plateau",{fill:P.caution});
   }
   if(5*tau < xmax){
     svg.appendChild(el("rect",{x:A.fx(5*tau),y:B.y0,width:B.x1-A.fx(5*tau),height:B.y1-B.y0,fill:P.slate,"fill-opacity":".08"}));
-    lbl(svg,A.fx(5*tau)+6,B.y0+14,"PIP within 0.7% of dP of P_plat here",{fill:P.slate});
+    /* Second line, and anchored to the panel's right edge so it can neither
+       run into the caution label beside it nor into the inset to its right. */
+    lbl(svg,B.x1-4,B.y0+32,"beyond 5 tau: PIP within 0.7% of dP of P_plat",{"text-anchor":"end",fill:P.slate});
   }
+  var lastNt = B.x0;   /* the first tau label must also clear the y axis */
   for(i=1;i<=5;i++){
     t=i*tau; if(t>xmax) break;
     svg.appendChild(el("line",{x1:A.fx(t),y1:B.y0,x2:A.fx(t),y2:B.y1,stroke:P.hair,"stroke-dasharray":"2 3"}));
-    lbl(svg,A.fx(t),B.y1+30,String(i)+"tau",{"text-anchor":"middle",fill:P.mut});
+    if(A.fx(t) - lastNt < 34) continue;
+    lastNt = A.fx(t);
+    lbl(svg,A.fx(t),B.y1-6,String(i)+"tau",{"text-anchor":"middle",fill:P.mut});
   }
   for(t=0;t<=xmax;t+=xmax/300) pts.push([A.fx(t),A.fy(1-Math.exp(-t/tau))]);
   curve(svg,pts,{stroke:P.slate});
   var frac = 1-Math.exp(-Math.min(tiNow,xmax)/tau);
   var dP = (S.mode==="PC") ? S.dp : ((S.mode==="PRVC" && M) ? M.dp : S.dp);
   svg.appendChild(el("circle",{cx:A.fx(Math.min(tiNow,xmax)),cy:A.fy(frac),r:4.5,fill:P.ink}));
-  lbl(svg,A.fx(Math.min(tiNow,xmax))+8,A.fy(frac)+4,
-      "T_I "+fmt(tiNow,2)+" s = "+fmt(tiNow/tau,1)+" tau, "+fmt(100*frac,0)+"% of "+fmt(S.C*dP*1000,0)+" mL",{fill:P.ink});
+  /* The marker caption drops BELOW the marker whenever the marker is high on
+     the curve, where the two band captions live. */
+  var mLbl = "T_I "+fmt(tiNow,2)+" s = "+fmt(tiNow/tau,1)+" tau, "+fmt(100*frac,0)+"% of "+fmt(S.C*dP*1000,0)+" mL";
+  var mX = A.fx(Math.min(tiNow,xmax)), mY = A.fy(frac);
+  var mHigh = (mY < B.y0 + 52);
+  var capY = clamp(mHigh ? mY+22 : mY+4, B.y0+56, B.y1-28);
+  lbl(svg, clamp(mX+8, B.x0+4, B.x1 - mLbl.length*5.9 - 6), capY, mLbl, {fill:P.ink});
 
   var B2 = {x0:588,x1:726,y0:66,y1:180,xmin:0,xmax:xmax,ymin:0,ymax:1,xticks:[],yticks:[],
             xlab:"time", ylab:"inspiratory flow"};
   var A2 = frame(svg,B2), pts2=[];
   for(t=0;t<=xmax;t+=xmax/200) pts2.push([A2.fx(t),A2.fy(Math.exp(-t/tau))]);
   curve(svg,pts2,{stroke:P.slate,"stroke-width":1.7});
-  wrapNote(svg,566,50,208,"peak flow = dP / R = "+fmt(dP/S.R*60,0)+" L/min",P.caution);
+  wrapNote(svg,566,38,208,"peak flow = dP / R = "+fmt(dP/S.R*60,0)+" L/min",P.caution);
   wrapNote(svg,566,196,208,"independent of compliance",P.faint);
-  var py = wrapNote(svg,20,248,744,"Curve is V_T(T_I)/(C x dP) = 1 - e^(-T_I/tau) at the rig's tau of "+fmt(tau,2)+" s. Raising R or C stretches it right and drops the marker at a fixed T_I.",P.faint);
+  var py = wrapNote(svg,20,272,744,"Curve is V_T(T_I)/(C x dP) = 1 - e^(-T_I/tau) at the rig's tau of "+fmt(tau,2)+" s. Raising R or C stretches it right and drops the marker at a fixed T_I.",P.faint);
   var py2 = wrapNote(svg,20,py,744,"Halving dP does not move this curve, because the y axis is normalised to it. That is the point, not an omission.",P.faint);
   wrapNote(svg,20,py2,744,"The residual peak-to-plateau gap is 1 - the y value: 37% of dP at 1 tau, 5% at 3 tau, 0.7% at 5 tau. It never reaches zero, so 3 tau and 5 tau are conventions for how small a gap stops mattering, not physical endpoints.",P.faint);
 }
@@ -2890,16 +3178,22 @@ function drawCyc(){
   for(t=0;t<=xmax;t+=xmax/300) pts.push([A.fx(t),A.fy(pk*Math.exp(-t/tau))]);
   curve(svg,pts,{stroke:P.slate});
   svg.appendChild(el("line",{x1:B.x0,y1:A.fy(pk*x),x2:B.x1,y2:A.fy(pk*x),stroke:P.caution,"stroke-dasharray":"5 4"}));
-  lbl(svg,B.x1+4,A.fy(pk*x)+4,fmt(x*100,0)+"% of peak",{fill:P.caution});
+  /* Inside the panel, right-aligned: outside it, this label shared a column
+     with the 5% and 31% reference marks and collided with them whenever the
+     cycle-off setting sat near one of them. */
+  lbl(svg,B.x1-6,A.fy(pk*x)-7,fmt(x*100,0)+"% of peak",{"text-anchor":"end",fill:P.caution});
   [0.05,0.31].forEach(function(v){
     var ty = A.fy(pk*v);
     svg.appendChild(el("line",{x1:B.x0-6,y1:ty,x2:B.x0,y2:ty,stroke:P.mut}));
     note(svg,B.x1+4,ty+3,(v===0.05?"5%":"31%"),P.faint);
   });
-  note(svg,B.x1+4,B.y1+12,"5%: fixed criterion",P.faint);
-  note(svg,B.x1+4,B.y1+24,"31%: median effective",P.faint);
-  note(svg,B.x1+4,B.y1+36,"criterion under automatic",P.faint);
-  note(svg,B.x1+4,B.y1+48,"adjustment (16 adults)",P.faint);
+  /* 16-unit leading, not 12: at the mobile 11px floor a 12-unit stack overlaps. */
+  /* Starts below the x tick row: the final tick sits at x1 and ran into this
+     column's first line. */
+  note(svg,B.x1+4,B.y1+34,"5%: fixed criterion",P.faint);
+  note(svg,B.x1+4,B.y1+50,"31%: median effective",P.faint);
+  note(svg,B.x1+4,B.y1+66,"criterion under automatic",P.faint);
+  note(svg,B.x1+4,B.y1+82,"adjustment (16 adults)",P.faint);
   if(tI<=xmax){
     svg.appendChild(el("line",{x1:A.fx(tI),y1:B.y0,x2:A.fx(tI),y2:B.y1,stroke:P.ink}));
     svg.appendChild(el("circle",{cx:A.fx(tI),cy:A.fy(pk*x),r:4,fill:P.ink}));
@@ -2911,8 +3205,8 @@ function drawCyc(){
   svg.appendChild(svgTxt(66,222,"T_I = tau ln(1/x) = "+fmt(tI,2)+" s",{"font-size":"15px",fill:P.ink,"font-family":"var(--mono)"}));
   svg.appendChild(svgTxt(300,222,"T_E left = "+fmt(TE,2)+" s = "+fmt(TE/tau,1)+" tau",{"font-size":"15px",fill:(bad?P.neg:P.ink),"font-family":"var(--mono)"}));
   var cy = bad
-    ? wrapNote(svg,20,240,744,"Inspiration will not end in time: this is how a cycle setting makes auto-PEEP.",P.neg)
-    : wrapNote(svg,20,240,744,"Passive breath only. With active effort the flow trajectory is not a clean exponential and cycling drifts.",P.faint);
+    ? wrapNote(svg,20,288,744,"Inspiration will not end in time: this is how a cycle setting makes auto-PEEP.",P.neg)
+    : wrapNote(svg,20,288,744,"Passive breath only. With active effort the flow trajectory is not a clean exponential and cycling drifts.",P.faint);
   wrapNote(svg,20,cy,744,(FIGRM.cycObs? "Obstruction on: R is shown at 4x the rig value, "+fmt(R,0)+" cmH2O/L/s." : "R at the rig value, "+fmt(R,0)+" cmH2O/L/s."),P.faint);
 }
 
@@ -2970,14 +3264,17 @@ function drawVC(){
       svg.appendChild(el("rect",{x:x+w-26,y:A.fy(c.st.pip),width:22,height:Math.max(1,A.fy(c.st.plat)-A.fy(c.st.pip)),fill:C.caution,"fill-opacity":".30"}));
       svg.appendChild(el("rect",{x:x+w-26,y:A.fy(c.st.plat),width:22,height:Math.max(1,A.fy(c.s.peep)-A.fy(c.st.plat)),fill:C.slate,"fill-opacity":".18"}));
     }
-    if(c.starve) lbl(svg,x+8,A.fy(c.s.peep)-16,"scooped: demand exceeds set flow",{fill:C.neg});
+    /* One word: the thumbnail's own title already says what is happening, and
+       the long version ran past the right edge of the viewBox at the mobile
+       font floor in the fourth column. */
+    if(c.starve) lbl(svg,x+8,A.fy(c.s.peep)-16,"scooped",{fill:C.neg});
     svg.appendChild(svgTxt(x,168,(c.st.plat!=null? "PIP "+fmt(c.st.pip,1)+"  P_plat "+fmt(c.st.plat,1) : "PIP "+fmt(c.st.pip,1)+"  P_plat --"),
       {"font-size":"12.5px",fill:C.ink,"font-family":"var(--mono)"}));
     note(svg,x,184,"gap "+(c.st.plat!=null? fmt(c.st.pip-c.st.plat,1) : "--")+" cmH2O   C "+fmt(c.s.C*1000,0)+"   R "+fmt(c.s.R,0),C.faint);
-    note(svg,x,196,"tau "+fmt(c.s.R*c.s.C,2)+" s",C.faint);
+    note(svg,x,200,"tau "+fmt(c.s.R*c.s.C,2)+" s",C.faint);
     x += w + gap;
   });
-  wrapNote(svg,20,220,744,"Every thumbnail is solved, not drawn, with a 0.4 s inspiratory pause so a plateau exists. The caution band is resistive and the slate band elastic. One shared pressure scale, so the heights compare directly.",C.faint);
+  wrapNote(svg,20,232,744,"Every thumbnail is solved, not drawn, with a 0.4 s inspiratory pause so a plateau exists. The caution band is resistive and the slate band elastic. One shared pressure scale, so the heights compare directly.",C.faint);
 }
 
 /* =====================  07  PRVC breath-by-breath  ===================== */
@@ -3046,7 +3343,7 @@ function drawPrvc(){
   else if(D.evt==="L") msg = "A 30% leak is applied to the volume the controller MEASURES at breath 10. Delivered volume never looks recovered, so the pressure walks to the ceiling and flattens there.";
   else if(D.evt==="E") msg = "Patient effort starts at breath 10. Measured volume overshoots, so the controller BACKS OFF and the set pressure falls while the patient is working harder.";
   else msg = "No event. The loop starts 50% under-pressured and climbs, bounded by the step limit, until delivered volume reaches the target.";
-  var my = wrapNote(svg,20,250,744,msg,C.ink,13);
+  var my = wrapNote(svg,20,284,744,msg,C.ink,15);
   if(D.evt==="L"){
     wrapNote(svg,20,my+2,744,"At limit: the controller cannot win this. Mechanism inferred from the control law; no controlled human study of PRVC escalation with an ETT leak was found.",C.caution);
   } else {
@@ -3054,120 +3351,271 @@ function drawPrvc(){
   }
 }
 
-/* =====================  09  the trigger ladder  ===================== */
+/* =====================  09  the trigger ladder  =====================
+   REBUILT for legibility. The previous version stacked a vertical bar, a
+   pressure-time panel and a flow strip into an L shape with labels emitted at
+   fixed coordinates, so at several parameter values two of them printed on top
+   of each other and there was no reading order. This version is three numbered
+   rows, top to bottom, matching the three numbered steps in the prose. Every
+   label lives in a reserved gutter or a reserved legend column, so no label can
+   collide with a curve or with another label at any setting. */
 function drawTrig(){
   var svg = fgSvg("figTrig"); if(!svg) return;
   var C = pal();
-  var ap = Math.max(0, (M && M.lastAuto) ? M.lastAuto : 0);
+  var ap   = Math.max(0, (M && M.lastAuto) ? M.lastAuto : 0);
   var sens = (S.trig==="p") ? S.sensP : S.sensF*S.R;
-  var top = Math.max(20, (ap+sens)*1.35);
-  var y0=40, y1=230, bx=96, bw=104;
-  var fy = function(v){ return y1 - clamp(v/top,0,1)*(y1-y0); };
-  svg.appendChild(el("line",{x1:bx-16,y1:y0,x2:bx-16,y2:y1,stroke:C.rule}));
-  [0,Math.round(top/2),Math.round(top)].forEach(function(v){
-    svg.appendChild(el("line",{x1:bx-20,y1:fy(v),x2:bx-16,y2:fy(v),stroke:C.rule}));
-    lbl(svg,bx-23,fy(v)+3.5,String(v),{"text-anchor":"end",fill:C.mut});
-  });
-  lbl(svg,bx-40,y0-14,"pressure the patient must generate (cmH2O)",{fill:C.mut});
-  if(ap>0.02){
-    svg.appendChild(el("rect",{x:bx,y:fy(ap),width:bw,height:y1-fy(ap),fill:C.caution,"fill-opacity":".34",stroke:C.caution}));
-    lbl(svg,bx+bw+8,(fy(ap)+y1)/2,"auto-PEEP "+fmt(ap,2)+" cmH2O",{fill:C.caution});
-    note(svg,bx+bw+8,(fy(ap)+y1)/2+13,"must be undone before the sensor sees anything",C.faint);
-  } else {
-    lbl(svg,bx+bw+8,y1-6,"no auto-PEEP at these settings",{fill:C.mut});
-  }
-  svg.appendChild(el("rect",{x:bx,y:fy(ap+sens),width:bw,height:Math.max(1,fy(ap)-fy(ap+sens)),fill:C.slate,"fill-opacity":".26",stroke:C.slate}));
-  lbl(svg,bx+bw+8,fy(ap+sens)+12,(S.trig==="p"
-      ? "pressure sensitivity "+fmt(S.sensP,1)+" cmH2O"
-      : "flow sensitivity "+fmt(S.sensF*60,1)+" L/min through R = "+fmt(S.R,0)+", equal to "+fmt(sens,2)+" cmH2O"),{fill:C.slate});
-  svg.appendChild(el("line",{x1:bx-6,y1:fy(ap+sens),x2:bx+bw+4,y2:fy(ap+sens),stroke:C.ink}));
-  svg.appendChild(svgTxt(bx+bw/2,fy(ap+sens)-10,fmt(ap+sens,2)+" cmH2O to trigger",{"text-anchor":"middle","font-size":"12.5px",fill:C.ink,"font-family":"var(--mono)"}));
+  var tot  = ap + sens;
+  var GUT = 168;               /* reserved gutter: badge + row title, nothing else */
+  /* PX1 is set so the caption column to its right (PX1+8 .. 780) holds the
+     longest string any branch below can emit. Widen a caption and this must
+     move left with it. */
+  var PX0 = GUT + 12, PX1 = 640;
 
-  var x0=380, x1=744, ty0=40, ty1=150, fy2, t, pts=[], pmax=Math.max(S.pmusPk, ap+sens, 1)*1.2;
-  fy2 = function(v){ return ty1 - clamp(v/pmax,0,1)*(ty1-ty0); };
-  svg.appendChild(el("rect",{x:x0,y:ty0,width:x1-x0,height:ty1-ty0,fill:"none",stroke:C.hair}));
-  lbl(svg,x0,ty0-8,"six seconds of patient effort, P_mus (cmH2O)",{fill:C.mut});
-  var span=6, fxt=function(tt){ return x0 + tt/span*(x1-x0); };
-  for(t=0;t<=span;t+=0.01) pts.push([fxt(t), fy2(S.spont? pmusAt(S,t):0)]);
-  curve(svg,pts,{stroke:C.slate,"stroke-width":1.7});
-  svg.appendChild(el("line",{x1:x0,y1:fy2(ap+sens),x2:x1,y2:fy2(ap+sens),stroke:C.ink,"stroke-dasharray":"5 4"}));
-  lbl(svg,x1-3,fy2(ap+sens)-5,"threshold",{"text-anchor":"end",fill:C.ink});
-  var fy3=function(v){ return 232 - clamp(v,0,1)*52; };
-  svg.appendChild(el("rect",{x:x0,y:180,width:x1-x0,height:52,fill:"none",stroke:C.hair}));
-  lbl(svg,x0,172,"what the flow trace shows",{fill:C.mut});
-  var Tn = 60/S.nrate, k, misses=0;
-  for(k=0;k*Tn<span;k++){
+  function badge(n, y, title, sub){
+    svg.appendChild(el("circle",{cx:26,cy:y,r:11,fill:"none",stroke:C.slate}));
+    svg.appendChild(svgTxt(26,y+4,String(n),{"text-anchor":"middle","font-size":"12px",fill:C.slate,"font-family":"var(--mono)"}));
+    svg.appendChild(svgTxt(46,y-1,title,{class:"lbl","font-family":"var(--sans)",fill:C.ink}));
+    if(sub) svg.appendChild(svgTxt(46,y+13,sub,{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
+  }
+
+  /* ---------- 1. the threshold, as a horizontal bar in cmH2O ---------- */
+  badge(1, 44, "The threshold", fmt(tot,2)+" cmH2O to trigger");
+  var top = Math.max(2, tot*1.35);
+  var BX1 = 500;                                  /* bar ends here; legend beyond */
+  var fx1 = function(v){ return PX0 + clamp(v/top,0,1)*(BX1-PX0); };
+  var BY = 34, BH = 24;
+  svg.appendChild(el("rect",{x:PX0,y:BY,width:BX1-PX0,height:BH,fill:"none",stroke:C.hair}));
+  if(ap > 0.02) svg.appendChild(el("rect",{x:PX0,y:BY,width:fx1(ap)-PX0,height:BH,fill:C.caution,"fill-opacity":".34",stroke:C.caution}));
+  svg.appendChild(el("rect",{x:fx1(ap),y:BY,width:Math.max(1,fx1(tot)-fx1(ap)),height:BH,fill:C.slate,"fill-opacity":".26",stroke:C.slate}));
+  svg.appendChild(el("line",{x1:fx1(tot),y1:BY-6,x2:fx1(tot),y2:BY+BH+6,stroke:C.ink,"stroke-width":1.4}));
+  [0, Math.round(top/2), Math.round(top)].forEach(function(v){
+    svg.appendChild(el("line",{x1:fx1(v),y1:BY+BH,x2:fx1(v),y2:BY+BH+4,stroke:C.rule}));
+    lbl(svg,fx1(v),BY+BH+16,String(v),{"text-anchor":"middle",fill:C.mut});
+  });
+
+  /* Legend column. The two parts are named HERE, at fixed x, and never over the
+     bar - a 0.17 cmH2O segment has no room for its own caption. */
+  var LGX = 520, ly = BY + 6;
+  function leg(col, op, t1, t2){
+    svg.appendChild(el("rect",{x:LGX,y:ly-8,width:11,height:11,fill:col,"fill-opacity":op,stroke:col}));
+    svg.appendChild(svgTxt(LGX+17,ly,t1,{class:"tiny",fill:C.ink,"font-family":"var(--sans)"}));
+    if(t2) svg.appendChild(svgTxt(LGX+17,ly+14,t2,{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
+    ly += 32;
+  }
+  leg(C.caution, ".34", ap>0.02 ? "auto-PEEP " + fmt(ap,2) + " cmH2O" : "auto-PEEP: none here",
+      ap>0.02 ? "undone before the sensor sees it" : "nothing to undo at these settings");
+  leg(C.slate, ".26",
+      (S.trig==="p" ? "sensitivity " + fmt(S.sensP,1) + " cmH2O"
+                    : "sensitivity " + fmt(S.sensF*60,1) + " L/min"),
+      (S.trig==="p" ? "set directly as a pressure"
+                    : "= " + fmt(sens,2) + " cmH2O through R = " + fmt(S.R,0)));
+
+  svg.appendChild(el("line",{x1:14,y1:96,x2:766,y2:96,stroke:C.hair}));
+
+  /* ---------- 2 and 3 share one time axis ---------- */
+  var span = 6, fxt = function(t){ return PX0 + clamp(t,0,span)/span*(PX1-PX0); };
+
+  badge(2, 132, "The effort", "six seconds");
+  var EY0 = 116, EY1 = 208;
+  var pmax = Math.max(S.pmusPk, tot, 1)*1.2;
+  var fe = function(v){ return EY1 - clamp(v/pmax,0,1)*(EY1-EY0); };
+  svg.appendChild(el("rect",{x:PX0,y:EY0,width:PX1-PX0,height:EY1-EY0,fill:"none",stroke:C.hair}));
+  [0, Math.round(pmax)].forEach(function(v){
+    svg.appendChild(el("line",{x1:PX0-4,y1:fe(v),x2:PX0,y2:fe(v),stroke:C.rule}));
+    lbl(svg,PX0-7,fe(v)+3.5,String(v),{"text-anchor":"end",fill:C.mut});
+  });
+  var pts=[], t;
+  for(t=0;t<=span;t+=0.01) pts.push([fxt(t), fe(S.spont ? pmusAt(S,t) : 0)]);
+  curve(svg,pts,{stroke:C.slate,"stroke-width":1.8});
+  svg.appendChild(el("line",{x1:PX0,y1:fe(tot),x2:PX1,y2:fe(tot),stroke:C.ink,"stroke-dasharray":"5 4"}));
+  /* The threshold caption sits in the free column to the RIGHT of the panel, so
+     it cannot land on the P_mus curve however tall or short the effort is. */
+  svg.appendChild(svgTxt(PX1+8,fe(tot)+3.5,"threshold",{class:"tiny",fill:C.ink,"font-family":"var(--sans)"}));
+  svg.appendChild(svgTxt(PX1+8,fe(tot)+18,fmt(tot,2)+" cmH2O",{class:"tiny",fill:C.mut,"font-family":"var(--mono)"}));
+
+  badge(3, 244, "What reaches the flow trace", null);
+  var FY0 = 228, FY1 = 288;
+  svg.appendChild(el("rect",{x:PX0,y:FY0,width:PX1-PX0,height:FY1-FY0,fill:"none",stroke:C.hair}));
+  var Tn = 60/S.nrate, k, misses = 0, hits = 0;
+  for(k=0; k*Tn < span; k++){
     var pk = S.spont ? S.pmusPk : 0, xx = fxt(k*Tn + 0.2);
-    if(pk >= ap+sens){
-      svg.appendChild(el("path",{d:"M"+xx+" 226 L"+(xx+9)+" 190 L"+(xx+18)+" 226",fill:"none",stroke:C.slate,"stroke-width":1.6}));
-    } else if(pk>0){
-      svg.appendChild(el("path",{d:"M"+xx+" 226 L"+(xx+5)+" 214 L"+(xx+10)+" 226",fill:"none",stroke:C.neg,"stroke-width":1.6}));
+    if(xx > PX1 - 20) break;
+    if(pk >= tot){
+      svg.appendChild(el("path",{d:"M"+xx+" "+(FY1-6)+" L"+(xx+10)+" "+(FY0+8)+" L"+(xx+20)+" "+(FY1-6),
+                                 fill:"none",stroke:C.slate,"stroke-width":1.8}));
+      hits++;
+    } else if(pk > 0){
+      svg.appendChild(el("path",{d:"M"+xx+" "+(FY1-6)+" L"+(xx+6)+" "+(FY1-22)+" L"+(xx+12)+" "+(FY1-6),
+                                 fill:"none",stroke:C.neg,"stroke-width":1.8}));
       misses++;
     }
   }
-  if(misses>0) lbl(svg,x0+6,246,"ineffective trigger: visible on flow, invisible on pressure",{fill:C.neg});
-  else if(!S.spont) lbl(svg,x0+6,246,"spontaneous effort is off in the rig",{fill:C.mut});
-  else lbl(svg,x0+6,246,"every effort crosses the threshold and delivers a breath",{fill:C.slate});
-  var gy = wrapNote(svg,20,266,744,"Trigger comparison evidence: 16 adults, COPD excluded (Tutuncu 1997). No pediatric head-to-head was found.",C.faint);
-  wrapNote(svg,20,gy,744,"Auto-PEEP here is the model's own end-expiratory alveolar pressure above set PEEP. P_mus shape is MODEL CHOICE: rise 0.2 s, hold 0.1 s, decay 0.3 s.",C.faint);
+  svg.appendChild(svgTxt(PX1+8,FY0+16,
+    (!S.spont ? "no effort set" : (misses>0 ? "red notches:" : "every effort")),
+    {class:"tiny",fill:(misses>0?C.neg:C.mut),"font-family":"var(--sans)"}));
+  svg.appendChild(svgTxt(PX1+8,FY0+32,
+    (!S.spont ? "in the rig" : (misses>0 ? "ineffective" : "triggers")),
+    {class:"tiny",fill:(misses>0?C.neg:C.mut),"font-family":"var(--sans)"}));
+  if(misses>0) svg.appendChild(svgTxt(PX1+8,FY0+48,fmt(hits,0)+" of "+fmt(hits+misses,0)+" triggered",
+    {class:"tiny",fill:C.mut,"font-family":"var(--mono)"}));
+
+  [0,1,2,3,4,5,6].forEach(function(v){
+    svg.appendChild(el("line",{x1:fxt(v),y1:FY1,x2:fxt(v),y2:FY1+4,stroke:C.rule}));
+    lbl(svg,fxt(v),FY1+16,String(v),{"text-anchor":"middle",fill:C.mut});
+  });
+  lbl(svg,(PX0+PX1)/2,FY1+30,"seconds",{"text-anchor":"middle",fill:C.mut});
+
+  var gy = wrapNote(svg,14,340,752,"An ineffective effort is visible on the flow trace and invisible on the pressure trace, which is why notching in expiratory flow is the sign to look for (Hess 2014).",C.faint);
+  gy = wrapNote(svg,14,gy+4,752,"Auto-PEEP here is the model's own end-expiratory alveolar pressure above set PEEP. P_mus shape is MODEL CHOICE: rise 0.2 s, hold 0.1 s, decay 0.3 s.",C.faint);
+  wrapNote(svg,14,gy+4,752,"Trigger comparison evidence: 16 adults with COPD excluded (Tutuncu 1997) and 16 ventilated children on a Servo 300 (Thiagarajan 2004). Neither varied resistance.",C.faint);
 }
 
 /* ---- a free-running trace, with the patient's own work accumulated ---- */
 function runTrace(s,secs,sub){
   var m = newModel(s); figSettle(m,s,6);
-  var out=[], i=0, lim=Math.round(secs/DT), t0=m.t, work=0;
+  var out=[], br=[], i=0, lim=Math.round(secs/DT), t0=m.t, work=0, volIn=0;
+  var cur=m.b, curT=0;
   while(i<lim){
     if(i%(sub||10)===0) out.push({t:m.t-t0, paw:m.paw, flow:m.flow*60, vol:(m.V-m.b.Vee)*1000, pm:pmusAt(s,m.t), ph:m.phase, kind:m.b.kind});
     var v0=m.V, pm=pmusAt(s,m.t);
     step(m,s); i++;
-    var dv = m.V - v0; if(dv>0) work += pm*dv;
+    var dv = m.V - v0; if(dv>0){ work += pm*dv; volIn += dv; }
+    /* A breath object is replaced, never mutated, at every trigger. Close the
+       old record there so the figure labels a completed breath, not a running
+       one; the first and last records are partial and are marked as such. */
+    if(m.b !== cur){
+      br.push({t0:curT, t1:m.t-t0, kind:cur.kind, vt:cur.VTi*1000, patTrig:cur.patTrig, partial:(curT<=0)});
+      cur = m.b; curT = m.t-t0;
+    }
   }
-  return {pts:out, workJ: work*0.0980665, m:m};
+  br.push({t0:curT, t1:secs, kind:cur.kind, vt:cur.VTi*1000, patTrig:cur.patTrig, partial:true});
+  return {pts:out, breaths:br, workJ: work*0.0980665, volIn:volIn, m:m};
 }
 
-/* =====================  10  assist-control against SIMV  ===================== */
+/* =====================  10  assist-control against SIMV  =====================
+   REBUILT. The previous version drew twenty seconds of airway pressure on one
+   compressed axis and nothing else, so both rows read as a picket fence and the
+   thing the section exists to show - that a spontaneous breath on SIMV gets
+   only the support that is set for it - was invisible. This version puts
+   PRESSURE and FLOW side by side for each sequence over a window short enough
+   to see individual breaths, labels every breath mandatory or spontaneous, and
+   prints the delivered tidal volume on each one. Both rows are solved by the
+   same step() the rig uses, at the same set rate and the same neural rate. */
 function drawSimv(){
   var svg = fgSvg("figSimv"); if(!svg) return;
-  var C = pal(), span = 20;
-  var common = {mode:"PC", spont:true, pmusPk:Math.max(S.pmusPk,7), nrate:Math.max(S.rate+8, S.nrate), ps:(FIGRM.simvPs? Math.max(S.ps,8) : 0)};
-  var A = runTrace(copyS(Object.assign({seq:"AC"},common)), span, 12);
-  var B = runTrace(copyS(Object.assign({seq:"SIMV"},common)), span, 12);
-  var pmax = 0;
-  A.pts.concat(B.pts).forEach(function(p){ if(p.paw>pmax) pmax=p.paw; });
-  pmax = Math.max(pmax*1.12, S.peep+5);
-  var x0=76, x1=856;
-  var fxt = function(t){ return x0 + t/span*(x1-x0); };
-  function row(D,y0,h,title,tag){
-    var fy = function(v){ return y0+h - clamp(v/pmax,0,1)*h; };
-    svg.appendChild(el("rect",{x:x0,y:y0,width:x1-x0,height:h,fill:"none",stroke:C.hair}));
-    lbl(svg,x0,y0-7,title,{fill:C.ink});
-    lbl(svg,x1,y0-7,tag,{"text-anchor":"end",fill:C.mut});
-    if(D.simv){
-      var Ttot=60/S.rate, W=Math.min(0.5*Ttot,2), k;
-      for(k=0;k*Ttot<span;k++){
-        var wx0=fxt(Math.max(0,(k+1)*Ttot-W)), wx1=fxt(Math.min(span,(k+1)*Ttot));
-        svg.appendChild(el("rect",{x:wx0,y:y0,width:Math.max(0,wx1-wx0),height:h,fill:C.slate,"fill-opacity":".09"}));
-      }
-    }
-    var d=[],i;
-    for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fxt(D.pts[i].t).toFixed(1)+" "+fy(D.pts[i].paw).toFixed(1));
-    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.6,"stroke-linejoin":"round"}));
-    var pm=[];
-    for(i=0;i<D.pts.length;i++) pm.push((i?"L":"M")+fxt(D.pts[i].t).toFixed(1)+" "+(y0+h+18-Math.min(D.pts[i].pm,20)*0.7).toFixed(1));
-    svg.appendChild(el("path",{d:pm.join(" "),fill:"none",stroke:C.slate,"stroke-width":1.1,"stroke-opacity":".8"}));
-    note(svg,x0,y0+h+30,"patient effort, P_mus",C.faint);
-    return fy;
+  var C = pal();
+  /* Window: three mandatory intervals, floored so a slow set rate still shows
+     more than one, and capped so a fast one does not become a picket fence. */
+  var span = clamp(3*tTot(S), 9, 16);
+  var common = {mode:"PC", spont:true, pmusPk:Math.max(S.pmusPk,7),
+                nrate:Math.max(S.rate+8, S.nrate), ps:(FIGRM.simvPs? Math.max(S.ps,8) : 0)};
+  var A = runTrace(copyS(Object.assign({seq:"AC"},common)), span, 6);
+  var B = runTrace(copyS(Object.assign({seq:"SIMV"},common)), span, 6);
+
+  var pmax = S.peep + 2, fmax = 1;
+  A.pts.concat(B.pts).forEach(function(p){
+    if(p.paw > pmax) pmax = p.paw;
+    if(Math.abs(p.flow) > fmax) fmax = Math.abs(p.flow);
+  });
+  pmax = pmax*1.10; fmax = fmax*1.12;
+
+  var x0 = 120, x1 = 858;
+  var fxt = function(t){ return x0 + clamp(t,0,span)/span*(x1-x0); };
+
+  /* One block = one breath sequence: a pressure panel over a flow panel, both
+     on the same time axis and the same y scales as the other block. */
+  function block(D, yTop, title, tag){
+    var PH = 84, FH = 62, py0 = yTop, py1 = yTop+PH, fy0 = yTop+PH+16, fy1 = yTop+PH+16+FH;
+    var fp = function(v){ return py1 - clamp(v/pmax,0,1)*PH; };
+    var fzero = (fy0+fy1)/2;
+    var ff = function(v){ return fzero - clamp(v/fmax,-1,1)*(FH/2); };
+    var i, d;
+
+    lbl(svg, x0, py0-9, title, {fill:C.ink});
+    lbl(svg, x1, py0-9, tag, {"text-anchor":"end", fill:C.mut});
+
+    /* Shade every spontaneous breath so the two kinds separate before a single
+       label is read. Drawn first so the traces sit on top of it. */
+    D.breaths.forEach(function(b){
+      if(b.kind !== "ps") return;
+      svg.appendChild(el("rect",{x:fxt(b.t0), y:py0, width:Math.max(0,fxt(b.t1)-fxt(b.t0)),
+                                 height:(fy1-py0), fill:C.caution, "fill-opacity":".10"}));
+    });
+
+    svg.appendChild(el("rect",{x:x0,y:py0,width:x1-x0,height:PH,fill:"none",stroke:C.hair}));
+    svg.appendChild(el("rect",{x:x0,y:fy0,width:x1-x0,height:FH,fill:"none",stroke:C.hair}));
+    svg.appendChild(el("line",{x1:x0,y1:fzero,x2:x1,y2:fzero,stroke:C.rule}));
+
+    /* Axis ticks at the panel EDGES only, and the axis name at the panel's
+       vertical middle. Both live in the same left gutter, so they are kept
+       apart in y rather than in x: a name printed level with a tick label is
+       the collision the first version of this figure shipped with. The flow
+       zero is drawn as a line across the panel and needs no number. */
+    [0, Math.round(pmax)].forEach(function(v){
+      svg.appendChild(el("line",{x1:x0-4,y1:fp(v),x2:x0,y2:fp(v),stroke:C.rule}));
+      lbl(svg, x0-7, fp(v)+3.5, String(v), {"text-anchor":"end", fill:C.mut});
+    });
+    [Math.round(fmax), -Math.round(fmax)].forEach(function(v){
+      svg.appendChild(el("line",{x1:x0-4,y1:ff(v),x2:x0,y2:ff(v),stroke:C.rule}));
+      lbl(svg, x0-7, ff(v)+3.5, String(v), {"text-anchor":"end", fill:C.mut});
+    });
+    lbl(svg, x0-7, (py0+py1)/2+3.5, "P_aw cmH2O", {"text-anchor":"end", fill:C.faint});
+    lbl(svg, x0-7, fzero+3.5,       "flow L/min", {"text-anchor":"end", fill:C.faint});
+
+    d=[]; for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fxt(D.pts[i].t).toFixed(1)+" "+fp(D.pts[i].paw).toFixed(1));
+    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.7,"stroke-linejoin":"round"}));
+    d=[]; for(i=0;i<D.pts.length;i++) d.push((i?"L":"M")+fxt(D.pts[i].t).toFixed(1)+" "+ff(D.pts[i].flow).toFixed(1));
+    svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.slate,"stroke-width":1.5,"stroke-linejoin":"round"}));
+
+    /* Per-breath labels. Kind on the first line, delivered volume on the
+       second, both inside the pressure panel. A breath too narrow to hold the
+       text is left unlabelled rather than overprinted onto its neighbour. */
+    D.breaths.forEach(function(b){
+      if(b.partial) return;
+      var w = fxt(b.t1)-fxt(b.t0), xm = (fxt(b.t0)+fxt(b.t1))/2;
+      if(w < 58) return;
+      var spont = (b.kind === "ps"), col = spont ? C.caution : C.slate;
+      svg.appendChild(svgTxt(xm, py0+13, spont ? "spontaneous" : "mandatory",
+        {class:"tiny","text-anchor":"middle",fill:col,"font-family":"var(--sans)"}));
+      svg.appendChild(svgTxt(xm, py0+25, "V_T "+fmt(b.vt,0)+" mL",
+        {class:"tiny","text-anchor":"middle",fill:col,"font-family":"var(--mono)"}));
+    });
+    return {py0:py0, py1:py1, fy1:fy1};
   }
-  row(A,44,86,"Assist-control: every triggered breath is a full mandatory breath","continuous mandatory");
-  B.simv = true;
-  row(B,178,86,"SIMV at the same set rate and the same neural rate","intermittent mandatory");
-  lbl(svg,x0+6,172,"shaded bands are the synchronisation window, min(0.5 x T_tot, 2 s), MODEL CHOICE",{fill:C.slate});
-  var wmax = Math.max(A.workJ,B.workJ,1e-6), bw=210;
-  svg.appendChild(el("rect",{x:x0,y:256,width:bw*(A.workJ/wmax),height:12,fill:C.slate,"fill-opacity":".5"}));
-  svg.appendChild(el("rect",{x:x0,y:274,width:bw*(B.workJ/wmax),height:12,fill:C.caution,"fill-opacity":".6"}));
-  lbl(svg,x0+bw+10,266,"assist-control: "+fmt(A.workJ,2)+" J of patient work over 20 s",{fill:C.slate});
-  lbl(svg,x0+bw+10,284,"SIMV: "+fmt(B.workJ,2)+" J"+(FIGRM.simvPs? ", with support on the spontaneous breaths":", with no support on the spontaneous breaths"),{fill:C.caution});
-  wrapNote(svg,20,300,844,"Cumulative patient work is computed from the model's own P_mus waveform and is not a patient measurement. Comparative outcome data are neonatal: 8 studies meta-analysed (Batra 2023). No PICU trial of SIMV against assist-control was found.",C.faint);
+
+  var a = block(A, 44, "Assist-control: every trigger delivers the set breath", "continuous mandatory");
+  var b = block(B, 236, "SIMV at the same set rate and the same efforts", "intermittent mandatory");
+
+  /* The synchronisation window, drawn as a strip under the SIMV pressure panel
+     rather than as a full-height wash, so it does not compete with the breath
+     shading it is there to explain. */
+  var Ttot = tTot(S), W = Math.min(0.5*Ttot, 2), k;
+  for(k=0; k*Ttot < span; k++){
+    var wx0 = fxt(Math.max(0,(k+1)*Ttot - W)), wx1 = fxt(Math.min(span,(k+1)*Ttot));
+    if(wx1 - wx0 <= 0) continue;
+    /* b.fy1, not b.py1: the block is a pressure panel PLUS a flow panel, and
+       hanging this strip off the pressure panel drew it across the flow trace. */
+    svg.appendChild(el("rect",{x:wx0, y:b.fy1+4, width:wx1-wx0, height:5, fill:C.slate, "fill-opacity":".45"}));
+  }
+  wrapNote(svg, x0, b.fy1+24, x1-x0, "Solid bars mark the synchronisation window, min(0.5 x T_tot, 2 s) - MODEL CHOICE. An effort inside it is answered with a mandatory breath; an effort outside it is not.", C.mut);
+
+  /* What the same efforts BUY, over the same window. Total inspired volume is
+     a quantity this model computes honestly; cumulative patient work is not.
+     P_mus here is a fixed waveform with no chemoreceptor feedback (section 16),
+     so the mean P_mus over any breath is the same whatever the ventilator does,
+     work per litre comes out near-identical in both rows, and a work bar drawn
+     from it would look like a measurement of something the model cannot see.
+     The earlier version of this figure drew exactly that bar. */
+  var vmax = Math.max(A.volIn, B.volIn, 1e-6), bw = 180;
+  lbl(svg, x0, 456, "volume the same efforts bought over "+fmt(span,0)+" s", {fill:C.mut});
+  svg.appendChild(el("rect",{x:x0, y:464, width:bw*(A.volIn/vmax), height:12, fill:C.slate, "fill-opacity":".55"}));
+  svg.appendChild(el("rect",{x:x0, y:482, width:bw*(B.volIn/vmax), height:12, fill:C.caution, "fill-opacity":".65"}));
+  lbl(svg, x0+bw+10, 474, "assist-control "+fmt(A.volIn,2)+" L, "+fmt(A.volIn*60/span,1)+" L/min", {fill:C.slate});
+  lbl(svg, x0+bw+10, 492, "SIMV "+fmt(B.volIn,2)+" L, "+fmt(B.volIn*60/span,1)+" L/min"
+      + (FIGRM.simvPs ? ", supported at "+fmt(Math.max(S.ps,8),0)+" cmH2O"
+                      : ", unsupported"), {fill:C.caution});
+  var gy = wrapNote(svg, 20, 516, 844, "Both rows are solved by the same code as the rig, at set rate "+fmt(S.rate,0)+"/min and neural rate "+fmt(common.nrate,0)+"/min. P_mus is a fixed waveform that does not respond to load, so this figure cannot show a difference in patient work and does not draw one.", C.faint);
+  wrapNote(svg, 20, gy, 844, "Comparative outcome data are neonatal: 8 studies meta-analysed (Batra 2023). No PICU trial of SIMV against assist-control was found.", C.faint);
 }
 
 /* =====================  12 and 13  the two holds  ===================== */
@@ -3197,14 +3645,31 @@ function drawHoldI(){
   var fy =function(v){ return y1 - (v-pmin)/Math.max(pmax-pmin,1e-6)*(y1-y0); };
   svg.appendChild(el("rect",{x:x0,y:y0,width:x1-x0,height:y1-y0,fill:"none",stroke:C.hair}));
   lbl(svg,x0,y0-9,"airway pressure (cmH2O) through one breath and the hold",{fill:C.mut});
+  /* Every label in the right half of this panel sits at a pressure-driven
+     height, so at some parameter values two of them want the same row. They all
+     book a row through claimRow(); the lines and bands are always drawn, and
+     only the text is dropped. */
+  var CLAIMED = [y0-9];
+  function claimRow(y){
+    for(var q=0;q<CLAIMED.length;q++) if(Math.abs(CLAIMED[q]-y) < 18) return false;
+    CLAIMED.push(y); return true;
+  }
   var pip = m.b.PIP, plat = m.Pplat, ptot = s.peep;
   if(plat!=null){
     svg.appendChild(el("rect",{x:x1-40,y:fy(pip),width:34,height:Math.max(1,fy(plat)-fy(pip)),fill:C.caution,"fill-opacity":".30"}));
     svg.appendChild(el("rect",{x:x1-40,y:fy(plat),width:34,height:Math.max(1,fy(ptot)-fy(plat)),fill:C.slate,"fill-opacity":".18"}));
-    lbl(svg,x1+6,(fy(pip)+fy(plat))/2+4,"resistive = flow x R",{fill:C.caution});
-    lbl(svg,x1+6,(fy(plat)+fy(ptot))/2+4,"elastic = V_T / C",{fill:C.slate});
+    /* End-anchored at x1-46, i.e. just left of the stacked bar. Start-anchored
+       at x1+6 these two ran into the derived-value column on the right. */
+    if(claimRow((fy(pip)+fy(plat))/2+4)) lbl(svg,x1-46,(fy(pip)+fy(plat))/2+4,"resistive = flow x R",{"text-anchor":"end",fill:C.caution});
+    if(claimRow((fy(plat)+fy(ptot))/2+4)) lbl(svg,x1-46,(fy(plat)+fy(ptot))/2+4,"elastic = V_T / C",{"text-anchor":"end",fill:C.slate});
+    var refY = -1e9;
     [[pip,"PIP"],[plat,"P_z = P_plat"],[ptot,"PEEP"]].forEach(function(r){
       svg.appendChild(el("line",{x1:x0-6,y1:fy(r[0]),x2:x1-40,y2:fy(r[0]),stroke:C.rule,"stroke-dasharray":"3 3"}));
+      /* Line always drawn; its two labels are skipped when the level above is
+         closer than a line box. A stiff, low-resistance patient puts PIP and
+         plateau within a couple of units of each other. */
+      if(Math.abs(fy(r[0]) - refY) < 18) return;
+      refY = fy(r[0]);
       lbl(svg,x0-9,fy(r[0])+3.5,fmt(r[0],1),{"text-anchor":"end",fill:C.mut});
       lbl(svg,x0+6,fy(r[0])-5,r[1],{fill:C.mut});
     });
@@ -3213,7 +3678,11 @@ function drawHoldI(){
     if(tHold!=null){
       for(t=0;t<=0.5;t+=0.01) gx.push([fxt(tHold+t), fy(plat + (pip-plat)*0.30*Math.exp(-t/0.14))]);
       curve(svg,gx,{stroke:C.caution,"stroke-width":1.5,"stroke-dasharray":"4 4","stroke-opacity":".55"});
-      lbl(svg,fxt(tHold)+8,fy(plat)-20,"not modelled here: pendelluft and viscoelastic stress relaxation",{fill:C.caution,"fill-opacity":".9"});
+      /* Short marker only. The note under the figure already says in full what
+         the ghost curve is and why the model cannot produce it; the long version
+         of this label ran the width of the panel and into the labels beside it. */
+      var gy2 = Math.max(fy(plat)-26, y0+16);
+      if(claimRow(gy2)) lbl(svg,fxt(tHold)+8,gy2,"not modelled here",{fill:C.caution,"fill-opacity":".9"});
     }
   }
   var d=[];
@@ -3222,20 +3691,20 @@ function drawHoldI(){
   /* Only draw a plateau ceiling when it is actually on this patient's scale. */
   if(30>=pmin && 30<=pmax){
     svg.appendChild(el("line",{x1:x0,y1:fy(30),x2:x1,y2:fy(30),stroke:C.neg,"stroke-dasharray":"2 4","stroke-opacity":".6"}));
-    lbl(svg,x1-46,fy(30)-4,"30, adult",{"text-anchor":"end",fill:C.neg});
+    if(claimRow(fy(30)-4)) lbl(svg,x1-46,fy(30)-4,"30, adult",{"text-anchor":"end",fill:C.neg});
   }
   if(28>=pmin && 28<=pmax){
     svg.appendChild(el("line",{x1:x0,y1:fy(28),x2:x1,y2:fy(28),stroke:C.caution,"stroke-dasharray":"2 4","stroke-opacity":".6"}));
-    lbl(svg,x1-46,fy(28)+11,"28, PALICC-2",{"text-anchor":"end",fill:C.caution});
+    if(claimRow(fy(28)+11)) lbl(svg,x1-46,fy(28)+11,"28, PALICC-2",{"text-anchor":"end",fill:C.caution});
   }
   var bx=576, by=60;
   if(S.spont && S.pmusPk>0){
     svg.appendChild(el("rect",{x:bx-20,y:by-24,width:190,height:96,fill:C.caution,"fill-opacity":".13",stroke:C.caution}));
     lbl(svg,bx-10,by-4,"active breathing invalidates",{fill:C.ink});
-    lbl(svg,bx-10,by+12,"this measurement.",{fill:C.ink});
-    note(svg,bx-10,by+32,"No compliance and no resistance",C.mut);
-    note(svg,bx-10,by+44,"are computed from a plateau read",C.mut);
-    note(svg,bx-10,by+56,"while the patient is pulling.",C.mut);
+    lbl(svg,bx-10,by+14,"this measurement.",{fill:C.ink});
+    note(svg,bx-10,by+36,"No compliance and no resistance",C.mut);
+    note(svg,bx-10,by+52,"are computed from a plateau read",C.mut);
+    note(svg,bx-10,by+68,"while the patient is pulling.",C.mut);
   } else if(plat!=null){
     var vt = m.b.VTi*1000, ela = plat - s.peep, res = pip - plat;
     /* R_I = (PIP - P_plat)/flow needs ONE known inspiratory flow at the instant
@@ -3256,7 +3725,7 @@ function drawHoldI(){
       svg.appendChild(svgTxt(bx-20,by+k*34+17,r[1],{"font-size":"15px",fill:C.ink,"font-family":"var(--mono)"}));
     });
   }
-  var hy = wrapNote(svg,20,258,744,"Solver output at the rig's settings. The ghost curve is drawn, not solved: a single-compartment model has one time constant and no viscoelastance, so it collapses PIP straight onto P_plat with no shoulder. The shoulder at a real bedside is evidence against this model.",C.faint);
+  var hy = wrapNote(svg,20,272,744,"Solver output at the rig's settings. The ghost curve is drawn, not solved: a single-compartment model has one time constant and no viscoelastance, so it collapses PIP straight onto P_plat with no shoulder. The shoulder at a real bedside is evidence against this model.",C.faint);
   var hy2 = wrapNote(svg,20,hy,744,"Plateau targets: 30 cmH2O in ventilated adults, some evidence for 25 in adult ARDS (Hess 2014); 28 cmH2O in PARDS, PALICC-2 recommendation 3.3.1, conditional, very low certainty, 92% agreement, with a remark allowing 29 to 32 where chest-wall compliance is reduced (Emeriaud 2023). All three assume something about chest-wall compliance that only esophageal manometry can check.",C.faint);
   wrapNote(svg,20,hy2+4,744,"Those are ABSOLUTE pressures and include PEEP. The separate PALICC-2 limit on the driving pressure printed above, P_plat - PEEP, is 15 cmH2O under static conditions: conditional recommendation 3.3.2, very low certainty, 82% agreement (Emeriaud 2023).",C.faint);
 }
@@ -3274,42 +3743,56 @@ function drawHoldE(){
   var d=[]; for(i=0;i<pts.length;i++) d.push((i?"L":"M")+fxt(pts[i].t).toFixed(1)+" "+fy(pts[i].paw).toFixed(1));
   svg.appendChild(el("path",{d:d.join(" "),fill:"none",stroke:C.ink,"stroke-width":1.8,"stroke-linejoin":"round"}));
   svg.appendChild(el("line",{x1:x0,y1:fy(s.peep),x2:x1,y2:fy(s.peep),stroke:C.slate,"stroke-dasharray":"4 4"}));
-  lbl(svg,x1+5,fy(s.peep)+4,"set PEEP "+fmt(s.peep,0),{fill:C.slate});
   var tot = m.totalPeep, ap = (m.autoPeep==null)?null:Math.max(0,m.autoPeep);
+  /* Both PEEP labels live INSIDE the panel, left of the auto-PEEP bar. Outside
+     it at x1+5 they reached the derived-value column at x = 596. And when there
+     is no measurable trapping the two lines coincide, so they are printed as a
+     single label rather than as two stacked on the same pixel. */
+  var merged = (tot!=null && Math.abs(fy(s.peep) - fy(tot)) < 20);
+  if(merged){
+    lbl(svg,x1-52,fy(s.peep)-6,"set PEEP = total PEEP "+fmt(s.peep,1),{"text-anchor":"end",fill:C.slate});
+  } else {
+    lbl(svg,x1-52,fy(s.peep)+14,"set PEEP "+fmt(s.peep,0),{"text-anchor":"end",fill:C.slate});
+  }
   if(tot!=null){
     svg.appendChild(el("line",{x1:x0,y1:fy(tot),x2:x1,y2:fy(tot),stroke:C.caution}));
-    lbl(svg,x1+5,fy(tot)-4,"total PEEP "+fmt(tot,2),{fill:C.caution});
-    svg.appendChild(el("rect",{x:x1-46,y:fy(tot),width:40,height:Math.max(1,fy(s.peep)-fy(tot)),fill:C.caution,"fill-opacity":".30"}));
-    lbl(svg,x1-50,(fy(tot)+fy(s.peep))/2+4,"auto-PEEP",{"text-anchor":"end",fill:C.caution});
+    if(!merged) lbl(svg,x1-52,fy(tot)-6,"total PEEP "+fmt(tot,2),{"text-anchor":"end",fill:C.caution});
+    if(!merged){
+      svg.appendChild(el("rect",{x:x1-46,y:fy(tot),width:40,height:Math.max(1,fy(s.peep)-fy(tot)),fill:C.caution,"fill-opacity":".30"}));
+      lbl(svg,x1-50,(fy(tot)+fy(s.peep))/2+4,"auto-PEEP",{"text-anchor":"end",fill:C.caution});
+    }
   }
   var tau = s.R*s.C, TE = (m.last? m.last.tE : 0), vt = (m.last? m.last.VTi : s.vt);
   var closed = (TE>0 && tau>0) ? vt/(s.C*(Math.exp(TE/tau)-1)) : NaN;
   svg.appendChild(svgTxt(596,54,"closed form",{"font-size":"11px",fill:C.mut,"font-family":"var(--sans)"}));
   svg.appendChild(svgTxt(596,74,fmt(closed,3)+" cmH2O",{"font-size":"15px",fill:C.ink,"font-family":"var(--mono)"}));
-  note(svg,596,88,"V_T / (C (e^(T_E/tau) - 1))",C.faint);
+  note(svg,596,90,"V_T / (C (e^(T_E/tau) - 1))",C.faint);
   svg.appendChild(svgTxt(596,116,"simulated hold",{"font-size":"11px",fill:C.mut,"font-family":"var(--sans)"}));
   svg.appendChild(svgTxt(596,136,(ap==null?"--":fmt(ap,3)+" cmH2O"),{"font-size":"15px",fill:C.ink,"font-family":"var(--mono)"}));
   if(ap!=null && isFinite(closed) && closed>0.001){
-    note(svg,596,150,"difference "+fmt(100*Math.abs(ap-closed)/closed,2)+"%",C.faint);
+    note(svg,596,152,"difference "+fmt(100*Math.abs(ap-closed)/closed,2)+"%",C.faint);
   } else if(ap!=null){
-    note(svg,596,150,"no measurable trapping",C.faint);
+    note(svg,596,152,"no measurable trapping",C.faint);
   }
   note(svg,596,168,"T_E "+fmt(TE,2)+" s, tau "+fmt(tau,2)+" s",C.faint);
 
   var py0=214, py1=350;
   svg.appendChild(el("rect",{x:60,y:py0,width:660,height:py1-py0,fill:C.slate,"fill-opacity":".06",stroke:C.rule,"stroke-dasharray":"6 3"}));
-  lbl(svg,72,py0+18,"Schematic, not simulator output. A single-compartment model structurally cannot produce either of these.",{fill:C.mut});
+  /* Wrapped to the left half: as one line it ran under the inset panel at x=470. */
+  wrapNote(svg,72,py0+14,384,"Schematic, not simulator output. A single-compartment model structurally cannot produce either of these.",C.mut);
   var cx=[110,150,190,230], k;
   for(k=0;k<4;k++){
     svg.appendChild(el("circle",{cx:cx[k],cy:py0+62,r:15,fill:C.slate,"fill-opacity":(0.10+k*0.05),stroke:C.slate}));
     svg.appendChild(el("line",{x1:cx[k],y1:py0+77,x2:170,y2:py0+100,stroke:C.rule}));
   }
   svg.appendChild(el("line",{x1:96,y1:py0+92,x2:244,y2:py0+92,stroke:C.slate}));
-  lbl(svg,96,py0+112,"what the occlusion measures: the volume-weighted average of communicating units",{fill:C.slate});
+  /* Two lines: as one it reached the inset panel at x = 470. */
+  lbl(svg,96,py0+108,"what the occlusion measures:",{fill:C.slate});
+  lbl(svg,96,py0+124,"the average of communicating units",{fill:C.slate});
   svg.appendChild(el("circle",{cx:300,cy:py0+62,r:15,fill:C.caution,"fill-opacity":".22",stroke:C.caution,"stroke-width":2}));
   svg.appendChild(el("path",{d:"M300 "+(py0+40)+" L300 "+(py0+30),stroke:C.caution}));
   lbl(svg,320,py0+50,"closed unit: higher regional pressure,",{fill:C.caution});
-  lbl(svg,320,py0+64,"not measurable by the maneuver",{fill:C.caution});
+  lbl(svg,320,py0+68,"not measurable by the maneuver",{fill:C.caution});
   var bx0=470,bx1=706,by0=py0+30,by1=py0+96;
   svg.appendChild(el("rect",{x:bx0,y:by0,width:bx1-bx0,height:by1-by0,fill:"none",stroke:C.hair}));
   var fxo=function(t){ return bx0 + t/10*(bx1-bx0); }, fyo=function(v){ return by1 - v*(by1-by0); };
@@ -3318,8 +3801,8 @@ function drawHoldE(){
   curve(svg,a1,{stroke:C.slate,"stroke-width":1.5});
   curve(svg,a2,{stroke:C.caution,"stroke-width":1.5,"stroke-dasharray":"4 3"});
   note(svg,bx0,by0-6,"pressure after occlusion, 0 to 10 s",C.mut);
-  note(svg,bx0,by1+14,"all airways open: settles by 3 s",C.slate);
-  note(svg,bx0,by1+26,"dependent closure: still rising at 10 s",C.caution);
+  note(svg,bx0,by1+16,"all airways open: settles by 3 s",C.slate);
+  note(svg,bx0,by1+34,"dependent closure: still rising at 10 s",C.caution);
   wrapNote(svg,20,py1+18,744,"For a fixed tidal volume the end-inspiratory plateau is a better guide to the severity of dynamic hyperinflation than the measurable auto-PEEP: it is the consequence of the closure problem drawn above, and it is Marini's argument, not this page's (Marini 2011, PMID 21700908).",C.faint);
 }
 
@@ -3414,84 +3897,91 @@ function drawMatrix(){
     svg.appendChild(el("circle",{cx:fx(plat),cy:fy(gap),r:6,fill:C.neg}));
     svg.appendChild(el("circle",{cx:fx(plat),cy:fy(gap),r:11,fill:"none",stroke:C.neg,"stroke-opacity":".45"}));
     var mtxt = "your patient: elastic "+fmt(plat,1)+", resistive "+fmt(gap,1);
-    lbl(svg,clamp(fx(plat)+14,x0+4,x1-mtxt.length*5.9-6),fy(gap)+4,mtxt,{fill:C.neg});
-    if(plat>2*xDiv || gap>2*yDiv) note(svg,x0+6,y0+14,"marker clamped to the edge: this patient is off the plotted scale",C.neg);
+    /* Caption pinned to the panel's bottom edge rather than floating beside the
+       marker: beside it, it printed across whichever quadrant's body text the
+       marker happened to land in. A leader line carries the eye instead. */
+    var mx = clamp(fx(plat), x0+4, x1-4), my = fy(gap);
+    var cx2 = clamp(mx, x0+8, x1 - mtxt.length*5.9 - 8), cy2 = y1 - 10;
+    svg.appendChild(el("line",{x1:mx,y1:my+12,x2:cx2+8,y2:cy2-11,stroke:C.neg,"stroke-opacity":".45","stroke-dasharray":"3 3"}));
+    lbl(svg,cx2,cy2,mtxt,{fill:C.neg});
+    if(plat>2*xDiv || gap>2*yDiv) note(svg,x0,y1+48,"marker clamped to the edge: this patient is off the plotted scale",C.neg);
   } else {
-    svg.appendChild(el("rect",{x:xm-176,y:ym-22,width:352,height:44,fill:C.caution,"fill-opacity":".16"}));
-    lbl(svg,xm,ym-2,"this matrix needs a volume-control breath and an inspiratory hold",{"text-anchor":"middle",fill:C.ink});
-    lbl(svg,xm,ym+14,"the marker is withheld in "+S.mode+", because the reasoning does not hold there",{"text-anchor":"middle",fill:C.mut});
+    /* BELOW the panel, in the band the marker caption uses in volume control.
+       Floated over the quadrants it printed across whichever quadrant's title
+       or body text it happened to cover, and it covers one in every mode that
+       withholds the marker. */
+    lbl(svg,x0,y1+50,"This matrix needs a volume-control breath and an inspiratory hold.",{fill:C.ink});
+    lbl(svg,x0,y1+66,"The marker is withheld in "+S.mode+", because the reasoning does not hold there.",{fill:C.mut});
   }
   var held = (M && M.autoPeep!=null);
-  svg.appendChild(el("rect",{x:x0,y:474,width:x1-x0,height:40,fill:(held?C.slate:C.caution),"fill-opacity":(held?".08":".18"),stroke:(held?C.rule:C.caution)}));
-  lbl(svg,x0+12,492,(held
+  svg.appendChild(el("rect",{x:x0,y:502,width:x1-x0,height:44,fill:(held?C.slate:C.caution),"fill-opacity":(held?".08":".18"),stroke:(held?C.rule:C.caution)}));
+  lbl(svg,x0+12,522,(held
     ? "Total PEEP has been measured in this parameter state: "+fmt(M.totalPeep,2)+" cmH2O, auto-PEEP "+fmt(Math.max(0,M.autoPeep),2)+"."
     : "Read plateau minus TOTAL PEEP. If you have not done an expiratory hold, you do not know total PEEP,"),{fill:C.ink});
-  lbl(svg,x0+12,506,(held
+  lbl(svg,x0+12,538,(held
     ? "The elastic term above is therefore referenced to a measured baseline."
     : "and every compliance on this page is wrong. Press Expiratory hold in the rig."),{fill:(held?C.mut:C.ink)});
-  var qy = wrapNote(svg,20,530,744,"Axis dividers are derived, not consensus: the vertical divider is the plateau a compliance of 50 mL/cmH2O would produce at this tidal volume, and the horizontal divider is the gap a resistance of 10 cmH2O/L/s would produce at this flow. Both anchor to the adult normals in Hess 2014.",C.faint);
+  var qy = wrapNote(svg,20,576,744,"Axis dividers are derived, not consensus: the vertical divider is the plateau a compliance of 50 mL/cmH2O would produce at this tidal volume, and the horizontal divider is the gap a resistance of 10 cmH2O/L/s would produce at this flow. Both anchor to the adult normals in Hess 2014.",C.faint);
   var qy2 = wrapNote(svg,20,qy,744,"Quadrant thumbnails are solved at 4x resistance and one third compliance relative to the rig, with a 0.35 s pause so a plateau exists.",C.faint);
   wrapNote(svg,20,qy2+4,744,"The horizontal axis is driving pressure. PALICC-2 suggests keeping it at or under 15 cmH2O in PARDS under static conditions: conditional recommendation 3.3.2, very low certainty of evidence, 82% agreement (Emeriaud 2023). The dividers on this figure are Hess adult normals and are not that limit.",C.faint);
 }
 
-/* =====================  18  the phase machine  ===================== */
+/* =====================  18  the phase machine  =====================
+   REBUILT. The previous version placed six boxes, eight curved arrows, three
+   multi-line transition captions and a four-line copy of the solver equations
+   inside one 880 x 320 box, and several of those captions printed across the
+   arrows they were describing. The equations were already set as display maths
+   in the prose directly above the figure, so they are gone from here; RISE and
+   PINSP are merged into the one box a reader needs; and the transition text is
+   reduced to two GATES, each named once. Nothing about the model changed. */
 function drawSm(){
   var svg = fgSvg("figSm"); if(!svg) return;
   var C = pal();
-  var TRIG=C.slate, LIM=C.caution, CYC=(getComputedStyle(document.documentElement).getPropertyValue("--pos")||"").trim()||C.slate;
-  var boxes = [
-    {id:"EXP",   x:20,  y:120, w:112,h:46, t:"EXP",     s:"expiration"},
-    {id:"RISE",  x:186, y:36,  w:112,h:46, t:"RISE",    s:"pressure ramp"},
-    {id:"PINSP", x:340, y:36,  w:112,h:46, t:"PINSP",   s:"pressure held"},
-    {id:"VCI",   x:186, y:196, w:112,h:46, t:"VCI",     s:"set flow"},
-    {id:"HOLDI", x:470, y:112, w:112,h:46, t:"HOLD_I",  s:"inspiratory"},
-    {id:"HOLDE", x:20,  y:230, w:112,h:46, t:"HOLD_E",  s:"expiratory"}
-  ];
-  boxes.forEach(function(b){
-    svg.appendChild(el("rect",{x:b.x,y:b.y,width:b.w,height:b.h,rx:8,fill:"none",stroke:C.rule}));
-    svg.appendChild(svgTxt(b.x+b.w/2,b.y+21,b.t,{"text-anchor":"middle","font-size":"12.5px",fill:C.ink,"font-family":"var(--mono)"}));
-    svg.appendChild(svgTxt(b.x+b.w/2,b.y+36,b.s,{class:"tiny","text-anchor":"middle",fill:C.mut,"font-family":"var(--sans)"}));
-  });
-  function arrow(d,col){
-    svg.appendChild(el("path",{d:d,fill:"none",stroke:col,"stroke-width":1.1,"marker-end":"url(#fgArrow)"}));
+
+  function box(x,y,w,h,t,sub,stroke){
+    svg.appendChild(el("rect",{x:x,y:y,width:w,height:h,rx:8,fill:"none",stroke:stroke||C.rule}));
+    svg.appendChild(svgTxt(x+w/2,y+22,t,{"text-anchor":"middle","font-size":"12.5px",fill:C.ink,"font-family":"var(--mono)"}));
+    svg.appendChild(svgTxt(x+w/2,y+38,sub,{class:"tiny","text-anchor":"middle",fill:C.mut,"font-family":"var(--sans)"}));
   }
-  var defs = el("defs",{}), mk = el("marker",{id:"fgArrow",viewBox:"0 0 8 8",refX:"7",refY:"4",markerWidth:"7",markerHeight:"7",orient:"auto"});
+  var defs = el("defs",{});
+  var mk = el("marker",{id:"fgArrow",viewBox:"0 0 8 8",refX:"7",refY:"4",markerWidth:"7",markerHeight:"7",orient:"auto"});
   mk.appendChild(el("path",{d:"M0 0 L8 4 L0 8",fill:"none",stroke:"currentColor","stroke-width":"1.2"}));
   defs.appendChild(mk); svg.appendChild(defs);
-  arrow("M132 132 C160 110, 168 74, 184 60", TRIG);
-  arrow("M132 156 C160 178, 168 206, 184 216", TRIG);
-  arrow("M298 59 L336 59", LIM);
-  arrow("M396 82 C396 130, 240 150, 132 146", CYC);
-  arrow("M242 196 C250 160, 180 152, 134 144", CYC);
-  arrow("M452 60 C500 70, 516 92, 524 110", LIM);
-  arrow("M298 214 C380 210, 470 190, 522 160", LIM);
-  arrow("M76 166 L76 228", LIM);
-  svg.appendChild(svgTxt(140,104,"TRIGGER",{class:"tiny",fill:TRIG,"font-family":"var(--mono)"}));
-  svg.appendChild(svgTxt(140,116,"scheduled (time) or patient",{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(140,127,"(pressure or flow), after a",{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(140,138,"250 ms lockout",{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(300,50,"LIMIT: rise time elapsed",{class:"tiny",fill:LIM,"font-family":"var(--mono)"}));
-  svg.appendChild(svgTxt(250,124,"CYCLE",{class:"tiny",fill:CYC,"font-family":"var(--mono)"}));
-  svg.appendChild(svgTxt(250,136,"time (T_I) in VC, PC and PRVC;",{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(250,147,"flow (% of peak) in PS",{class:"tiny",fill:C.mut,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(470,96,"hold requested",{class:"tiny",fill:LIM,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(84,206,"hold requested",{class:"tiny",fill:LIM,"font-family":"var(--sans)"}));
-  svg.appendChild(el("line",{x1:614,y1:30,x2:614,y2:262,stroke:C.hair}));
-  var col=[
-    "the whole solver, in four lines",
-    "tau = R x C",
-    "V_inf = C (P_app + P_mus)",
-    "V(t+dt) = V_inf",
-    "  + (V - V_inf) e^(-dt/tau)",
-    "",
-    "volume control instead:",
-    "V += flow_set x dt"
-  ];
-  col.forEach(function(r,i){
-    svg.appendChild(svgTxt(626,52+i*22,r,{"font-size":(i===0?"11px":"11.5px"),fill:(i===0?C.mut:C.ink),"font-family":(i===0?"var(--sans)":"var(--mono)")}));
-  });
-  svg.appendChild(svgTxt(20,292,"Trigger, limit and cycle are coloured consistently with the three phases named in section 09.",{class:"tiny",fill:C.faint,"font-family":"var(--sans)"}));
-  svg.appendChild(svgTxt(20,306,"Expiration runs until the next trigger or the next scheduled mandatory breath, so T_E is an outcome, never a setting.",{class:"tiny",fill:C.faint,"font-family":"var(--sans)"}));
+  function arrow(d,col,dash){
+    var a = {d:d,fill:"none",stroke:col,"stroke-width":1.2,"marker-end":"url(#fgArrow)"};
+    if(dash) a["stroke-dasharray"] = dash;
+    svg.appendChild(el("path",a));
+  }
+  /* A gate is a dashed vertical line with its name and its condition stacked
+     ABOVE it, in a band no box occupies. That is the whole labelling scheme. */
+  function gate(x, y0, y1, name, l1, l2){
+    svg.appendChild(el("line",{x1:x,y1:y0,x2:x,y2:y1,stroke:C.slate,"stroke-dasharray":"4 4"}));
+    svg.appendChild(svgTxt(x,26,name,{"text-anchor":"middle","font-size":"11.5px",fill:C.slate,"font-family":"var(--mono)"}));
+    svg.appendChild(svgTxt(x,40,l1,{class:"tiny","text-anchor":"middle",fill:C.mut,"font-family":"var(--sans)"}));
+    if(l2) svg.appendChild(svgTxt(x,52,l2,{class:"tiny","text-anchor":"middle",fill:C.mut,"font-family":"var(--sans)"}));
+  }
+
+  box(34, 120, 132, 56, "EXP", "expiration");
+  box(34, 236, 132, 52, "HOLD_E", "operator-requested", C.caution);
+  gate(212, 66, 230, "TRIGGER", "scheduled, or patient effort", "after a 250 ms lockout");
+
+  svg.appendChild(el("rect",{x:250,y:66,width:356,height:184,rx:10,fill:"none",stroke:C.hair}));
+  svg.appendChild(svgTxt(260,82,"inspiration",{class:"tiny",fill:C.faint,"font-family":"var(--sans)"}));
+  box(268, 96,  320, 52, "RISE then PINSP", "pressure targeted: ramp to PEEP + dP, then hold");
+  box(268, 178, 320, 52, "VCI", "volume control: the set flow until V_T is delivered");
+
+  gate(650, 66, 250, "CYCLE", "time (T_I) in VC, PC and PRVC", "flow, as % of peak, in PS");
+  box(700, 96, 150, 52, "HOLD_I", "operator-requested", C.caution);
+
+  arrow("M166 140 L246 118", C.slate);
+  arrow("M166 160 L246 198", C.slate);
+  arrow("M588 122 L696 122", C.caution);
+  arrow("M606 224 L628 224 L628 302 L28 302 L28 152", C.slate);
+  arrow("M775 148 L775 302 L640 302", C.caution);
+  arrow("M100 176 L100 232", C.caution);
+  lbl(svg, 94, 212, "hold requested", {"text-anchor":"end", fill:C.caution});
+
+  wrapNote(svg, 14, 324, 852, "Expiration runs until the next trigger or the next scheduled mandatory breath, so T_E is an outcome and never a setting. Both holds are detours off the loop; a breath with neither one requested goes straight round the bottom rail.", C.faint);
 }
 
 /* =====================  draw-all, wiring and hooks  ===================== */
@@ -3510,6 +4000,7 @@ function safeFig(fn,id){
 var FIGDEB = null;
 function drawFigures(){
   if(!S) return;
+  safeFig(drawBase,"figBase");
   safeFig(drawPlat,"figPlat");
   safeFig(drawRes,"figRes");
   safeFig(drawTau,"figTau");
@@ -3611,6 +4102,10 @@ document.addEventListener("DOMContentLoaded", function(){
   .fg figcaption { font-size: 12px; }
   .fg .fgbar .btn { font-size: 11px; }
   .lnk .lk { font-size: 11px; }
+  /* Subscripts and superscripts inherit 0.83em, which drops a V_T or a P_mus
+     inside 12.5px mono or a 13px label to about 10.4px. max() holds the 11px
+     floor for those without inflating the ones sitting in body-size runs. */
+  sub, sup { font-size: max(0.83em, 11px); }
 }
 </style>
 </body>
