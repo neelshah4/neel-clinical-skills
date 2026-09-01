@@ -154,7 +154,7 @@ ol.steps li::before{content:counter(s); position:absolute; left:0; top:12px; fon
 
 .srconly{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
 footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-muted); font-size:14px}
-footer ol{padding-left:20px; max-width:82ch}
+footer ol,footer ul{padding-left:20px; max-width:82ch}
 footer li{margin-bottom:10px; font-size:14px; line-height:1.45}
 footer .mono{color:var(--ink-faint)}
 .erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:11px; line-height:1.5; color:var(--caution)}
@@ -198,7 +198,7 @@ footer .mono{color:var(--ink-faint)}
   <h1>The venous return wars, taken apart slowly</h1>
   <p class="lede">Guyton drew the most useful diagram in cardiovascular physiology, then attached the wrong verbs to it.</p>
   <div class="chips">
-    <div class="chip"><span class="k">Sources</span><span class="v">Peer-reviewed literature only, 1955 to 2026</span></div>
+    <div class="chip"><span class="k">Sources</span><span class="v">Peer-reviewed literature, 1955 to 2026, plus one signposted essay series</span></div>
     <div class="chip"><span class="k">Primary papers</span><span class="v">Guyton 1955 &times;2, Levy 1979, Rothe 1983 and 1993, Brengelmann 2003</span></div>
     <div class="chip"><span class="k">Simulations</span><span class="v">Reproduce Brengelmann 2019 Tables 1 and 2</span></div>
     <div class="chip"><span class="k">Read as</span><span class="v">Plain language first, then PICU</span></div>
@@ -573,6 +573,89 @@ footer .mono{color:var(--ink-faint)}
  </div>
 </section>
 
+<!-- ============ PART D — CONTENTS, CONTAINER, ACCEPTANCE ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">D<small>Rig four</small></div>
+   <div>
+    <h2>What actually changed?</h2>
+    <p>Everything above is about where flow and pressure come from. This section is about the question you face at four in the morning: you did something, the numbers moved, and you have to decide whether to do it again. Two questions get you most of the way there. What did you change, the contents or the container? And what did the change become, flow or pressure?</p>
+
+    <h3>Contents and container</h3>
+    <p>Give fluid and there is more blood in the system than there was a minute ago. Give a vasoconstrictor and there is exactly as much blood as before, sitting in a container whose pressure-volume behaviour has changed, so the blood redistributes. Both routes can raise central filling, cardiac output, arterial pressure, central venous pressure and congestion. The bedside phenotype does not tell you which one you took.</p>
+    <p>They are not interchangeable. Fluid adds to the total. Tone rearranges a total that is already fixed, and there is a limit to how much rearranging is available. The vocabulary table in part III is what makes the difference sayable: compliance is a slope, and the full pressure-volume relationship also fixes where that slope starts. It is the whole relationship, not the slope alone, that decides how much blood a segment holds at a given transmural pressure, and it answers to vessel size, wall stiffness, smooth-muscle tone, the pressure outside the vessel, and how full the segment already is. Two segments can share a compliance and hold very different volumes at the same pressure. Venous smooth muscle can change how much a vein holds while barely touching its slope.</p>
+
+    <h3>Venoconstriction does not pump</h3>
+    <p>The picture most of us carry is of veins squeezing blood back toward the heart. Nothing sustains the squeezing. Constriction changes the container, blood redistributes into the new configuration over some seconds, and then it is done: the new steady state has veins holding less blood at a higher pressure, not veins doing continuous work. It is a one-off shift in where the blood sits, not a second engine. Part V is the general form of the same argument, and it applies here without modification. A container held at constant volume and constant pressure supplies no work.</p>
+
+    <h3>Cardiopulmonary acceptance</h3>
+    <p>Rigs 1 to 3 are all container. They show how a fixed quantity of blood redistributes across an elastic network at different flows, and they are silent on how much flow a real heart would produce out of any given filling state. That silence is the gap this section closes. The heart is a throughput organ. It does not bank what arrives; it either passes it on or it does not.</p>
+    <p>Whether extra systemic delivery becomes extra flow or extra pressure depends on how much of it the cardiopulmonary unit will accept, and that is a composite: ventricular filling characteristics, contractile reserve, systolic capacity, the loading on each ventricle, the pulmonary circulation the right ventricle has to pump into, pericardial constraint, the interaction between the two ventricles inside that pericardium, the pressure surrounding the heart, any obstruction to inflow or outflow, and rhythm and rate.</p>
+    <div class="grid2">
+      <div class="card"><p class="ov">Good acceptance</p><p>Chamber volume rises a little, filling pressure rises a little, Frank-Starling is recruited, stroke volume and cardiac output rise. The delivery became flow.</p></div>
+      <div class="card"><p class="ov">Poor acceptance</p><p>Little extra gets through. Blood accumulates upstream of whatever is limiting throughput. Right atrial pressure and systemic venous pressure rise, and congestion rises with them. The delivery became pressure.</p></div>
+    </div>
+    <p style="margin-top:var(--md)">Same delivered change, either way. The heart is what decides which one you get, and the rig below is the two axes on one picture.</p>
+
+    <div class="rig" id="rig4">
+      <div class="rig-head"><span class="t">Rig 4. Contents, container, and what the heart does with them</span><span class="s">Move the delivery. Then change who is receiving it.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="ctl"><label for="r4v">Blood volume <span class="val" id="r4vv">5000 mL</span></label>
+            <input type="range" id="r4v" min="4200" max="6200" step="50" value="5000"></div>
+          <div class="ctl"><label for="r4t">Venous tone <span class="val" id="r4tv">baseline</span></label>
+            <input type="range" id="r4t" min="-40" max="40" step="1" value="0"></div>
+          <p class="mono" style="font-size:11px; color:var(--ink-muted); margin:0 0 10px">Cardiopulmonary acceptance</p>
+          <div class="toggles">
+            <button class="tg" id="r4ag" type="button" aria-pressed="true">Good</button>
+            <button class="tg" id="r4ar" type="button" aria-pressed="false">Reduced</button>
+            <button class="tg" id="r4ap" type="button" aria-pressed="false">Poor</button>
+          </div>
+          <button class="reset" id="r4reset" type="button">Reset rig 4</button>
+          <div class="readout">
+            <div><span class="k">Pms (delivery)</span><span class="v" id="r4pms">11.4<small> mmHg</small></span></div>
+            <div><span class="k">Right atrial P</span><span class="v" id="r4ra">3.0<small> mmHg</small></span></div>
+            <div><span class="k">Cardiac output</span><span class="v" id="r4co">4.8<small> L/min</small></span></div>
+            <div class="pin"><span class="k">Distending volume</span><span class="v" id="r4vd">2000<small> mL</small></span></div>
+          </div>
+          <div class="readout" style="margin-top:1px">
+            <div><span class="k">Change in output</span><span class="v" id="r4dco">0<small> mL/min</small></span></div>
+            <div><span class="k">Change in RAP</span><span class="v" id="r4dra">0.0<small> mmHg</small></span></div>
+          </div>
+          <div class="readout" style="margin-top:1px">
+            <div><span class="k">The change became</span><span class="v" id="r4verd" style="font-size:15px">reference</span></div>
+            <div><span class="k">Output per mmHg RAP</span><span class="v" id="r4ratio">&ndash;<small> mL/min</small></span></div>
+          </div>
+        </div>
+        <div class="rig-view"><svg id="r4svg" viewBox="0 0 560 496" role="img" aria-labelledby="r4title"><title id="r4title">A blood-volume ledger showing rest and distending volume, above a plot in which the delivery line slides along a fixed acceptance curve and the move from the reference operating point splits into a pressure leg and a flow leg</title></svg></div>
+      </div>
+      <div class="rig-foot" id="r4note"><b>What the rig shows.</b> The dashed curve is acceptance and it moves only when you change the acceptance setting. The solid line is the delivery state and it moves when you change the contents or the container. The step from the hollow point to the filled one is the whole intervention, split into the part that became pressure and the part that became flow. Add 500 mL at good acceptance and most of the step is vertical. Add the same 500 mL at poor acceptance and most of it is horizontal. <b>Try this.</b> Set acceptance to reduced, then compare 5500 mL at baseline tone against 5000 mL at tone +20: the operating point lands in the same place from two different container states, at two different values of Pms. That the two coincide to three decimals is arithmetic of this rig's parameters; that two different mechanisms can put a patient at the same bedside numbers is the general point. <b>Calibration.</b> This rig uses the three-compartment compliances of rigs 1 and 2, so it inherits their disclosed approximation and settles at a reference Pms near 11 mmHg rather than the 19 to 21 of human bedside estimates. Rest volume is set at 3000 mL of a 5000 mL total, consistent with the roughly three-quarters rest fraction used in part III. The acceptance settings are three positions on the same schematic Starling relationship rig 2 uses, not a model of any particular mechanism; the tone slider moves venous compliance and rest volume only, and arteriolar resistance is held fixed. The provenance note under the references gives the numbers.</div>
+    </div>
+
+    <h3>Where Pms sits in all of this</h3>
+    <p>This is the part that lands on the argument the rest of the page is built around.</p>
+    <p class="eq big">blood volume + vascular pressure-volume behaviour &rarr; systemic elastic state &rarr; P<sub>ms</sub></p>
+    <p>Read the arrows as "is described by", not as "drives". Pms is not a mechanism and it is not an energy source pushing blood through a venous resistance. It is a reduced-order descriptor of one thing: the elastic state of the systemic vasculature, meaning how full the container is relative to how big it is. Part III derives it as total stressed volume over total compliance for exactly that reason. It describes the delivery state. It does not determine cardiac output. Flow appears where that state meets an acceptance, which is why the operating point in rig 4 sits at a crossing and never on either curve alone.</p>
+    <p>Two consequences follow, and both are things this page already argues from a different direction. Venous return is not a causal step sitting between the vessels and the heart: at steady state, venous return and cardiac output are one flow read from two sides, which is fact 05. There is nothing left for a driving pressure to drive that the heart is not already driving. And stressed and unstressed volume are a reduced-order model rather than two anatomical pools, which is the callout in part III. There is one continuous vascular system. Change its wall properties, its geometry, the pressure around it or its smooth-muscle state, the pressure-volume relationship changes, and the blood redistributes. The partition into stressed and unstressed is bookkeeping on that redistribution.</p>
+
+    <h3>Noradrenaline does more than one thing</h3>
+    <p>The chain we teach is noradrenaline, then venoconstriction, then venous return up. It is less wrong than incomplete. Inside the same minute the drug shifts venous pressure-volume behaviour, raises arteriolar resistance, changes arterial pressure-volume behaviour, raises the afterload both ventricles work against, can raise contractility through beta-1, can improve coronary perfusion when the starting pressure was low enough for that to matter, and provokes reflex responses to all of the above. Those effects pull cardiac output in different directions. Which one wins depends on the state the circulation was in before the drug arrived, and that is why the same infusion raises output in one patient and lowers it in the next. Rig 4's tone slider models one of these effects and rig 2 has a separate slider for another. Neither rig models the rest, and neither should be read as a model of the drug.</p>
+
+    <h3>Two things this changes on rounds</h3>
+    <div class="facts">
+      <div class="fact"><span class="n">01</span><p><b>Fluid responsiveness is not hypovolaemia.</b> A positive test says one thing: under those test conditions, increasing systemic delivery increased throughput. The reason might be low blood volume. It might be tone and distribution. It might be a heart sitting on a recruitable part of its filling-output relationship for reasons that have nothing to do with volume. The test names the response, not the cause, and the treatment does not follow from the test alone.</p></div>
+      <div class="fact"><span class="n">02</span><p><b>Venous congestion is not excess total body volume.</b> It can come from too much volume, from a container whose pressure-volume behaviour has changed, from poor acceptance, or from any combination of the three. What a high venous pressure tells you is narrower and more useful than a volume diagnosis: the delivery state this circulation is currently in cannot be processed without a pressure penalty. Whether the answer is removing volume, changing the container or improving acceptance is a separate question, and reaching for the diuretic every time answers one third of it.</p></div>
+    </div>
+
+    <div class="callout">
+      <p><b style="font-family:var(--sans)">Where this section comes from.</b> The framing here, the split between contents and container and cardiopulmonary acceptance as the second axis, is not mine. It is the argument made by <i>The Dependent Variable</i> in its Venous Return Wars series, whose two most recent instalments are Episode VI, "The Bathtub Menace", published 10 August 2026, and Episode VII, "The Last Equation", published 17 August 2026, together with a companion essay on what fluid and vasopressors actually do, published 31 August 2026. Episode VI presses the energy objection that part V makes on this page: an elastic reservoir refilled as fast as it drains never changes shape, and a structure that does not change shape releases no stored energy. Episode VII takes the equation apart term by term and arrives where this page arrives, that the algebra survives and the causal picture does not. The physiology above is written from scratch for this page and any errors in it are mine. The originals are worth reading on their own terms and the links are in the further-reading block at the foot of this page.</p>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
 <!-- ============ CASES ============ -->
 <section>
  <div class="wrap">
@@ -705,6 +788,7 @@ footer .mono{color:var(--ink-faint)}
       <li><b>Vasopressors act on the container, not just the pipes.</b> That is why a vasoconstrictor can raise cardiac output, and it is the same physiology whether the effect is welcome or not.</li>
       <li><b>On ECMO, chatter is a volume-distribution problem with four possible fixes.</b> Volume, flow, venous tone and cannula geometry. Reaching for volume every time is how children end up massively positive.</li>
       <li><b>Treat bedside Pms estimates as soft, and know roughly by how much.</b> The maneuvers used to obtain them can alter the very properties they are meant to measure. Against right atrial balloon occlusion in pigs, the inspiratory-hold estimate overshot by 3.0 (SD 5.1) mmHg (ref 19); against zero-flow measurement, all three indirect estimates ran low, and volume status changed the error (ref 20).</li>
+      <li><b>Before you repeat it, name what changed and what it became.</b> Fluid changes the contents. A vasoconstrictor changes the container. Then ask whether the change showed up as flow or as pressure. Those two questions separate patients whose numbers look identical, and they decide whether the next dose is treatment or congestion.</li>
       <li><b>Keep the diagram, drop the verbs.</b> The intersection is a good predictor. "Back pressure" and "the gradient drives return" are the parts that mislead.</li>
     </ol>
    </div>
@@ -783,18 +867,27 @@ footer .mono{color:var(--ink-faint)}
 
   <p style="font-size:11.5px; max-width:86ch; color:var(--ink-muted)">Every identifier in these two lists was resolved against PubMed. <b>Correction screening, re-run 2026-09-01.</b> The screen was an <em>erratum-linkage</em> screen, not a publication-type screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all eleven tools in this set. On this page 35 of 35 source PMIDs were screened, and one carries an erratum &mdash; PMID 22584797 (ref 24) &mdash; with no retraction and no expression of concern anywhere. What the screen returns is the linkage and not the correction: the erratum itself was not retrieved, so this page reports that it exists and that a reader should consult it, and asserts nothing about what it changes. It is marked on its row in the table above and at the point of use in part III, where the three-methods values it accompanies seed the discussion of human bedside estimates.</p>
 
+  <p class="ov" style="margin-top:var(--xl)">Further reading, outside the peer-reviewed record</p>
+  <p style="font-size:13px; max-width:86ch">These are essays rather than indexed literature. They carry no PMID or DOI, they were not part of the correction screen above, and nothing on this page rests on them as evidence; part D credits them for a framing and argues the physiology on its own. Both links below were fetched and returned HTTP 200 on 1 September 2026.</p>
+  <ul>
+    <li><i>The Dependent Variable.</i> Episode VI: the bathtub menace. Published 10 August 2026. <a href="https://www.thedependentvariable.com/p/episode-vi-the-bathtub-menace" rel="noopener noreferrer">thedependentvariable.com/p/episode-vi-the-bathtub-menace</a></li>
+    <li><i>The Dependent Variable.</i> Episode VII: the last equation. Published 17 August 2026. <a href="https://www.thedependentvariable.com/p/episode-vii-the-last-equation" rel="noopener noreferrer">thedependentvariable.com/p/episode-vii-the-last-equation</a></li>
+    <li><i>The Dependent Variable.</i> What actually happens when we give fluid or vasopressors? Published 31 August 2026. <span class="mono">No URL for this item was verified when this page was revised, so none is printed here.</span></li>
+  </ul>
+
   <p class="ov" style="margin-top:var(--xl)">Numbers on this page that carry no citation</p>
   <p style="font-size:13px">Three sets of figures here are <b style="font-family:var(--sans); color:var(--ink)">derived from the models on this page</b> rather than reported in any paper, and are labelled as derived wherever they appear.</p>
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">1. The compliance of rigs 1 and 2.</b> Total compliance is 175 mL/mmHg (8.75 arterial plus 166.25 venous in rig 1; 8.75 plus 140 plus 26.25 in rig 2). These are schematic appendix parameters, not human measurements, and they run roughly 2.5 times measured human systemic compliance, reported as 0.98 mL/mmHg/kg, about 69 mL/mmHg at 70 kg (ref 23), and as a median of 73 mL/mmHg, IQR 56 to 133 (ref 26). The 2000 mL default for distending volume is inside the measured range (1677 mL in ref 23; median 2029 mL in ref 26). The rigs' Pms of 11.4 mmHg is arithmetic on those two inputs, 2000 divided by 175, which is why the rigs sit below the 19 to 21 mmHg human bedside estimates. This is a disclosed approximation, not a reported value.</p>
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">2. The pivot position.</b> The figures of 31.4% of cumulative compliance at fixed vascular properties, and 28.2% to 32.8% under defended aortic pressure, are computed by rig 3. Reference 6 does not express a pivot or crossover point as a percentage of cumulative compliance, so no published number exists to check them against. This is a novel derivation from a published model, not a reproduction of a published result.</p>
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">3. The "roughly twenty times larger" comparison in part II.</b> That is arithmetic on the classical animal-preparation figures, 98 divided by 5. Levy's full text could not be retrieved when this page was revised, so those inputs are the numbers the argument is conventionally told with rather than values quoted from the paper. The 3 to 6 mmHg gradient half of the comparison is separately supported (ref 15); the 7 mmHg Pms half is not, and human bedside values are three times higher (refs 23 to 25).</p>
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">4. Everything rig 4 reports.</b> Rig 4 has no published counterpart. Its vascular half reuses the three-compartment compliances of rigs 1 and 2 and so carries the same disclosed approximation; its rest volume of 3000 mL in a 5000 mL total is chosen to sit at the roughly three-quarters rest fraction discussed in part III (ref 13, ref 6) rather than measured; its three acceptance settings are three positions on rig 2's schematic Starling relationship, chosen so the curve stays well behaved across the slider range, and they correspond to no patient or preparation. The "mL/min per mmHg" figure is the change in cardiac output divided by the change in right atrial pressure across the move from this rig's reference state, and the words attached to it are labels on this rig's own arithmetic at cut points of 240 and 130, not clinical thresholds. Read the rig for the shape of the relationship, never for a number.</p>
   <p style="font-size:13px">One further gap is recorded rather than papered over: the classical claim that Rothe measured normal filling pressures of 7 to 10 mmHg could not be traced to Rothe. The 1993 abstract carries no numeric value and the full text was unreachable. The animal figure survives only indirectly, through ref 13.</p>
 
   <p style="margin-top:var(--xl); font-size:13px">Rigs 1 and 3 implement the models in reference 6 using the segmental data of reference 4 as tabulated there. Rig 2 uses the three-compartment appendix parameters of reference 6 for the vascular function line; its cardiac function curve is a schematic Starling relationship, not a fitted dataset.</p>
 
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">Educational use only.</b> This page is a teaching tool about a disputed area of cardiovascular physiology. It is not clinical decision support, it gives no patient-specific advice, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators, and every case here is a teaching vignette rather than a protocol. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
 
-  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; updated 2026-08-31 &middot; CC BY-NC 4.0</p>
+  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
  </div>
 </footer>
 
@@ -1080,18 +1173,149 @@ function rig3(){
   }
 }
 
+/* ============================================================
+   RIG 4 — contents, container, and cardiopulmonary acceptance
+   Same 3-compartment vascular parameters as rig 2 (mmHg, mL, L/min),
+   with rest volume made explicit so contents and container separate.
+   Acceptance = three positions on rig 2's schematic Starling curve.
+   ============================================================ */
+const R4 = {
+  Ca:8.75, Cpv0:140, Ccv0:26.25, Rv:0.87, Ra:20,
+  VREST0:3000, VTOT0:5000,
+  ACC:{ good:{COmax:7.6, kk:2.6, P0:-1.5, name:"good"},
+        red :{COmax:5.2, kk:4.0, P0:0.5,  name:"reduced"},
+        poor:{COmax:3.0, kk:6.0, P0:2.5,  name:"poor"} }
+};
+let r4acc = "good";
+function r4card(p,a){ const A=R4.ACC[a], d=p-A.P0; return d<=0?0:A.COmax*d/(A.kk+d); }
+function r4state(VT,tone,a){
+  const k=1-tone/100;
+  const Cpv=R4.Cpv0*k, Ccv=R4.Ccv0*k, Ct=R4.Ca+Cpv+Ccv;
+  const Vrest=Math.max(0,R4.VREST0-7*tone);
+  const Vd=Math.max(0,VT-Vrest);
+  const Pms=Vd/Ct;
+  const RVR=(R4.Ra*R4.Ca + R4.Rv*R4.Ca + R4.Rv*Cpv)/Ct, slope=1/RVR;
+  const A=R4.ACC[a];
+  const vasc=p=>Math.max(0,(Pms-p)*slope);
+  let Pra, CO;
+  if(Pms<=A.P0){ Pra=Pms; CO=0; }
+  else{
+    let lo=A.P0, hi=Pms;
+    for(let i=0;i<80;i++){ const m=(lo+hi)/2; (r4card(m,a)<vasc(m))?lo=m:hi=m; }
+    Pra=(lo+hi)/2; CO=r4card(Pra,a);
+  }
+  return {Pms,Pra,CO,slope,Vd,Vrest,VT,Ct};
+}
+function rig4(){
+  const VT=+$("r4v").value, tone=+$("r4t").value, a=r4acc;
+  const now=r4state(VT,tone,a), ref=r4state(R4.VTOT0,0,a);
+  const dCO=now.CO-ref.CO, dRA=now.Pra-ref.Pra;
+
+  $("r4vv").textContent=VT+" mL";
+  $("r4tv").textContent = tone===0?"baseline":(tone>0?"+"+tone+" constricted":tone+" dilated");
+  $("r4pms").innerHTML=fmt(now.Pms)+"<small> mmHg</small>";
+  $("r4ra").innerHTML=fmt(now.Pra)+"<small> mmHg</small>";
+  $("r4co").innerHTML=fmt(now.CO,2)+"<small> L/min</small>";
+  $("r4vd").innerHTML=fmt(now.Vd,0)+"<small> mL</small>";
+  const sgn=v=>(v>0?"+":"");
+  $("r4dco").innerHTML=sgn(dCO)+fmt(dCO*1000,0)+"<small> mL/min</small>";
+  $("r4dra").innerHTML=sgn(dRA)+fmt(dRA)+"<small> mmHg</small>";
+
+  let verdict, vcol=INK, ratioTxt="&ndash;<small> mL/min</small>";
+  if(now.CO<=0.01){ verdict="no flow"; vcol="#B23A3A"; }
+  else if(Math.abs(dRA)<0.05 && Math.abs(dCO)<0.005){ verdict="reference"; vcol=MUT; }
+  else if(Math.abs(dRA)<0.05){ verdict="flow"; vcol="#2E7D5B"; }
+  else{
+    const ratio=dCO*1000/dRA;
+    verdict = ratio>=240 ? "flow" : ratio>=130 ? "mixed" : "pressure";
+    vcol = ratio>=240 ? "#2E7D5B" : ratio>=130 ? INK : CLAY;
+    ratioTxt = fmt(ratio,0)+"<small> mL/min</small>";
+  }
+  $("r4verd").innerHTML='<span style="color:'+vcol+'">'+verdict+"</span>";
+  $("r4ratio").innerHTML=ratioTxt;
+
+  const s=$("r4svg"); s.textContent="";
+
+  /* ---- ledger: contents (bar length) and container (divider position) ---- */
+  const LX=104, RX=544, VMAX=6400;
+  const XV=v=>LX+Math.max(0,Math.min(v,VMAX))/VMAX*(RX-LX);
+  s.appendChild(txt(LX,14,"CONTENTS AND CONTAINER",{fill:MUT}));
+  s.appendChild(txt(RX,14,"bar = blood volume, divider = rest",{"text-anchor":"end",fill:MUT}));
+  const rows=[{y:24,h:15,st:ref,lab:"reference",op:.26,dim:true},{y:52,h:20,st:now,lab:"now",op:.60,dim:false}];
+  rows.forEach(r=>{
+    const xr=XV(r.st.Vrest), xt=XV(r.st.VT);
+    s.appendChild(el("rect",{x:LX,y:r.y,width:xr-LX,height:r.h,fill:PALE,opacity:r.dim?.55:1}));
+    s.appendChild(el("rect",{x:xr,y:r.y,width:Math.max(xt-xr,0),height:r.h,fill:SLATE,opacity:r.op}));
+    s.appendChild(el("rect",{x:LX,y:r.y,width:xt-LX,height:r.h,fill:"none",stroke:RULE}));
+    s.appendChild(el("line",{x1:xr,y1:r.y,x2:xr,y2:r.y+r.h,stroke:INK,"stroke-width":1.4}));
+    s.appendChild(txt(LX-8,r.y+r.h/2+4,r.lab,{class:"lbl","text-anchor":"end"}));
+  });
+  const xrN=XV(now.Vrest), xtN=XV(now.VT);
+  s.appendChild(txt((LX+xrN)/2,86,"rest volume "+fmt(now.Vrest,0)+" mL",{"text-anchor":"middle",fill:MUT}));
+  if(xtN-xrN>110) s.appendChild(txt((xrN+xtN)/2,86,"distending "+fmt(now.Vd,0)+" mL",{"text-anchor":"middle",fill:SLATE}));
+  else s.appendChild(txt(xtN+6,86,"distending "+fmt(now.Vd,0)+" mL",{fill:SLATE}));
+  s.appendChild(el("line",{x1:LX,y1:104,x2:RX,y2:104,stroke:HAIR,"stroke-width":1}));
+
+  /* ---- delivery against acceptance ---- */
+  const L=54,Rr=536,T=150,B=390, xlo=-2, xhi=34, ymax=8;
+  const X=p=>L+(p-xlo)/(xhi-xlo)*(Rr-L), Y=f=>B-Math.max(0,Math.min(f,ymax))/ymax*(B-T);
+  s.appendChild(el("line",{x1:L,y1:B,x2:Rr,y2:B,stroke:INK,"stroke-width":1}));
+  s.appendChild(el("line",{x1:L,y1:T,x2:L,y2:B,stroke:INK,"stroke-width":1}));
+  for(let f=2;f<=8;f+=2){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
+  for(let p=0;p<=30;p+=5){const xx=X(p); s.appendChild(el("line",{x1:xx,y1:B,x2:xx,y2:B+4,stroke:INK,"stroke-width":.5})); s.appendChild(txt(xx,B+16,p,{"text-anchor":"middle"}));}
+  s.appendChild(txt((L+Rr)/2,B+52,"Right atrial pressure (mmHg)",{class:"lbl","text-anchor":"middle"}));
+  const yl4=txt(0,0,"Flow (L/min)",{class:"lbl","text-anchor":"middle"}); yl4.setAttribute("transform","translate(16,"+((T+B)/2)+") rotate(-90)"); s.appendChild(yl4);
+
+  const lineFor=st=>{let d=""; for(let p=xlo;p<=xhi;p+=.2){const f=Math.max(0,(st.Pms-p)*st.slope); if(f<=ymax+.2) d+=(d?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));} return d;};
+  s.appendChild(el("path",{d:lineFor(ref),fill:"none",stroke:PALE,"stroke-width":2,"stroke-dasharray":"4 4"}));
+  s.appendChild(el("path",{d:lineFor(now),fill:"none",stroke:SLATE,"stroke-width":2.2}));
+  let dc=""; for(let p=xlo;p<=xhi;p+=.2){const f=r4card(p,a); if(f<=ymax+.2) dc+=(dc?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));}
+  s.appendChild(el("path",{d:dc,fill:"none",stroke:INK,"stroke-width":2.2,"stroke-dasharray":"7 4"}));
+
+  s.appendChild(el("circle",{cx:X(ref.Pms),cy:Y(0),r:3,fill:"none",stroke:CLAY,"stroke-width":1.4}));
+  s.appendChild(el("circle",{cx:X(now.Pms),cy:Y(0),r:3.2,fill:CLAY}));
+  s.appendChild(txt(Math.min(Math.max(X(now.Pms),L+26),Rr-26),B+32,"Pms "+fmt(now.Pms),{"text-anchor":"middle",fill:CLAY}));
+
+  const showStep = Math.abs(dRA)>=0.05 || Math.abs(dCO)>=0.005;
+  if(showStep){
+    const x0=X(ref.Pra), y0=Y(ref.CO), x1=X(now.Pra), y1=Y(now.CO);
+    s.appendChild(el("line",{x1:x0,y1:y0,x2:x1,y2:y0,stroke:CLAY,"stroke-width":2.4}));
+    s.appendChild(el("line",{x1:x1,y1:y0,x2:x1,y2:y1,stroke:"#2E7D5B","stroke-width":2.4}));
+    const mx=(x0+x1)/2, my=(y0+y1)/2;
+    if(Math.abs(x1-x0)>=62) s.appendChild(txt(mx,y0+(y1<y0?17:-9),"pressure "+sgn(dRA)+fmt(dRA)+" mmHg",{"text-anchor":"middle",fill:CLAY,class:"lbl"}));
+    if(Math.abs(y1-y0)>=24) s.appendChild(txt(x1+(x1>Rr-120?-8:8),my+4,"flow "+sgn(dCO)+fmt(dCO,2)+" L/min",{"text-anchor":(x1>Rr-120?"end":"start"),fill:"#2E7D5B",class:"lbl"}));
+  }
+  s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:"#fff",stroke:SLATE,"stroke-width":1.8}));
+  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:SLATE}));
+  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:"none",stroke:"#fff","stroke-width":1.4}));
+
+  let lp=now.Pms-7.4/now.slope, lx, lf, la="start";
+  if(lp<xlo+0.4){ lx=X(Math.min(now.Pms,xhi-1))-8; lf=0; la="end"; }            // line leaves the left edge low: label its zero-flow end
+  else { lp=Math.min(lp,xhi-16); lf=Math.max(0.5,(now.Pms-lp)*now.slope); lx=X(lp)+7; }
+  s.appendChild(txt(lx,Y(lf)-10,"delivery now",{class:"lbl","text-anchor":la,fill:SLATE}));
+  const cp=xhi-1;
+  s.appendChild(txt(X(cp),Y(r4card(cp,a))-15,"acceptance: "+R4.ACC[a].name,{class:"lbl","text-anchor":"end",fill:INK}));
+  s.appendChild(txt(L,B+74,"Vascular line: rig 2's three-compartment parameters, rest volume explicit.",{fill:MUT}));
+  s.appendChild(txt(L,B+91,"Acceptance: one schematic Starling curve at three settings.",{fill:MUT}));
+}
+
 /* ---------- wiring ---------- */
 function bind(ids,fn){ ids.forEach(i=>{const e=$(i); e.addEventListener("input",fn); e.addEventListener("change",fn);}); fn(); }
 bind(["r1f","r1v","r1r"],rig1);
 bind(["r2v","r2t","r2c","r2r"],rig2);
 bind(["r3f","r3v"],rig3);
+bind(["r4v","r4t"],rig4);
 $("r1reset").addEventListener("click",()=>{$("r1f").value=5;$("r1v").value=2000;$("r1r").value=20.9;rig1();});
 $("r2reset").addEventListener("click",()=>{$("r2v").value=2000;$("r2t").value=0;$("r2c").value=100;$("r2r").value=20;rig2();});
 $("r3reset").addEventListener("click",()=>{$("r3f").value=5;$("r3v").value=5000;$("r3dil").setAttribute("aria-pressed","false");$("r3bp").setAttribute("aria-pressed","false");$("r3curve").setAttribute("aria-pressed","true");rig3();});
 ["r3dil","r3bp","r3curve"].forEach(id=>$(id).addEventListener("click",e=>{
   const b=e.currentTarget; b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true"); rig3();
 }));
-window.addEventListener("resize",()=>{rig1();rig2();rig3();},{passive:true});
+$("r4reset").addEventListener("click",()=>{$("r4v").value=5000;$("r4t").value=0;setAcc("good");});
+const ACCBTN={r4ag:"good",r4ar:"red",r4ap:"poor"};
+function setAcc(a){ r4acc=a; for(const id in ACCBTN) $(id).setAttribute("aria-pressed", ACCBTN[id]===a?"true":"false"); rig4(); }
+Object.keys(ACCBTN).forEach(id=>$(id).addEventListener("click",()=>setAcc(ACCBTN[id])));
+window.addEventListener("resize",()=>{rig1();rig2();rig3();rig4();},{passive:true});
 </script>
 
 <style>
