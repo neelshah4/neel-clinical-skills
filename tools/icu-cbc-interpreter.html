@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ICU CBC Interpreter — sepsis / infection lens</title>
+<title>ICU CBC Interpreter: sepsis / infection lens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@500&display=swap" />
@@ -18,7 +18,7 @@
         src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <style>
   /* ============================================================
-     Theme tokens — paper / paper-dark, warm-black ink, one warm-slate
+     Theme tokens: paper / paper-dark, warm-black ink, one warm-slate
      accent. Inter (UI) · Source Serif 4 (body) · JetBrains Mono (inputs)
      ============================================================ */
   :root,
@@ -47,7 +47,7 @@
     color-scheme: dark;
   }
   :root[data-theme="light"] {
-    --bg:           #FAF6EE;          /* paper warm — not pure white */
+    --bg:           #FAF6EE;          /* paper warm, not pure white */
     --surface:      #FFFFFF;          /* paper-quiet */
     --surface-2:    #F1ECDF;          /* tint */
     --line:         #D9D2C0;
@@ -103,7 +103,7 @@
     font-size: 15px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "tnum" 1, "lnum" 1;  /* tabular figures — non-negotiable for data work */
+    font-feature-settings: "tnum" 1, "lnum" 1;  /* tabular figures, non-negotiable for data work */
   }
   /* Display + UI surfaces use Inter; body keeps Source Serif 4 */
   .display, .top h1, .pattern-label, .card h2, .narrative {
@@ -129,7 +129,7 @@
 
   .shell { max-width: 1320px; margin: 0 auto; padding: 24px 28px 64px; }
 
-  /* Header — signature top-label card (overline → 0.5pt rule → serif body) */
+  /* Header: signature top-label card (overline → 0.5pt rule → serif body) */
   .top {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -199,7 +199,7 @@
     line-height: 1.45;
   }
 
-  /* Sticky derived-metric ribbon — asymmetric weights
+  /* Sticky derived-metric ribbon: asymmetric weights
      60% NLR hero (left) · 30% six small chips (middle) · 10% verdict tile (right) */
   .ribbon {
     position: sticky; top: 0; z-index: 20;
@@ -303,7 +303,7 @@
   /* Main grid */
   .main { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
 
-  /* Cards — hairline-only, no shadows */
+  /* Cards: hairline-only, no shadows */
   .card {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -398,7 +398,7 @@
   .btn:hover { border-color: var(--accent); background: var(--accent-soft); }
   .btn.primary { background: var(--accent-soft); border-color: var(--accent); }
 
-  /* Interpretation panel — serif display, asymmetric weight */
+  /* Interpretation panel: serif display, asymmetric weight */
   .pattern-label {
     font-size: 22px; font-weight: 500;
     color: var(--ink); margin: 0 0 8px;
@@ -474,7 +474,7 @@
   }
   sup.cite:hover { text-decoration: underline; }
 
-  /* Warning cards — hairline left rule, restraint */
+  /* Warning cards: hairline left rule, restraint */
   .warn {
     background: transparent;
     border: 0.5px solid var(--caution);
@@ -496,7 +496,7 @@
   .warn[data-sev="caution"]  .head { color: var(--caution); }
   .warn[data-sev="critical"] .head { color: var(--critical); }
 
-  /* Narrative panel — Source Serif 4 editorial */
+  /* Narrative panel: Source Serif 4 editorial */
   .narrative {
     font-size: 15px; line-height: 1.68; color: var(--ink);
     max-width: 64ch;
@@ -505,7 +505,7 @@
   .narrative p:last-child { margin-bottom: 0; }
   .narrative em { font-style: italic; color: var(--ink); }
 
-  /* Cases shelf — case cards in restrained bento */
+  /* Cases shelf: case cards in restrained bento */
   .shelf {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
     margin-top: 18px;
@@ -532,7 +532,7 @@
     font-style: italic;
   }
 
-  /* References — numbered Vancouver-style */
+  /* References: numbered Vancouver-style */
   .refs { list-style: none; padding: 0; margin: 0; counter-reset: r; }
   .refs li {
     counter-increment: r;
@@ -604,7 +604,7 @@
     font-family: "Inter", sans-serif;
   }
 
-  /* Responsive — collapse bento ribbon, single-column on tablet, stacked on phone */
+  /* Responsive: collapse bento ribbon, single-column on tablet, stacked on phone */
   @media (max-width: 1100px) {
     .ribbon {
       grid-template-columns: 1fr 2fr;
@@ -637,7 +637,7 @@
   }
 
   /* Respect prefers-reduced-motion */
-  /* Neutral evidence state — a row that is displayed but deliberately not
+  /* Neutral evidence state: a row that is displayed but deliberately not
      scored (an unscored IG%, a missing value) must not borrow a severity
      colour it has not earned. */
   .ev-state[data-sev="neutral"]    { color: var(--neutral); background: transparent; }
@@ -702,7 +702,7 @@ const REFERENCES = [
     cite: "Medicina (Kaunas). 2021;57(8):811.", pmid: "34441017", doi: "10.3390/medicina57080811" },
   { id: 5, text: "Xin Y, Shao Y, Mu W, et al. Accuracy of the neutrophil-to-lymphocyte ratio for the diagnosis of neonatal sepsis: a systematic review and meta-analysis.",
     cite: "BMJ Open. 2022;12(12):e060391.", pmid: "36517090", doi: "10.1136/bmjopen-2021-060391" },
-  { id: 6, text: "Zahorec R. Ratio of neutrophil to lymphocyte counts — rapid and simple parameter of systemic inflammation and stress in critically ill.",
+  { id: 6, text: "Zahorec R. Ratio of neutrophil to lymphocyte counts: rapid and simple parameter of systemic inflammation and stress in critically ill.",
     cite: "Bratisl Lek Listy. 2001;102(1):5-14.", pmid: "11723675", doi: "" },
   { id: 7, text: "Drees M, Kanapathippillai N, Zubrow MT. Bandemia with normal white blood cell counts associated with infection.",
     cite: "Am J Med. 2012;125(11):1124.e9-1124.e15.", pmid: "22939096", doi: "10.1016/j.amjmed.2012.04.039" },
@@ -778,12 +778,12 @@ const refUrl = (r) => r.doi ? `https://doi.org/${r.doi}` : (r.url || (r.pmid ? `
 
 // ============== EDGE-CASE TOGGLES ==============
 const TOGGLES = [
-  { id: "steroids",     label: "Systemic steroids",      desc: "Demargination + acute lymphopenia + eosinopenia within hours; NLR and AEC lose most of their meaning — though eosinopenia keeps some prognostic signal on steroids." },
+  { id: "steroids",     label: "Systemic steroids",      desc: "Demargination + acute lymphopenia + eosinopenia within hours; NLR and AEC lose most of their meaning, though eosinopenia keeps some prognostic signal on steroids." },
   { id: "gcsf",         label: "G-CSF / GM-CSF",         desc: "Marked leukocytosis with iatrogenic left shift; bandemia uninformative." },
   { id: "chemo",        label: "Recent cytotoxic chemo", desc: "Marrow suppression. If ANC <500, neutropenic-fever framework supersedes CBC pattern." },
   { id: "asplenia",     label: "Asplenia / functional",  desc: "Mild leukocytosis + thrombocytosis expected. Standard sepsis thresholds invalid; the specific baseline values quoted here are conventional teaching, not measured population data." },
   { id: "hememalig",    label: "Hematologic malignancy", desc: "Cytopenia or blasts ≠ infection alone. Smear morphology required." },
-  { id: "seizure",      label: "Recent seizure (<24 h)", desc: "Postictal leukocytosis appears immediately and normalises within about 2 h — a WBC still high hours later is not the seizure." },
+  { id: "seizure",      label: "Recent seizure (<24 h)", desc: "Postictal leukocytosis appears immediately and normalises within about 2 h. A WBC still high hours later is not the seizure." },
   { id: "pregnancy",    label: "Late pregnancy / postpartum", desc: "Baseline WBC runs higher and the >12 SIRS threshold is non-specific; the exact upper limits quoted here are approximations, not sourced reference intervals." },
   { id: "epi",          label: "Epi / β-agonist infusion", desc: "Acute demargination within minutes. Resolves post-infusion." },
   { id: "transfusion",  label: "Recent transfusion (<2 h)", desc: "Dilutional shifts; interpret trend over absolutes." },
@@ -803,7 +803,7 @@ const CASES = [
   {
     id: "neutropenic-fever",
     title: "2. Neutropenic fever post-chemo",
-    sub: "ANC <500 — NLR uninterpretable",
+    sub: "ANC <500: NLR uninterpretable",
     vignette: "52 y/o, day 8 post carboplatin / gemcitabine for NSCLC. Fever 38.1 °C.",
     mode: "manual",
     cbc: { wbc: 0.8, neutPct: 25, bandPct: 0, lymphPct: 50, monoPct: 19, eosPct: 5, basoPct: 1, plt: 45 },
@@ -877,7 +877,7 @@ const numOrNull = (v) => {
 const fmt = (v, dp) => (v == null ? "—" : v.toFixed(dp));
 
 // Input bounds. Percentages are bounded 0–100; counts are bounded below at 0.
-// The upper bounds are generous instrument ceilings — interface guards against
+// The upper bounds are generous instrument ceilings: interface guards against
 // a typo silently driving the engine, not clinical limits.
 const FIELD_SPEC = {
   wbc:      { min: 0, max: 500 },
@@ -891,11 +891,11 @@ const FIELD_SPEC = {
 };
 
 // The differential-mode switch is load-bearing, not a label change.
-//   manual — the last field is a band percentage from a 100-cell manual
+//   manual: the last field is a band percentage from a 100-cell manual
 //            differential. Bands sit inside the 100 and inside the ANC, and
 //            Drees 2012's 11% / 20% odds ratios were derived on exactly that
 //            measurement [7].
-//   auto   — the last field is an analyser immature-granulocyte percentage.
+//   auto:   the last field is an analyser immature-granulocyte percentage.
 //            It is reported alongside NEUT% rather than inside the 100-cell
 //            count, and on analysers that already fold IG into NEUT% adding
 //            it again double-counts, so it is kept out of the ANC. No
@@ -949,17 +949,17 @@ function diffAudit(cbc, mode) {
 }
 
 // NLR display bands. Every boundary is a published number, not a house scheme:
-//   0.7   — Zahorec 2021 LOW pathological limit [19]
-//   2.3 / 3.0 — Zahorec 2021 grey zone and upper pathological limit [19]
-//   7.97  — Spoto 2021 sepsis-diagnosis cut-point [4]
-//   12.65 — Russell 2019 bacteremia cut-point [2]
+//   0.7:   Zahorec 2021 LOW pathological limit [19]
+//   2.3 / 3.0: Zahorec 2021 grey zone and upper pathological limit [19]
+//   7.97:  Spoto 2021 sepsis-diagnosis cut-point [4]
+//   12.65: Russell 2019 bacteremia cut-point [2]
 // Zahorec's band set was re-read against the source abstract on 2026-08-31:
 // "A normal range of NLR is between 1-2, the values higher than 3.0 and below
 // 0.7 in adults are pathological. NLR in a grey zone between 2.3-3.0 may serve
 // as early warning of pathological state or process."
 // The low limb is not decorative. This file devotes an evidence branch and a
 // narrative paragraph to Hwang's J-curve, where the LOWEST NLR quintile
-// carried the HIGHEST 28-day mortality [3] — so a sub-0.7 ratio must not
+// carried the HIGHEST 28-day mortality [3], so a sub-0.7 ratio must not
 // render calm, and the tool's own case 2 (ANC 0.20 / ALC 0.40 = NLR 0.50)
 // previously did exactly that. The grey zone is likewise coloured caution,
 // matching the evidence row that calls it an early-warning band.
@@ -995,8 +995,8 @@ function plateletSeverity(plt) {
 }
 
 // ANC bands. <0.5 and <0.1 are the febrile-neutropenia thresholds in standard
-// IDSA/ASCO neutropenic-fever guidance — consensus practice, not a figure taken
-// from any study cited in this tool. The 7.7 upper bound is a laboratory
+// IDSA/ASCO neutropenic-fever guidance (consensus practice, not a figure taken
+// from any study cited in this tool). The 7.7 upper bound is a laboratory
 // reference convention and is likewise unsourced here.
 function ancSeverity(anc) {
   if (anc == null) return "neutral";
@@ -1022,12 +1022,12 @@ function alcSeverity(alc) {
 // spec 91% (79–96), +LR 9.12 (3.9–21), −LR 0.21 (0.15–0.31), AUC 0.89 for
 // non-infected versus infected.
 // Earlier builds carried 0.04 in the severity function, 0.05 in the pattern
-// engine, and Abidi's <50 statistics in the prose — so an AEC of 45 cells/µL
+// engine, and Abidi's <50 statistics in the prose, so an AEC of 45 cells/µL
 // read "within reference range, argues against bacterial sepsis" and "occult
 // infection signature" on the same screen. One boundary, one statistic set.
-// An analyser-reported 0 and an AEC of 30 cells/µL remain the same finding —
-// no source grades exactly zero as worse.
-const AEC_EOSINOPENIA = 0.05;   // ×10³/µL — i.e. <50 cells/µL
+// An analyser-reported 0 and an AEC of 30 cells/µL remain the same finding.
+// No source grades exactly zero as worse.
+const AEC_EOSINOPENIA = 0.05;   // ×10³/µL, i.e. <50 cells/µL
 function aecSeverity(aec) {
   if (aec == null)  return "neutral";
   if (aec < AEC_EOSINOPENIA) return "concern";
@@ -1039,7 +1039,7 @@ function aecSeverity(aec) {
 // Pattern matching.
 //
 // corePattern() holds the CBC read. patternLabel() wraps it so that a
-// confounder ANNOTATES the read instead of replacing it — the steroid branch
+// confounder ANNOTATES the read instead of replacing it: the steroid branch
 // used to sit above every infection branch and return sev "caution", which
 // capped a shocked patient at gold because a toggle was on.
 //
@@ -1049,14 +1049,14 @@ function corePattern(d, toggles) {
   const plt = d.plt;
 
   if (d.wbc == null) return {
-    label: "No WBC entered — nothing to interpret",
+    label: "No WBC entered: nothing to interpret",
     sev: "neutral",
     sub: "Every absolute count on this page is WBC × percent. Enter a white cell count to run the pattern engine.",
   };
 
   // Chemo / neutropenic first
   if (t("chemo") && d.anc != null && d.anc < 0.5) return {
-    label: "Neutropenic fever framework — CBC pattern uninterpretable",
+    label: "Neutropenic fever framework: CBC pattern uninterpretable",
     sub: "ANC <500. NLR and band-based scoring are not meaningful. Treat as febrile neutropenia until cultures resolve.",
     sev: "critical",
   };
@@ -1065,17 +1065,17 @@ function corePattern(d, toggles) {
   if (d.anc != null && d.anc < 0.5) return {
     label: "Severe neutropenia",
     sev: "critical",
-    sub: "ANC <500 cells/µL. No temperature is entered anywhere in this tool, so it cannot establish febrile neutropenia: if fever is documented, the febrile-neutropenia framework and local empiric-coverage protocol apply. Severe neutropenia without fever has causes that do not call for empiric antibacterials — drug-induced agranulocytosis, marrow infiltration, sepsis-induced marrow suppression, and benign ethnic (Duffy-null) neutropenia, which is a baseline rather than a risk state. Establish the cause and the fever status before treating the number.",
+    sub: "ANC <500 cells/µL. No temperature is entered anywhere in this tool, so it cannot establish febrile neutropenia: if fever is documented, the febrile-neutropenia framework and local empiric-coverage protocol apply. Severe neutropenia without fever has causes that do not call for empiric antibacterials: drug-induced agranulocytosis, marrow infiltration, sepsis-induced marrow suppression, and benign ethnic (Duffy-null) neutropenia, which is a baseline rather than a risk state. Establish the cause and the fever status before treating the number.",
   };
 
   // DIC sits ABOVE the NLR branches. A septic profile with thrombocytopenia is
   // the finding that changes the next order (PT/PTT, fibrinogen, D-dimer), and
-  // the bandemia triple below would otherwise swallow it — the tool's own case
+  // the bandemia triple below would otherwise swallow it. The tool's own case
   // 6 fired the triple at NLR 19.0 and never surfaced the ISTH prompt. The old
   // alc < 1.0 conjunct was dropped rather than replaced with a new number: it
   // was unsourced, and it excluded case 6 at ALC 1.215 even after reordering.
   if (plt != null && plt < 100 && d.wbc > 12) return {
-    label: "Septic profile with thrombocytopenia — consider DIC",
+    label: "Septic profile with thrombocytopenia: consider DIC",
     sev: "critical",
     sub: "Trajectory matters more than the single value. Check PT/PTT, fibrinogen, D-dimer; calculate ISTH DIC score.",
   };
@@ -1088,14 +1088,14 @@ function corePattern(d, toggles) {
   // flagship pattern unreachable for every default-mode user while a genuinely
   // marked automated left shift scored calm.
   if (d.isManual && d.nlr != null && d.nlr >= 12.65 && d.aec != null && d.aec < AEC_EOSINOPENIA && d.bandPct >= 11) return {
-    label: "Bandemic leukocytosis with eosinopenia — bacterial sepsis pattern",
+    label: "Bandemic leukocytosis with eosinopenia: bacterial sepsis pattern",
     sev: "critical",
     sub: "Extreme NLR, marked left shift, and eosinopenia together are suggestive of bacterial sepsis. Source control, lactate-guided resuscitation, broad coverage pending cultures.",
   };
   // Auto-diff equivalent: the two limbs that ARE scale-independent still fire,
   // and the missing third limb is named rather than faked.
   if (!d.isManual && d.nlr != null && d.nlr >= 12.65 && d.aec != null && d.aec < AEC_EOSINOPENIA) return {
-    label: "Extreme NLR with eosinopenia — bacterial sepsis pattern",
+    label: "Extreme NLR with eosinopenia: bacterial sepsis pattern",
     sev: "critical",
     sub: "NLR above the 12.65 bacteremia cut-point together with eosinopenia below 50 cells/µL. The third limb of the signature is a manual band count: Drees's 11% and 20% thresholds were derived on a 100-cell manual differential and are not transferable to an analyser IG%, so the left shift is not scored in auto-diff mode. Switch to manual diff if a band count is available. Source control, lactate-guided resuscitation, broad coverage pending cultures.",
   };
@@ -1104,32 +1104,32 @@ function corePattern(d, toggles) {
   // lymphocyte count is the denominator, so it drives NLR upward on its own;
   // reading the ratio first relabelled the viral signature "sepsis range".
   if (d.alc != null && d.alc < 0.4 && d.wbc <= 12) return {
-    label: "Profound lymphopenia with near-normal WBC — viral / immune-mediated",
+    label: "Profound lymphopenia with near-normal WBC: viral / immune-mediated",
     sev: "concern",
     sub: "Classic for severe viral pneumonia (e.g., SARS-CoV-2, influenza). Also seen in advanced sepsis-induced immunoparesis.",
   };
   if (d.nlr != null && d.nlr >= 7.97) return {
-    label: "Severe inflammation — sepsis range",
+    label: "Severe inflammation: sepsis range",
     sev: "concern",
     sub: "NLR at or above the 7.97 sepsis-diagnosis cut-point. Integrate with lactate, PCT, and source.",
   };
   if (d.aec != null && d.aec < AEC_EOSINOPENIA && d.nlr != null && d.nlr >= 3.0 && d.wbc <= 12) return {
-    label: "Occult infection signature — investigate before WBC rises",
+    label: "Occult infection signature: investigate before WBC rises",
     sev: "concern",
     sub: "Normal WBC with eosinopenia and an NLR above Zahorec's pathological limit of 3.0 is suspicious for early or low-burden infection. Image and culture before symptoms escalate.",
   };
   if (t("asplenia")) return {
-    label: "Asplenic baseline — standard thresholds invalid",
+    label: "Asplenic baseline: standard thresholds invalid",
     sev: "caution",
     sub: "Baseline mild leukocytosis and reactive thrombocytosis are expected. Maintain a high pre-test probability for encapsulated organisms; trend, do not anchor on absolutes.",
   };
   // The 5–10% left-shift band is a reporting convention rather than a published
-  // cut-point, and it is still a BAND convention — so it is only applied to a
+  // cut-point, and it is still a BAND convention, so it is only applied to a
   // manual count.
   const mildLeftShift = d.isManual && d.bandPct >= 5;
   if (d.wbc > 12 && d.aec != null && d.aec > 0 && (mildLeftShift || !d.isManual)) return {
-    label: mildLeftShift ? "Leukocytosis with mild left shift — SIRS pattern"
-                         : "Leukocytosis with preserved eosinophils — SIRS pattern",
+    label: mildLeftShift ? "Leukocytosis with mild left shift: SIRS pattern"
+                         : "Leukocytosis with preserved eosinophils: SIRS pattern",
     sev: "caution",
     sub: mildLeftShift
       ? "Pattern is consistent with SIRS; bacterial infection not excluded but less specific than the bandemia + eosinopenia signature."
@@ -1141,12 +1141,12 @@ function corePattern(d, toggles) {
     sub: "No dominant sepsis signature, and NLR sits at or below Zahorec's grey zone. Clinical context leads.",
   };
   if (d.wbc >= 4 && d.wbc <= 12 && d.nlr != null && d.nlr < 7.97) return {
-    label: "Normal count, mildly raised NLR — non-specific",
+    label: "Normal count, mildly raised NLR: non-specific",
     sev: "caution",
     sub: "NLR is above Zahorec's pathological limit of 3.0 but below the 7.97 sepsis-diagnosis cut-point. Inflammation, physiologic stress and early infection all occupy this band; direction across serial draws discriminates better than the single value.",
   };
   return {
-    label: "Mixed pattern — interpret in clinical context",
+    label: "Mixed pattern: interpret in clinical context",
     sev: "caution",
     sub: "No single signature dominates. Use lactate, MAP, PCT, and source assessment as primary inputs.",
   };
@@ -1163,7 +1163,7 @@ function patternLabel(d, toggles) {
   return {
     label: base.label + " (steroid-altered)",
     sev: base.sev,
-    sub: "Active glucocorticoid exposure demarginates neutrophils and suppresses eosinophils and lymphocytes, so NLR and eosinopenia carry little diagnostic weight here. The underlying CBC pattern is shown unchanged and severity is taken from it, not from the confounder — lactate, MAP, source control and microbiology adjudicate. " + base.sub,
+    sub: "Active glucocorticoid exposure demarginates neutrophils and suppresses eosinophils and lymphocytes, so NLR and eosinopenia carry little diagnostic weight here. The underlying CBC pattern is shown unchanged and severity is taken from it, not from the confounder. Lactate, MAP, source control and microbiology adjudicate. " + base.sub,
   };
 }
 
@@ -1179,32 +1179,32 @@ function evidenceRows(d, toggles) {
     if (d.nlr >= 12.65) {
       claim = "NLR exceeds the bacteremia cut-point of 12.65 derived by Russell 2019.";
       num = "Patient-level meta-analysis of five studies (n=3,320): pooled AUC 0.72. Ten studies reported the association qualitatively, but only those five contributed patient-level data to the pooled AUC and to the >12.65 cut-point.";
-      caveat = "Cut-off varies 10–13 across cohorts; never adjudicates alone. Pooled across 21 studies and 23,621 patients, high versus low NLR carries only OR 1.11 (95% CI 1.08–1.14) for sepsis mortality — a real but modest effect.";
+      caveat = "Cut-off varies 10–13 across cohorts; never adjudicates alone. Pooled across 21 studies and 23,621 patients, high versus low NLR carries only OR 1.11 (95% CI 1.08–1.14) for sepsis mortality, a real but modest effect.";
     } else if (d.nlr >= 9.05) {
       claim = "NLR above the 90-day mortality cut-point of 9.05 in non-ICU septic cohorts.";
       num = "Spoto 2021: sens 69.6%, spec 61.4%, AUC 0.66, PPV 28.9%, NPV 89.9% for 90-day mortality.";
       caveat = "Read that asymmetry directly: NPV 89.9% makes it fair for ruling mortality out, PPV 28.9% and AUC 0.66 make it weak for ruling it in. Outside-ICU population; recalibrate at ICU prevalence.";
     } else if (d.nlr >= 7.97) {
       claim = "NLR above the sepsis-diagnosis cut-point of 7.97.";
-      num = "Spoto 2021, 251 septic vs 126 non-septic infected patients outside the ICU: sens 64.3%, spec 80.2%, AUC 0.74. Those two figures give a positive likelihood ratio of about 3.2 and a negative of about 0.45 — calculated here from the reported sensitivity and specificity, not quoted from the paper. Likelihood ratios are the quantities that transport; apply them to your own pre-test probability.";
-      caveat = "The same paper reports PPV 86.5% and NPV 53.2%, and those do NOT transport: 251 of its 377 patients were septic, a prevalence of about 66.6% by arithmetic on the group sizes. Carry the same sensitivity and specificity to a 25% pre-test probability and the post-test probability falls to roughly 52% (calculated, not reported). Quoting a raw PPV without its denominator is the exact error this tool exists to teach against. NPV 53.2% likewise means a value below the cut-point does not clear the patient. In 1,572 ED episodes of suspected sepsis the neutrophil-lymphocyte count ratio reached AUC 0.68 (95% CI 0.65–0.71) for bacterial sepsis by Sepsis-2 criteria — modest standalone.";
+      num = "Spoto 2021, 251 septic vs 126 non-septic infected patients outside the ICU: sens 64.3%, spec 80.2%, AUC 0.74. Those two figures give a positive likelihood ratio of about 3.2 and a negative of about 0.45 (calculated here from the reported sensitivity and specificity, not quoted from the paper). Likelihood ratios are the quantities that transport; apply them to your own pre-test probability.";
+      caveat = "The same paper reports PPV 86.5% and NPV 53.2%, and those do NOT transport: 251 of its 377 patients were septic, a prevalence of about 66.6% by arithmetic on the group sizes. Carry the same sensitivity and specificity to a 25% pre-test probability and the post-test probability falls to roughly 52% (calculated, not reported). Quoting a raw PPV without its denominator is the exact error this tool exists to teach against. NPV 53.2% likewise means a value below the cut-point does not clear the patient. In 1,572 ED episodes of suspected sepsis the neutrophil-lymphocyte count ratio reached AUC 0.68 (95% CI 0.65–0.71) for bacterial sepsis by Sepsis-2 criteria, modest standalone.";
     } else if (d.nlr >= 3) {
       claim = "NLR above Zahorec's pathological limit of 3.0, below the 7.97 sepsis-diagnosis cut-point.";
       num = "Direction beats the single value: across 30 studies and 26,441 critically ill patients, NLR was the leucocyte parameter that best predicted mortality, running lower in survivors on days 0–1 (mean difference −0.29, 95% CI −0.45 to −0.12), days 2–4 (−1.02, −1.57 to −0.48) and days 5–7 (−0.69, −1.00 to −0.38).";
       caveat = "Single value at any cut-point has limited specificity. Inflammation, physiologic stress and early infection all sit in this band.";
     } else if (d.nlr >= 2.3) {
-      claim = "NLR in Zahorec's grey zone (2.3–3.0) — an early-warning band for inflammation, infection or stress.";
+      claim = "NLR in Zahorec's grey zone (2.3–3.0), an early-warning band for inflammation, infection or stress.";
       num = "Zahorec 2021: normal range 1–2; grey zone 2.3–3.0; values above 3.0 or below 0.7 are pathological in adults.";
       caveat = "Healthy-population reference intervals run wider than the grey zone: 0.78–3.53 (n=413) and 0.89–3.26 in men / 0.87–3.16 in women (n=29,947). A value inside the grey zone is not by itself abnormal.";
     } else if (d.nlr >= 0.7) {
-      claim = d.nlr >= 2 ? "NLR between Zahorec's normal range (1–2) and the grey zone (2.3–3.0) — no published band covers this interval."
+      claim = d.nlr >= 2 ? "NLR between Zahorec's normal range (1–2) and the grey zone (2.3–3.0). No published band covers this interval."
             : d.nlr >= 1 ? "NLR within Zahorec's normal range (1–2)."
             : "NLR below Zahorec's normal range (1–2), above the 0.7 low pathological limit.";
       num = "Reassuring on its own. But persistently low NLR in septic shock is itself a J-curve mortality signal: adjusted HR 2.25 (95% CI 1.63–3.11) for 28-day mortality, against HR 2.65 (1.64–4.29) for persistently high NLR (Hwang 2017, n=1,395).";
-      caveat = "Low NLR with shock may reflect immunoparesis — in that cohort the lowest NLR quintile carried the highest 28-day mortality at 24.4%.";
+      caveat = "Low NLR with shock may reflect immunoparesis. In that cohort the lowest NLR quintile carried the highest 28-day mortality at 24.4%.";
     } else {
-      claim = "NLR below Zahorec's low pathological limit of 0.7 — abnormal, not normal.";
-      num = "Zahorec 2021 places values below 0.7 outside the adult normal range, alongside values above 3.0. Hwang 2017 supplies the outcome: among 1,395 patients with severe sepsis or septic shock, the lowest NLR quintile (median 0.2, IQR 0.1–0.7) carried the highest 28-day mortality at 24.4% — higher than the top quintile's 16.1% — and persistently low NLR carried adjusted HR 2.25 (95% CI 1.63–3.11) for 28-day mortality.";
+      claim = "NLR below Zahorec's low pathological limit of 0.7 (abnormal, not normal).";
+      num = "Zahorec 2021 places values below 0.7 outside the adult normal range, alongside values above 3.0. Hwang 2017 supplies the outcome: among 1,395 patients with severe sepsis or septic shock, the lowest NLR quintile (median 0.2, IQR 0.1–0.7) carried the highest 28-day mortality at 24.4% (higher than the top quintile's 16.1%) and persistently low NLR carried adjusted HR 2.25 (95% CI 1.63–3.11) for 28-day mortality.";
       caveat = "Do not read this as inflammation resolving. A ratio this low is a collapsed neutrophil count, a raised lymphocyte count, or both: read the ANC and ALC rows directly. In a hypoperfused patient it is a flag for immunoparesis, not reassurance.";
     }
     if (t("steroids")) {
@@ -1244,7 +1244,7 @@ function evidenceRows(d, toggles) {
     wbcCaveat = "Rarely from sepsis alone; check smear for blasts.";
   } else if (d.wbc > 12) {
     wbcClaim = "Leukocytosis above the SIRS threshold.";
-    wbcNum = "WBC discriminates bacteremia poorly. In 25,776 hospitalised patients with a differential and a blood culture, AUROC was 0.58 for WBC, 0.63 for ANC and 0.74 for neutrophil percentage — the percentage outperforms both absolute counts. SIRS criteria also miss about 12% of severe sepsis (13,278 of 109,663 ICU patients with infection and organ failure were SIRS-negative).";
+    wbcNum = "WBC discriminates bacteremia poorly. In 25,776 hospitalised patients with a differential and a blood culture, AUROC was 0.58 for WBC, 0.63 for ANC and 0.74 for neutrophil percentage. The percentage outperforms both absolute counts. SIRS criteria also miss about 12% of severe sepsis (13,278 of 109,663 ICU patients with infection and organ failure were SIRS-negative).";
     wbcCaveat = "Interpret pattern (NLR + bands + AEC), not absolute count.";
   } else {
     wbcClaim = "Total WBC within reference range.";
@@ -1269,14 +1269,14 @@ function evidenceRows(d, toggles) {
     finding: `ANC = ${fmt(d.anc, 2)} ×10³/µL`,
     state: d.anc == null ? "No value" : ancSev,
     sev: ancSev,
-    claim: d.anc == null ? "ANC not derivable — no WBC entered."
+    claim: d.anc == null ? "ANC not derivable. No WBC entered."
          : d.anc < 0.5 ? "Severe neutropenia. The febrile-neutropenia framework applies if fever is documented; this tool records no temperature and cannot establish that."
          : d.anc < 1.0 ? "Mild-to-moderate neutropenia; risk-stratify for infection."
          : "ANC within or above reference range.",
     num: d.anc == null ? "—"
-       : d.anc < 0.5 ? "ANC <500 is the empiric-coverage threshold and ANC <100 is profound neutropenia. Both come from standard IDSA/ASCO febrile-neutropenia guidance — consensus practice, not a figure derived from any study cited in this tool. Neither threshold carries a fever, and the causes of severe neutropenia that are not febrile neutropenia — drug-induced agranulocytosis, marrow infiltration, sepsis-induced suppression, benign ethnic (Duffy-null) neutropenia — do not call for empiric antibacterials on the count alone."
+       : d.anc < 0.5 ? "ANC <500 is the empiric-coverage threshold and ANC <100 is profound neutropenia. Both come from standard IDSA/ASCO febrile-neutropenia guidance (consensus practice, not a figure derived from any study cited in this tool). Neither threshold carries a fever, and the causes of severe neutropenia that are not febrile neutropenia (drug-induced agranulocytosis, marrow infiltration, sepsis-induced suppression, benign ethnic (Duffy-null) neutropenia) do not call for empiric antibacterials on the count alone."
                        : "Trend matters more than the single value. The upper bound of 7.7 ×10³/µL used for the display band is a laboratory reference convention, also unsourced here.",
-    caveat: t("chemo") ? "Chemotherapy active — interpret in chemo-nadir framework." : "Manage febrile neutropenia by local protocol; this tool carries no primary citation for those cut-points and no temperature input.",
+    caveat: t("chemo") ? "Chemotherapy active: interpret in chemo-nadir framework." : "Manage febrile neutropenia by local protocol; this tool carries no primary citation for those cut-points and no temperature input.",
     cites: [],
   });
 
@@ -1289,9 +1289,9 @@ function evidenceRows(d, toggles) {
       finding: `IG% = ${d.leftShiftPct.toFixed(1)}%`,
       state: "Not scored",
       sev: "neutral",
-      claim: "Automated immature-granulocyte percentage — displayed, not scored.",
+      claim: "Automated immature-granulocyte percentage (displayed, not scored).",
       num: "This tool carries no IG%-specific diagnostic cut-point. The 11% and 20% thresholds it does carry are Drees 2012's, derived on a 100-cell manual band count in 2,342 admissions whose total white count was normal; an analyser IG% is a different measurement on a different scale, and it typically runs far below a manual band percentage. Applying those odds ratios here would be a transported threshold, not a validated one.",
-      caveat: "Lemkus 2022 (68 evaluable samples) found NE-SFL the strongest extended-differential discriminator for bacteraemia overall (AUC >0.8), with IG% best only in the HIV-negative subgroup (AUC 0.9) — a direction, not a cut-point. Switch to manual diff if a band count is available. Note also that IG is kept out of the ANC in this mode: analysers that already fold immature granulocytes into NEUT% would otherwise count them twice.",
+      caveat: "Lemkus 2022 (68 evaluable samples) found NE-SFL the strongest extended-differential discriminator for bacteraemia overall (AUC >0.8), with IG% best only in the HIV-negative subgroup (AUC 0.9): a direction, not a cut-point. Switch to manual diff if a band count is available. Note also that IG is kept out of the ANC in this mode: analysers that already fold immature granulocytes into NEUT% would otherwise count them twice.",
       cites: [7, 9],
     });
   }
@@ -1301,7 +1301,7 @@ function evidenceRows(d, toggles) {
     if (d.bandPct >= 20) {
       bClaim = "Marked bandemia (≥20%).";
       bNum = "Drees 2012, 2,342 admissions with a normal total WBC (3,800–10,800/mm³): adjusted OR 6.2 (95% CI 3.2–11.8) for positive blood cultures, and adjusted OR 2.8 (1.7–4.3) for any significant positive culture.";
-      bCaveat = "Manual band counts vary widely between laboratories — CV 55.8% among CAP proficiency-testing participants on a 100-cell manual differential, 32.9% among CAP Hematology and Clinical Microscopy Committee members. Grouping bands with segmented neutrophils drops those to 6.2% and 5.0%.";
+      bCaveat = "Manual band counts vary widely between laboratories: CV 55.8% among CAP proficiency-testing participants on a 100-cell manual differential, 32.9% among CAP Hematology and Clinical Microscopy Committee members. Grouping bands with segmented neutrophils drops those to 6.2% and 5.0%.";
     } else if (d.bandPct >= 11) {
       bClaim = "Moderate bandemia (11–19%).";
       bNum = "Drees 2012: adjusted OR 3.8 (95% CI 2.0–7.2) for positive blood cultures. An independent 970-patient cohort supports the same direction at a >10% threshold: adjusted OR 6.13 (95% CI 4.02–9.40), sens 0.42, spec 0.91.";
@@ -1309,14 +1309,14 @@ function evidenceRows(d, toggles) {
     } else if (d.bandPct >= 5) {
       bClaim = "Mild left shift (5–10%).";
       bNum = "Less specific in isolation; correlate with NLR and AEC.";
-      bCaveat = "This 5–10% band is a reporting convention, not a published cut-point — Drees treated everything ≤10% as normal. G-CSF or a recent seizure can also mimic it.";
+      bCaveat = "This 5–10% band is a reporting convention, not a published cut-point. Drees treated everything ≤10% as normal. G-CSF or a recent seizure can also mimic it.";
     } else {
       bClaim = "No clinically meaningful left shift.";
       bNum = "—";
       bCaveat = "Absence of bands does not rule out infection.";
     }
-    // Lemkus 2022 is a diagnostic-performance study, not a reproducibility one —
-    // stated here as what it actually showed.
+    // Lemkus 2022 is a diagnostic-performance study, not a reproducibility one.
+    // Stated here as what it actually showed.
     bCaveat += " Lemkus 2022 (68 evaluable samples) found NE-SFL the strongest extended-differential discriminator for bacteraemia overall (AUC >0.8), with IG% best only in the HIV-negative subgroup (AUC 0.9).";
     if (t("gcsf"))    bCaveat = "G-CSF active: bandemia is iatrogenic and not interpretable.";
     if (t("seizure")) bCaveat = "Recent seizure: postictal demargination can produce a transient left shift.";
@@ -1334,20 +1334,20 @@ function evidenceRows(d, toggles) {
   const alcSev = alcSeverity(d.alc);
   let lClaim, lNum, lCaveat;
   if (d.alc == null) {
-    lClaim = "ALC not derivable — no WBC entered.";
+    lClaim = "ALC not derivable. No WBC entered.";
     lNum = "—";
     lCaveat = "Enter a white cell count.";
   } else if (d.alc < 0.4) {
     lClaim = "Profound lymphopenia (ALC <400 cells/µL).";
     lNum = "The adult anchor is Drewry 2014: day-4 ALC modelled continuously in 335 patients with bacteraemic sepsis gave adjusted OR 0.68 per unit for 28-day survival and 0.74 for 1-year survival, with severe persistent lymphopenia defined as ALC ≤0.6 ×10⁹/L on day 4.";
-    lCaveat = "The 400 cells/µL boundary is this tool's display convention, not a published cut-point — the nearest sourced adult threshold is Drewry's ≤0.6 ×10⁹/L on day 4. Steroids, chemo, HIV and post-transplant states all confound a single value.";
+    lCaveat = "The 400 cells/µL boundary is this tool's display convention, not a published cut-point. The nearest sourced adult threshold is Drewry's ≤0.6 ×10⁹/L on day 4. Steroids, chemo, HIV and post-transplant states all confound a single value.";
   } else if (d.alc < 1.0) {
     lClaim = "Lymphopenia.";
     lNum = "Pediatric: ALC <1,000 cells/µL on 2 days between study days 0–5 in 401 children with severe sepsis carried adjusted OR 2.98 (95% CI 1.85–4.02) for prolonged MODS or death. Adult: Drewry's severe persistent threshold is ALC ≤0.6 ×10⁹/L on day 4.";
-    lCaveat = "There is no single shared threshold — roughly 0.6–1.0 ×10⁹/L depending on cohort and day. Single value < trend; reassess at 48–72 h.";
+    lCaveat = "There is no single shared threshold: roughly 0.6–1.0 ×10⁹/L depending on cohort and day. Single value < trend; reassess at 48–72 h.";
   } else {
     lClaim = "ALC within reference range.";
-    lNum = "Does not exclude evolving immunoparesis — recheck on day 3–5. Trajectory carries the risk: among 1,640 septic patients with initial lymphopenia (<1.0 ×10⁹/L), the persistent-low trajectory group (n=544, 33.2%) had the lowest 7-day and 28-day survival, and after adjustment stayed associated with 28-day mortality (aHR 1.76, 95% CI 1.27–2.45) though not with 7-day.";
+    lNum = "Does not exclude evolving immunoparesis. Recheck on day 3–5. Trajectory carries the risk: among 1,640 septic patients with initial lymphopenia (<1.0 ×10⁹/L), the persistent-low trajectory group (n=544, 33.2%) had the lowest 7-day and 28-day survival, and after adjustment stayed associated with 28-day mortality (aHR 1.76, 95% CI 1.27–2.45) though not with 7-day.";
     lCaveat = "A normal ALC today does not predict the day-3 value.";
   }
   if (t("steroids")) lCaveat = "STEROIDS lower ALC within hours; the acute reading is uninformative.";
@@ -1366,13 +1366,13 @@ function evidenceRows(d, toggles) {
   const aecSev = aecSeverity(d.aec);
   let eClaim, eNum, eCaveat;
   if (d.aec == null) {
-    eClaim = "AEC not derivable — no WBC entered.";
+    eClaim = "AEC not derivable. No WBC entered.";
     eNum = "—";
     eCaveat = "Enter a white cell count.";
   } else if (d.aec < AEC_EOSINOPENIA) {
-    eClaim = "Eosinopenia (<50 cells/µL). This is the single boundary used by the severity colour, this row and the pattern engine alike. An analyser-reported 0 and a count of 30 are the same finding here — no source grades exactly zero as worse.";
-    eNum = "Optimistic bound, Abidi 2008 (n=177, single medical ICU), at the same <50 cells/µL cut-point this tool displays: sens 80% (71–86), spec 91% (79–96), +LR 9.12 (3.9–21), −LR 0.21 (0.15–0.31), AUC 0.89 for non-infected versus infected. The harder comparison in that same paper — SIRS versus infection — used <40 cells/µL and fell to sens 80% (71–86), spec 80% (55–93), +LR 4 (1.65–9.65), AUC 0.84. Pooled reality, Lin 2021 (7 studies, 3,842 subjects): SROC AUC 0.73 (0.68–0.76), sens 0.66, spec 0.68, +LR 2.09 (1.44–3.02), −LR 0.49. Largest prospective series, Lavoignet 2026 (770 ED patients, 422 infected): at ≤10/mm³ spec 88%, sens 48%, AUC 0.75 — comparable to neutrophils (0.74) and leukocytes (0.72), inferior to CRP (0.89). Sustained AEC <45 cells/µL carried HR 4.20 (95% CI 2.66–6.62) for mortality in 2,311 first-bacteraemia episodes.";
-    eCaveat = "Treat +LR 9.12 as the single-centre ceiling and ~2–4 as the pooled expectation. Note the width on the <40 specificity (55–93%) — that is the discrimination that matters at the bedside. Best used as a rule-in adjunct. Prognostic ceiling is low: in 496 ICU patients with severe CAP, eosinopenia was independently associated with 30-day mortality (HR 1.95, 1.19–3.20) yet had AUC 0.562 standalone. Confounded by steroids, stress and surgery.";
+    eClaim = "Eosinopenia (<50 cells/µL). This is the single boundary used by the severity colour, this row and the pattern engine alike. An analyser-reported 0 and a count of 30 are the same finding here. No source grades exactly zero as worse.";
+    eNum = "Optimistic bound, Abidi 2008 (n=177, single medical ICU), at the same <50 cells/µL cut-point this tool displays: sens 80% (71–86), spec 91% (79–96), +LR 9.12 (3.9–21), −LR 0.21 (0.15–0.31), AUC 0.89 for non-infected versus infected. The harder comparison in that same paper (SIRS versus infection) used <40 cells/µL and fell to sens 80% (71–86), spec 80% (55–93), +LR 4 (1.65–9.65), AUC 0.84. Pooled reality, Lin 2021 (7 studies, 3,842 subjects): SROC AUC 0.73 (0.68–0.76), sens 0.66, spec 0.68, +LR 2.09 (1.44–3.02), −LR 0.49. Largest prospective series, Lavoignet 2026 (770 ED patients, 422 infected): at ≤10/mm³ spec 88%, sens 48%, AUC 0.75: comparable to neutrophils (0.74) and leukocytes (0.72), inferior to CRP (0.89). Sustained AEC <45 cells/µL carried HR 4.20 (95% CI 2.66–6.62) for mortality in 2,311 first-bacteraemia episodes.";
+    eCaveat = "Treat +LR 9.12 as the single-centre ceiling and ~2–4 as the pooled expectation. Note the width on the <40 specificity (55–93%). That is the discrimination that matters at the bedside. Best used as a rule-in adjunct. Prognostic ceiling is low: in 496 ICU patients with severe CAP, eosinopenia was independently associated with 30-day mortality (HR 1.95, 1.19–3.20) yet had AUC 0.562 standalone. Confounded by steroids, stress and surgery.";
   } else if (d.aec >= 1.5) {
     eClaim = "Eosinophilia (≥1500 cells/µL).";
     eNum = "Sepsis pattern fits poorly. Consider DRESS, adrenal insufficiency post-taper, parasitic, hypereosinophilic syndrome.";
@@ -1382,7 +1382,7 @@ function evidenceRows(d, toggles) {
     eNum = "Argues mildly against bacterial sepsis but is not exclusionary. Abidi's sensitivity at this cut-point was 80%, so roughly one infected patient in five sits above it.";
     eCaveat = "Even mild steroid exposure suppresses eos.";
   }
-  if (t("steroids")) eCaveat = "STEROIDS suppress eosinophils within hours, so a low AEC on active glucocorticoid is weak diagnostic evidence — but not empty: in a prospective CAP cohort the ≤30/µL threshold predicted mechanical ventilation (RR 2.12, 95% CI 1.61–2.80) regardless of glucocorticoid treatment. Discount the count; do not discard it.";
+  if (t("steroids")) eCaveat = "STEROIDS suppress eosinophils within hours, so a low AEC on active glucocorticoid is weak diagnostic evidence, but not empty: in a prospective CAP cohort the ≤30/µL threshold predicted mechanical ventilation (RR 2.12, 95% CI 1.61–2.80) regardless of glucocorticoid treatment. Discount the count; do not discard it.";
   rows.push({
     id: "aec",
     finding: `AEC = ${d.aec == null ? "—" : (d.aec * 1000).toFixed(0)} cells/µL`,
@@ -1396,7 +1396,7 @@ function evidenceRows(d, toggles) {
 }
 
 // =================== APP ===================
-// Shared citation superscript — same affordance as the evidence rows, so a
+// Shared citation superscript: same affordance as the evidence rows, so a
 // reference cited in a warning, the narrative or the pediatric note is
 // clickable rather than orphaned.
 const Cite = ({ ids, clickRef }) => (
@@ -1415,7 +1415,7 @@ function getInitialTheme() {
 
 function App() {
   // Default is auto-diff, so the five-part differential closes to 100 on its
-  // own and IG% is carried alongside it — the way an analyser reports it.
+  // own and IG% is carried alongside it, the way an analyser reports it.
   const [cbc, setCbc] = useState({
     wbc: 12.0, neutPct: 74, bandPct: 4, lymphPct: 20, monoPct: 4, eosPct: 1.5, basoPct: 0.5, plt: 200,
   });
@@ -1465,7 +1465,7 @@ function App() {
     } else {
       pClaim = "Platelet count within reference range.";
       pNum = "—";
-      pCaveat = "Recheck in 24 h if sepsis suspected — nadir typically lags.";
+      pCaveat = "Recheck in 24 h if sepsis suspected. Nadir typically lags.";
     }
     r.push({
       id: "plt",
@@ -1512,8 +1512,8 @@ function App() {
   const warnings = [];
   if (tset.has("steroids")) warnings.push({
     sev: "caution",
-    head: "Steroid effect — interpret CBC pattern with strong skepticism",
-    body: "Glucocorticoids demarginate neutrophils and suppress eosinophils and lymphocytes acutely. The commonly quoted magnitude — a 2–3× neutrophil rise within 5–24 h — is conventional teaching; no primary source for that figure is carried in this tool, so treat the direction as reliable and the multiplier as an approximation. The suppression is also not total: in a prospective CAP cohort an eosinophil count ≤30/µL predicted mechanical ventilation regardless of glucocorticoid treatment, so a very low AEC on steroids still carries some prognostic weight even though its diagnostic value collapses. Lean on lactate, MAP, source control, and procalcitonin (if available).",
+    head: "Steroid effect: interpret CBC pattern with strong skepticism",
+    body: "Glucocorticoids demarginate neutrophils and suppress eosinophils and lymphocytes acutely. The commonly quoted magnitude (a 2–3× neutrophil rise within 5–24 h) is conventional teaching; no primary source for that figure is carried in this tool, so treat the direction as reliable and the multiplier as an approximation. The suppression is also not total: in a prospective CAP cohort an eosinophil count ≤30/µL predicted mechanical ventilation regardless of glucocorticoid treatment, so a very low AEC on steroids still carries some prognostic weight even though its diagnostic value collapses. Lean on lactate, MAP, source control, and procalcitonin (if available).",
     cites: [26],
   });
   if (tset.has("chemo") && d.anc != null && d.anc < 0.5) warnings.push({
@@ -1523,29 +1523,29 @@ function App() {
   });
   if (tset.has("gcsf")) warnings.push({
     sev: "caution",
-    head: "G-CSF active — bandemia is iatrogenic",
+    head: "G-CSF active: bandemia is iatrogenic",
     body: "Growth-factor-driven left shift is not diagnostic of bacterial infection. Look for toxic granulations on smear instead.",
   });
   if (tset.has("asplenia")) warnings.push({
     sev: "caution",
     head: "Asplenic baseline reframes the entire CBC",
-    body: "Mild leukocytosis and reactive thrombocytosis are expected, and standard sepsis cut-offs do not apply. The specific baselines often quoted — WBC ~11–14 ×10³/µL and platelets >400 ×10³/µL — are expert-opinion approximations rather than measured population values; no cohort or reference-interval study establishing them was located, so anchor on the patient's own prior counts wherever they exist. Maintain a high pre-test probability for encapsulated pathogens (S. pneumoniae, H. influenzae, N. meningitidis).",
+    body: "Mild leukocytosis and reactive thrombocytosis are expected, and standard sepsis cut-offs do not apply. The specific baselines often quoted (WBC ~11–14 ×10³/µL and platelets >400 ×10³/µL) are expert-opinion approximations rather than measured population values; no cohort or reference-interval study establishing them was located, so anchor on the patient's own prior counts wherever they exist. Maintain a high pre-test probability for encapsulated pathogens (S. pneumoniae, H. influenzae, N. meningitidis).",
   });
   if (tset.has("hememalig")) warnings.push({
     sev: "caution",
-    head: "Hematologic malignancy — morphology required",
+    head: "Hematologic malignancy: morphology required",
     body: "Cytopenias or blasts on smear can mimic or coexist with infection. Heme-onc input and flow cytometry as needed.",
   });
   if (tset.has("seizure")) warnings.push({
     sev: "caution",
     head: "Postictal leukocytosis",
-    body: "Leukocytosis appears immediately after a generalized convulsive seizure and normalises within about two hours. In 28 adults monitored through 28 generalized convulsive seizures in an epilepsy unit, the white count had returned to baseline by the 2-hour draw (p < 0.001) while CRP went on rising to a 24-hour peak. The practical consequence runs opposite to the older teaching: a count still elevated several hours out is not the seizure, and waiting 12–24 h to recheck wastes the window. No absolute ceiling for the postictal rise is quoted here — none is sourced.",
+    body: "Leukocytosis appears immediately after a generalized convulsive seizure and normalises within about two hours. In 28 adults monitored through 28 generalized convulsive seizures in an epilepsy unit, the white count had returned to baseline by the 2-hour draw (p < 0.001) while CRP went on rising to a 24-hour peak. The practical consequence runs opposite to the older teaching: a count still elevated several hours out is not the seizure, and waiting 12–24 h to recheck wastes the window. No absolute ceiling for the postictal rise is quoted here. None is sourced.",
     cites: [33],
   });
   if (tset.has("pregnancy")) warnings.push({
     sev: "caution",
     head: "Pregnancy / peripartum baseline",
-    body: "Baseline WBC runs higher in late pregnancy and higher again peripartum, so the >12 SIRS threshold carries almost no specificity. The commonly quoted ceilings of roughly 16 in the third trimester and 22 peripartum are conventional teaching; two searches this build found no primary source for either figure, so treat them as approximations rather than reference intervals. The nearest real dataset — 143,106 term singleton pregnancies linked to more than 972,000 CBC results — derives intervals by trimester and by gestational week, and warns that trimester bins are inappropriate for several leukocyte parameters because they move too fast within a trimester. Read against the patient's own earlier counts wherever they exist.",
+    body: "Baseline WBC runs higher in late pregnancy and higher again peripartum, so the >12 SIRS threshold carries almost no specificity. The commonly quoted ceilings of roughly 16 in the third trimester and 22 peripartum are conventional teaching; two searches this build found no primary source for either figure, so treat them as approximations rather than reference intervals. The nearest real dataset (143,106 term singleton pregnancies linked to more than 972,000 CBC results) derives intervals by trimester and by gestational week, and warns that trimester bins are inappropriate for several leukocyte parameters because they move too fast within a trimester. Read against the patient's own earlier counts wherever they exist.",
     cites: [40],
   });
   if (tset.has("epi")) warnings.push({
@@ -1555,7 +1555,7 @@ function App() {
   });
   if (tset.has("transfusion")) warnings.push({
     sev: "caution",
-    head: "Recent transfusion — dilutional shifts",
+    head: "Recent transfusion: dilutional shifts",
     body: "Interpret platelet and differential by trend, not absolute, for the next 4–6 h.",
   });
 
@@ -1619,7 +1619,7 @@ function Ribbon({ d, cbc, pattern }) {
   // 0.7, 2.3 and 3.0 from Zahorec 2021 [19]; 7.97 sepsis-diagnosis and 9.05
   // 90-day mortality from Spoto 2021 [4]; 12.65 bacteremia from Russell 2019
   // [2]. The former 6 / 9 / 14 boundaries were a house scheme with no citation
-  // and have been removed. Two intervals — 0.7–1.0 and 2.0–2.3 — are named as
+  // and have been removed. Two intervals (0.7–1.0 and 2.0–2.3) are named as
   // gaps rather than folded into a neighbouring band, because Zahorec's scheme
   // does not cover them and "within normal range (1–2)" was being printed over
   // values that are not inside it.
@@ -1640,7 +1640,7 @@ function Ribbon({ d, cbc, pattern }) {
     { key: "alc", label: "ALC", val: fmt(d.alc, 2),   unit: "×10³", sev: alcSeverity(d.alc) },
     { key: "aec", label: "AEC", val: d.aec == null ? "—" : (d.aec * 1000).toFixed(0), unit: "/µL", sev: aecSeverity(d.aec) },
     // 11%, not 10%: Drees 2012 classed ≤10% bands as its NORMAL reference group
-    // [7] — and only on a manual count. An analyser IG% is shown uncoloured
+    // [7], and only on a manual count. An analyser IG% is shown uncoloured
     // because no IG%-specific cut-point is carried here.
     { key: "igp", label: d.isManual ? "Bands" : "IG", val: d.leftShiftPct.toFixed(1), unit: "%",
       sev: !d.isManual ? "neutral"
@@ -1650,7 +1650,7 @@ function Ribbon({ d, cbc, pattern }) {
   return (
     <div className="ribbon">
       <div className="nlr-hero" data-sev={nlrSev}>
-        <div className="label">NLR — Neutrophil-to-lymphocyte ratio</div>
+        <div className="label">NLR (Neutrophil-to-lymphocyte ratio)</div>
         <div className="hero-val">{d.nlr == null ? "—" : d.nlr.toFixed(2)}</div>
         <div className="hero-sub">{nlrLabel}</div>
       </div>
@@ -1711,13 +1711,13 @@ function InputPanel({ cbc, update, mode, setMode, toggles, toggle, loadCase, cli
       {showAudit && (
         <div className="input-audit" id="input-audit" role="status" aria-live="polite">
           {audit.blank.length > 0 && (
-            <div><strong>Empty:</strong> {audit.blank.map(nameOf).join(", ")}. A blank field is not read as zero — anything derived from it shows “—” rather than a number.</div>
+            <div><strong>Empty:</strong> {audit.blank.map(nameOf).join(", ")}. A blank field is not read as zero. Anything derived from it shows “—” rather than a number.</div>
           )}
           {audit.outOfRange.length > 0 && (
             <div><strong>Out of range:</strong> {audit.outOfRange.map(nameOf).join(", ")}. Percentages must sit between 0 and 100.</div>
           )}
           {audit.sumOff && (
-            <div><strong>Differential sums to {audit.sum.toFixed(1)}%, not 100%.</strong> Every absolute on this page is WBC × percent, so a differential that does not close produces a wrong ANC, ALC and AEC — and a confident pattern read on top of them — with nothing else to signal it.{mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential."}</div>
+            <div><strong>Differential sums to {audit.sum.toFixed(1)}%, not 100%.</strong> Every absolute on this page is WBC × percent, so a differential that does not close produces a wrong ANC, ALC and AEC (and a confident pattern read on top of them) with nothing else to signal it.{mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential."}</div>
           )}
         </div>
       )}
@@ -1752,7 +1752,7 @@ function InputPanel({ cbc, update, mode, setMode, toggles, toggle, loadCase, cli
 
       <div className="peds-note">
         <span className="ptag">Peds</span>
-        Adult thresholds drive this artifact, and the current pediatric definition of sepsis does not use the white count at all. The 2024 Phoenix criteria retired the 2005 SIRS-based definition for poor predictive properties, retired the term “severe sepsis”, and score respiratory, cardiovascular, coagulation and neurological dysfunction only — derived across 3,049,699 encounters and externally validated in 581,317, with no leukocyte, band or NLR term among the four organ systems<Cite ids={[37, 38]} clickRef={clickRef} />. Where the CBC still earns diagnostic weight: neonatal NLR pools to sens 0.74, spec 0.88, +LR 6.35, AUC 0.87 across 14 studies and 1,499 newborns, although the contributing cut-offs span 0.1 to 9.4 and the +LR interval runs 2.6–15.47, so the pooled figure is far softer than it looks (Xin 2022)<Cite ids={[5]} clickRef={clickRef} />. A 2025 meta-analysis puts the immature-to-total neutrophil ratio &gt;0.20 at sens 66.3% / spec 85.4%, with white cell and platelet counts performing worse still<Cite ids={[39]} clickRef={clickRef} />. PICU lymphopenia below 1,000 cells/µL on two days between days 0–5 carried adjusted OR 2.98 for prolonged MODS or death (Podd 2023)<Cite ids={[10]} clickRef={clickRef} />. Age-banded ranges differ; do not extrapolate adult cut-offs to neonates.
+        Adult thresholds drive this artifact, and the current pediatric definition of sepsis does not use the white count at all. The 2024 Phoenix criteria retired the 2005 SIRS-based definition for poor predictive properties, retired the term “severe sepsis”, and score respiratory, cardiovascular, coagulation and neurological dysfunction only, derived across 3,049,699 encounters and externally validated in 581,317, with no leukocyte, band or NLR term among the four organ systems<Cite ids={[37, 38]} clickRef={clickRef} />. Where the CBC still earns diagnostic weight: neonatal NLR pools to sens 0.74, spec 0.88, +LR 6.35, AUC 0.87 across 14 studies and 1,499 newborns, although the contributing cut-offs span 0.1 to 9.4 and the +LR interval runs 2.6–15.47, so the pooled figure is far softer than it looks (Xin 2022)<Cite ids={[5]} clickRef={clickRef} />. A 2025 meta-analysis puts the immature-to-total neutrophil ratio &gt;0.20 at sens 66.3% / spec 85.4%, with white cell and platelet counts performing worse still<Cite ids={[39]} clickRef={clickRef} />. PICU lymphopenia below 1,000 cells/µL on two days between days 0–5 carried adjusted OR 2.98 for prolonged MODS or death (Podd 2023)<Cite ids={[10]} clickRef={clickRef} />. Age-banded ranges differ; do not extrapolate adult cut-offs to neonates.
       </div>
     </div>
   );
@@ -1773,7 +1773,7 @@ function Interpretation({ pattern, rows, warnings, d, cbc, clickRef }) {
         </div>
       ))}
 
-      <h3>Evidence — by finding</h3>
+      <h3>Evidence by finding</h3>
       {rows.map((r) => (
         <div key={r.id} className="ev-row">
           <div className="ev-finding">
@@ -1788,7 +1788,7 @@ function Interpretation({ pattern, rows, warnings, d, cbc, clickRef }) {
             ))}
           </div>
           <div className="ev-num"><strong>Data:</strong> {r.num}</div>
-          <div className="ev-caveat">Caveat — {r.caveat}</div>
+          <div className="ev-caveat">Caveat: {r.caveat}</div>
         </div>
       ))}
     </div>
@@ -1798,7 +1798,7 @@ function Interpretation({ pattern, rows, warnings, d, cbc, clickRef }) {
 function CaseShelf({ cases, loadCase }) {
   return (
     <div className="card" style={{ marginTop: 20 }}>
-      <h2 id="cases-h">Sample cases — click to load</h2>
+      <h2 id="cases-h">Sample cases (click to load)</h2>
       <div className="shelf">
         {cases.map((c) => (
           <button key={c.id} className="case-card" onClick={() => loadCase(c)}>
@@ -1817,19 +1817,19 @@ function Narrative({ clickRef }) {
     <div className="card" style={{ marginTop: 20 }}>
       <h2 id="narrative-h">Important findings &amp; considerations</h2>
       <div className="narrative">
-        <p>NLR carries the most consistent diagnostic and prognostic weight available from a single CBC. Zahorec introduced the ratio in 2001 as a “neutrophil-lymphocyte stress factor” in 90 oncological ICU patients, but that paper reports only relative neutrophil and lymphocyte percentages and proposes no numeric range{C([6])}; the interpretive bands come from his 2021 review, and this tool cites them there rather than to the original. The normal range sits at 1–2, the grey zone at 2.3–3.0, and values above 3.0 or below 0.7 are pathological in adults{C([19])}; healthy-population reference intervals are wider still, 0.78–3.53 in 413 adults{C([20])} and 0.89–3.26 in men and 0.87–3.16 in women across 29,947{C([21])}. At 7.97 the ratio meets the sepsis-diagnosis cut-point derived outside the ICU: sens 64.3%, spec 80.2%, AUC 0.74, which work out to a positive likelihood ratio of about 3.2 and a negative of about 0.45 — calculated here from those two figures, and the pair that actually transports to another population. The paper's PPV of 86.5% does not travel with them, because it belongs to that cohort's prevalence: 251 of 377 patients were septic, roughly 66.6%. Carry the same sensitivity and specificity to a 25% pre-test probability and the post-test figure drops to about 52%. NPV 53.2% is the other half of the same lesson — a value below the cut-point clears nobody{C([4])}. At 12.65 it meets the bacteremia cut-point of Russell 2019, where a patient-level meta-analysis of five studies (n = 3,320) gave AUC 0.72. Ten studies reported the association qualitatively; only those five contributed patient-level data to the pooled AUC and to the cut-point itself{C([2])}. Scale the enthusiasm to match: pooled across 21 studies and 23,621 patients, high versus low NLR carries OR 1.11 (95% CI 1.08–1.14) for sepsis mortality{C([29])}.</p>
+        <p>NLR carries the most consistent diagnostic and prognostic weight available from a single CBC. Zahorec introduced the ratio in 2001 as a “neutrophil-lymphocyte stress factor” in 90 oncological ICU patients, but that paper reports only relative neutrophil and lymphocyte percentages and proposes no numeric range{C([6])}; the interpretive bands come from his 2021 review, and this tool cites them there rather than to the original. The normal range sits at 1–2, the grey zone at 2.3–3.0, and values above 3.0 or below 0.7 are pathological in adults{C([19])}; healthy-population reference intervals are wider still, 0.78–3.53 in 413 adults{C([20])} and 0.89–3.26 in men and 0.87–3.16 in women across 29,947{C([21])}. At 7.97 the ratio meets the sepsis-diagnosis cut-point derived outside the ICU: sens 64.3%, spec 80.2%, AUC 0.74, which work out to a positive likelihood ratio of about 3.2 and a negative of about 0.45 (calculated here from those two figures, and the pair that actually transports to another population). The paper's PPV of 86.5% does not travel with them, because it belongs to that cohort's prevalence: 251 of 377 patients were septic, roughly 66.6%. Carry the same sensitivity and specificity to a 25% pre-test probability and the post-test figure drops to about 52%. NPV 53.2% is the other half of the same lesson: a value below the cut-point clears nobody{C([4])}. At 12.65 it meets the bacteremia cut-point of Russell 2019, where a patient-level meta-analysis of five studies (n = 3,320) gave AUC 0.72. Ten studies reported the association qualitatively; only those five contributed patient-level data to the pooled AUC and to the cut-point itself{C([2])}. Scale the enthusiasm to match: pooled across 21 studies and 23,621 patients, high versus low NLR carries OR 1.11 (95% CI 1.08–1.14) for sepsis mortality{C([29])}.</p>
 
-        <p>The Hwang J-curve matters at both ends. In 1,395 patients with severe sepsis or septic shock, persistently low NLR carried adjusted HR 2.25 (1.63–3.11) for 28-day mortality against 2.65 (1.64–4.29) for persistently high NLR, and the lowest quintile died most often, at 24.4%{C([3])}. A reassuringly low ratio in a hypoperfused patient is not reassurance; it is a flag for immunoparesis. Direction outperforms any single draw: across 30 studies and 26,441 critically ill patients, NLR was the leucocyte parameter that best separated survivors from non-survivors, running lower in survivors on days 0–1 (mean difference −0.29, 95% CI −0.45 to −0.12), days 2–4 (−1.02, −1.57 to −0.48) and days 5–7 (−0.69, −1.00 to −0.38){C([28])}. In 1,572 ED episodes of suspected sepsis the ratio reached AUC 0.68 (0.65–0.71) for bacterial sepsis by Sepsis-2 criteria — modest for a marker this widely quoted{C([1])}.</p>
+        <p>The Hwang J-curve matters at both ends. In 1,395 patients with severe sepsis or septic shock, persistently low NLR carried adjusted HR 2.25 (1.63–3.11) for 28-day mortality against 2.65 (1.64–4.29) for persistently high NLR, and the lowest quintile died most often, at 24.4%{C([3])}. A reassuringly low ratio in a hypoperfused patient is not reassurance; it is a flag for immunoparesis. Direction outperforms any single draw: across 30 studies and 26,441 critically ill patients, NLR was the leucocyte parameter that best separated survivors from non-survivors, running lower in survivors on days 0–1 (mean difference −0.29, 95% CI −0.45 to −0.12), days 2–4 (−1.02, −1.57 to −0.48) and days 5–7 (−0.69, −1.00 to −0.38){C([28])}. In 1,572 ED episodes of suspected sepsis the ratio reached AUC 0.68 (0.65–0.71) for bacterial sepsis by Sepsis-2 criteria, modest for a marker this widely quoted{C([1])}.</p>
 
-        <p>Eosinopenia is the second high-signal feature, and the gap between its optimistic and its pooled estimates is the lesson. Abidi 2008 reported sens 80%, spec 91%, +LR 9.12 and AUC 0.89 at AEC &lt;50 cells/µL in 177 medical ICU admissions; at the &lt;40 cut-point that separates SIRS from infection, specificity fell to 80% with a 55–93% confidence interval wide enough to swallow the claim{C([13])}. Pooling seven studies and 3,842 subjects gives SROC AUC 0.73 (0.68–0.76), sens 0.66, spec 0.68 and +LR 2.09 (1.44–3.02){C([16])}, and the largest prospective series — 770 ED patients across five centres, 422 infected — puts ≤10/mm³ at spec 88%, sens 48%, AUC 0.75, level with neutrophils (0.74) and leukocytes (0.72) and behind CRP (0.89){C([25])}. Treat 9.12 as a single-centre ceiling and roughly 2–4 as the expectation, and use eosinopenia to rule in rather than to rule out. Sustained eosinophils below 0.0454 ×10³/µL carried HR 4.20 (2.66–6.62) for mortality across 2,311 first bacteremia episodes{C([15])}, although standalone prognostic discrimination stays poor: AUC 0.562 in 496 ICU patients with severe CAP, even though eosinopenia there was independently associated with 30-day mortality at HR 1.95 (1.19–3.20){C([27])}. Steroids blunt the diagnostic signal without erasing the prognostic one — a count ≤30/µL predicted mechanical ventilation in CAP regardless of glucocorticoid treatment (RR 2.12, 1.61–2.80){C([26])}.</p>
+        <p>Eosinopenia is the second high-signal feature, and the gap between its optimistic and its pooled estimates is the lesson. Abidi 2008 reported sens 80%, spec 91%, +LR 9.12 and AUC 0.89 at AEC &lt;50 cells/µL in 177 medical ICU admissions; at the &lt;40 cut-point that separates SIRS from infection, specificity fell to 80% with a 55–93% confidence interval wide enough to swallow the claim{C([13])}. Pooling seven studies and 3,842 subjects gives SROC AUC 0.73 (0.68–0.76), sens 0.66, spec 0.68 and +LR 2.09 (1.44–3.02){C([16])}, and the largest prospective series (770 ED patients across five centres, 422 infected) puts ≤10/mm³ at spec 88%, sens 48%, AUC 0.75, level with neutrophils (0.74) and leukocytes (0.72) and behind CRP (0.89){C([25])}. Treat 9.12 as a single-centre ceiling and roughly 2–4 as the expectation, and use eosinopenia to rule in rather than to rule out. Sustained eosinophils below 0.0454 ×10³/µL carried HR 4.20 (2.66–6.62) for mortality across 2,311 first bacteremia episodes{C([15])}, although standalone prognostic discrimination stays poor: AUC 0.562 in 496 ICU patients with severe CAP, even though eosinopenia there was independently associated with 30-day mortality at HR 1.95 (1.19–3.20){C([27])}. Steroids blunt the diagnostic signal without erasing the prognostic one: a count ≤30/µL predicted mechanical ventilation in CAP regardless of glucocorticoid treatment (RR 2.12, 1.61–2.80){C([26])}.</p>
 
         <p>Bandemia is informative even when the total WBC looks normal. In 2,342 admissions with a normal count, ≥20% bands carried adjusted OR 6.2 (3.2–11.8) for positive blood cultures and 2.8 (1.7–4.3) for any significant positive culture, while 11–19% carried 3.8 (2.0–7.2); that study treated ≤10% bands as its normal reference group, which is why this tool starts bandemia at 11% rather than 10%{C([7])}. An independent 970-patient cohort supports the same direction at a &gt;10% threshold, adjusted OR 6.13 (4.02–9.40), sens 0.42, spec 0.91{C([23])}. The counting is the weak link. Among CAP proficiency-testing participants the coefficient of variation for a 100-cell manual band count was 55.8%, and 32.9% among the CAP Hematology and Clinical Microscopy Committee itself; grouping bands with segmented neutrophils drops those to 6.2% and 5.0%. Grouping, not abandonment, is what the Committee actually recommends, and 86.4% of laboratories performing manual differentials still break bands out separately (4,554 of 5,268), while only 73.0% of respondents supplied a band reference range at all (3,222 of 4,412){C([8])}. Automated extended-differential parameters are a separate question: in 68 evaluable samples, NE-SFL was the strongest discriminator for bacteremia overall (AUC &gt;0.8), with IG% best only in the HIV-negative subgroup (AUC 0.9){C([9])}. Read band percent as a directional cue, never an adjudication.</p>
 
         <p>Persistent lymphopenia speaks to prognosis more than to diagnosis, and no single threshold spans both age groups. In children the anchor is ALC &lt;1,000 cells/µL on two days between study days 0–5, adjusted OR 2.98 (1.85–4.02) for prolonged MODS or death among 401 with severe sepsis{C([10])}. In adults, day-4 ALC modelled continuously in 335 bacteremic patients gave adjusted OR 0.68 per unit for 28-day survival and 0.74 for 1-year survival, with severe persistent lymphopenia set at ≤0.6 ×10⁹/L{C([11])}. Roughly 0.6 to 1.0 depending on cohort and day is the honest statement. Trajectory carries the risk: among 1,640 septic patients with initial lymphopenia, the persistent-low group (n = 544, 33.2%) had the lowest 7- and 28-day survival, and after adjustment remained associated with 28-day mortality (aHR 1.76, 1.27–2.45) though no longer with 7-day{C([32])}. Profound lymphopenia with a near-normal WBC remains the viral-pneumonia signature. Correcting the count is not correcting the outcome: recombinant IL-7 raises ALC in sepsis (mean difference 1.33 at 3 weeks across four RCTs) without reducing mortality (RR 1.01, 0.36–2.81) or secondary infection (RR 1.05, 0.48–2.30){C([12, 30])}, and the intravenous-route trial stopped early after 3 of 15 patients developed fever and respiratory distress 5–8 h after dosing{C([31])}.</p>
 
-        <p>Platelet trajectory beats any single value, and timing separates from depth. In 363 ED sepsis episodes the nadir gave a dose-response for 28-day mortality (50–99 ×10⁹/L adjusted HR 2.04; 20–49, 2.98; &lt;20, 3.46) and the magnitude of decline an independent one (30–50%, 1.79; &gt;50%, 2.43). An intermediate or late nadir carried adjusted HR 4.39–7.28 and 5.85–9.58 respectively, while an initial or early nadir carried no significant association{C([24])}. A later nadir is therefore the adverse one, and a fall past 50% in sepsis demands ISTH DIC scoring. The total white count itself discriminates poorly: across 25,776 hospitalised patients with a differential and a blood culture, AUROC was 0.58 for WBC, 0.63 for ANC and 0.74 for neutrophil percentage, so the percentage beats both absolute counts and the interval likelihood ratios beat any single threshold{C([22])}. SIRS misses about 12% of severe sepsis outright — 13,278 of 109,663 ICU patients with infection and organ failure were SIRS-negative{C([18])}. Steroids, G-CSF, chemotherapy, asplenia, pregnancy and a recent seizure each move the baseline; use the toggles.</p>
+        <p>Platelet trajectory beats any single value, and timing separates from depth. In 363 ED sepsis episodes the nadir gave a dose-response for 28-day mortality (50–99 ×10⁹/L adjusted HR 2.04; 20–49, 2.98; &lt;20, 3.46) and the magnitude of decline an independent one (30–50%, 1.79; &gt;50%, 2.43). An intermediate or late nadir carried adjusted HR 4.39–7.28 and 5.85–9.58 respectively, while an initial or early nadir carried no significant association{C([24])}. A later nadir is therefore the adverse one, and a fall past 50% in sepsis demands ISTH DIC scoring. The total white count itself discriminates poorly: across 25,776 hospitalised patients with a differential and a blood culture, AUROC was 0.58 for WBC, 0.63 for ANC and 0.74 for neutrophil percentage, so the percentage beats both absolute counts and the interval likelihood ratios beat any single threshold{C([22])}. SIRS misses about 12% of severe sepsis outright: 13,278 of 109,663 ICU patients with infection and organ failure were SIRS-negative{C([18])}. Steroids, G-CSF, chemotherapy, asplenia, pregnancy and a recent seizure each move the baseline; use the toggles.</p>
 
-        <p>One framing caveat outranks every number above. Sepsis-3 rests on the 1996 SOFA score{C([17])}, and its 2025 successor could not build an immune subscore at all: developing SOFA-2 took 60 experts across 65 countries and validation in 3.34 million patients over 10 databases, and the task force reported that scores for the gastrointestinal and immune systems could not be developed for insufficient data, complexity, or lack of content and predictive validity{C([34])}. The six retained organ systems discriminate better than SOFA-1 — AUROC 0.746 versus 0.679 for in-hospital mortality in 24,510 patients with suspected infection{C([35])}, and 0.779 versus 0.755 for ICU mortality in 30,667 MIMIC-IV sepsis admissions{C([36])} — and none of that gain comes from the CBC. Pediatrics went further and dropped the white count from the definition entirely{C([37, 38])}. The CBC is a lens on the host response, not an adjudicator of sepsis; every threshold on this page is an input to a bedside argument that lactate, perfusion, source and culture will settle.</p>
+        <p>One framing caveat outranks every number above. Sepsis-3 rests on the 1996 SOFA score{C([17])}, and its 2025 successor could not build an immune subscore at all: developing SOFA-2 took 60 experts across 65 countries and validation in 3.34 million patients over 10 databases, and the task force reported that scores for the gastrointestinal and immune systems could not be developed for insufficient data, complexity, or lack of content and predictive validity{C([34])}. The six retained organ systems discriminate better than SOFA-1 (AUROC 0.746 versus 0.679 for in-hospital mortality in 24,510 patients with suspected infection{C([35])}, and 0.779 versus 0.755 for ICU mortality in 30,667 MIMIC-IV sepsis admissions{C([36])}) and none of that gain comes from the CBC. Pediatrics went further and dropped the white count from the definition entirely{C([37, 38])}. The CBC is a lens on the host response, not an adjudicator of sepsis; every threshold on this page is an input to a bedside argument that lactate, perfusion, source and culture will settle.</p>
       </div>
     </div>
   );
@@ -1840,7 +1840,7 @@ function ReferencesList({ highlighted }) {
     <div className="card" style={{ marginTop: 20 }}>
       <h2 id="refs-h">References</h2>
       <div className="ref-note">
-        Hwang 2017 [3], Spoto 2021 [4], Xin 2022 [5], Drees 2012 [7], Vergara-Lluri 2024 [8], Podd 2023 [10], Abidi 2008 [13], Zahorec 2021 [19], Lavoignet 2026 [25], Cilloniz 2026 [27], Lu 2026 [30], Ma 2026 [32] and Hyde 2025 [39] were read back against the source abstract on 2026-08-31, because they set this page's active thresholds and bands — Zahorec [19] most of all: his 1–2 normal range, 2.3–3.0 grey zone, and &gt;3.0 / &lt;0.7 pathological limits set every NLR band, colour and label here. Figures drawn from the remaining references below are carried forward from citation, not independently re-read against source. Numbers with no citation are named as conventions or approximations, not sourced cut-points: the ANC 500 and 100 thresholds, the WBC and platelet display bands, the ALC 400 boundary, the 5–10% left-shift band, and the asplenia and pregnancy baselines.
+        Hwang 2017 [3], Spoto 2021 [4], Xin 2022 [5], Drees 2012 [7], Vergara-Lluri 2024 [8], Podd 2023 [10], Abidi 2008 [13], Zahorec 2021 [19], Lavoignet 2026 [25], Cilloniz 2026 [27], Lu 2026 [30], Ma 2026 [32] and Hyde 2025 [39] were read back against the source abstract on 2026-08-31, because they set this page's active thresholds and bands (Zahorec [19] most of all): his 1–2 normal range, 2.3–3.0 grey zone, and &gt;3.0 / &lt;0.7 pathological limits set every NLR band, colour and label here. Figures drawn from the remaining references below are carried forward from citation, not independently re-read against source. Numbers with no citation are named as conventions or approximations, not sourced cut-points: the ANC 500 and 100 thresholds, the WBC and platelet display bands, the ALC 400 boundary, the 5–10% left-shift band, and the asplenia and pregnancy baselines.
       </div>
       <ol className="refs">
         {REFERENCES.map((r) => (

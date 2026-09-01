@@ -82,9 +82,9 @@
     function calc(state) {
       const { mode, sEcmo, qEcmo, co, measuredSaO2, recirc, hgb, paO2, pvO2, hufner, wt, vo2i } = state;
       const R = clamp(recirc, 0, 95) / 100;
-      // Effective ECMO flow definition: Q_eff = Q * (1 - R) — Fisser 2022, PMID 36117961.
+      // Effective ECMO flow definition: Q_eff = Q * (1 - R) (Fisser 2022, PMID 36117961).
       const qEff = qEcmo * (1 - R);
-      const vo2 = vo2i * wt;              // mL/min — demand, held fixed
+      const vo2 = vo2i * wt;              // mL/min (demand, held fixed)
       const a = hufner * hgb;             // mL/dL per unit saturation fraction
       const b = 0.003 * (paO2 - pvO2);    // dissolved-O₂ arterio-venous difference, mL/dL
 
@@ -96,9 +96,9 @@
         const delta = a > 0 ? (vo2 / (10 * coOut) - b) / a : 0;
         saFrac = (sEcmo / 100) - (qEff > 0 ? delta * qNative0 / qEff : 0);
         svFrac = saFrac - delta;
-        if (coOut < qEff) warn = "CO is below effective ECMO flow — physiologically impossible if no native lung function.";
-        else if (saFrac <= 0) warn = "Solved SaO₂ ≤ 0 — these inputs have no physiologic solution. Lower VO₂, or raise flow, hemoglobin or CO.";
-        else if (svFrac <= 0) warn = "Solved SvO₂ ≤ 0 — the entered VO₂ cannot be extracted from this delivery. Lower VO₂, or raise hemoglobin, CO or flow.";
+        if (coOut < qEff) warn = "CO is below effective ECMO flow. Physiologically impossible if no native lung function.";
+        else if (saFrac <= 0) warn = "Solved SaO₂ ≤ 0. These inputs have no physiologic solution. Lower VO₂, or raise flow, hemoglobin or CO.";
+        else if (svFrac <= 0) warn = "Solved SvO₂ ≤ 0. The entered VO₂ cannot be extracted from this delivery. Lower VO₂, or raise hemoglobin, CO or flow.";
       } else {
         saFrac = measuredSaO2 / 100;
         const A = (sEcmo / 100) - saFrac;
@@ -109,7 +109,7 @@
         const disc = q * q - 4 * p * r;
         const x = (p > 0 && disc >= 0) ? (-q + Math.sqrt(disc)) / (2 * p) : NaN;
         if (A < 0) {
-          error = "Measured SaO₂ exceeds post-oxygenator sat — implies native lung is contributing (model assumption violated).";
+          error = "Measured SaO₂ exceeds post-oxygenator sat: implies native lung is contributing (model assumption violated).";
         } else if (!Number.isFinite(x) || x <= 0) {
           error = "No physiologic solution: at this SaO₂, hemoglobin and effective flow the circuit cannot carry the entered VO₂.";
         } else if (saFrac - x <= 0) {
@@ -120,8 +120,8 @@
           svFrac = saFrac - x;
           coOut = qEff * (A + x) / x;
           // 12 L/min is a plausibility guard internal to this tool, not a published cut-point.
-          if (coOut > 12) warn = "Solved CO > 12 L/min — plausibility guard set by this tool, not a published cut-point. Suspect high recirculation, an over-stated VO₂, or sampling artifact.";
-          else if (coOut < qEff * 1.05) warn = "Solved CO ≈ Q_ECMO — patient near full extracorporeal support.";
+          if (coOut > 12) warn = "Solved CO > 12 L/min: a plausibility guard set by this tool, not a published cut-point. Suspect high recirculation, an over-stated VO₂, or sampling artifact.";
+          else if (coOut < qEff * 1.05) warn = "Solved CO ≈ Q_ECMO: patient near full extracorporeal support.";
         }
       }
 
@@ -137,9 +137,9 @@
     }
 
     // Provenance of the band edges below.
-    // SOURCED: DO₂:VO₂ 5:1 normal and supply dependence near 2:1 — ELSO 2021, PMID 33965970.
+    // SOURCED: DO₂:VO₂ 5:1 normal and supply dependence near 2:1 (ELSO 2021, PMID 33965970).
     // SOURCED anchor for low-SaO₂ concern: ECMO flow below 60% of cardiac output is frequently
-    //   associated with SaO₂ <90% in ARDS — Schmidt 2013, PMID 23291732; restated in ELSO 2021.
+    //   associated with SaO₂ <90% in ARDS (Schmidt 2013, PMID 23291732); restated in ELSO 2021.
     // DERIVED / TOOL HEURISTIC, no published cut-point: the 75% and 80% SaO₂ edges (80% is taken
     //   from the lower bound of the ELSO-described 80–90% typical band), the 3:1 ratio flag,
     //   the 95% + 5:1 over-support label, and the 40% OER flag used in the stat tiles.
@@ -148,14 +148,14 @@
     //   reproduces the previous build's numbers, and it is labelled as such where it is entered.
     // The ratio branches are interpretable only because VO₂ is now an independent input.
     function statusFor(saO2, ratio, error) {
-      if (error) return { label: "Cannot solve — check inputs", tone: "danger" };
-      if (!Number.isFinite(saO2) || !Number.isFinite(ratio)) return { label: "Cannot solve — check inputs", tone: "danger" };
+      if (error) return { label: "Cannot solve; check inputs", tone: "danger" };
+      if (!Number.isFinite(saO2) || !Number.isFinite(ratio)) return { label: "Cannot solve; check inputs", tone: "danger" };
       if (ratio < 1)      return { label: "Delivery below demand", tone: "danger" };
-      if (ratio < 2)      return { label: "Critical — anaerobic threshold", tone: "danger" };
+      if (ratio < 2)      return { label: "Critical (anaerobic threshold)", tone: "danger" };
       if (saO2 < 75)      return { label: "Inadequate oxygenation", tone: "danger" };
-      if (ratio < 3)      return { label: "Marginal — consider escalation", tone: "warn" };
-      if (saO2 < 80)      return { label: "Below target — verify lactate", tone: "warn" };
-      if (saO2 > 95 && ratio > 5) return { label: "Comfortable — likely over-supported", tone: "info" };
+      if (ratio < 3)      return { label: "Marginal; consider escalation", tone: "warn" };
+      if (saO2 < 80)      return { label: "Below target; verify lactate", tone: "warn" };
+      if (saO2 > 95 && ratio > 5) return { label: "Comfortable (likely over-supported)", tone: "info" };
       return { label: "Within target range", tone: "ok" };
     }
 
@@ -354,13 +354,13 @@
               <div className="text-amber-600 mt-0.5 shrink-0">⚠</div>
               <div className="text-[13px] text-amber-900 leading-snug">
                 {state.mode === "forward" ? (
-                  <React.Fragment><strong>Teaching model — assumes zero native lung gas exchange.</strong> Real V-V ECMO patients have residual native-lung function, so actual SaO₂ is usually <em>higher</em> than predicted. In this direction the predicted SaO₂ is a lower bound and a thought aid, not a substitute for an arterial blood gas.</React.Fragment>
+                  <React.Fragment><strong>Teaching model assumes zero native lung gas exchange.</strong> Real V-V ECMO patients have residual native-lung function, so actual SaO₂ is usually <em>higher</em> than predicted. In this direction the predicted SaO₂ is a lower bound and a thought aid, not a substitute for an arterial blood gas.</React.Fragment>
                 ) : (
-                  <React.Fragment><strong>Teaching model — and in this direction the error changes sign.</strong> Residual native-lung function raises the measured SaO₂ above what mixing alone can produce, narrowing SaO₂ − SvO₂ and back-solving a cardiac output that is systematically <em>too low</em>. The lower-bound claim above is a forward-mode statement; here the solved CO is an under-estimate, and it does not correct the thermodilution bias — it errs the other way.</React.Fragment>
+                  <React.Fragment><strong>Teaching model: in this direction the error changes sign.</strong> Residual native-lung function raises the measured SaO₂ above what mixing alone can produce, narrowing SaO₂ − SvO₂ and back-solving a cardiac output that is systematically <em>too low</em>. The lower-bound claim above is a forward-mode statement; here the solved CO is an under-estimate, and it does not correct the thermodilution bias. It errs the other way.</React.Fragment>
                 )}
                 {" "}Not for clinical decisions.
                 <div className="mt-2 text-[11px] text-amber-800 leading-snug">
-                  <strong>Scope.</strong> Every threshold, cohort and flow range cited in this tool is adult or animal — the ELSO 2021 <em>adult</em> V-V guideline, Schmidt 2013, Patel 2019, Fisser 2022, Russ 2022 (pigs) and BLENDER (veno-arterial); the only pediatric-adjacent source is a neonatal cannula simulation. Flow, cardiac-output and VO₂ fields are weight-indexed and the sliders reach neonatal values, but no pediatric cut-point here is sourced. Do not carry the 5–6 L/min cannula ceiling or the 80–90% SaO₂ band onto a child.
+                  <strong>Scope.</strong> Every threshold, cohort and flow range cited in this tool is adult or animal: the ELSO 2021 <em>adult</em> V-V guideline, Schmidt 2013, Patel 2019, Fisser 2022, Russ 2022 (pigs) and BLENDER (veno-arterial); the only pediatric-adjacent source is a neonatal cannula simulation. Flow, cardiac-output and VO₂ fields are weight-indexed and the sliders reach neonatal values, but no pediatric cut-point here is sourced. Do not carry the 5–6 L/min cannula ceiling or the 80–90% SaO₂ band onto a child.
                 </div>
               </div>
             </div>
@@ -387,7 +387,7 @@
                 <button onClick={() => setTab("sat")} className={cls("px-4 py-1.5 rounded-lg text-sm font-medium transition-colors", tab === "sat" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}>Saturation-only mixing</button>
                 <button onClick={() => setTab("content")} className={cls("px-4 py-1.5 rounded-lg text-sm font-medium transition-colors", tab === "content" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900")}>Full content (CaO₂ / DO₂ / OER)</button>
               </div>
-              <p className="text-[11px] text-slate-500 mt-1.5">These tabs switch the <em>output</em> tiles only. Every input that moves SaO₂ — hemoglobin, VO₂, weight, PaO₂, PvO₂ and the Hüfner constant — stays visible in both, because in the closed Fick model every one of them does. Hiding them was how a Status verdict could appear with no visible cause and how the anemia and transfusion buttons could do nothing at all.</p>
+              <p className="text-[11px] text-slate-500 mt-1.5">These tabs switch the <em>output</em> tiles only. Every input that moves SaO₂ (hemoglobin, VO₂, weight, PaO₂, PvO₂ and the Hüfner constant) stays visible in both, because in the closed Fick model every one of them does. Hiding them was how a Status verdict could appear with no visible cause and how the anemia and transfusion buttons could do nothing at all.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -398,12 +398,12 @@
 
                 <div className="divide-y divide-slate-100">
                   <DerivedValue label="Mixed venous saturation (SvO₂)" value={Number.isFinite(out.svO2) ? out.svO2.toFixed(1) : "—"} unit="%" error={!!out.error}
-                    hint="Solved from the Fick relation, not entered. On V-V ECMO the return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it: feeding one back in drives SaO₂ and SvO₂ together and, in reverse mode, back-solves an arbitrarily large cardiac output. No validated bedside route to a true mixed venous on V-V ECMO was found. Walker 2009 (PMID 19948749) is a bench derivation in a circuit primed with porcine blood whose own conclusion calls the original model an oversimplification of the high arterial pO₂ during therapy, with accurate clinical calculation left to future work — a method not yet clinically validated, not a sampling instruction." />
-                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => update({ sEcmo: v })} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" hint="A healthy oxygenator returns blood at ~100%. Judge oxygenator dysfunction by a rising transmembrane pressure drop (normal <50 mmHg; a change >100 mmHg suggests obstruction) together with a falling post-membrane PaO₂ — not by a single saturation cut-point (Patel 2019, PMID 31632747). No published post-oxygenator saturation threshold was found." />
-                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => update({ qEcmo: v })} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} step={0.05} unit="L/min" format={fmtFlow} hint={`Cannula-limited. ELSO 2021 gives 5–6 L/min as the usual ceiling set by cannula size and Patel 2019 describes typical flows of 3–4 L/min — both adult figures. At the ${state.wt} kg entered here that is ${perKg(state.qEcmo, state.wt)} mL/kg/min, shown for scale only: no weight-indexed flow target is sourced in this tool. Higher flows are conventionally linked to hemolysis and access insufficiency, but no flow threshold for either is published.`} />
+                    hint="Solved from the Fick relation, not entered. On V-V ECMO the return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it: feeding one back in drives SaO₂ and SvO₂ together and, in reverse mode, back-solves an arbitrarily large cardiac output. No validated bedside route to a true mixed venous on V-V ECMO was found. Walker 2009 (PMID 19948749) is a bench derivation in a circuit primed with porcine blood whose own conclusion calls the original model an oversimplification of the high arterial pO₂ during therapy, with accurate clinical calculation left to future work (a method not yet clinically validated, not a sampling instruction)." />
+                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => update({ sEcmo: v })} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" hint="A healthy oxygenator returns blood at ~100%. Judge oxygenator dysfunction by a rising transmembrane pressure drop (normal <50 mmHg; a change >100 mmHg suggests obstruction) together with a falling post-membrane PaO₂, not by a single saturation cut-point (Patel 2019, PMID 31632747). No published post-oxygenator saturation threshold was found." />
+                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => update({ qEcmo: v })} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} step={0.05} unit="L/min" format={fmtFlow} hint={`Cannula-limited. ELSO 2021 gives 5–6 L/min as the usual ceiling set by cannula size and Patel 2019 describes typical flows of 3–4 L/min (both adult figures). At the ${state.wt} kg entered here that is ${perKg(state.qEcmo, state.wt)} mL/kg/min, shown for scale only: no weight-indexed flow target is sourced in this tool. Higher flows are conventionally linked to hemolysis and access insufficiency, but no flow threshold for either is published.`} />
 
                   {state.mode === "forward" ? (
-                    <Field label="Cardiac output (CO)" value={state.co} onChange={(v) => update({ co: v })} min={LIM.co[0]} max={LIM.co[1]} step={0.05} unit="L/min" format={fmtFlow} badge="Input" hint={`Total venous return — ${perKg(state.co, state.wt)} mL/kg/min at ${state.wt} kg. Sepsis, fever and agitation raise CO; a higher CO dilutes the ECMO contribution. Thermodilution overestimated CO by 2.1–2.7 L/min during V-V ECMO in six anesthetized pigs (Russ 2022, PMID 34860710) — a porcine finding, not a human V-V ECMO measurement, and not a licence to discount a measured cardiac output by 2 L/min at the bedside.`} />
+                    <Field label="Cardiac output (CO)" value={state.co} onChange={(v) => update({ co: v })} min={LIM.co[0]} max={LIM.co[1]} step={0.05} unit="L/min" format={fmtFlow} badge="Input" hint={`Total venous return: ${perKg(state.co, state.wt)} mL/kg/min at ${state.wt} kg. Sepsis, fever and agitation raise CO; a higher CO dilutes the ECMO contribution. Thermodilution overestimated CO by 2.1–2.7 L/min during V-V ECMO in six anesthetized pigs (Russ 2022, PMID 34860710); a porcine finding, not a human V-V ECMO measurement, and not a licence to discount a measured cardiac output by 2 L/min at the bedside.`} />
                   ) : (
                     <React.Fragment>
                       <Field label="Measured arterial SaO₂" value={state.measuredSaO2} onChange={(v) => update({ measuredSaO2: v })} min={LIM.measuredSaO2[0]} max={state.sEcmo} step={0.5} unit="%" format={(v) => v.toFixed(1)} badge="Input" hint="From the patient's arterial blood gas; it must not exceed the post-oxygenator saturation. Any residual native-lung oxygenation carried inside this number biases the solved cardiac output low." />
@@ -411,17 +411,17 @@
                     </React.Fragment>
                   )}
 
-                  <Field label="Recirculation fraction" value={state.recirc} onChange={(v) => update({ recirc: v })} min={LIM.recirc[0]} max={LIM.recirc[1]} step={1} unit="%" hint="Femoro-jugular median 5% (IQR 0–11) vs jugulo-femoral 19% (IQR 13–28) (Fisser 2022, PMID 36117961 — erratum on record, Front Med (Lausanne) 2022;9:1045207, PMID 36267622; linkage only, consult before relying on these figures). In single-lumen atrio-femoral support, a conventional draining cannula gave 38.0 ± 13.7% vs 19.0 ± 12.2% for a multistage design (Palmér 2016, PMID 27660904); malpositioned neonatal dual-lumen cannulae reached 39 ± 4%, maximum 42%, in a validated CFD model (Jamil 2019, PMID 31580212). Effective ECMO flow = Q_ECMO × (1 − R)." />
+                  <Field label="Recirculation fraction" value={state.recirc} onChange={(v) => update({ recirc: v })} min={LIM.recirc[0]} max={LIM.recirc[1]} step={1} unit="%" hint="Femoro-jugular median 5% (IQR 0–11) vs jugulo-femoral 19% (IQR 13–28) (Fisser 2022, PMID 36117961, erratum on record, Front Med (Lausanne) 2022;9:1045207, PMID 36267622; linkage only, consult before relying on these figures). In single-lumen atrio-femoral support, a conventional draining cannula gave 38.0 ± 13.7% vs 19.0 ± 12.2% for a multistage design (Palmér 2016, PMID 27660904); malpositioned neonatal dual-lumen cannulae reached 39 ± 4%, maximum 42%, in a validated CFD model (Jamil 2019, PMID 31580212). Effective ECMO flow = Q_ECMO × (1 − R)." />
 
-                  <Field label="Body weight" value={state.wt} onChange={(v) => update({ wt: v })} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" format={(v) => (v < 10 ? v.toFixed(1) : v.toFixed(0))} hint="Sets total VO₂ and indexes the flow readouts. Nothing else in this tool is size-specific — the cited bands and ceilings remain adult." />
-                  <Field label="Oxygen consumption (VO₂ index)" value={state.vo2i} onChange={(v) => update({ vo2i: v })} min={LIM.vo2i[0]} max={LIM.vo2i[1]} step={0.1} unit="mL/kg/min" format={(v) => v.toFixed(1)} badge="Input" hint={`Demand, held fixed while flow, hemoglobin and cardiac output vary — this is what makes DO₂:VO₂ a genuine supply:demand ratio instead of an algebraic restatement of 1/OER. Total VO₂ = ${(state.vo2i * state.wt).toFixed(0)} mL/min at ${state.wt} kg. The 3.0 mL/kg/min default is this tool's teaching convention: no published resting-VO₂ reference was verified for it.`} />
-                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => update({ hgb: v })} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" format={(v) => v.toFixed(1)} hint="Each gram binds 1.34 mL O₂ (Bartlett 2017, PMID 27040797). With VO₂ fixed, less hemoglobin forces a wider arterio-venous saturation gap, so anemia now lowers SvO₂ and SaO₂ as well as CaO₂ and DO₂ — it is not silent on the saturation." />
-                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => update({ paO2: v })} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" hint="On V-V ECMO commonly 50–80 mmHg — a teaching convention carried by this tool; ELSO 2021 gives no PaO₂ range and states only that SaO₂ is typically 80–90%. Contributes 0.003·PaO₂ mL/dL of dissolved O₂." />
-                  <Field label="Venous PvO₂" value={state.pvO2} onChange={(v) => update({ pvO2: v })} min={LIM.pvO2[0]} max={LIM.pvO2[1]} step={1} unit="mmHg" hint="Normal mixed venous PO₂ ≈ 40 mmHg — standard oxygen-transport physiology, cited to Dunn 2016 (DOI 10.1093/bjaed/mkw012); that source is paywalled and the number was not independently verified here. Because SvO₂ is now solved rather than entered, PvO₂ is no longer tied to it by the dissociation curve and enters only the small dissolved-O₂ term." />
+                  <Field label="Body weight" value={state.wt} onChange={(v) => update({ wt: v })} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" format={(v) => (v < 10 ? v.toFixed(1) : v.toFixed(0))} hint="Sets total VO₂ and indexes the flow readouts. Nothing else in this tool is size-specific. The cited bands and ceilings remain adult." />
+                  <Field label="Oxygen consumption (VO₂ index)" value={state.vo2i} onChange={(v) => update({ vo2i: v })} min={LIM.vo2i[0]} max={LIM.vo2i[1]} step={0.1} unit="mL/kg/min" format={(v) => v.toFixed(1)} badge="Input" hint={`Demand, held fixed while flow, hemoglobin and cardiac output vary. This is what makes DO₂:VO₂ a genuine supply:demand ratio instead of an algebraic restatement of 1/OER. Total VO₂ = ${(state.vo2i * state.wt).toFixed(0)} mL/min at ${state.wt} kg. The 3.0 mL/kg/min default is this tool's teaching convention: no published resting-VO₂ reference was verified for it.`} />
+                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => update({ hgb: v })} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" format={(v) => v.toFixed(1)} hint="Each gram binds 1.34 mL O₂ (Bartlett 2017, PMID 27040797). With VO₂ fixed, less hemoglobin forces a wider arterio-venous saturation gap, so anemia now lowers SvO₂ and SaO₂ as well as CaO₂ and DO₂. It is not silent on the saturation." />
+                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => update({ paO2: v })} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" hint="On V-V ECMO commonly 50–80 mmHg (a teaching convention carried by this tool); ELSO 2021 gives no PaO₂ range and states only that SaO₂ is typically 80–90%. Contributes 0.003·PaO₂ mL/dL of dissolved O₂." />
+                  <Field label="Venous PvO₂" value={state.pvO2} onChange={(v) => update({ pvO2: v })} min={LIM.pvO2[0]} max={LIM.pvO2[1]} step={1} unit="mmHg" hint="Normal mixed venous PO₂ ≈ 40 mmHg (standard oxygen-transport physiology), cited to Dunn 2016 (DOI 10.1093/bjaed/mkw012); that source is paywalled and the number was not independently verified here. Because SvO₂ is now solved rather than entered, PvO₂ is no longer tied to it by the dissociation curve and enters only the small dissolved-O₂ term." />
                   <div className="pt-3 flex items-center justify-between">
                     <div>
                       <div className="text-[13px] font-medium text-slate-700">Hüfner constant</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">1.34 (US / Bartlett — accounts for dyshemoglobins) · 1.39 (ELSO 2021 / theoretical max).</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">1.34 (US / Bartlett, accounts for dyshemoglobins) · 1.39 (ELSO 2021 / theoretical max).</div>
                     </div>
                     <div className="flex rounded-md border border-slate-200 overflow-hidden text-sm">
                       <button onClick={() => update({ hufner: 1.34 })} className={cls("px-3 py-1.5", state.hufner === 1.34 ? "bg-sky-600 text-white" : "bg-white text-slate-700 hover:bg-slate-50")}>1.34</button>
@@ -449,7 +449,7 @@
                   <div className="md:col-span-2">
                     <SatGauge saO2={out.saO2}
                       label={state.mode === "forward" ? "Predicted arterial SaO₂" : "Measured arterial SaO₂"}
-                      sub={state.mode === "forward" ? "ELSO 2021 describes SaO₂ on V-V ECMO as typically 80–90% — a consequence of mixing, not a prescribed target; Patel 2019 reports ELSO guidance as SaO₂ 80–85% at rest ventilator settings, with some centers targeting >88%. The 75% and 80% band edges drawn here are display heuristics of this tool." : "Patient's measured value — used to back-solve CO."}
+                      sub={state.mode === "forward" ? "ELSO 2021 describes SaO₂ on V-V ECMO as typically 80–90% (a consequence of mixing, not a prescribed target); Patel 2019 reports ELSO guidance as SaO₂ 80–85% at rest ventilator settings, with some centers targeting >88%. The 75% and 80% band edges drawn here are display heuristics of this tool." : "Patient's measured value: used to back-solve CO."}
                     />
                   </div>
                   <div className={cls("rounded-xl border px-4 py-3 flex flex-col justify-center", TONE[status.tone].bg, TONE[status.tone].border)}>
@@ -465,7 +465,7 @@
                     {out.warn && (<div className="mt-1 text-[11px] text-amber-800 leading-snug">{out.warn}</div>)}
                     {state.recirc > 0 && !out.warn && (<div className="mt-1 text-[11px] text-amber-800 leading-snug">R = {state.recirc}% removed from delivered flow.</div>)}
                     {state.mode === "reverse" && (<div className="mt-1 text-[11px] text-amber-800 leading-snug">Reverse mode: residual native-lung oxygenation biases this solved CO <strong>low</strong>, and the SaO₂ &gt; S_ECMO guard cannot fire while S_ECMO is 100%.</div>)}
-                    <div className="mt-1.5 text-[10px] text-slate-500 leading-snug">Status labels are this tool's display heuristics, not guideline cut-points — see Key caveats.</div>
+                    <div className="mt-1.5 text-[10px] text-slate-500 leading-snug">Status labels are this tool's display heuristics, not guideline cut-points; see Key caveats.</div>
                   </div>
                 </div>
 
@@ -473,14 +473,14 @@
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <Stat label={state.mode === "forward" ? "Predicted SaO₂" : "Measured SaO₂"} value={Number.isFinite(out.saO2) ? out.saO2.toFixed(1) : "—"} unit="%" tone="primary" emphasize sub={state.mode === "forward" ? "Flow-weighted mean" : "Patient's ABG"} />
                     <Stat label="SvO₂ (solved)" value={Number.isFinite(out.svO2) ? out.svO2.toFixed(1) : "—"} unit="%" tone="derived" emphasize sub="From Fick, not entered" />
-                    <Stat label={state.mode === "forward" ? "Cardiac output (input)" : "Cardiac output (solved)"} value={Number.isFinite(out.co) ? out.co.toFixed(2) : "—"} unit="L/min" tone={state.mode === "reverse" ? "derived" : "default"} emphasize={state.mode === "reverse"} sub={state.mode === "reverse" ? "Back-solved — biased low" : "User-supplied"} />
+                    <Stat label={state.mode === "forward" ? "Cardiac output (input)" : "Cardiac output (solved)"} value={Number.isFinite(out.co) ? out.co.toFixed(2) : "—"} unit="L/min" tone={state.mode === "reverse" ? "derived" : "default"} emphasize={state.mode === "reverse"} sub={state.mode === "reverse" ? "Back-solved (biased low)" : "User-supplied"} />
                     <Stat label="ECMO fraction" value={Number.isFinite(out.co) ? (out.qEff / out.co * 100).toFixed(0) : "—"} unit="% of CO" sub="Effective Q_ECMO ÷ CO · <60% linked to SaO₂ <90% (Schmidt 2013, adult ARDS)" />
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <Stat label={state.mode === "forward" ? "Predicted SaO₂" : "Measured SaO₂"} value={Number.isFinite(out.saO2) ? out.saO2.toFixed(1) : "—"} unit="%" tone="primary" sub={state.mode === "forward" ? "Flow-weighted mean" : "Patient's ABG"} />
                     <Stat label="SvO₂ (solved)" value={Number.isFinite(out.svO2) ? out.svO2.toFixed(1) : "—"} unit="%" tone="derived" sub="From Fick, not entered" />
-                    <Stat label={state.mode === "forward" ? "Cardiac output" : "Cardiac output (solved)"} value={Number.isFinite(out.co) ? out.co.toFixed(2) : "—"} unit="L/min" tone={state.mode === "reverse" ? "derived" : "default"} emphasize sub={state.mode === "reverse" ? "Back-solved — biased low" : "User-supplied"} />
+                    <Stat label={state.mode === "forward" ? "Cardiac output" : "Cardiac output (solved)"} value={Number.isFinite(out.co) ? out.co.toFixed(2) : "—"} unit="L/min" tone={state.mode === "reverse" ? "derived" : "default"} emphasize sub={state.mode === "reverse" ? "Back-solved (biased low)" : "User-supplied"} />
                     <Stat label="CaO₂ (arterial)" value={Number.isFinite(out.caO2) ? out.caO2.toFixed(2) : "—"} unit="mL/dL" tone="primary" sub={`${state.hufner}·Hgb·SaO₂ + 0.003·PaO₂`} />
                     <Stat label="CvO₂ (venous)" value={Number.isFinite(out.cvO2) ? out.cvO2.toFixed(2) : "—"} unit="mL/dL" sub="From the solved SvO₂" />
                     <Stat label="DO₂ (delivery)" value={Number.isFinite(out.do2) ? out.do2.toFixed(0) : "—"} unit="mL/min" tone={out.ratio < 3 ? "warn" : "ok"} emphasize sub="CO × CaO₂ × 10" />
@@ -503,18 +503,18 @@
                         <ScenarioButton label="↑ ECMO flow (+1 L/min)" sub="Escalation · SaO₂ climbs toward the oxygenator outlet" onClick={sEcmoUp} tone="teal" />
                         <ScenarioButton label="↓ ECMO flow (−1 L/min)" sub="Weaning · SaO₂ and DO₂:VO₂ both fall" onClick={sEcmoDown} tone="violet" />
                         <ScenarioButton label="↑ Recirculation (+20%)" sub="Cannula migration / high flow / RV dysfunction" onClick={sRecircUp} tone="rose" />
-                        <ScenarioButton label="↓ Hemoglobin (−4 g/dL)" sub="Bleeding · CaO₂ and DO₂ fall, and SaO₂ with them — the same VO₂ must come off less Hgb" onClick={sAnemia} tone="rose" />
+                        <ScenarioButton label="↓ Hemoglobin (−4 g/dL)" sub="Bleeding · CaO₂ and DO₂ fall, and SaO₂ with them; the same VO₂ must come off less Hgb" onClick={sAnemia} tone="rose" />
                         <ScenarioButton label="Transfuse 2 units (+2 g/dL)" sub="Raises DO₂ and SaO₂ without raising flow" onClick={sTransfuse} tone="teal" />
                         <ScenarioButton label="Septic / hyperdynamic" sub="↑ CO +40% & ↑ VO₂ +1 mL/kg/min" onClick={sSeptic} tone="amber" />
                       </React.Fragment>
                     ) : (
                       <React.Fragment>
-                        <ScenarioButton label="↑ Measured SaO₂ (+5)" sub="Imagine the ABG improved — solved CO falls" onClick={sSaUp} tone="sky" />
-                        <ScenarioButton label="↓ Measured SaO₂ (−5)" sub="Imagine the ABG worsened — solved CO rises" onClick={sSaDown} tone="violet" />
+                        <ScenarioButton label="↑ Measured SaO₂ (+5)" sub="Imagine the ABG improved; solved CO falls" onClick={sSaUp} tone="sky" />
+                        <ScenarioButton label="↓ Measured SaO₂ (−5)" sub="Imagine the ABG worsened; solved CO rises" onClick={sSaDown} tone="violet" />
                         <ScenarioButton label="↑ Oxygen consumption" sub="VO₂ +1 mL/kg/min · solved CO falls, solved SvO₂ falls further" onClick={sVo2Up} tone="amber" />
                         <ScenarioButton label="↑ ECMO flow (+1 L/min)" sub="Same SaO₂ now consistent with higher CO" onClick={sEcmoUp} tone="teal" />
                         <ScenarioButton label="↓ ECMO flow (−1 L/min)" sub="Same SaO₂ now consistent with lower CO" onClick={sEcmoDown} tone="violet" />
-                        <ScenarioButton label="↑ Recirculation (+20%)" sub="Q_eff falls — solved CO falls" onClick={sRecircUp} tone="rose" />
+                        <ScenarioButton label="↑ Recirculation (+20%)" sub="Q_eff falls; solved CO falls" onClick={sRecircUp} tone="rose" />
                         <ScenarioButton label="↓ Hemoglobin (−4 g/dL)" sub="Solved CO falls and DO₂ falls further" onClick={sAnemia} tone="rose" />
                         <ScenarioButton label="Transfuse 2 units (+2 g/dL)" sub="Solved CO rises; DO₂ rises with it" onClick={sTransfuse} tone="teal" />
                       </React.Fragment>
@@ -526,7 +526,7 @@
 
             <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <h2 className="text-sm font-semibold text-slate-900 mb-1">Five worked examples</h2>
-                <p className="text-[12px] text-slate-500 mb-3">Each row is reversible — give it the SaO₂ and recover the CO, or give it the CO and recover the SaO₂. The first seven columns are inputs; SvO₂, SaO₂, DO₂ and the ratio are outputs of the closed model. Try both modes against the values below.</p>
+                <p className="text-[12px] text-slate-500 mb-3">Each row is reversible: give it the SaO₂ and recover the CO, or give it the CO and recover the SaO₂. The first seven columns are inputs; SvO₂, SaO₂, DO₂ and the ratio are outputs of the closed model. Try both modes against the values below.</p>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-[12px]">
                   <thead>
@@ -568,21 +568,21 @@
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <h2 className="text-sm font-semibold text-slate-900 mb-2">Key caveats</h2>
                 <ul className="text-[12px] text-slate-700 space-y-1.5 list-disc pl-5 leading-snug">
-                  <li><strong>No native lung function — and the sign of that error flips between the two modes.</strong> In <em>forward</em> mode the predicted SaO₂ is a lower bound: recovering lungs raise the real SaO₂ above it. In <em>reverse</em> mode the same residual lung function raises the measured SaO₂, narrows SaO₂ − SvO₂ and back-solves a cardiac output that is systematically <em>too low</em>. The tool's only reverse-mode guard fires when the measured SaO₂ exceeds the post-oxygenator saturation, which cannot happen at the default S_ECMO of 100%, so nothing warns automatically — read the solved CO as an under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support.</li>
-                  <li><strong>SvO₂ is solved here, not sampled — and no validated bedside route to a true mixed venous on V-V ECMO was found.</strong> The return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it. Entering one collapses the forward equation toward SaO₂ = SvO₂ and drives the reverse denominator toward zero, and at the bedside it teaches a trainee to read arterial-equivalent blood as a reassuring extraction ratio in an under-supported patient. The published alternative — correcting a pre-membrane sample for recirculation — rests on Walker 2009 (PMID 19948749), a bench derivation in a circuit primed with porcine blood whose own conclusion is that the original model is an oversimplification of the high arterial pO₂ during therapy and that accurate clinical calculation awaits further work. Treat it as a method not yet clinically validated. No published source was found for the sometimes-taught maneuver of briefly stopping sweep gas to read a true mixed venous, and neither Walker 2009 nor Schmidt 2013 describes it.</li>
+                  <li><strong>No native lung function: the sign of that error flips between the two modes.</strong> In <em>forward</em> mode the predicted SaO₂ is a lower bound: recovering lungs raise the real SaO₂ above it. In <em>reverse</em> mode the same residual lung function raises the measured SaO₂, narrows SaO₂ − SvO₂ and back-solves a cardiac output that is systematically <em>too low</em>. The tool's only reverse-mode guard fires when the measured SaO₂ exceeds the post-oxygenator saturation, which cannot happen at the default S_ECMO of 100%, so nothing warns automatically: read the solved CO as an under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support.</li>
+                  <li><strong>SvO₂ is solved here, not sampled: no validated bedside route to a true mixed venous on V-V ECMO was found.</strong> The return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it. Entering one collapses the forward equation toward SaO₂ = SvO₂ and drives the reverse denominator toward zero, and at the bedside it teaches a trainee to read arterial-equivalent blood as a reassuring extraction ratio in an under-supported patient. The published alternative (correcting a pre-membrane sample for recirculation) rests on Walker 2009 (PMID 19948749), a bench derivation in a circuit primed with porcine blood whose own conclusion is that the original model is an oversimplification of the high arterial pO₂ during therapy and that accurate clinical calculation awaits further work. Treat it as a method not yet clinically validated. No published source was found for the sometimes-taught maneuver of briefly stopping sweep gas to read a true mixed venous, and neither Walker 2009 nor Schmidt 2013 describes it.</li>
                   <li><strong>Status bands are this tool's display heuristics.</strong> The 75% and 80% SaO₂ edges, the 3:1 ratio flag, the 95% over-support label and the 40% OER flag are conventions of this calculator, not guideline cut-points. The 80% edge is taken from the lower bound of the ELSO-described 80–90% typical band. The nearest sourced anchor for low-SaO₂ concern is an ECMO flow below 60% of cardiac output, frequently associated with SaO₂ &lt;90% in ARDS (Schmidt 2013, PMID 23291732; restated in ELSO 2021).</li>
-                  <li><strong>SaO₂ 80–90% is a tolerated floor, not a goal</strong> (Ortoleva &amp; Chweich 2022, PMID 35644745 — a two-page letter, not a primary study). Lactate, ScvO₂, and the DO₂:VO₂ trend trump any single number.</li>
-                  <li><strong>DO₂:VO₂ &lt; 2:1</strong> = the supply-dependence threshold, with 5:1 as the normal ratio — both stated in ELSO 2021 (PMID 33965970).</li>
-                  <li><strong>Dissolved O₂ small but real.</strong> 0.003·PaO₂ mL/dL — about 1.5% of CaO₂ at PaO₂ 100 with Hgb 15, about 2.0% at this tool's baseline Hgb 11, and larger in severe anemia. ELSO 2021 writes the same term as 0.0034·PaO₂.</li>
-                  <li><strong>Hüfner constant 1.34 vs 1.39</strong> — 1.34 accounts for normal MetHb/COHb (Bartlett 2017, PMID 27040797); ELSO 2021 uses 1.39.</li>
+                  <li><strong>SaO₂ 80–90% is a tolerated floor, not a goal</strong> (Ortoleva &amp; Chweich 2022, PMID 35644745; a two-page letter, not a primary study). Lactate, ScvO₂, and the DO₂:VO₂ trend trump any single number.</li>
+                  <li><strong>DO₂:VO₂ &lt; 2:1</strong> = the supply-dependence threshold, with 5:1 as the normal ratio, both stated in ELSO 2021 (PMID 33965970).</li>
+                  <li><strong>Dissolved O₂ small but real.</strong> 0.003·PaO₂ mL/dL: about 1.5% of CaO₂ at PaO₂ 100 with Hgb 15, about 2.0% at this tool's baseline Hgb 11, and larger in severe anemia. ELSO 2021 writes the same term as 0.0034·PaO₂.</li>
+                  <li><strong>Hüfner constant 1.34 vs 1.39.</strong> 1.34 accounts for normal MetHb/COHb (Bartlett 2017, PMID 27040797); ELSO 2021 uses 1.39.</li>
                   <li><strong>DO₂:VO₂ means something here only because VO₂ is an input.</strong> When SvO₂ is a free slider, VO₂ = CO·(CaO₂ − CvO₂)·10 and DO₂ = CO·CaO₂·10 share the cardiac-output factor: the ratio collapses to 1/OER, CO cancels identically, weaning ECMO flow from 4.0 to 3.0 L/min makes the ratio <em>rise</em> from 3.8 to 4.7, and cutting hemoglobin from 11 to 7 g/dL moves it by 0.02 while asserting that oxygen consumption fell 36%. This build holds VO₂ fixed at weight × index and solves SvO₂ from Fick, so the ratio responds to flow, hemoglobin and cardiac output in the directions a bedside clinician expects. The 3.0 mL/kg/min default index is this calculator's teaching convention; no published resting-VO₂ reference was verified for it.</li>
                   <li><strong>Reverse mode has no solution when the entered VO₂ cannot be carried.</strong> The back-solve is a quadratic in SaO₂ − SvO₂; when its discriminant goes negative, when the only root is non-positive, or when the implied SvO₂ falls to zero, the tool says so instead of returning a number. Outside those bounds the requirement is still SvO₂ &lt; SaO₂ ≤ S_ECMO.</li>
                   <li><strong>Real recirculation runs higher than a zeroed slider suggests, and this tool has no input for its strongest determinant.</strong> In 21 high-flow V-V patients median recirculation was 14% (IQR 7–25) and 57% had ≥10%; right ventricular dysfunction more than doubled it (25% vs 9%) (PMID 42490650).</li>
-                  <li><strong>Measured cardiac output is itself biased high on V-V ECMO — in pigs.</strong> Thermodilution overestimated CO by a mean 2.1 L/min in healthy animals and 2.7 L/min after lung injury, and the error grew with recirculation, in six anesthetized pigs (Russ 2022, PMID 34860710). It is a porcine finding, not a human V-V ECMO measurement, and the reverse mode is not the corrective for it: the back-solve carries its own opposite bias (first bullet above), so the two errors do not cancel.</li>
+                  <li><strong>Measured cardiac output is itself biased high on V-V ECMO (in pigs).</strong> Thermodilution overestimated CO by a mean 2.1 L/min in healthy animals and 2.7 L/min after lung injury, and the error grew with recirculation, in six anesthetized pigs (Russ 2022, PMID 34860710). It is a porcine finding, not a human V-V ECMO measurement, and the reverse mode is not the corrective for it: the back-solve carries its own opposite bias (first bullet above), so the two errors do not cancel.</li>
                   <li><strong>A return cannula across the interatrial septum breaks the model entirely.</strong> Inadvertent veno-left-atrial return produces a strikingly high PaO₂ with absent recirculation and a low sweep requirement; in reverse mode this calculator would back-solve a meaningless cardiac output (Guevara-Chaux, PMID 40985532).</li>
-                  <li><strong>Oxygen-target trials do not yet license moving the band.</strong> BLENDER randomized conservative (SaO₂ 92–96%) against liberal (97–100%) targets and found no difference in ICU-free days or mortality, but it studied <em>veno-arterial</em> ECMO (PMID 39162827). A meta-analysis of 12 studies found hyperoxia associated with higher mortality overall (OR 1.41, 95% CI 1.22–1.64) with no significant association in the V-V subgroup (PMID 41237735) — which also tempers the over-supported label above. <span className="text-slate-500">BLENDER (PMID 39162827) has an erratum on record — Intensive Care Med 2024;50(12):2241–2242, PMID 39412548. Linkage only; consult it before relying on this result.</span></li>
+                  <li><strong>Oxygen-target trials do not yet license moving the band.</strong> BLENDER randomized conservative (SaO₂ 92–96%) against liberal (97–100%) targets and found no difference in ICU-free days or mortality, but it studied <em>veno-arterial</em> ECMO (PMID 39162827). A meta-analysis of 12 studies found hyperoxia associated with higher mortality overall (OR 1.41, 95% CI 1.22–1.64) with no significant association in the V-V subgroup (PMID 41237735), which also tempers the over-supported label above. <span className="text-slate-500">BLENDER (PMID 39162827) has an erratum on record: Intensive Care Med 2024;50(12):2241–2242, PMID 39412548. Linkage only; consult it before relying on this result.</span></li>
                   <li><strong>Confirming recirculation or cannula position is an ultrasound question.</strong> The 2026 ELSO state-of-the-art review covers the bedside strategies this calculator cannot substitute for (Douflé, PMID 41588617).</li>
-                  <li><strong>Every threshold in this tool is adult or animal; none of it is a pediatric cut-point.</strong> The cited evidence base is the ELSO 2021 <em>adult</em> V-V guideline, Schmidt 2013 (adult ARDS), Patel 2019 (adult review), Fisser 2022 (adult), Russ 2022 (pigs), Ortoleva 2022 (adult letter) and BLENDER (adult veno-arterial); the only pediatric-adjacent source is a neonatal cannula CFD simulation (Jamil 2019). Flow, cardiac-output and VO₂ are now weight-indexed and the sliders reach neonatal values — a 3 kg neonate on roughly 0.2 L/min of circuit flow against a cardiac output near 0.6 L/min can be entered, where the previous floors of 0.5 and 1 L/min silently rewrote both — but the 5–6 L/min cannula ceiling, the 80–90% SaO₂ band and the 60%-of-CO flow anchor must not be carried onto a child. No weight-indexed flow target is sourced in this tool.</li>
+                  <li><strong>Every threshold in this tool is adult or animal; none of it is a pediatric cut-point.</strong> The cited evidence base is the ELSO 2021 <em>adult</em> V-V guideline, Schmidt 2013 (adult ARDS), Patel 2019 (adult review), Fisser 2022 (adult), Russ 2022 (pigs), Ortoleva 2022 (adult letter) and BLENDER (adult veno-arterial); the only pediatric-adjacent source is a neonatal cannula CFD simulation (Jamil 2019). Flow, cardiac-output and VO₂ are now weight-indexed and the sliders reach neonatal values: a 3 kg neonate on roughly 0.2 L/min of circuit flow against a cardiac output near 0.6 L/min can be entered, where the previous floors of 0.5 and 1 L/min silently rewrote both, but the 5–6 L/min cannula ceiling, the 80–90% SaO₂ band and the 60%-of-CO flow anchor must not be carried onto a child. No weight-indexed flow target is sourced in this tool.</li>
                   <li><strong>Typed values are no longer rewritten in silence.</strong> Entry is validated on leaving the field rather than on every keystroke, an out-of-range entry is held rather than clamped mid-edit, and any adjustment is stated under the field. In the previous build, backspacing hemoglobin from 11 to 1 snapped it to 5 with no message, so the scenario on screen was not the scenario that had been entered.</li>
                 </ul>
               </div>
@@ -605,23 +605,23 @@
 
                 <h3 className="text-[12px] font-semibold text-slate-900 mt-4 mb-2">Added at the 2026-08-31 evidence refresh</h3>
                 <ol start="12" className="text-[11px] text-slate-700 space-y-1.5 list-decimal pl-5 leading-snug">
-                  <li>Fisser C, et al. <em>Recirculation in single lumen cannula venovenous extracorporeal membrane oxygenation: a non-randomized bi-centric trial.</em> Front Med (Lausanne) 2022. PMID 36117961. DOI 10.3389/fmed.2022.973240. <span className="text-slate-500">Source of the femoro-jugular recirculation figure and of Q_eff = Q × (1 − R). Erratum on record — Front Med (Lausanne) 2022;9:1045207, PMID 36267622. Linkage only, not retrieved; this page makes no claim about what it changed — consult it before relying on the recirculation figures below.</span></li>
+                  <li>Fisser C, et al. <em>Recirculation in single lumen cannula venovenous extracorporeal membrane oxygenation: a non-randomized bi-centric trial.</em> Front Med (Lausanne) 2022. PMID 36117961. DOI 10.3389/fmed.2022.973240. <span className="text-slate-500">Source of the femoro-jugular recirculation figure and of Q_eff = Q × (1 − R). Erratum on record: Front Med (Lausanne) 2022;9:1045207, PMID 36267622. Linkage only, not retrieved; this page makes no claim about what it changed: consult it before relying on the recirculation figures below.</span></li>
                   <li>Jamil AKM, et al. <em>Hemodynamics of neonatal double lumen cannula malposition.</em> Perfusion 2019. PMID 31580212.</li>
                   <li>Russ M, et al. <em>Extracorporeal Membrane Oxygenation Blood Flow and Blood Recirculation Compromise Thermodilution-Based Measurements of Cardiac Output.</em> ASAIO J 2022;68(5):721–729. PMID 34860710. DOI 10.1097/MAT.0000000000001592.</li>
                   <li>Douflé G, et al. <em>Ultrasound in Extracorporeal Membrane Oxygenation: An ELSO State-of-the-Art Review.</em> ASAIO J 2026;72(2):85–98. PMID 41588617. DOI 10.1097/MAT.0000000000002656.</li>
                   <li><em>The Role of Recirculation-Guided Blood Flow Adjustment in Venovenous Extracorporeal Membrane Oxygenation: A Pilot Study.</em> ASAIO J 2026. PMID 42490650. DOI 10.1097/MAT.0000000000002796.</li>
                   <li>Guevara-Chaux J, et al. <em>Effects of Inadvertent Left Atrial Return During Venovenous ECMO: The Veno-Left Atrial Case Series.</em> ASAIO J 2026;72(3):e42–e48. PMID 40985532. DOI 10.1097/MAT.0000000000002562.</li>
-                  <li>Burrell A, et al. <em>Conservative or liberal oxygen targets in patients on venoarterial ECMO (BLENDER).</em> Intensive Care Med 2024;50(9):1470–1483. PMID 39162827. DOI 10.1007/s00134-024-07564-8. <span className="text-slate-500">Erratum on record — Intensive Care Med 2024;50(12):2241–2242, PMID 39412548. Linkage only, not retrieved; this page makes no claim about what it changed — consult it before relying on the BLENDER result cited below.</span></li>
+                  <li>Burrell A, et al. <em>Conservative or liberal oxygen targets in patients on venoarterial ECMO (BLENDER).</em> Intensive Care Med 2024;50(9):1470–1483. PMID 39162827. DOI 10.1007/s00134-024-07564-8. <span className="text-slate-500">Erratum on record: Intensive Care Med 2024;50(12):2241–2242, PMID 39412548. Linkage only, not retrieved; this page makes no claim about what it changed: consult it before relying on the BLENDER result cited below.</span></li>
                   <li>Zeng M, et al. <em>Association between hyperoxia and mortality in patients undergoing ECMO: a systematic review and meta-analysis.</em> J Crit Care 2025;91:155338. PMID 41237735. DOI 10.1016/j.jcrc.2025.155338.</li>
                 </ol>
 
-                <p className="text-[10px] text-slate-500 mt-3 leading-snug">Retraction and expression-of-concern screen run 2026-08-31 across every entry above: none found. <strong>Correction screening, re-run 2026-09-01.</strong> The earlier pass screened publication types only, which cannot see an erratum published as its own record — the usual case. The screen was therefore re-run as an erratum-linkage screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all eleven tools in this set. On this page 18 of 18 source PMIDs were screened, and two carry an erratum — PMID 36117961 (Fisser 2022) and PMID 39162827 (BLENDER) — with no retraction and no expression of concern anywhere. What the screen returns is the linkage and not the correction: neither erratum was retrieved, so this page reports that each exists and that a reader should consult it, and asserts nothing about what either one changed. Both are marked on their reference-list row above and at their point of use — the recirculation-fraction field and the oxygen-target caveat bullet. Where a number in this tool has no published source it is labelled in place as a teaching convention or a display heuristic rather than removed.</p>
+                <p className="text-[10px] text-slate-500 mt-3 leading-snug">Retraction and expression-of-concern screen run 2026-08-31 across every entry above: none found. <strong>Correction screening, re-run 2026-09-01.</strong> The earlier pass screened publication types only, which cannot see an erratum published as its own record (the usual case). The screen was therefore re-run as an erratum-linkage screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all eleven tools in this set. On this page 18 of 18 source PMIDs were screened, and two carry an erratum: PMID 36117961 (Fisser 2022) and PMID 39162827 (BLENDER), with no retraction and no expression of concern anywhere. What the screen returns is the linkage and not the correction: neither erratum was retrieved, so this page reports that each exists and that a reader should consult it, and asserts nothing about what either one changed. Both are marked on their reference-list row above and at their point of use: the recirculation-fraction field and the oxygen-target caveat bullet. Where a number in this tool has no published source it is labelled in place as a teaching convention or a display heuristic rather than removed.</p>
               </div>
             </section>
 
             <footer className="mt-6 pb-4 text-center text-[11px] text-slate-500 leading-relaxed">
               Educational use only · Not for clinical decision-making<br />
-              Neel Shah, MD · Pediatric Critical Care Medicine · v2.1 · Updated 2026-08-31 · CC BY-NC 4.0<br />
+              Neel Shah, MD · Pediatric Critical Care Medicine · v2.2 · Updated 2026-09-01 · CC BY-NC 4.0<br />
               Adult-derived evidence base · weight-indexed inputs allow pediatric entry, but no pediatric threshold here is sourced
             </footer>
           </div>
