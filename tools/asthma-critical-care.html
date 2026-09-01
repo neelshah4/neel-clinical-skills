@@ -2983,7 +2983,7 @@ function g3WalkSay(idx, lad){
 }
 function g3WalkReset(){
   G3W.i=-1;
-  $("g3walk").textContent="Start the walk \u2014 EPAP 0";
+  $("g3walk").textContent="Start the walk: EPAP 0";
   var el3=$("g3walkmsg");
   el3.className="walkmsg";
   el3.innerHTML="EPAP is the lever this diagram was built to show. Press to raise it one rung at a time, from zero up through the intrinsic PEEP and one rung past it. Each press reports which of the three areas moved and which did not.";
@@ -3013,7 +3013,7 @@ function g3Init(){
     g3WalkSay(G3W.i, lad);
     this.textContent = (G3W.i>=lad.length-1)
       ? "Walk it again from EPAP 0"
-      : "Step EPAP up \u2014 next " + fmt(lad[G3W.i+1],1);
+      : "Step EPAP up: next " + fmt(lad[G3W.i+1],1);
   });
   /* Dragging either slider by hand invalidates the walk. Setting .value from
      script fires no input event, so the walk never resets itself. */

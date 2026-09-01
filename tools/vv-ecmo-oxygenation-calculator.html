@@ -180,10 +180,10 @@
       const onText = (e) => {
         const t = e.target.value;
         setDraft(t);
-        if (t.trim() === "") { setMsg("Enter a value in " + range + " \u2014 nothing applied yet."); return; }
+        if (t.trim() === "") { setMsg("Enter a value in " + range + ". Nothing applied yet."); return; }
         const v = parseFloat(t);
-        if (!Number.isFinite(v)) { setMsg("Not a number \u2014 allowed range " + range + "."); return; }
-        if (v < min || v > max) { setMsg("Outside " + range + " \u2014 not applied. It will snap to the nearest allowed value when you leave the field."); return; }
+        if (!Number.isFinite(v)) { setMsg("Not a number. Allowed range " + range + "."); return; }
+        if (v < min || v > max) { setMsg("Outside " + range + ". Not applied. It will snap to the nearest allowed value when you leave the field."); return; }
         setMsg(null);
         onChange(v);
       };
@@ -192,8 +192,8 @@
         const raw = draft;
         const v = parseFloat(raw);
         setDraft(null);
-        if (!Number.isFinite(v)) { setMsg("Kept the previous value \u2014 that entry is not a number."); return; }
-        if (v < min || v > max) { const c = clamp(v, min, max); onChange(c); setMsg("Adjusted " + v + " to " + c + " \u2014 allowed range is " + range + "."); return; }
+        if (!Number.isFinite(v)) { setMsg("Kept the previous value; that entry is not a number."); return; }
+        if (v < min || v > max) { const c = clamp(v, min, max); onChange(c); setMsg("Adjusted " + v + " to " + c + ". Allowed range is " + range + "."); return; }
         setMsg(null);
       };
       const invalid = editing && msg !== null;
