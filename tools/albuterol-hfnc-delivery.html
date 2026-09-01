@@ -51,6 +51,7 @@
   .key-box ul { margin: 4px 0 0 18px; }
   .key-box li { margin-bottom: 3px; }
   .footnote { font-size: 10px; color: #9ca3af; margin-top: 14px; line-height: 1.6; }
+  .cell-sub { font-weight: 400; font-size: 10px; color: #6b7280; }
   .legend-row { display: flex; justify-content: center; gap: 20px; margin-top: 8px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4b5563; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -93,6 +94,69 @@
     border-top: 1px solid #e5e7eb; margin-top: 30px; padding-top: 12px;
     font-size: 11px; color: #9ca3af; line-height: 1.6;
   }
+  /* Device section */
+  .dev-note {
+    font-size: 12px; color: #4b5563; line-height: 1.7; margin: 0 0 12px;
+  }
+  .td-dev { font-weight: 600; white-space: nowrap; }
+  /* .td-dev sets white-space:nowrap to keep the platform name on one line; the
+     sub-label would inherit it and force the whole table to one enormous column. */
+  .dev-sub { display: block; white-space: normal; font-weight: 400; font-size: 10.5px; color: #6b7280; margin-top: 2px; min-width: 190px; }
+  .mfr-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: #dcfce7; color: #166534;
+    vertical-align: middle;
+  }
+  .measured-tag {
+    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: #dbeafe; color: #1e40af;
+    vertical-align: middle;
+  }
+  /* PIF case toggles */
+  .case-tabs {
+    display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px;
+  }
+  .case-btn {
+    padding: 6px 11px; font-size: 11.5px; font-family: inherit; cursor: pointer;
+    background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb;
+    border-radius: 999px; line-height: 1.3; font-weight: 500;
+  }
+  .case-btn:hover { background: #e9eef4; color: #1f2937; }
+  .case-btn.active { background: #2980B9; border-color: #2980B9; color: #fff; font-weight: 600; }
+  .case-btn:focus-visible { outline: 2px solid #1e40af; outline-offset: 2px; }
+  .case-card {
+    border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 16px; background: #f9fafb;
+  }
+  .case-card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 3px; color: #1f2937; }
+  .case-card .case-sub { font-size: 11px; color: #6b7280; margin: 0 0 11px; }
+  .case-pif {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 11px;
+  }
+  .case-pif .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: #6b7280; }
+  .case-pif .v { font-size: 15px; font-weight: 700; color: #1f2937; margin: 2px 0 5px; }
+  .case-pif .src { font-size: 11.5px; color: #4b5563; line-height: 1.65; margin: 0; }
+  .ratio-table { width: 100%; border-collapse: collapse; font-size: 11.5px; background: #fff; }
+  .ratio-table th {
+    padding: 6px 9px; text-align: left; font-weight: 600; font-size: 11px;
+    background: #f0f4f8; border-bottom: 2px solid #d1d5db; white-space: nowrap;
+  }
+  .ratio-table td { padding: 6px 9px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+  .ratio-table tr:last-child td { border-bottom: none; }
+  .rchip {
+    display: inline-block; padding: 1px 7px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; color: #fff; min-width: 42px; text-align: center;
+  }
+  .rchip.lo { background: #5B9A6E; }
+  .rchip.mid { background: #2EBFA5; }
+  .rchip.hi { background: #E8735A; }
+  .rchip.na { background: #9ca3af; }
+  .case-note { font-size: 11.5px; color: #4b5563; line-height: 1.7; margin: 11px 0 0; }
+  .case-note strong { color: #1f2937; }
+  .case-gap {
+    margin-top: 11px; padding: 9px 12px; background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 6px; font-size: 11.5px; line-height: 1.65; color: #78350f;
+  }
 </style>
 </head>
 <body>
@@ -134,8 +198,8 @@
 <div class="table-wrap">
   <table>
     <thead><tr>
-      <th>HFNC Flow (LPM)</th><th>Patient size at <em>routine</em> HFNC<br><span style="font-weight:400;font-size:10px">&asymp; 1.5&ndash;2 L/kg/min</span> <span class="derived-tag">DERIVED</span></th><th>Mesh Neb &mdash; reported</th>
-      <th>Jet Neb &mdash; reported</th><th>Weight at 0.25 L/kg/min<br><span style="font-weight:400;font-size:10px">aerosol-optimizing flow, <em>not</em> a therapeutic setting</span> <span class="derived-tag">DERIVED</span></th><th>Clinical Note</th>
+      <th>HFNC Flow (LPM)</th><th>Patient size at <em>routine</em> HFNC<br><span class="cell-sub">&asymp; 1.5&ndash;2 L/kg/min</span> <span class="derived-tag">DERIVED</span></th><th>Mesh Neb &mdash; reported</th>
+      <th>Jet Neb &mdash; reported</th><th>Weight at 0.25 L/kg/min<br><span class="cell-sub">aerosol-optimizing flow, <em>not</em> a therapeutic setting</span> <span class="derived-tag">DERIVED</span></th><th>Clinical Note</th>
     </tr></thead>
     <tbody>
       <tr>
@@ -164,7 +228,7 @@
       </tr>
       <tr>
         <td class="td-flow">20&ndash;40</td>
-        <td>&asymp; 10&ndash;27 kg &mdash; young child <span class="unsourced-tag">EXTRAPOLATED</span><br><span style="font-size:10px;color:#6b7280">also the usual adult range, where flow is set in absolute L/min, not per kg</span></td>
+        <td>&asymp; 10&ndash;27 kg &mdash; young child <span class="unsourced-tag">EXTRAPOLATED</span><br><span class="cell-sub">also the usual adult range, where flow is set in absolute L/min, not per kg</span></td>
         <td class="td-mesh">3.6&ndash;5.7% in vivo at 30 L/min<br>2&ndash;10% bench (30&ndash;60 L/min)<br><span style="font-weight:400;color:#6b7280">Dugernier 2017; Alcoforado 2019; R&eacute;miniac 2016</span></td>
         <td class="td-jet">1.0% (IQR 0.7&ndash;2.0) at 30 L/min<br><span style="font-weight:400;color:#6b7280">Dugernier 2017, SPECT-CT</span></td>
         <td class="td-pif">&asymp; 80&ndash;160 kg</td>
@@ -172,7 +236,7 @@
       </tr>
       <tr>
         <td class="td-flow">40&ndash;60</td>
-        <td>&asymp; 20&ndash;40 kg by the same arithmetic <span class="unsourced-tag">EXTRAPOLATED</span><br><span style="font-size:10px;color:#6b7280">in practice an adult / adolescent setting</span></td>
+        <td>&asymp; 20&ndash;40 kg by the same arithmetic <span class="unsourced-tag">EXTRAPOLATED</span><br><span class="cell-sub">in practice an adult / adolescent setting</span></td>
         <td class="td-mesh">3.5% in vivo at 50 L/min<br>2&ndash;10% bench (30&ndash;60 L/min)<br>0.5&ndash;5.2% adult model<br><span style="font-weight:400;color:#6b7280">Alcoforado 2019; R&eacute;miniac 2016; DiBlasi 2024</span></td>
         <td class="td-none">Not established</td>
         <td class="td-pif">&asymp; 160&ndash;240 kg &mdash; above any pediatric weight</td>
@@ -187,6 +251,67 @@
   <strong>Both weight columns</strong> <span class="derived-tag">DERIVED</span> are arithmetic, not measurement. The right-hand column divides each flow band by 0.25 L/kg/min, the weight-indexed flow that produced the greatest deposition in an infant/toddler bench model (Li 2019, PMID 30920155) &mdash; an aerosol-optimizing flow, not a therapeutic HFNC setting. The left-hand column divides each band by 1.5&ndash;2 L/kg/min, bracketing the measured peak tidal inspiratory flow of 1.68 L/kg/min (95% CI 1.51&ndash;1.85) in 44 infants up to 6 months, whose authors recommend setting flow below 2.5 L/kg/min (Milesi 2021, PMID 33333115). <span class="unsourced-tag">EXTRAPOLATED</span> marks the rows where that infant-derived coefficient is being applied above infancy: the measurement does not extend there, and no measured peak inspiratory flow for older children appears in the cited literature. Earlier versions carried only the right-hand column while labelling the adjacent column &ldquo;Typical Patient&rdquo; with no tag and no caveat &mdash; the untagged column was the one a reader indexes on, and it disagreed with the tagged one by 6- to 8-fold.
 </p>
 
+<h2>Which Platform, Which Nebulizer, and Where It Sits</h2>
+<p class="dev-note">
+  &ldquo;Vibrating mesh versus jet&rdquo; is only half the question at the bedside. The other half is <em>which HFNC platform the nebulizer is plugged into</em>, because the two systems in common use differ by roughly an order of magnitude in bench aerosol delivery even when both are running the same Aerogen mesh nebulizer with the same drug. Everything in this section is taken from the manufacturers&rsquo; own instructions for use or from the studies&rsquo; own methods sections; where a claim could not be sourced, it is marked rather than asserted.
+</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>Platform</th><th>Nebulizer it is designed for</th><th>Where the nebulizer sits</th><th>Published aerosol data</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-dev">Optiflow<span class="dev-sub">Fisher &amp; Paykel Healthcare. Optiflow and Optiflow Junior nasal interfaces, run from an AIRVO / myAIRVO 2 unit or an F&amp;P 850 / 950 humidifier with a heated-wire circuit.</span></td>
+        <td>
+          <strong>Vibrating mesh</strong> is the integrated option. F&amp;P sells the <em>AIRVO Neb</em> adapter kit for in-line nebulization; the brochure states plainly, <span class="mfr-tag">MANUFACTURER</span> &ldquo;The vibrating mesh nebulizer depicted in this document is the Aerogen Solo,&rdquo; and the kit is listed as &ldquo;AirSpiral&trade; tube and chamber kit including AIRVO Neb adapter (10 pack) (Aerogen&reg; Solo nebulizer not included),&rdquo; product code 900PT562, suitable for &ldquo;use with the unique Optiflow&trade;/Optiflow&trade; Junior interfaces at flows from 2 to 60 L/min.&rdquo;<br>
+          <strong>Jet is also possible</strong> but is not an F&amp;P integration &mdash; investigators have simply run one into the circuit. Dugernier 2017 used an Opti-Mist Plus jet nebulizer (ConvaTec) through Optiflow, and Ari 2019 used a Misty Max 10 (Cardinal Health) with an F&amp;P HFNC.
+        </td>
+        <td>
+          <strong>At the humidification chamber.</strong> <span class="mfr-tag">MANUFACTURER</span> &ldquo;As the AIRVO Neb chamber adapter is part of the water chamber there&rsquo;s no need to hold it in place during treatment.&rdquo; The published bench work matches that placement: Ari 2011 put the mesh nebulizer &ldquo;on the inspiratory inlet of a heated humidifier,&rdquo; and Li 2019 placed it &ldquo;at the inlet of humidifier (Fisher &amp; Paykel).&rdquo;
+        </td>
+        <td>
+          Highest inhaled dose of the five devices tested at 10 L/min &mdash; 18.2 &plusmn; 1.2% &mdash; in an adult manikin with a mesh nebulizer at the humidifier; 12.6 &plusmn; 1.9% at 20 L/min (Alanazi &amp; Li 2023, PMID 37553215). Lung deposition 3.6% (mesh) vs 1.0% (jet) at 30 L/min by SPECT-CT through Optiflow (Dugernier 2017).
+        </td>
+      </tr>
+      <tr>
+        <td class="td-dev">Vapotherm<span class="dev-sub">Precision Flow, Precision Flow Plus / Hi-VNI, and HVT 2.0. Precision Flow runs 1&ndash;40 L/min; HVT 2.0 runs 5&ndash;45 L/min and is indicated for patients 5 kg and up.</span></td>
+        <td>
+          <strong>Vibrating mesh only, as a supported configuration.</strong> The Aerosol Disposable Patient Circuit (ADPC) exists for exactly this: <span class="mfr-tag">MANUFACTURER</span> &ldquo;The Precision Flow Aerosol Disposable Patient Circuit is intended to facilitate the connection between Vapotherm Hi-VNI&trade; Technology and a vibrating mesh nebulizer.&rdquo; Its install step is &ldquo;Install the vibrating mesh nebulizer into the medication mixing chamber port,&rdquo; and it accepts a syringe pump for continuous delivery. No jet-nebulizer configuration is described in the IFU, and <span class="unsourced-tag">NOT ESTABLISHED</span> no study of a jet nebulizer run through a Vapotherm circuit was located.
+        </td>
+        <td>
+          <strong>Two positions exist, and they are not equivalent.</strong> DiBlasi 2024 compared them directly and names both: the proximal &ldquo;aerosol adapter (Aerogen Aerosol Adapter, Vapotherm) &hellip; designed to facilitate the proximal placement of the vibrating mesh nebulizer between the HFNC gas circuit outlet and nasal cannula,&rdquo; versus the distal &ldquo;aerosol circuit (Aerosol Disposable Patient Circuit, Vapotherm) &hellip; with an integrated distal vibrating mesh nebulizer attachment port and aerosol mixing chamber located at the gas outlet of the HFNC humidifier.&rdquo;
+        </td>
+        <td>
+          Consistently the lowest of the platforms compared. 0.9&ndash;2.5% inhaled dose across flow settings against 12.6&ndash;18.2% for Optiflow in the same adult manikin (Alanazi &amp; Li 2023); mesh via Airvo 2 delivered <strong>&ge; 6 times</strong> the inhaled dose of mesh via Vapotherm in vitro (Li 2021, PMID 34789564); Perry 2013 measured 0.0&ndash;2.5% across all three cannula sizes on a Vapotherm 2000i.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p class="footnote">
+  <strong>Yes, Vapotherm-specific aerosol data exists &mdash; it is most of the pediatric literature in this tool.</strong> Perry 2013 (PMID 23628834) is a Vapotherm study: an Aeroneb Solo &ldquo;connected via adaptor proximal to the nasal cannula and downstream from the Vapotherm 2000i.&rdquo; So is DiBlasi 2024 (PMID 38981652), which used &ldquo;the Precision Flow HFNC system (Vapotherm)&rdquo; with an Aeroneb Solo. Both Vapotherm rows in the summary table above are therefore Vapotherm numbers, and the pediatric-cannula values of 0.1% at 10 L/min and 0.0% at 20 L/min are Vapotherm values specifically, not a general property of HFNC.
+</p>
+<div class="key-box">
+  <h3>Does the Vapotherm design explain the difference?</h3>
+  <div class="content">
+    <p><strong>The design is genuinely different, and two studies measured where the drug goes.</strong> <span class="mfr-tag">MANUFACTURER</span> The Precision Flow IFU describes the delivery limb as follows: &ldquo;The warmed humidified gas passes through the center of a triple-lumen heated delivery tube. The center lumen is surrounded by two outer lumens circulating warmed water to maintain the temperature of the inner lumen and to minimize rain-out. A proprietary short nasal cannula is connected to the end of the delivery tube.&rdquo; Humidification is done by a vapor transfer cartridge rather than a pass-over chamber &mdash; a high-flow cartridge for 5&ndash;40 L/min and a low-flow cartridge for 1&ndash;8 L/min, with patients under 3 kg required to be on low flow.</p>
+    <p><strong>Where the dose actually went.</strong> Perry 2013 reported that &ldquo;most (62&ndash;80%) of the loaded albuterol dose accumulated within the adaptor.&rdquo; DiBlasi 2024 quantified the same problem and its trade-off: impactive losses in the proximal aerosol adapter were 56%, but that adapter <em>contained</em> the losses better than the distal aerosol circuit &mdash; less cannula sputter (5% vs 22%), fewer fugitive losses (18% vs 24%), and a smaller inhaled particle (5 &micro;m vs 13 &micro;m) &mdash; while the distal circuit gave marginally greater lung dose in the pediatric and adult models and no difference in the neonatal model.</p>
+    <p><strong>What is not established.</strong> <span class="unsourced-tag">PHYSIOLOGIC REASONING</span> That the triple-lumen tube and the proprietary short small-bore cannula <em>cause</em> the order-of-magnitude gap is a plausible reading of the impaction data, not a tested claim; no study in this reference list isolates the tube, the cartridge, or the cannula as the responsible component. Treat the gap as a measured device-level difference, not as a mechanism you can quote.</p>
+    <p><strong>And the gap does not carry over to work of breathing.</strong> The one clinical head-to-head compared both systems in children under 3 years and found no significant difference in the reduction in pressure&middot;rate product between them (p = .12), with effort of breathing falling most at 1.5&ndash;2.0 L/kg/min on either platform (Weiler 2017, PMID 28669609). A platform can be the weaker aerosol route and the equal respiratory-support route at the same time; do not let one finding stand in for the other.</p>
+  </div>
+</div>
+
+<h2>What Is Peak Inspiratory Flow, Actually? Worked Cases by Age</h2>
+<p class="dev-note">
+  Every ratio in Figure B depends on a number most readers have no feel for. These cases give it a value. Each card states whether its inspiratory flow was <span class="measured-tag">MEASURED</span> in patients, <span class="derived-tag">DERIVED</span> from a published breathing-model setting, or <span class="unsourced-tag">EXTRAPOLATED</span> past the evidence &mdash; and the ratios are computed from the number shown, not typed in.
+</p>
+<div class="case-tabs" id="caseTabs" role="tablist" aria-label="Peak inspiratory flow example cases"></div>
+<div class="case-card" id="caseCard" role="region" aria-live="polite"></div>
+<div class="col-warn">
+  <strong>The two &ldquo;peak inspiratory flow&rdquo; conventions are not interchangeable, and this tool mixes them because the literature does.</strong> Li 2019, whose regression is the line in Figure B, defines inspiratory flow as tidal volume divided by inspiratory time: its quiet-breathing patterns of 300, 500 and 700 mL over a 1.33 s inspiratory time are reported as 13.5, 22.5 and 31.5 L/min, which is V<sub>T</sub>/T<sub>I</sub> exactly. Milesi 2021 instead measured a true spirometric peak in real infants. For any flow profile that is not a square wave the true peak is the larger of the two &mdash; for a sinusoidal profile, by a factor of &pi;/2 &asymp; 1.57. A ratio built on a measured peak is therefore <em>smaller</em> than the same patient&rsquo;s ratio built on V<sub>T</sub>/T<sub>I</sub>, and the two cannot be pooled. Cards below state which convention each number uses.
+</div>
+
 <div class="key-box">
   <h3>Key Principles</h3>
   <div class="content">
@@ -194,11 +319,11 @@
 
     <p><strong>2. The HFNC:PIF ratio is the primary predictor &mdash; and lower is better than equal.</strong> The ratio was the primary independent predictor of inhaled dose in an adult in vitro model, with the model explaining 78.8% of the variance (Li 2019). Delivery is maximized when cannula flow is <em>below</em> peak inspiratory flow, not equal to it: the plateau of maximum delivery sits at a ratio of roughly 0.1&ndash;0.5. <strong>The only randomized clinical comparison of ratios was null on the endpoint its authors call robust.</strong> In 75 adults with documented bronchodilator reversibility randomized to GF:IF = 0.5, GF:IF = 1.0, or a fixed 50 L/min, the standard ATS/ERS response criterion (FEV<sub>1</sub> rise of 200 mL and 12%) showed <em>no difference between flows at any cumulative dose</em> &mdash; 64% vs 58% vs 42% at 1.5 mg (p=0.271) and 68% vs 75% vs 69% at 3.5 mg (p=0.848). The widely quoted 64% vs 29% vs 27% (p=0.011) is the same trial reported by a <em>second, more sensitive</em> responder definition the authors applied alongside the first: post-bronchodilator FEV<sub>1</sub> via HFNC returning to the screening post-bronchodilator level (Li 2021, PMID 34683948). Earlier versions of this tool printed only the second number. Both belong here, and the honest reading is <strong>hypothesis-generating, not demonstrated</strong>. A 2026 graded evidence summary of the <em>adult</em> literature lands in the same place, suggesting flow at about 50% of inspiratory flow (Level 2b, Grade A; Xie 2026) &mdash; but it inherits this trial, so it is not independent confirmation.</p>
 
-    <p><strong>3. Vibrating mesh outperforms jet during HFNC, by roughly 2&ndash;3&times;.</strong> The magnitude is stated directly in the Li &amp; Fink 2021 review and is consistent with the head-to-head SPECT-CT comparison (3.6% vs 1.0% at 30 L/min, Dugernier 2017); Ari 2019 reported a two- to fourfold advantage across HFNC, facemask and mouthpiece. That comparison has been made at a small number of discrete flows, so it is not established &ldquo;at every flow rate.&rdquo; The 2023 international consensus prefers a mesh nebulizer over a jet nebulizer during HFNC and notes the advantage is independent of flow and F<sub>IO2</sub>; a jet nebulizer also adds driving gas that alters the delivered flow.</p>
+    <p><strong>3. Vibrating mesh outperforms jet during HFNC, by roughly 2&ndash;3&times;.</strong> The magnitude is stated directly in the Li &amp; Fink 2021 review and is consistent with the head-to-head SPECT-CT comparison (3.6% vs 1.0% at 30 L/min, Dugernier 2017); Ari 2019 reported a two- to fourfold advantage across HFNC, facemask and mouthpiece. <strong>The platform you plug that mesh nebulizer into moves delivery further than the mesh-versus-jet choice does</strong> &mdash; 0.9&ndash;2.5% via Vapotherm against 12.6&ndash;18.2% via Optiflow in the same adult manikin with the same nebulizer at the same position (Alanazi &amp; Li 2023, PMID 37553215). See <em>Which Platform, Which Nebulizer, and Where It Sits</em> above. That comparison has been made at a small number of discrete flows, so it is not established &ldquo;at every flow rate.&rdquo; The 2023 international consensus prefers a mesh nebulizer over a jet nebulizer during HFNC and notes the advantage is independent of flow and F<sub>IO2</sub>; a jet nebulizer also adds driving gas that alters the delivered flow.</p>
 
     <p><strong>4. Practical steps at high flow.</strong></p>
     <ul>
-      <li><strong>Nebulizer position &mdash; and the low-flow exception the headline hides.</strong> At HFNC flows <strong>&ge; 10 L/min</strong>, place the vibrating mesh nebulizer at the <em>inlet of the humidifier</em>. That flow threshold is part of the recommendation, not a footnote to it: the 2023 consensus statement reads &ldquo;nebulizers are recommended to be placed at the inlet of humidifier at HFNC flows &ge; 10 L/min&rdquo; (perfect consensus, strong recommendation), and placement before the humidifier increased deposition in both Ari 2011 and Sunbul 2015. <strong>Below 10 L/min the consensus does not apply and offers no guidance</strong> &mdash; that is the 2&ndash;5 and 5&ndash;10 L/min bands in the table above, which is where most infants and toddlers actually sit. There the direction reverses: Li and Fink 2021 write that the nebulizer should go at the humidifier inlet &ldquo;except when extremely low gas flow is set for infant,&rdquo; because at flows &le; 0.25 L/kg/min in infants a nebulizer placed <em>proximal</em> to the patient produced a higher inhaled dose than one placed distally (PMID 33987288). Proximal placement is also preferred in specific settings such as inspiration-synchronized delivery.</li>
+      <li><strong>Nebulizer position &mdash; and the low-flow exception the headline hides.</strong> <em>What &ldquo;the inlet of the humidifier&rdquo; means depends on the platform: on Optiflow it is the AIRVO Neb adapter built into the water chamber; on Vapotherm it is the Aerosol Disposable Patient Circuit&rsquo;s mixing chamber at the humidifier gas outlet, as opposed to the proximal Aerogen Aerosol Adapter that sits between the gas outlet and the cannula. See the device section above.</em> At HFNC flows <strong>&ge; 10 L/min</strong>, place the vibrating mesh nebulizer at the <em>inlet of the humidifier</em>. That flow threshold is part of the recommendation, not a footnote to it: the 2023 consensus statement reads &ldquo;nebulizers are recommended to be placed at the inlet of humidifier at HFNC flows &ge; 10 L/min&rdquo; (perfect consensus, strong recommendation), and placement before the humidifier increased deposition in both Ari 2011 and Sunbul 2015. <strong>Below 10 L/min the consensus does not apply and offers no guidance</strong> &mdash; that is the 2&ndash;5 and 5&ndash;10 L/min bands in the table above, which is where most infants and toddlers actually sit. There the direction reverses: Li and Fink 2021 write that the nebulizer should go at the humidifier inlet &ldquo;except when extremely low gas flow is set for infant,&rdquo; because at flows &le; 0.25 L/kg/min in infants a nebulizer placed <em>proximal</em> to the patient produced a higher inhaled dose than one placed distally (PMID 33987288). Proximal placement is also preferred in specific settings such as inspiration-synchronized delivery.</li>
       <li><strong>If using a pMDI:</strong> keep it <em>inline</em> with the HFNC circuit, spacer positioned close to the nasal cannula with the plume directed toward the patient (consensus Recommendation XIX). The &ldquo;more than 10% at 30 L/min&rdquo; figure comes from one bench study and carries three qualifiers the headline drops (Szychowiak 2021, PMID 33761286). <em>First</em>, it used an <strong>adult</strong> circuit and a medium-sized cannula. <em>Second</em>, it is not a lung dose: albuterol was caught on a filter downstream of a nasopharyngeal cast, and the authors report drug &ldquo;potentially delivered to the lungs.&rdquo; <em>Third</em>, the number was obtained only under the full optimal condition set, which includes <strong>actuating the pMDI at the beginning of inspiration</strong> &mdash; the hardest of those conditions to meet in a tachypneic infant, and one an unsynchronized actuation does not meet at all. The authors conclude that further testing in a clinical setting is required.</li>
       <li><strong>Reducing flow during nebulization</strong> is physiologically grounded and supported by the bench data &mdash; but neither its size nor its cost is usually stated, and both are large.<br>
       <em>Magnitude.</em> Reaching the 0.1&ndash;0.5 GF:IF plateau in an infant supported at the measured 1.68 L/kg/min (95% CI 1.51&ndash;1.85; Milesi 2021) means cutting flow roughly 4- to 8-fold &mdash; from about 10 L/min to 1&ndash;2.5 L/min in a 5 kg infant, close to a 1:7 reduction against the 0.25 L/kg/min bench optimum. That is not trimming the flow; it is withdrawing most of the support.<br>
@@ -223,7 +348,14 @@
 </div>
 
 <div class="corr">
-  <h3>Corrections made in v2.1</h3>
+  <h3>Changes made in v3.0</h3>
+  <p><strong>The platforms are now named, because &ldquo;mesh versus jet&rdquo; was hiding the larger effect.</strong> A new section identifies Optiflow (Fisher &amp; Paykel) and Vapotherm (Precision Flow / Hi-VNI / HVT 2.0), states which nebulizer each is designed for, and shows where the nebulizer sits in each circuit &mdash; quoted from the manufacturers&rsquo; own instructions for use rather than assumed. Both are used with the same Aerogen vibrating mesh nebulizer, and the platform difference in bench inhaled dose is larger than the mesh-versus-jet difference this tool was built around: 0.9&ndash;2.5% via Vapotherm against 12.6&ndash;18.2% via Optiflow in one adult manikin (Alanazi &amp; Li 2023), and a &ge; 6-fold gap in another (Li 2021). Vapotherm&rsquo;s IFU describes a vibrating-mesh configuration only, and no jet-through-Vapotherm study was located.</p>
+  <p style="margin-top:6px"><strong>Two things the device section deliberately does not claim.</strong> That the triple-lumen delivery tube causes the gap is labelled physiologic reasoning, not a tested finding &mdash; no study here isolates the responsible component. And the aerosol gap does not extend to respiratory support: the one clinical head-to-head found no difference between the platforms in effort of breathing (p = .12, Weiler 2017).</p>
+  <p style="margin-top:6px"><strong>Peak inspiratory flow now has worked cases instead of being an abstraction.</strong> Six toggleable cards span infant to adult, each tagged <span class="measured-tag">MEASURED</span>, <span class="derived-tag">DERIVED</span> or <span class="unsourced-tag">EXTRAPOLATED</span>, with the derivation printed on the card and every GF:IF ratio computed in code from the stated flow rather than typed in. The 15 kg toddler card asserts <em>no</em> ratio, because the simulated inspiratory flow for that model could not be sourced; the adolescent card gives a range rather than a number, and shows why the weight-indexed infant constant cannot be extrapolated &mdash; carried to 50 kg it predicts 84 L/min, above every adult pattern in the literature.</p>
+  <p style="margin-top:6px"><strong>A definitional hazard has been surfaced.</strong> Li 2019 computes inspiratory flow as V<sub>T</sub>/T<sub>I</sub>; Milesi 2021 measured a true spirometric peak. The two are not the same quantity and the ratios built on them are not poolable. Earlier versions used both without saying so.</p>
+  <p style="margin-top:6px"><strong>Figure B&rsquo;s guide labels were drawn outside the plot.</strong> &ldquo;plateau &le; 0.5&rdquo; and &ldquo;GF = IF&rdquo; were painted above the plot area, in the strip the legend occupies, where &ldquo;GF = IF&rdquo; ran straight through the legend&rsquo;s Li 2019 marker at every width and the two labels collided with each other on narrow screens. Both now sit inside the plot area on separate rows, clamped to the plot edges. Both figures also gained padded axis bounds, because Chart.js clips at the plot edge and a marker centred on the axis minimum was losing its lower half &mdash; the 0.0% pediatric point in Figure A did exactly that.</p>
+  <p style="margin-top:6px"><strong>One citation detail corrected.</strong> DiBlasi 2024 is <em>Respir Care</em> 2024;69(9):1146&ndash;1160; this tool had 1150&ndash;1163.</p>
+  <h3 style="margin-top:12px">Corrections made in v2.1</h3>
   <p><strong>Population labels added where the evidence is adult-only.</strong> The instruction &ldquo;do not remove HFNC in order to nebulize&rdquo; rested entirely on a consensus statement that evaluates adult evidence and states in its own limitations that it may not apply to infants and children. That bullet now carries the label, reports the pediatric bench data pointing <em>both</em> ways (Moody &amp; Ari 2020 against removal; Alalwan 2019 for it), and no longer issues a directive in either direction for children. The 17.2&ndash;20.8% band in the 10&ndash;20 L/min row was likewise adult in origin while sitting under a heading that read &ldquo;Older child&rdquo;; the pediatric values Perry 2013 measured at those same flows &mdash; 0.1% and 0.0% &mdash; had been left out.</p>
   <p style="margin-top:6px"><strong>Two weight columns that answered different questions have been separated.</strong> &ldquo;Typical Patient&rdquo; and the <span class="derived-tag">DERIVED</span> 0.25 L/kg/min column disagreed by 6- to 8-fold, and the untagged one was the column a reader indexes on. Both are now tagged, titled with the question each answers, and marked <span class="unsourced-tag">EXTRAPOLATED</span> where the infant-measured coefficient is applied above infancy.</p>
   <p style="margin-top:6px"><strong>The 10&ndash;15 L/min crossover claim in Figure A has been withdrawn.</strong> Neither cited source measured a pediatric inspiratory flow. Measured mean peak tidal inspiratory flow in 44 infants is 7.45 L/min (Milesi 2021), so the claim was roughly twofold high for infants; for older children no measured value exists in the cited literature, so no band replaces it.</p>
@@ -240,7 +372,7 @@
   <li>Ari A, Harwood R, Sheard M, Dailey P, Fink JB. In vitro comparison of heliox and oxygen in aerosol delivery using pediatric high flow nasal cannula. <em>Pediatr Pulmonol</em> 2011;46(8):795&ndash;801. PMID 21438178.</li>
   <li>Perry SA, et al. Influences of cannula size and flow rate on aerosol drug delivery through the Vapotherm humidified high-flow nasal cannula system. <em>Pediatr Crit Care Med</em> 2013;14(5):e250&ndash;6. PMID 23628834. doi:10.1097/PCC.0b013e31828a7f79.</li>
   <li>Dailey PA, et al. Aerosol delivery through adult high flow nasal cannula with heliox and oxygen. <em>Respir Care</em> 2017;62(9):1186&ndash;92. PMID 28588117.</li>
-  <li>DiBlasi RM, Engberg RJ, Poli J, et al. Aerosol delivery efficiency with high-flow nasal cannula therapy in neonatal, pediatric, and adult nasal upper-airway and lung models. <em>Respir Care</em> 2024;69(9):1150&ndash;1163. PMID 38981652. doi:10.4187/respcare.11400.</li>
+  <li>DiBlasi RM, Engberg RJ, Poli J, et al. Aerosol delivery efficiency with high-flow nasal cannula therapy in neonatal, pediatric, and adult nasal upper-airway and lung models. <em>Respir Care</em> 2024;69(9):1146&ndash;1160. PMID 38981652. doi:10.4187/respcare.11400.</li>
   <li>Li J, Gong L, Fink JB. The ratio of nasal cannula gas flow to patient inspiratory flow on trans-nasal pulmonary aerosol delivery for adults: an in vitro study. <em>Pharmaceutics</em> 2019;11(5):225. PMID 31083346. doi:10.3390/pharmaceutics11050225.</li>
   <li>Li J, et al. Bronchodilator delivery via high-flow nasal cannula: a randomized controlled trial to compare the effects of gas flows. <em>Pharmaceutics</em> 2021. PMID 34683948. doi:10.3390/pharmaceutics13101655.</li>
   <li>Li J, et al. Decrease the flow setting to improve trans-nasal pulmonary aerosol delivery via high-flow nasal cannula to infants and toddlers. <em>Pediatr Pulmonol</em> 2019. PMID 30920155.</li>
@@ -272,12 +404,24 @@
   <li>Ditcham W, et al. Lung deposition of 99mTc-radiolabeled albuterol delivered through a pressurized metered dose inhaler and spacer with facemask or mouthpiece in children with asthma. <em>J Aerosol Med Pulm Drug Deliv</em> 2014. PMID 25054483.</li>
   <li>DiBlasi RM. Clinical controversies in aerosol therapy for infants and children. <em>Respir Care</em> 2015;60(6):894&ndash;914. PMID 26070582. <em>Cited here only to document that this review reports no HFNC albuterol delivery percentages.</em></li>
   <li>Milesi C, Requirand A, Douillard A, et al. Assessment of peak inspiratory flow in young infants with acute viral bronchiolitis: physiological basis for initial flow setting in patients supported with high-flow nasal cannula. <em>J Pediatr</em> 2021;231:239&ndash;245.e1. PMID 33333115. doi:10.1016/j.jpeds.2020.12.020.</li>
+  <li>Alanazi O, Li J. The impact of various high-flow nasal cannula devices on transnasal aerosol delivery. <em>Respir Care</em> 2023;68(12):1657&ndash;1661. PMID 37553215. doi:10.4187/respcare.10777. <em>The head-to-head across five HFNC platforms; the source of the Optiflow-versus-Vapotherm inhaled-dose gap.</em></li>
+  <li>Li J, Alolaiwat AA, Harnois LJ, Fink JB, Dhand R. Mitigating fugitive aerosols during aerosol delivery via high-flow nasal cannula devices. <em>Respir Care</em> 2022;67(4):404&ndash;414. PMID 34789564. doi:10.4187/respcare.09589. <em>Source of the &ldquo;&ge; 6 times higher via Airvo 2 than via Vapotherm&rdquo; in vitro comparison.</em></li>
+  <li>Weiler T, Kamerkar A, Hotz J, Ross PA, Newth CJL, Khemani RG. The relationship between high flow nasal cannula flow rate and effort of breathing in children. <em>J Pediatr</em> 2017;189:66&ndash;71.e3. PMID 28669609. doi:10.1016/j.jpeds.2017.06.006. <em>The only clinical head-to-head of the two platforms in this list, and the source of the 1.5&ndash;2.0 L/kg/min effort-of-breathing optimum.</em></li>
+</ol>
+
+<h2>Manufacturer Documents</h2>
+<p class="footnote">These carry no PMID. Each was retrieved from the manufacturer&rsquo;s own site on 2026-09-01 and every device claim attributed to a <span class="mfr-tag">MANUFACTURER</span> tag above is quoted from one of them. Document revision numbers are given so a reader can confirm they are looking at the same revision.</p>
+<ol class="refs">
+  <li>Vapotherm, Inc. <em>Precision Flow&reg; Disposable Patient Circuit &mdash; Aerosol Medication Delivery: Instructions for Use.</em> Document 3102179 Rev B (also published as booklet 42000116 Rev E). Source of the intended-use statement and the nebulizer-installation steps.</li>
+  <li>Vapotherm, Inc. <em>Precision Flow&reg; Instructions for Use.</em> Document 3101458-01-EN Rev B. Source of the triple-lumen delivery-tube description, the vapor-transfer-cartridge flow ranges (high flow 5&ndash;40 L/min, low flow 1&ndash;8 L/min, under 3 kg always low flow), and the 1&ndash;40 L/min system range.</li>
+  <li>Vapotherm, Inc. <em>HVT 2.0 High Velocity Therapy System Instructions for Use.</em> Document 43000655 Rev C. Source of the 5&ndash;45 L/min range, the 5 kg-and-up indication, and the 2 L/min/kg pediatric starting-flow guidance.</li>
+  <li>Fisher &amp; Paykel Healthcare Ltd. <em>AIRVO&trade; Neb &mdash; in-line nebulizer integration.</em> Brochure 615137 B ROW, 2018. Source of the Aerogen Solo pairing, the chamber-adapter placement, product code 900PT562, and the 2&ndash;60 L/min Optiflow / Optiflow Junior compatibility statement.</li>
 </ol>
 
 <p class="footnote">Exact delivery varies with cannula size and cannula-to-nares ratio, interface fit, breathing pattern and effort, circuit humidity and condensation, nebulizer position, and nebulizer brand. Values above are the numbers the cited studies report; they are not estimates of what an individual patient receives. Most are bench models or healthy-volunteer studies. Where a figure could not be traced to a source it has been removed rather than approximated, and the one derived quantity in this tool is labelled <span class="derived-tag">DERIVED</span> in place.</p>
 
 <footer class="tool-footer">
-  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-08-31 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> all 34 PMIDs cited here resolve in PubMed and match the title and journal shown, and every first-author attribution has been checked against the PubMed record. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text &mdash; but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
+  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v3.0 &middot; Updated 2026-09-01 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> 37 PMIDs are cited here. On 2026-09-01, twelve of them &mdash; 21438178, 23628834, 28463044, 28669609, 30920155, 31083346, 31313534, 33333115, 34683948, 34789564, 37553215 and 38981652, the sources behind the device section, the inspiratory-flow cases and both figures &mdash; were re-resolved against PubMed with title, journal, first author, volume, issue and page range matched to the record, which is how the DiBlasi 2024 page range in this tool was found to be wrong and corrected. The remaining twenty-five carry the 2026-08-31 check: they resolve in PubMed and match the title, journal and first author shown. The four manufacturer documents listed above have no PMID and were retrieved from the manufacturers&rsquo; own sites on 2026-09-01; every device claim tagged MANUFACTURER is a quotation from one of them. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text &mdash; but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
 </footer>
 
 <script>
@@ -367,17 +511,25 @@ new Chart(document.getElementById('chartFlow'), {
   options: {
     responsive: true,
     maintainAspectRatio: false,
+    // Marker headroom. Axis bounds are deliberately padded past the data on all four
+    // sides so that no point is ever drawn against — or half outside — a plot edge.
+    // Chart.js clips datasets at the chart area, so a marker centred on the axis
+    // minimum loses its bottom half; the padded bound is what prevents that. Ticks
+    // are pinned to round values so the padding never becomes a visible axis label.
+    layout: { padding: { top: 8 } },
     scales: {
       x: {
-        type: 'linear', min: 0, max: 60,
+        type: 'linear', min: -1.5, max: 61.5,
         title: { display: true, text: 'HFNC Flow Rate (LPM)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, stepSize: 10 },
+        ticks: { font: { size: 11 }, stepSize: 10, includeBounds: false },
+        afterBuildTicks: function(axis) { axis.ticks = [0, 10, 20, 30, 40, 50, 60].map(function(v) { return { value: v }; }); },
         grid: { color: '#e5e7eb' }
       },
       y: {
-        type: 'linear', min: 0, max: 28,
+        type: 'linear', min: -1.6, max: 30,
         title: { display: true, text: 'Reported inhaled / lung dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 } },
+        ticks: { font: { size: 11 }, includeBounds: false },
+        afterBuildTicks: function(axis) { axis.ticks = [0, 5, 10, 15, 20, 25, 30].map(function(v) { return { value: v }; }); },
         grid: { color: '#e5e7eb' }
       }
     },
@@ -434,17 +586,23 @@ new Chart(document.getElementById('chartRatio'), {
   options: {
     responsive: true,
     maintainAspectRatio: false,
+    // See Chart A for why the axis bounds are padded past the data. The measured
+    // group means carry a radius of 8 px, the widest marker in either figure, so
+    // this chart needs the most headroom of the two.
+    layout: { padding: { top: 8 } },
     scales: {
       x: {
-        type: 'linear', min: 0, max: 4.5,
+        type: 'linear', min: -0.12, max: 4.62,
         title: { display: true, text: 'Cannula gas flow : peak inspiratory flow (GF:IF)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, stepSize: 0.5 },
+        ticks: { font: { size: 11 }, stepSize: 0.5, includeBounds: false },
+        afterBuildTicks: function(axis) { axis.ticks = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5].map(function(v) { return { value: v }; }); },
         grid: { color: '#e5e7eb' }
       },
       y: {
-        type: 'linear', min: 0, max: 28,
+        type: 'linear', min: -1.6, max: 30,
         title: { display: true, text: 'Inhaled dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 } },
+        ticks: { font: { size: 11 }, includeBounds: false },
+        afterBuildTicks: function(axis) { axis.ticks = [0, 5, 10, 15, 20, 25, 30].map(function(v) { return { value: v }; }); },
         grid: { color: '#e5e7eb' }
       }
     },
@@ -465,15 +623,25 @@ new Chart(document.getElementById('chartRatio'), {
     }
   },
   plugins: [{
+    // Guide lines for the two reference ratios.
+    //
+    // These labels used to be drawn at `yScale.top - 6`, i.e. ABOVE the plot area,
+    // in the strip the legend occupies. At every width that put "GF = IF" straight
+    // through the legend's Li 2019 marker, and at narrow widths the two labels also
+    // overlapped each other. Both labels are now drawn INSIDE the plot area, on two
+    // separate rows, left-aligned just clear of their own line, and clamped so a
+    // long label cannot run past the right edge. Nothing this plugin draws leaves
+    // the chart area any more.
     afterDraw: function(chart) {
       var xScale = chart.scales.x;
       var yScale = chart.scales.y;
       var ctx = chart.ctx;
       var guides = [
-        { v: 0.5, color: '#5B9A6E', text: 'plateau ≤ 0.5' },
-        { v: 1.0, color: '#E8735A', text: 'GF = IF' }
+        { v: 0.5, color: '#5B9A6E', text: 'plateau ≤ 0.5', row: 0 },
+        { v: 1.0, color: '#E8735A', text: 'GF = IF', row: 1 }
       ];
       ctx.save();
+      ctx.font = '600 11px system-ui, sans-serif';
       guides.forEach(function(g) {
         var x = xScale.getPixelForValue(g.v);
         ctx.beginPath();
@@ -484,15 +652,242 @@ new Chart(document.getElementById('chartRatio'), {
         ctx.lineTo(x, yScale.bottom);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.font = '600 11px system-ui, sans-serif';
         ctx.fillStyle = g.color;
-        ctx.textAlign = 'center';
-        ctx.fillText(g.text, x, yScale.top - 6);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        var w = ctx.measureText(g.text).width;
+        // Prefer sitting to the right of the line; flip to the left if that would
+        // overflow, and clamp to the plot area as a last resort.
+        var lx = x + 5;
+        if (lx + w > xScale.right - 2) { lx = x - 5 - w; }
+        if (lx < xScale.left + 2) { lx = xScale.left + 2; }
+        ctx.fillText(g.text, lx, yScale.top + 5 + g.row * 15);
       });
       ctx.restore();
     }
   }]
 });
+
+// --- Peak inspiratory flow worked cases ---
+// Every GF:IF figure rendered below is COMPUTED from the inspiratory flow held in
+// this table. No ratio is typed in, so a ratio cannot drift away from the flow it
+// was derived from. Provenance is carried per case: 'measured' means measured in
+// patients, 'derived' means arithmetic on a breathing-model setting published in
+// the cited paper, 'extrapolated' means past the end of the evidence.
+var pifCases = [
+  {
+    id: 'infant-measured',
+    tab: 'Infant 4.3 kg · measured',
+    title: 'Infant, median 4.3 kg, median age 37 days — acute viral bronchiolitis',
+    sub: 'The only case on this page whose inspiratory flow was measured in real patients.',
+    prov: 'measured',
+    pif: 7.45,
+    pifText: '7.45 L/min',
+    pifDetail: '95% CI 6.51–8.39 · observed range 2.40–16.00 · indexed to weight, 1.68 L/kg/min (95% CI 1.51–1.85)',
+    src: 'Peak tidal inspiratory flow measured by spirometry in 44 infants up to 6 months old admitted to a PICU with acute viral bronchiolitis; median weight 4.3 kg (Milesi 2021, PMID 33333115). PTIF was under 2.5 L/kg/min in 89% of infants, correlated with weight (&rho; = 0.55), and correlated with <em>no</em> marker of disease severity — not the modified Wood score, not the Silverman-Andersen score, not respiratory rate, F<sub>IO2</sub> or PCO<sub>2</sub>. This is a true spirometric peak.',
+    rows: [
+      { f: 6.5, fl: '1.5 L/kg/min ≈ 6.5 L/min' },
+      { f: 8,   fl: 'routine 8 L/min' },
+      { f: 8.6, fl: '2.0 L/kg/min ≈ 8.6 L/min' },
+      { f: 1.1, fl: '0.25 L/kg/min ≈ 1.1 L/min — the bench aerosol optimum' }
+    ],
+    note: '<strong>The two optima are different settings, and the gap is the whole problem.</strong> Effort of breathing in children under three falls most at 1.5–2.0 L/kg/min (Weiler 2017, PMID 28669609) — which is precisely where gas flow meets or passes measured inspiratory flow and Figure B says delivery is worst. The flow that gives the best aerosol delivery in the bench model, 0.25 L/kg/min, is about a seventh of it. Reaching the aerosol plateau in this infant means withdrawing most of the respiratory support, not trimming it.'
+  },
+  {
+    id: 'infant-bench',
+    tab: 'Infant bench model',
+    title: 'Infant bench model — the pattern behind the pediatric points in Figure A',
+    sub: 'Not a patient. These are simulator settings, and the arithmetic on them is shown.',
+    prov: 'derived',
+    pif: 8.6,
+    pifText: '8.6 L/min',
+    pifDetail: 'derived as V<sub>T</sub>/T<sub>I</sub> = 100 mL ÷ 0.7 s · the Ari 2011 pattern gives 6.0 L/min by the same arithmetic',
+    src: 'Ari 2019 (PMID 31313534) drove an infant lung model at V<sub>T</sub> 100 mL, respiratory rate 30/min, inspiratory time 0.7 s. Dividing gives 0.143 L/s, or 8.6 L/min. Ari 2011 (PMID 21438178) used V<sub>T</sub> 100 mL, rate 20/min, inspiratory time 1.0 s — 6.0 L/min. Neither paper reports a peak inspiratory flow; both numbers are this tool&rsquo;s arithmetic on the stated settings, in the V<sub>T</sub>/T<sub>I</sub> convention Li 2019 uses.',
+    rows: [
+      { f: 3, fl: '3 L/min' },
+      { f: 4, fl: '4 L/min (tested by Ari 2019)' },
+      { f: 6, fl: '6 L/min (tested by Ari 2019)' },
+      { f: 8, fl: '8 L/min' }
+    ],
+    note: '<strong>This is why the pediatric bench numbers in Figure A look better than any real child does.</strong> The flows these models were run at sit below the model&rsquo;s own inspiratory flow, in the favourable zone. A real infant on a routine 8 L/min is at or above it. Read the 3–6 L/min pediatric points as a statement about the model&rsquo;s flow setting, not about what a supported infant receives.'
+  },
+  {
+    id: 'child-bench',
+    tab: 'Child bench model',
+    title: 'Child bench model, 250 mL tidal volume — roughly a 30–40 kg child',
+    sub: 'The weight is inferred from the tidal volume; the paper does not state one.',
+    prov: 'derived',
+    pif: 15,
+    pifText: '15.0 L/min',
+    pifDetail: 'derived as V<sub>T</sub>/T<sub>I</sub> = 250 mL ÷ 1.0 s',
+    src: 'Ari 2019 (PMID 31313534) drove its pediatric lung model at V<sub>T</sub> 250 mL, respiratory rate 20/min, inspiratory time 1.0 s — 15.0 L/min by V<sub>T</sub>/T<sub>I</sub>. <span class="derived-tag">DERIVED</span> At a spontaneous tidal volume of 6–8 mL/kg the 250 mL setting corresponds to roughly a 30–40 kg child; that weight is this tool&rsquo;s inference from the tidal volume and is not given in the paper.',
+    rows: [
+      { f: 6,  fl: '6 L/min (the flow the model was tested at)' },
+      { f: 15, fl: '15 L/min' },
+      { f: 20, fl: '20 L/min — a plausible clinical setting' },
+      { f: 30, fl: '30 L/min — a plausible clinical setting' }
+    ],
+    note: '<strong>The bench and the bedside are on opposite sides of the crossover here.</strong> Ari 2019 ran this model at 4–6 L/min through the high-flow cannula, comfortably below its inspiratory flow. A child of that size on actual HFNC receives several times more. The same model, moved to a clinical flow, leaves the favourable zone entirely — which is the single most important thing this figure has to say about pediatric practice.'
+  },
+  {
+    id: 'toddler',
+    tab: 'Toddler 15 kg · evidence thin',
+    title: 'Toddler, 15 kg — the band where the literature runs out',
+    sub: 'A card with no ratio, because no defensible inspiratory flow was found for it.',
+    prov: 'none',
+    pif: null,
+    pifText: 'Not assertable',
+    pifDetail: 'no measured or stated simulated inspiratory flow for this size was located this session',
+    src: 'Li 2019 (PMID 30920155) is the study built on exactly this patient: anatomic manikins simulating a 5 kg infant and a 15 kg toddler, set to quiet and to distressed breathing, with cannula flow at 0.125, 0.25, 0.5, 1 and 2 L/kg/min. It reports its findings in terms of the patient&rsquo;s inspiratory flow but the record retrieved this session does not state the simulated peak inspiratory flow for either manikin, so <strong>no ratio is asserted here</strong> rather than one being reconstructed.',
+    rows: [],
+    note: '<strong>What the study does establish, without needing the ratio.</strong> Inhaled dose was higher when gas flow was below the patient&rsquo;s inspiratory flow than above it (8.77 ± 3.84% vs 2.16 ± 1.29%, P &lt; 0.001), deposition rose as flow fell, and the greatest deposition was at 0.25 L/kg/min (11.29 ± 2.15%). Placing the nebulizer at the humidifier inlet beat placing it proximal to the patient in every setting except the infant model at 0.125 and 0.25 L/kg/min.',
+    gap: '<strong>The gap in plain numbers.</strong> For a 15 kg toddler, the bench optimum of 0.25 L/kg/min is 3.8 L/min. A routine setting of 1.5–2.0 L/kg/min is 22–30 L/min. That is a six- to eightfold difference between the flow that delivers drug best and the flow that supports breathing best, in a child old enough that no measured inspiratory flow exists to arbitrate between them.'
+  },
+  {
+    id: 'adolescent',
+    tab: 'Adolescent ~50 kg',
+    title: 'Adolescent, ~50 kg — bounded, not measured',
+    sub: 'The estimate is wide on purpose. Narrowing it would mean inventing a number.',
+    prov: 'extrapolated',
+    pif: [20, 40],
+    pifText: '20–40 L/min',
+    pifDetail: 'a bounded estimate, not a measurement — bounded below by the 250 mL child model and above by the adult quiet-breathing patterns',
+    src: 'No measured or simulated tidal peak inspiratory flow for adolescents appears anywhere in this reference list. The bounds used here come from the two nearest published patterns: the 250 mL child model gives 15.0 L/min, and the adult quiet-breathing patterns give 13.5, 22.5 and 31.5 L/min (Li 2019, PMID 31083346). <span class="unsourced-tag">EXTRAPOLATED</span> <strong>The per-kilogram route fails openly here.</strong> Carrying the measured infant value of 1.68 L/kg/min out to 50 kg predicts 84 L/min — higher than every adult pattern ever simulated in this literature, including severe distress. The weight-indexed constant plainly does not survive out of infancy, which is the reason this card gives a range instead of a number.',
+    rows: [
+      { f: 20, fl: '20 L/min' },
+      { f: 30, fl: '30 L/min' },
+      { f: 40, fl: '40 L/min' },
+      { f: 50, fl: '50 L/min' }
+    ],
+    note: '<strong>At the flows this patient actually receives, the ratio straddles 1.0 and the sign of the effect cannot be resolved.</strong> That is the honest answer for this age band, and it is a different answer from &ldquo;delivery is fine.&rdquo; A reader who needs to know whether an adolescent on 40 L/min is above or below their own inspiratory flow cannot get that from the published literature; they would have to measure it.'
+  },
+  {
+    id: 'adult',
+    tab: 'Adult · for contrast',
+    title: 'Adult — the contrast that explains the rest of this tool',
+    sub: 'Published simulator settings, quiet and distressed, from the study behind Figure B.',
+    prov: 'derived',
+    pif: [13.5, 52.5],
+    pifText: '13.5–52.5 L/min',
+    pifDetail: 'quiet 13.5 / 22.5 / 31.5 · distressed 27 / 42 / 52.5 — all as V<sub>T</sub>/T<sub>I</sub>',
+    src: 'Li 2019 (PMID 31083346) drove an adult manikin at quiet patterns of V<sub>T</sub> 300, 500 and 700 mL with a 1.33 s inspiratory time — reported as 13.5, 22.5 and 31.5 L/min — and at three distressed patterns reported as 27, 42 and 52.5 L/min. These are the inspiratory flows the Figure B regression was built against, so ratios computed here are on exactly the axis that figure plots.',
+    rows: [
+      { f: 30, fl: '30 L/min',        pif: [13.5, 31.5], pl: 'quiet breathing' },
+      { f: 30, fl: '30 L/min',        pif: [27, 52.5],   pl: 'distressed breathing' },
+      { f: 50, fl: '50 L/min',        pif: [13.5, 31.5], pl: 'quiet breathing' },
+      { f: 50, fl: '50 L/min',        pif: [27, 52.5],   pl: 'distressed breathing' }
+    ],
+    note: '<strong>The distressed adult is the only patient on this page who routinely sits at or below a ratio of 1.0 at a clinical flow.</strong> That, and not the hardware, is why the adult inhaled-dose figures in this tool run 17–22% while the pediatric bench values at comparable flows run 0.0–0.8%. The adult has enough inspiratory demand to keep the ratio down at flows a child could never generate. It follows that adult delivery data does not transfer downward, and neither does any recommendation built on it.'
+  }
+];
+
+(function() {
+  var tabsEl = document.getElementById('caseTabs');
+  var cardEl = document.getElementById('caseCard');
+  if (!tabsEl || !cardEl) { return; }
+
+  function fmt(n) { return (Math.round(n * 100) / 100).toFixed(2); }
+
+  // Ratio for a scalar or [lo, hi] inspiratory flow. A range of inspiratory flows
+  // inverts: the LOW flow produces the HIGH ratio.
+  function ratio(flow, pif) {
+    if (pif === null || pif === undefined) { return null; }
+    if (Object.prototype.toString.call(pif) === '[object Array]') {
+      return { lo: flow / pif[1], hi: flow / pif[0] };
+    }
+    return { lo: flow / pif, hi: flow / pif };
+  }
+
+  function zone(r) {
+    if (!r) { return { cls: 'na', text: 'not assertable' }; }
+    if (r.hi <= 0.5)  { return { cls: 'lo',  text: 'plateau — highest delivery' }; }
+    if (r.hi <= 1.0)  { return { cls: 'mid', text: 'still favourable' }; }
+    if (r.lo > 1.0)   { return { cls: 'hi',  text: 'delivery falls' }; }
+    return { cls: 'na', text: 'straddles GF = IF — indeterminate' };
+  }
+
+  function ratioText(r) {
+    if (!r) { return '—'; }
+    return (Math.abs(r.hi - r.lo) < 0.005) ? fmt(r.lo) : (fmt(r.lo) + '–' + fmt(r.hi));
+  }
+
+  var provTag = {
+    measured:     '<span class="measured-tag">MEASURED</span>',
+    derived:      '<span class="derived-tag">DERIVED</span>',
+    extrapolated: '<span class="unsourced-tag">EXTRAPOLATED</span>',
+    none:         '<span class="unsourced-tag">NOT ESTABLISHED</span>'
+  };
+
+  function render(c) {
+    var html = '';
+    html += '<h3>' + c.title + ' ' + (provTag[c.prov] || '') + '</h3>';
+    html += '<p class="case-sub">' + c.sub + '</p>';
+    html += '<div class="case-pif">';
+    html += '<div class="k">Peak inspiratory flow</div>';
+    html += '<div class="v">' + c.pifText + '</div>';
+    html += '<p class="src"><em>' + c.pifDetail + '</em></p>';
+    html += '<p class="src" style="margin-top:6px">' + c.src + '</p>';
+    html += '</div>';
+
+    if (c.rows.length) {
+      var anyProfile = c.rows.some(function(r) { return !!r.pl; });
+      html += '<div class="table-wrap"><table class="ratio-table"><thead><tr>';
+      html += '<th>Set HFNC flow</th>';
+      html += '<th>Inspiratory flow used</th>';
+      if (anyProfile) { html += '<th>Pattern</th>'; }
+      html += '<th>GF:IF</th><th>Zone in Figure B</th>';
+      html += '</tr></thead><tbody>';
+      c.rows.forEach(function(row) {
+        var p = (row.pif !== undefined) ? row.pif : c.pif;
+        var r = ratio(row.f, p);
+        var z = zone(r);
+        var pTxt = (p === null || p === undefined) ? '—'
+          : (Object.prototype.toString.call(p) === '[object Array]' ? p[0] + '–' + p[1] + ' L/min' : p + ' L/min');
+        html += '<tr>';
+        html += '<td>' + row.fl + '</td>';
+        html += '<td>' + pTxt + '</td>';
+        if (anyProfile) { html += '<td>' + (row.pl || '—') + '</td>'; }
+        html += '<td><span class="rchip ' + z.cls + '">' + ratioText(r) + '</span></td>';
+        html += '<td>' + z.text + '</td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+
+    if (c.gap) { html += '<div class="case-gap">' + c.gap + '</div>'; }
+    html += '<p class="case-note">' + c.note + '</p>';
+    cardEl.innerHTML = html;
+  }
+
+  function select(id) {
+    var chosen = null;
+    pifCases.forEach(function(c) { if (c.id === id) { chosen = c; } });
+    if (!chosen) { return; }
+    var btns = tabsEl.querySelectorAll('.case-btn');
+    Array.prototype.forEach.call(btns, function(b) {
+      var on = b.getAttribute('data-case') === id;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    render(chosen);
+  }
+
+  pifCases.forEach(function(c, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'case-btn' + (i === 0 ? ' active' : '');
+    b.setAttribute('data-case', c.id);
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.textContent = c.tab;
+    tabsEl.appendChild(b);
+  });
+  tabsEl.addEventListener('click', function(e) {
+    var b = e.target.closest ? e.target.closest('.case-btn') : null;
+    if (b) { select(b.getAttribute('data-case')); }
+  });
+  select(pifCases[0].id);
+})();
 </script>
 
 <style>
@@ -503,6 +898,12 @@ new Chart(document.getElementById('chartRatio'), {
   .scope-tag { font-size: 11px; }
   .unsourced-tag { font-size: 11px; }
   /* Provenance + disclosure */ .derived-tag { font-size: 11px; }
+  .mfr-tag { font-size: 11px; }
+  .measured-tag { font-size: 11px; }
+  .dev-sub { font-size: 11px; }
+  .case-pif .k { font-size: 11px; }
+  .cell-sub { font-size: 11px; }
+  sub, sup { font-size: 11px; }
 }
 </style>
 </body>
