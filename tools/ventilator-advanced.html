@@ -325,8 +325,8 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="chips">
     <div class="chip"><span class="k">Assumes</span><span class="v">Ventilator fundamentals: modes, waveforms, compliance, resistance, the time constant</span></div>
     <div class="chip"><span class="k">Adds</span><span class="v">P<sub>mus</sub>, the second pressure source, and everything downstream of it</span></div>
-    <div class="chip"><span class="k">Evidence</span><span class="v">75 sources; population printed on every number</span></div>
-    <div class="chip"><span class="k">Figures</span><span class="v">Nine interactive rigs; four published models named but deliberately not computed</span></div>
+    <div class="chip"><span class="k">Evidence</span><span class="v">81 sources, plus one non-peer-reviewed teaching site named as such; population printed on every number</span></div>
+    <div class="chip"><span class="k">Figures</span><span class="v">Ten interactive rigs; four published models named but deliberately not computed</span></div>
   </div>
  </div>
 </header>
@@ -517,7 +517,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
           </div>
         </div>
         <div class="rig-view">
-          <svg id="v2svg" viewBox="0 0 620 362" role="img" aria-labelledby="v2title"><title id="v2title">Three horizontal scales showing predicted muscle pressure, predicted dynamic transpulmonary driving pressure and P0.1, each with the selected consensus target band shaded and the pediatric observed interquartile range marked, and a marker at the value converted from the entered occlusion swing.</title></svg>
+          <svg id="v2svg" viewBox="0 0 620 410" role="img" aria-labelledby="v2title"><title id="v2title">Three horizontal scales showing predicted muscle pressure, predicted dynamic transpulmonary driving pressure and P0.1, each with the selected consensus target band shaded and the pediatric observed interquartile range marked, and a marker at the value converted from the entered occlusion swing.</title></svg>
           <div class="readout c4" id="v2read">
             <div class="pin"><span class="k">Predicted P<sub>mus</sub></span><span class="v" id="v2_pmus">&mdash;</span></div>
             <div class="pin"><span class="k">Predicted &Delta;P<sub>L,dyn</sub></span><span class="v" id="v2_pl">&mdash;</span></div>
@@ -593,7 +593,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     </table></div>
     <p class="tbl-note">p &lt; 0.001 across effort levels. Compliance derived from driving pressure and tidal volume slightly overestimated the set value, median bias 0.09 mL/cmH<sub>2</sub>O/kg (95% CI 0.06&ndash;0.16); the bias grew with effort, and once stratified by effort there was no meaningful difference between modes.</p>
     <div class="callout">
-      <p><b>The teaching point.</b> The standard half-second hold is adequate for a passive child and is not adequate for a working one. A plateau read too early against effort reports a compliance that is better than the truth, in every mode.</p>
+      <p><b>The standard half-second hold is adequate for a passive child and is not adequate for a working one.</b> A plateau read too early against effort reports a compliance that is better than the truth, in every mode.</p>
     </div>
    </div>
   </div>
@@ -621,11 +621,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       </tbody>
     </table></div>
 
-    <h3>What the bench study actually measured</h3>
+    <h3>What the bench study measured</h3>
     <p>Mireles-Cabodevila and Chatburn quantified adaptive pressure control on an ASL 5000 at compliance 0.025 L/cmH<sub>2</sub>O and resistance 10 cmH<sub>2</sub>O/L/s, with P<sub>mus</sub> a sine wave (20% inspiration, 5% hold, 20% release) stepped 0 to 25 cmH<sub>2</sub>O in 5 cmH<sub>2</sub>O increments and a target V<sub>T</sub> of 320 mL, across AutoFlow (Evita XL), VC+ (PB840), APV (Galileo) and PRVC (Servo-i and Servo 300). Patient work of breathing rose from 0 to 1.88 J/L. <b>The target V<sub>T</sub> held only while P<sub>mus</sub> stayed below 10 cmH<sub>2</sub>O; above that, V<sub>T</sub> rose linearly with effort.</b> <span class="tag t-bench">bench, no patients</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/19863830/" target="_blank" rel="noopener">PMID 19863830</a></p>
     <div class="facts">
       <div class="fact"><span class="n">01</span><p>Ventilator work fell all the way to 0 J/L, so <b>the patient assumed the entire load</b>.</p></div>
-      <div class="fact"><span class="n">02</span><p>Ventilator work fell but <b>plateaued at P<sub>mus</sub> 10 cmH<sub>2</sub>O by holding a floor of 6 cmH<sub>2</sub>O inspiratory pressure</b>.</p></div>
+      <div class="fact"><span class="n">02</span><p><b>Ventilator work fell to P<sub>mus</sub> 10 cmH<sub>2</sub>O and then stopped falling</b>, because those machines would not set inspiratory pressure below a floor of 6 cmH<sub>2</sub>O however hard the simulated patient pulled. A patient on one of them keeps a small fixed amount of help at any effort, which is the only thing any source says about what adaptive pressure control does above the breakpoint.</p></div>
       <div class="fact"><span class="n">03</span><p>Ventilator work fell as in the first two to P<sub>mus</sub> 10 and then <b>declined much more slowly</b>.</p></div>
     </div>
     <p>The behaviour is a property of the brand, not of the mode name.</p>
@@ -662,13 +662,13 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
           </div>
         </div>
         <div class="rig-view">
-          <svg id="v3svg" viewBox="0 0 620 444" role="img" aria-labelledby="v3title"><title id="v3title">Inspiratory pressure above PEEP plotted against patient muscle pressure for the three modes this tool can compute, with dashed tidal-volume curves on a right-hand axis. Volume-control support falls one for one with effort while the pressure-targeted lines stay flat. The two published adaptive-pressure-control anchors are marked as points and are not joined by a curve, and NAVA is named in the table without a slope; a movable cursor reads every computed mode at the chosen effort.</title></svg>
+          <svg id="v3svg" viewBox="0 0 620 512" role="img" aria-labelledby="v3title"><title id="v3title">Inspiratory pressure above PEEP plotted against patient muscle pressure for the three modes this tool can compute, with dashed tidal-volume curves on a right-hand axis. Volume-control support falls one for one with effort while the pressure-targeted lines stay flat. The two published adaptive-pressure-control anchors are marked separately and are not joined by a curve: a dashed vertical at muscle pressure 10, and a short horizontal line at 6 cmH2O for the one ventilator group that would go no lower. Each is explained in words below the axis. NAVA is named in the table without a slope, and a movable cursor reads every computed mode at the chosen effort.</title></svg>
           <div class="scrollx" id="v3tblmount"></div>
         </div>
       </div>
       <div class="rig-foot" id="v3foot"><b>Every line that can be computed here falls or stays flat as the patient works harder.</b> The direction of the line is the choice the clinician made, and the one mode whose line would rise is the one whose slope no source publishes.</div>
     </div>
-    <p class="tbl-note"><b>Two modes on this axis are display-only, and that is deliberate.</b> The figure marks the two anchors PMID 19863830 publishes and joins them with nothing, because no source publishes a function between them: the bench paper reports the breakpoint at P<sub>mus</sub> 10 cmH<sub>2</sub>O and the 6 cmH<sub>2</sub>O floor and nothing in between. NAVA appears in the table with its direction and without a number, because no manufacturer publishes the internal scaling from diaphragm electrical activity to delivered pressure. Neither coefficient exists in any source, so an interpolated adaptive-pressure-control curve and a NAVA line at an author-chosen slope would each rest on an invented one, and neither is computed here. Volume control is plotted as the plateau, with the resistive term R &times; flow shown as a separate fine dotted line so it is not mistaken for extra support. Both volume-control lines are clamped at the axis floor: once P<sub>mus</sub> exceeds the passive elastic requirement the ventilator's contribution goes to zero and then below PEEP, which this axis does not show &mdash; rig 1 does, and its scalloped trace is the point of that figure. Patient work is interpolated between the two published endpoints, 0 and 1.88 J/L, and is labelled <span class="tag t-derived">derived</span>; ventilator work is a relative index, not joules.</p>
+    <p class="tbl-note"><b>Two modes on this axis are display-only, and that is deliberate.</b> The figure marks the two anchors PMID 19863830 publishes and joins them with nothing, because no source publishes a function between them. The bench paper reports two numbers and nothing in between: the target volume held below P<sub>mus</sub> 10 cmH<sub>2</sub>O, and a floor of 6 cmH<sub>2</sub>O inspiratory pressure that one of the three ventilator groups would not go below at any effort. The floor is a property of that group, not of the mode, and the other two groups kept withdrawing support past the breakpoint. NAVA appears in the table with its direction and without a number, because no manufacturer publishes the internal scaling from diaphragm electrical activity to delivered pressure. Neither coefficient exists in any source, so an interpolated adaptive-pressure-control curve and a NAVA line at an author-chosen slope would each rest on an invented one, and neither is computed here. Volume control is plotted as the plateau, with the resistive term R &times; flow shown as a separate fine dotted line so it is not mistaken for extra support. Both volume-control lines are clamped at the axis floor: once P<sub>mus</sub> exceeds the passive elastic requirement the ventilator's contribution goes to zero and then below PEEP, which this axis does not show &mdash; rig 1 does, and its scalloped trace is the point of that figure. Patient work is interpolated between the two published endpoints, 0 and 1.88 J/L, and is labelled <span class="tag t-derived">derived</span>; ventilator work is a relative index, not joules.</p>
    </div>
   </div>
  </div>
@@ -698,221 +698,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
  </div>
 </section>
 
-<!-- ============ 08 DECREMENTAL PEEP ============ -->
+<!-- ============ 08 DETERMINANTS ============ -->
 <section>
  <div class="wrap">
   <div class="split">
-   <div class="numeral">08<small>PEEP</small></div>
-   <div>
-    <h2>Best-compliance PEEP and the decremental trial</h2>
-    <p>Best-compliance PEEP asks a different question from the PEEP/FiO<sub>2</sub> table. The table titrates PEEP to oxygenation. A decremental trial titrates it to the mechanics of the lung, on the argument that the PEEP giving the highest tidal compliance is the PEEP at which the largest number of units are open and none are yet overdistended.</p>
-
-    <h3>Why the trial must be decremental</h3>
-    <p>Hickling built a mathematical ARDS lung with gravitational superimposed pressure and explicit alveolar opening and closing pressures. During an incremental trial the PEEP giving maximum mean tidal pressure-volume slope did not coincide with open-lung PEEP, and it varied greatly with tidal volume and with lung mechanics: an incremental trial at low tidal volume tests recruitment by the peak pressure, not prevention of collapse by PEEP. During a decremental trial at low tidal volume, maximum slope occurred <b>2 to 3.5 cmH<sub>2</sub>O below open-lung PEEP</b> unless closing pressure was high. The maximum slope was always much higher on the decremental limb &mdash; in the worked example 93.7 versus 16.69 mL/cmH<sub>2</sub>O &mdash; and the variation of slope with PEEP was greater, so the signal is larger and the peak is easier to find. <span class="tag t-model">mathematical model</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/11208628/" target="_blank" rel="noopener">Hickling 2001, PMID 11208628</a></p>
-
-    <h3>The animal validation</h3>
-    <p>Suarez-Sipmann lavaged eight pigs, performed a recruitment maneuver confirmed by oxygenation, mechanics and CT, then reduced PEEP in 2 cmH<sub>2</sub>O steps every 10 minutes from 24 cmH<sub>2</sub>O in volume control at 6 mL/kg. Collapse, defined as the first measurable fall after the maximum dynamic compliance, occurred at PEEP 14 cmH<sub>2</sub>O. That coincided with the oxygenation-defined collapse point where shunt began to rise, and occurred one step before non-aerated tissue on CT exceeded 5%. <b>Open-lung PEEP was therefore 16 cmH<sub>2</sub>O, one step above the compliance turning point.</b> <span class="tag t-bench">animal</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/17110872/" target="_blank" rel="noopener">PMID 17110872</a></p>
-    <div class="callout"><p><b>The rule as the animal experiment states it.</b> <span class="tag t-bench">animal</span> In eight saline-lavaged pigs, open-lung PEEP was one step above the level at which compliance first fell. Read that as the derivation and not as an instruction. Section 09 gives the largest human trial of best-compliance PEEP, which increased mortality, and the one strong recommendation in the PALICC-2 set shown there, which sends children back to the ARDSNet table. No human trial has tested this rule as a rule.</p></div>
-
-    <div class="rig" id="rig4">
-      <div class="rig-head"><span class="t">Rig 4 &middot; The decremental trial, against its own incremental limb</span><span class="s">Recruit. Step down. Find the peak, then go one step back up.</span></div>
-      <div class="rig-body">
-        <div class="rig-ctrl">
-          <div class="grp">
-            <h5>Run the trial</h5>
-            <div class="seg c2">
-              <button class="btn" type="button" id="v4recruit">Recruit</button>
-              <button class="btn" type="button" id="v4step">Step PEEP</button>
-            </div>
-            <button class="btn" type="button" id="v4inc" aria-pressed="false">Run incremental instead</button>
-            <button class="btn" type="button" id="v4reset" style="margin-top:6px">Reset</button>
-          </div>
-          <div class="grp">
-            <h5>The lung</h5>
-            <div class="ctl">
-              <label for="v4spread">Closing-pressure spread<span class="val" id="v4spread_v">narrow</span></label>
-              <input type="range" id="v4spread" min="1" max="6" step="0.5" value="2">
-              <span class="hint">How abruptly units close as PEEP falls. Wide spread flattens the peak.</span>
-            </div>
-            <div class="ctl">
-              <label for="v4dp">Driving pressure of the test breath<span class="val" id="v4dp_v">12 cmH2O</span></label>
-              <input type="range" id="v4dp" min="6" max="18" step="1" value="12">
-            </div>
-          </div>
-        </div>
-        <div class="rig-view">
-          <svg id="v4svg" viewBox="0 0 620 430" role="img" aria-labelledby="v4title"><title id="v4title">Left panel plots dynamic compliance against PEEP for the trial as it is stepped, with the decremental limb showing a single clear maximum and the incremental limb a flatter maximum at a different PEEP. Right panel shows a twenty-unit lung column with each unit coloured open, collapsed or overdistended at the current PEEP.</title></svg>
-          <div class="readout c4">
-            <div><span class="k">PEEP now</span><span class="v" id="v4_peep">&mdash;</span></div>
-            <div><span class="k">Dynamic compliance</span><span class="v" id="v4_cdyn">&mdash;</span></div>
-            <div class="pin"><span class="k">Best so far</span><span class="v" id="v4_best">&mdash;</span></div>
-            <div class="pin"><span class="k">One step above</span><span class="v" id="v4_ol">&mdash;</span></div>
-          </div>
-          <div class="flags"><div class="flag" id="v4flag" hidden></div></div>
-        </div>
-      </div>
-      <div class="rig-foot" id="v4foot"><b>Press Recruit, then step down.</b> The peak exists only because the trial runs downward.</div>
-    </div>
-    <p class="tbl-note">The lung in this rig is a <span class="tag t-model">model choice</span>: a twenty-unit column with a logistic distribution of closing pressures, a separate and higher opening-pressure distribution to create hysteresis, and an overdistension term that reduces unit compliance as mean pressure rises. It is not fitted to either source and no patient data are plotted. The 2 to 3.5 cmH<sub>2</sub>O offset from PMID 11208628 is drawn as a reference band so it can be compared with the model's own offset rather than conflated with it.</p>
-   </div>
-  </div>
- </div>
-</section>
-
-<!-- ============ 09 WHERE IT FAILS ============ -->
-<section>
- <div class="wrap">
-  <div class="split">
-   <div class="numeral">09<small>The trial</small></div>
-   <div>
-    <h2>Where the best-compliance PEEP trial fails</h2>
-    <p>The physiology is sound and the outcome trial was harmful. ART randomised 1010 adults with moderate-to-severe ARDS at 120 ICUs in 9 countries to a recruitment maneuver with PEEP titrated to best respiratory-system compliance, or to low PEEP. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/28973363/" target="_blank" rel="noopener">ART 2017, PMID 28973363</a></p>
-    <div class="scrollx"><table>
-      <caption>ART: recruitment plus best-compliance PEEP titration versus low PEEP.</caption>
-      <thead><tr><th style="width:34%">Outcome</th><th class="num">Titrated</th><th class="num">Low PEEP</th><th>Effect</th></tr></thead>
-      <tbody>
-        <tr><td>28-day mortality</td><td class="num">55.3% (277/501)</td><td class="num">49.3% (251/509)</td><td>HR 1.20 (1.01&ndash;1.42), p = 0.041</td></tr>
-        <tr><td>6-month mortality</td><td class="num">65.3%</td><td class="num">59.9%</td><td>HR 1.18 (1.01&ndash;1.38), p = 0.04</td></tr>
-        <tr><td>Ventilator-free days, mean</td><td class="num">5.3</td><td class="num">6.4</td><td>Difference &minus;1.1 (&minus;2.1 to &minus;0.1), p = 0.03</td></tr>
-        <tr><td>Pneumothorax requiring drainage</td><td class="num">3.2%</td><td class="num">1.2%</td><td>&mdash;</td></tr>
-      </tbody>
-    </table></div>
-    <div class="banner"><b>Be careful about what that trial refutes.</b> ART tested a bundle: an aggressive stepwise recruitment maneuver plus the titration. It does not establish that a decremental trial without that maneuver is harmful. It does establish that best-compliance PEEP as delivered in the largest trial of it increased mortality, and that is the number a learner should carry.</div>
-
-    <h3>The alternative individualised strategy was also negative</h3>
-    <p>EPVent-2 randomised 200 adults with moderate-to-severe ARDS to esophageal-pressure-guided PEEP or empirical high PEEP/FiO<sub>2</sub>. The ranked composite of death and ventilator-free days was not different: probability of a more favourable outcome with esophageal guidance 49.6% (95% CI 41.7&ndash;57.5), p = 0.92. Twenty-eight-day mortality was 32.4% versus 30.6%, risk difference 1.7% (95% CI &minus;11.1 to 14.6). <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/30776290/" target="_blank" rel="noopener">PMID 30776290</a></p>
-
-    <h3>What survives both</h3>
-    <p>Driving pressure remains the ventilation variable that best stratifies risk. In a mediation analysis of 3562 adults across nine randomised trials, a 1 SD increment in driving pressure, about 7 cmH<sub>2</sub>O, carried a relative risk of death of 1.41 (1.31&ndash;1.51), p &lt; 0.001, and that held even within patients already receiving protective plateau pressures and tidal volumes, RR 1.36 (1.17&ndash;1.58). Changes in tidal volume or PEEP after randomisation were associated with survival only when they lowered driving pressure. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25693014/" target="_blank" rel="noopener">NEJM 2015, PMID 25693014</a></p>
-    <div class="callout"><p><b>The practical reconciliation.</b> <span class="tag t-derived">derived</span> Use the decremental trial to find the PEEP that minimises driving pressure at a fixed tidal volume, and do not bundle it with an aggressive recruitment maneuver. That sentence is a physiologic inference this tool draws from the three results above. It is not a tested strategy: no trial has randomised the unbundled version in adults or in children, and PALICC-2 3.4.2, a strong recommendation at moderate certainty, still puts pediatric PEEP at or above the ARDSNet table <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a>.</p></div>
-
-    <h3>In children there is no such trial</h3>
-    <p>What exists: 1134 children with pediatric ARDS managed without a PEEP protocol, of whom 26.6% received PEEP lower than the ARDSNet table recommended for their FiO<sub>2</sub>. Those children had higher mortality, adjusted OR 2.05 (95% CI 1.32&ndash;3.17), and 2.00 (1.24&ndash;3.22) after propensity adjustment. <span class="tag t-peds">pediatric, retrospective</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/29373802/" target="_blank" rel="noopener">AJRCCM 2018, PMID 29373802</a></p>
-    <div class="scrollx"><table>
-      <caption>PALICC-2 recommendations that surround this decision, with their own strength and certainty labels. <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></caption>
-      <thead><tr><th style="width:12%">Number</th><th style="width:48%">Recommendation</th><th>Strength and certainty</th></tr></thead>
-      <tbody>
-        <tr><td>3.4.2</td><td>PEEP typically maintained at or above the lower-PEEP / higher-FiO<sub>2</sub> ARDSNet table</td><td><b>Strong, moderate certainty</b> &mdash; the only strong recommendation among the seven rows of this table <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></td></tr>
-        <tr><td>3.4.1</td><td>Titration to oxygenation, hemodynamics and compliance</td><td>Conditional, very low certainty</td></tr>
-        <tr><td>3.4.3</td><td>Attention to plateau and driving pressure limits</td><td>Good-practice statement</td></tr>
-        <tr><td>3.2</td><td>Tidal volume 6&ndash;8 mL/kg, lower (4&ndash;6) if needed to respect pressure limits</td><td>Conditional, very low certainty</td></tr>
-        <tr><td>3.3.1</td><td>Plateau at or below 28 cmH<sub>2</sub>O, up to 32 with reduced chest-wall compliance</td><td>Conditional, very low certainty</td></tr>
-        <tr><td>3.3.2</td><td>Driving pressure limited to 15 cmH<sub>2</sub>O</td><td>Conditional, very low certainty</td></tr>
-        <tr><td>2.1</td><td>Dead space to tidal volume ratio measured at PARDS onset</td><td>Conditional, low certainty</td></tr>
-      </tbody>
-    </table></div>
-    <p>A 2026 pediatric narrative review reaches the same conclusion: the ARDSNet lower table has the strongest evidence, and compliance-based maneuvers, stress index, pressure-volume curves, esophageal manometry and electrical impedance tomography all lack pediatric outcome data. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/41982967/" target="_blank" rel="noopener">PMID 41982967</a> One single-centre pediatric cohort supports the 15 cmH<sub>2</sub>O line for morbidity rather than mortality: among 101 children with acute hypoxemic respiratory failure, dynamic driving pressure below 15 cmH<sub>2</sub>O in the first 24 hours was associated with shorter ventilation (5 [4&ndash;6] versus 8 [6&ndash;11] days), shorter ICU stay (6 [5&ndash;8] versus 12 [8&ndash;15] days) and more ventilator-free days (23 [20&ndash;24] versus 17 [0&ndash;22]), all p &lt; 0.001, with no mortality difference (17% versus 24%, p = 0.38). <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/33024000/" target="_blank" rel="noopener">PMID 33024000</a></p>
-   </div>
-  </div>
- </div>
-</section>
-
-<!-- ============ 10 DEAD SPACE AND SHUNT ============ -->
-<section>
- <div class="wrap">
-  <div class="split">
-   <div class="numeral">10<small>Two failures</small></div>
-   <div>
-    <h2>Dead space and shunt are different failures</h2>
-    <p>Both are ventilation-perfusion mismatch and they sit at opposite ends of the same axis. Shunt is perfusion without ventilation, V/Q approaching zero. Dead space is ventilation without perfusion, V/Q approaching infinity. The clinical separation follows from the dissociation curves, not from the anatomy.</p>
-    <div class="grid2">
-      <div class="cardt">
-        <p class="ov">Shunt</p>
-        <p><b>An oxygenation problem, and it resists FiO<sub>2</sub>.</b> Blood leaving a shunt unit never contacts alveolar gas, so raising inspired oxygen raises the PaO<sub>2</sub> of the ventilated units, whose haemoglobin is already nearly saturated, and adds almost nothing. Petersson states the rule directly: in contrast to other causes, hypoxaemia due to shunt responds poorly to supplemental oxygen. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></p>
-      </div>
-      <div class="cardt">
-        <p class="ov">Dead space</p>
-        <p><b>A CO<sub>2</sub> problem, and it usually presents as work, not as hypercapnia.</b> CO<sub>2</sub> dissociation is nearly linear over the physiological range, so an over-ventilated unit can carry away extra CO<sub>2</sub> and compensate for an underventilated one. Oxygen has no such reserve: haemoglobin in the over-ventilated units is already almost fully loaded, so those units cannot make up the shortfall, which is why shunt resists FiO<sub>2</sub> while wasted ventilation can be answered by breathing more. The commonest result of wasted ventilation is therefore increased minute ventilation and work of breathing rather than a raised PaCO<sub>2</sub>, because drive defends PaCO<sub>2</sub> until it cannot. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></p>
-      </div>
-    </div>
-    <div class="callout"><p><b>The single most useful sentence in this section:</b> a rising dead space fraction in a spontaneously breathing child shows up first as tachypnea and effort, and only later as a number on a gas.</p></div>
-    <p>Benatar's iso-shunt lines are the graphical expression of the oxygen half and remain the reference construction <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/4581075/" target="_blank" rel="noopener">PMID 4581075</a>. Petros later showed the lines need modification at low FiO<sub>2</sub>: in 20 recovering ICU patients, the apparent venous admixture computed from the original diagram rose from 0.11 to 0.19 as FiO<sub>2</sub> fell from 0.60 to 0.21, because relative V/Q mismatch contributes at low FiO<sub>2</sub> in a way the pure-shunt model does not capture. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8198900/" target="_blank" rel="noopener">PMID 8198900</a></p>
-
-    <h3>Dead-space markers, and what each costs</h3>
-    <div class="scrollx"><table>
-      <caption>Four bedside markers of wasted ventilation, with the population each number came from.</caption>
-      <thead><tr><th style="width:16%">Marker</th><th style="width:22%">Formula</th><th style="width:14%">Needs</th><th>Population evidence</th></tr></thead>
-      <tbody>
-        <tr><td><b>Physiologic V<sub>D</sub>/V<sub>T</sub></b><br>Bohr-Enghoff</td><td>(PaCO<sub>2</sub> &minus; mixed expired PCO<sub>2</sub>) / PaCO<sub>2</sub></td><td>Volumetric capnography plus an arterial gas</td><td><span class="tag t-adult">adult</span> mean 0.58 &plusmn; 0.09 early in ARDS; 0.63 &plusmn; 0.10 in non-survivors versus 0.54 &plusmn; 0.09, p &lt; 0.001; each 0.05 increase OR 1.45 (1.15&ndash;1.83) for death <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/11973365/" target="_blank" rel="noopener">PMID 11973365</a>. <span class="tag t-peds">pediatric</span> median 0.47 (IQR 0.38&ndash;0.61) in 131 children with ARDS <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
-        <tr><td><b>Alveolar dead space fraction</b><br>AVDSf</td><td>(PaCO<sub>2</sub> &minus; end-tidal PCO<sub>2</sub>) / PaCO<sub>2</sub></td><td>Capnography plus a gas</td><td><span class="tag t-peds">pediatric</span> at PARDS onset 0.13 (0.06&ndash;0.23) in survivors versus 0.31 (0.19&ndash;0.42) in non-survivors, p &lt; 0.001, AUC 0.76 (0.66&ndash;0.85), better than initial oxygenation index or PaO<sub>2</sub>/FiO<sub>2</sub>, in 266 children <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/26669646/" target="_blank" rel="noopener">PMID 26669646</a>. Optimal cut 0.22 in a 69-child prospective cohort, close to the previously suggested 0.25 <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/35295701/" target="_blank" rel="noopener">PMID 35295701</a>. In 2335 patients with 8004 values, AVDSf above 0.3 carried higher mortality than below 0.2 within every severity category; maximum AVDSf within 12 h of admission gave AUC 0.768 (0.732&ndash;0.803) <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36759925/" target="_blank" rel="noopener">PMID 36759925</a></td></tr>
-        <tr><td><b>Ventilatory ratio</b></td><td>(minute ventilation in <b>mL/min</b> &times; PaCO<sub>2</sub> in mmHg) / (predicted body weight in kg &times; 100 &times; 37.5)<br><span class="ax">The unit is load-bearing: substituting minute ventilation in L/min makes the ratio 1000-fold too low.</span></td><td>Ventilator numbers plus a gas</td><td><span class="tag t-adult">adult</span> correlates with V<sub>D</sub>/V<sub>T</sub>; independently associated with mortality after adjusting for PaO<sub>2</sub>/FiO<sub>2</sub> and PEEP (OR 1.51, p = 0.024) and for APACHE II (OR 1.59, p = 0.04) <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/30211618/" target="_blank" rel="noopener">PMID 30211618</a>. The pediatric form uses age-adjusted predicted minute ventilation <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
-        <tr><td><b>CO<sub>2</sub> ventilatory equivalent</b></td><td>minute ventilation / VCO<sub>2</sub></td><td>Volumetric capnography, no gas needed</td><td><span class="tag t-peds">pediatric</span> associated with mortality (p = 0.003) alongside V<sub>D</sub>/V<sub>T</sub> (p = 0.002) and ventilatory ratio (p = 0.013), adjusting for oxygenation index, immunosuppression and severity, in 131 children. In the same model AVDSf was not associated with mortality, and oxygenation index was not associated with mortality once any dead-space marker was in the model <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
-      </tbody>
-    </table></div>
-    <div class="banner"><b>The conflict is real and is left standing.</b> Two single-centre pediatric cohorts find AVDSf discriminates mortality; a third, at a different sample size, finds it does not once other dead-space markers are in the model. This tool shows the disagreement rather than resolving it.</div>
-
-    <h3>Dead space in the smallest patients is a large fraction of the delivered breath</h3>
-    <p>In 81 ventilated infants, median gestational age 28.7 weeks, dead space measured by the modified Bohr-Enghoff equation was <b>5.7 mL/kg (IQR 5.1&ndash;7.0) in respiratory distress syndrome and 6.4 (5.1&ndash;7.5) in bronchopulmonary dysplasia against 3.5 (2.8&ndash;4.2) in 20 term controls</b>, p &lt; 0.001. Minute ventilation was higher in both disease groups while alveolar ventilation was the same as controls (p = 0.54). <span class="tag t-peds">neonatal / infant</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/33603211/" target="_blank" rel="noopener">PMID 33603211</a><span class="erratum"><b>Erratum on record</b> for PMID 33603211 &mdash; Pediatr Res 2022;91(1):265, PMID 34404931. These are the values rig 8's infant preset uses. This page holds the PubMed linkage only and did not retrieve the erratum, so it makes no claim about which of these numbers it touches; read it before carrying them to a patient.</span></p>
-    <p>Against a 6 mL/kg tidal volume, a 6 mL/kg dead space means the alveolar breath is close to nothing. This is the strongest argument in the tool for why an adult-derived tidal-volume target is not a pediatric one, and PALICC-2 accordingly recommends measuring the dead space to tidal volume ratio at PARDS onset. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></p>
-
-    <div class="rig" id="rig5">
-      <div class="rig-head"><span class="t">Rig 5 &middot; Two failures, two levers</span><span class="s">Press one lever. Watch the other panel not move.</span></div>
-      <div class="rig-body">
-        <div class="rig-ctrl">
-          <div class="grp">
-            <h5>The three compartments</h5>
-            <div class="ctl">
-              <label for="v5shunt">Shunt fraction<span class="val" id="v5shunt_v">10%</span></label>
-              <input type="range" id="v5shunt" min="0" max="50" step="1" value="10">
-            </div>
-            <div class="ctl">
-              <label for="v5vd">Dead space fraction<span class="val" id="v5vd_v">0.35</span></label>
-              <input type="range" id="v5vd" min="0.2" max="0.7" step="0.01" value="0.35">
-            </div>
-          </div>
-          <div class="grp">
-            <h5>The two levers</h5>
-            <div class="ctl">
-              <label for="v5fio2">FiO<sub>2</sub><span class="val" id="v5fio2_v">0.40</span></label>
-              <input type="range" id="v5fio2" min="0.21" max="1" step="0.01" value="0.40">
-            </div>
-            <div class="ctl">
-              <label for="v5ve">Minute ventilation<span class="val" id="v5ve_v">1.0 x baseline</span></label>
-              <input type="range" id="v5ve" min="0.5" max="2.5" step="0.05" value="1">
-            </div>
-            <div class="ctl">
-              <label for="v5vco2">VCO<sub>2</sub><span class="val" id="v5vco2_v">1.0 x baseline</span></label>
-              <input type="range" id="v5vco2" min="0.5" max="2" step="0.05" value="1">
-            </div>
-            <div class="seg c2" style="margin-top:10px">
-              <button class="btn" type="button" id="v5o2btn">Raise FiO<sub>2</sub> to 1.0</button>
-              <button class="btn" type="button" id="v5vebtn">Double the ventilation</button>
-            </div>
-          </div>
-          <div class="grp">
-            <h5>Reference bands</h5>
-            <div class="seg c3" id="v5pop" role="radiogroup" aria-label="Population for the reference bands">
-              <button class="tg" type="button" role="radio" aria-checked="false" data-v="inf">Infant</button>
-              <button class="tg" type="button" role="radio" aria-checked="true" data-v="chi">Child</button>
-              <button class="tg" type="button" role="radio" aria-checked="false" data-v="adu">Adult</button>
-            </div>
-            <button class="btn" type="button" id="v5reset">Reset</button>
-          </div>
-        </div>
-        <div class="rig-view">
-          <svg id="v5svg" viewBox="0 0 620 430" role="img" aria-labelledby="v5title"><title id="v5title">Left panel plots a qualitative family of arterial oxygenation curves against inspired oxygen fraction, one per shunt fraction, flattening as shunt rises. Right panel plots relative arterial carbon dioxide against minute ventilation, one curve per dead space fraction. Raising inspired oxygen moves only the left panel and raising minute ventilation moves only the right.</title></svg>
-          <div class="readout c4">
-            <div><span class="k">FiO<sub>2</sub> lever yield</span><span class="v" id="v5_yield">&mdash;</span></div>
-            <div><span class="k">Alveolar share of breath</span><span class="v" id="v5_alv">&mdash;</span></div>
-            <div class="pin"><span class="k">Relative PaCO<sub>2</sub></span><span class="v" id="v5_paco2">&mdash;</span></div>
-            <div class="pin"><span class="k">Band for this population</span><span class="v" id="v5_band">&mdash;</span></div>
-          </div>
-          <div class="flags"><div class="flag" id="v5flag" hidden></div></div>
-        </div>
-      </div>
-      <div class="rig-foot" id="v5foot"><b>The two panels never move together.</b> FiO<sub>2</sub> moves only the left panel and minute ventilation only the right. Against shunt, FiO<sub>2</sub> is the lever that fails: shunt is answered by recruitment, by mean airway pressure in section 11, not by oxygen.</div>
-    </div>
-    <p class="tbl-note">Honesty note on the left panel, printed again inside the figure. The Benatar iso-shunt nomogram constants were not retrievable during verification, so no curve here carries a PaO<sub>2</sub> value and none is read off a source. The family is drawn qualitatively from content mixing alone &mdash; arterial content is the shunt-weighted mix of end-capillary and venous content, with an author-chosen saturating rise of end-capillary content against FiO<sub>2</sub>. End-capillary content is drawn saturation-limited: it rises across the low-FiO<sub>2</sub> range and is nearly flat above about 0.3, because haemoglobin there is already almost fully loaded and what FiO<sub>2</sub> adds beyond that is dissolved oxygen. That flatness is the point of plotting content rather than PaO<sub>2</sub>. PaO<sub>2</sub> would keep climbing where content does not, and the oxyhaemoglobin dissociation curve that separates the two was not retrievable during verification and is not reconstructed, so no PaO<sub>2</sub> curve is drawn. The right panel is exact proportionality, PaCO<sub>2</sub> proportional to VCO<sub>2</sub> divided by alveolar ventilation, plotted relative to the baseline state rather than in mmHg, so no unit-conversion constant is asserted.</p>
-   </div>
-  </div>
- </div>
-</section>
-
-<!-- ============ 11 DETERMINANTS ============ -->
-<section>
- <div class="wrap">
-  <div class="split">
-   <div class="numeral">11<small>Levers</small></div>
+   <div class="numeral">08<small>Levers</small></div>
    <div>
     <h2>The separate determinants of CO<sub>2</sub> clearance and of oxygenation</h2>
     <h3>CO<sub>2</sub> clearance has two determinants and one of them fights back</h3>
@@ -929,7 +719,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <div class="eq">alveolar correction:&nbsp;&nbsp;mean P<sub>alv</sub> = mean P<sub>aw</sub> + (expiratory flow / 60) &times; (R<sub>E</sub> &minus; R<sub>I</sub>)</div>
     <p><b>The rectangular form delivers exactly twice the pressure-time area above PEEP that the triangular form delivers</b> for the same peak, PEEP and duty cycle. That is the whole mechanical argument for pressure-targeted breaths in hypoxemia, and it is an arithmetic identity rather than an assertion, which is why the rig prints both.</p>
     <p>Mean airway pressure is also how oxygenation severity is graded in children: the oxygenation index, (FiO<sub>2</sub> &times; mean airway pressure &times; 100) / PaO<sub>2</sub>, is the PALICC-2 severity metric, with the oxygen saturation index as its non-invasive analogue. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></p>
-    <div class="banner"><b>A trap worth naming.</b> The same variable is simultaneously a therapeutic lever and a component of the severity score: raising mean airway pressure worsens the oxygenation index at unchanged PaO<sub>2</sub>.</div>
+    <div class="banner"><b>The same variable is both the lever and part of the score.</b> Raising mean airway pressure worsens the oxygenation index at an unchanged PaO<sub>2</sub>.</div>
     <p>The cross-link back: every one of these three oxygenation levers is set through the same four numbers <a href="ventilator-fundamentals.html">fundamentals</a> already covered &mdash; PEEP, inspiratory pressure or tidal volume, inspiratory time, and rate.</p>
 
     <div class="rig rig-wide" id="rig6">
@@ -1007,6 +797,298 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <div class="rig-foot" id="v6foot"><b>The levers are disjoint.</b> Nothing on the left panel changes oxygenation; the only wire running the other way is the tidal volume that the pressure settings deliver.</div>
     </div>
     <p class="tbl-note">The mechanical-power bar is anchored at the two measured endpoints of PMID 42306311 &mdash; +181% with complete expiration and +122% at fixed I:E, both at rate 27 against rate 15 &mdash; and interpolated between them. The interpolation is <span class="tag t-derived">derived</span>; only the endpoints are sourced. The measured-versus-predicted CO<sub>2</sub> lines use that study's own dead-space rise, 0.60 to 0.65 across rate 17 to 25. The ventilatory ratio is shown only for an adult weight, because the pediatric form needs age-adjusted predicted minute ventilation, and that adjustment could not be retrieved.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 09 DECREMENTAL PEEP ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">09<small>PEEP</small></div>
+   <div>
+    <h2>Best-compliance PEEP and the decremental trial</h2>
+    <p>Best-compliance PEEP asks a different question from the PEEP/FiO<sub>2</sub> table. The table titrates PEEP to oxygenation. A decremental trial titrates it to the mechanics of the lung, on the argument that the PEEP giving the highest tidal compliance is the PEEP at which the largest number of units are open and none are yet overdistended.</p>
+
+    <h3>Why the trial must be decremental</h3>
+    <p>Hickling built a mathematical ARDS lung with gravitational superimposed pressure and explicit alveolar opening and closing pressures. During an incremental trial the PEEP giving maximum mean tidal pressure-volume slope did not coincide with open-lung PEEP, and it varied greatly with tidal volume and with lung mechanics: an incremental trial at low tidal volume tests recruitment by the peak pressure, not prevention of collapse by PEEP. During a decremental trial at low tidal volume, maximum slope occurred <b>2 to 3.5 cmH<sub>2</sub>O below open-lung PEEP</b> unless closing pressure was high. The maximum slope was always much higher on the decremental limb &mdash; in the worked example 93.7 versus 16.69 mL/cmH<sub>2</sub>O &mdash; and the variation of slope with PEEP was greater, so the signal is larger and the peak is easier to find. <span class="tag t-model">mathematical model</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/11208628/" target="_blank" rel="noopener">Hickling 2001, PMID 11208628</a></p>
+
+    <h3>The animal validation</h3>
+    <p>Suarez-Sipmann lavaged eight pigs, performed a recruitment maneuver confirmed by oxygenation, mechanics and CT, then reduced PEEP in 2 cmH<sub>2</sub>O steps every 10 minutes from 24 cmH<sub>2</sub>O in volume control at 6 mL/kg. Collapse, defined as the first measurable fall after the maximum dynamic compliance, occurred at PEEP 14 cmH<sub>2</sub>O. That coincided with the oxygenation-defined collapse point where shunt began to rise, and occurred one step before non-aerated tissue on CT exceeded 5%. <b>Open-lung PEEP was therefore 16 cmH<sub>2</sub>O, one step above the compliance turning point.</b> <span class="tag t-bench">animal</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/17110872/" target="_blank" rel="noopener">PMID 17110872</a></p>
+    <div class="callout"><p><b>The rule as the animal experiment states it.</b> <span class="tag t-bench">animal</span> In eight saline-lavaged pigs, open-lung PEEP was one step above the level at which compliance first fell. Read that as the derivation and not as an instruction. The largest human trial of best-compliance PEEP, ART, randomised 1010 adults to a recruitment maneuver plus compliance-titrated PEEP or to low PEEP, and 28-day mortality was higher in the titrated arm: 55.3% against 49.3%, HR 1.20 (1.01&ndash;1.42), p = 0.041. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/28973363/" target="_blank" rel="noopener">ART 2017, PMID 28973363</a> That trial randomised the titration and an aggressive stepwise recruitment maneuver together as one bundle, so it does not by itself refute a decremental trial run without the maneuver, although it does mean the number this rig finds has never been shown to help. PALICC-2 3.4.2, a strong recommendation at moderate certainty and the only strong one in its PEEP set, still puts pediatric PEEP at or above the ARDSNet table. <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a> No human trial has tested the one-step-above rule as a rule.</p></div>
+
+    <div class="rig" id="rig4">
+      <div class="rig-head"><span class="t">Rig 4 &middot; The decremental trial, against its own incremental limb</span><span class="s">Recruit. Step down. Find the peak, then go one step back up.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="grp">
+            <h5>Run the trial</h5>
+            <div class="seg c2">
+              <button class="btn" type="button" id="v4recruit">Recruit</button>
+              <button class="btn" type="button" id="v4step">Step PEEP</button>
+            </div>
+            <button class="btn" type="button" id="v4inc" aria-pressed="false">Run incremental instead</button>
+            <button class="btn" type="button" id="v4reset" style="margin-top:6px">Reset</button>
+          </div>
+          <div class="grp">
+            <h5>The lung</h5>
+            <div class="ctl">
+              <label for="v4spread">Closing-pressure spread<span class="val" id="v4spread_v">narrow</span></label>
+              <input type="range" id="v4spread" min="1" max="6" step="0.5" value="2">
+              <span class="hint">How abruptly units close as PEEP falls. Wide spread flattens the peak.</span>
+            </div>
+            <div class="ctl">
+              <label for="v4dp">Driving pressure of the test breath<span class="val" id="v4dp_v">12 cmH2O</span></label>
+              <input type="range" id="v4dp" min="6" max="18" step="1" value="12">
+            </div>
+          </div>
+        </div>
+        <div class="rig-view">
+          <svg id="v4svg" viewBox="0 0 620 430" role="img" aria-labelledby="v4title"><title id="v4title">Left panel plots dynamic compliance against PEEP for the trial as it is stepped, with the decremental limb showing a single clear maximum and the incremental limb a flatter maximum at a different PEEP. Right panel shows a twenty-unit lung column with each unit coloured open, collapsed or overdistended at the current PEEP.</title></svg>
+          <div class="readout c4">
+            <div><span class="k">PEEP now</span><span class="v" id="v4_peep">&mdash;</span></div>
+            <div><span class="k">Dynamic compliance</span><span class="v" id="v4_cdyn">&mdash;</span></div>
+            <div class="pin"><span class="k">Best so far</span><span class="v" id="v4_best">&mdash;</span></div>
+            <div class="pin"><span class="k">One step above</span><span class="v" id="v4_ol">&mdash;</span></div>
+          </div>
+          <div class="flags"><div class="flag" id="v4flag" hidden></div></div>
+        </div>
+      </div>
+      <div class="rig-foot" id="v4foot"><b>Press Recruit, then step down.</b> The peak exists only because the trial runs downward.</div>
+    </div>
+    <p class="tbl-note">The lung in this rig is a <span class="tag t-model">model choice</span>: a twenty-unit column with a logistic distribution of closing pressures, a separate and higher opening-pressure distribution to create hysteresis, and an overdistension term that reduces unit compliance as mean pressure rises. It is not fitted to either source and no patient data are plotted. The 2 to 3.5 cmH<sub>2</sub>O offset from PMID 11208628 is drawn as a reference band so it can be compared with the model's own offset rather than conflated with it.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 10 RECRUITABILITY ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">10<small>Recruitability</small></div>
+   <div>
+    <h2>Recruitment-to-inflation ratio, and the pressure an airway needs before it opens</h2>
+    <p>Section 09 titrates PEEP by watching compliance move. This section asks the two questions that come before it: is there collapsed lung to reopen at all, and is the airway even open at the pressure being set. Both are answered at the bedside with the ventilator alone, and both came out of the same group in Toronto.</p>
+
+    <h3>What the R/I ratio measures</h3>
+    <p>PEEP does two things at once. It reopens collapsed units, which adds lung available for the next tidal breath, and it inflates units that were already open, which adds volume without adding surface. The recruitment-to-inflation ratio is the arithmetic of that split. It is the compliance of the lung PEEP recruited, divided by the compliance of the lung that was already being ventilated at the low PEEP, so a value near zero means the pressure bought inflation and almost nothing else, and a value at or above 0.5 marks a patient in whom the two were comparable. In the validation cohort of 45 adults with ARDS the ratio ran from 0 to 2.0 with a median of 0.5, and single-breath recruited volume tracked the multiple pressure-volume reference method closely, r = 0.798 with a bias of &minus;21 mL. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener">Chen 2020, PMID 31577153</a></p>
+
+    <h3>Airway opening pressure comes first, because it changes every other number</h3>
+    <p>In a lung with enough alveolar flooding or surfactant loss, small airways do not merely narrow at end expiration; they close completely, and the alveolus behind them is then sealed off from the circuit. Set PEEP no longer reaches the alveolus. The pressure that does is the airway opening pressure, the pressure at which the closed airways snap back open on the way up. Until that pressure is exceeded, PEEP is a number on a screen that the lung never sees, and every compliance, driving pressure and R/I ratio computed against PEEP is computed against the wrong denominator. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/28557528/" target="_blank" rel="noopener">Chen 2018, PMID 28557528</a></p>
+    <p>It is common enough to matter. Across 51 adults with ARDS pooled from two cohorts, complete airway closure was present in 41% (95% CI 28 to 55), rising from 22% in the lowest body-mass-index tercile to 65% in the highest, and driving pressure and elastance were overstated whenever the closure was ignored. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/32701573/" target="_blank" rel="noopener">Coudroy 2020, PMID 32701573</a> Surfactant depletion is the proposed mechanism, argued from lavage rather than shown directly. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/30560279/" target="_blank" rel="noopener">PMID 30560279</a></p>
+
+    <div class="bordered">
+      <h3>The low-flow inflation, step by step</h3>
+      <p>The manoeuvre asks the lung to accept volume slowly enough that the resistive pressure drop is negligible, so what the pressure trace shows is elastance alone.</p>
+      <div class="facts">
+        <div class="fact"><span class="n">01</span><p>Deep sedation, and neuromuscular blockade in every protocol cited here. An inspiratory effort during the inflation invalidates the trace for the same reason it invalidates a plateau: there are two pressure sources again, and only one is on the screen.</p></div>
+        <div class="fact"><span class="n">02</span><p>Volume control, PEEP 0, and one slow inflation after a prolonged exhalation. <b>Adult</b>: 5 L/min after an 8-second exhalation. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/37523486/" target="_blank" rel="noopener">PMID 37523486</a> <b>Pediatric</b>: 6 mL/kg delivered by continuous low flow over 3 seconds up to 20 kg and over 4 seconds above 20 kg, which is the adaptation a bench study derived across simulated patients of 3 to 50 kg. Shorter inflations drove flow above 10 L/min in the 30 and 50 kg simulations, and the 3 kg simulation did not produce a readable inflection at all. <span class="tag t-bench">bench, with two illustrative cases</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38379913/" target="_blank" rel="noopener">Rodriguez Guerineau 2024, PMID 38379913</a></p></div>
+        <div class="fact"><span class="n">03</span><p>Read the pressure-volume trace. An open airway takes volume from the first millilitre, so pressure and volume rise together from the origin. A closed airway takes almost none: pressure climbs against a sealed lung until the airways reopen, and the curve then bends sharply. <b>The pressure at that bend is the airway opening pressure.</b> Without the manoeuvre it is simply unknown, because nothing on the ventilator displays it.</p></div>
+        <div class="fact"><span class="n">04</span><p>If an opening pressure is found, set PEEP at or above it, and recompute driving pressure and compliance against it rather than against PEEP. In 12 ventilated infants with bronchiolitis, airway closure was present in 7, median opening pressure 14 cmH<sub>2</sub>O (IQR 11 to 17); correcting for it took median driving pressure from 16 (11 to 17) down to 9 (8 to 12) cmH<sub>2</sub>O and raised compliance from 0.41 (0.38 to 0.59) to 0.70 (0.53 to 0.81) mL/cmH<sub>2</sub>O/kg, both p = 0.018. <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40590612/" target="_blank" rel="noopener">Varela 2025, PMID 40590612</a></p></div>
+      </div>
+      <p><b>That last result is the reason to bother.</b> Half those infants would have been read as having a driving pressure over the PALICC-2 limit of 15 cmH<sub>2</sub>O, and the excess was an artefact of measuring against a pressure the lung was never exposed to.</p>
+    </div>
+
+    <h3>The single-breath deflation, step by step</h3>
+    <p>The R/I manoeuvre releases PEEP by 10 cmH<sub>2</sub>O in one step and measures how much more gas comes out than the already-open lung can account for. The extra is what PEEP had been holding open.</p>
+    <div class="scrollx"><table>
+      <caption>The manoeuvre as the source protocol, a bedside review of it <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/39021144/" target="_blank" rel="noopener">PMID 39021144</a>, and the authors' own instructions state it.</caption>
+      <thead><tr><th style="width:6%">Step</th><th style="width:52%">Do</th><th>Why it is specified this way</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Test for airway closure first, and record the opening pressure if there is one.</td><td>It sets the effective low pressure for every calculation below. Four of the 45 patients in the validation cohort had an opening pressure above the high PEEP, and R/I could not be assessed in them at all.</td></tr>
+        <tr><td>2</td><td>Volume assist control, tidal volume unchanged.</td><td>The arithmetic compares a released volume against a set volume, so the set volume has to be a number the ventilator is actually defending.</td></tr>
+        <tr><td>3</td><td>Rate down to 6 to 8 breaths/min.</td><td>The release breath must exhale to completion. A rate that truncates it truncates the measured volume, and the ratio falls with it.</td></tr>
+        <tr><td>4</td><td>High PEEP for 10 minutes, 5 minimum, at least 5 cmH<sub>2</sub>O above any opening pressure, provided plateau stays under 30 cmH<sub>2</sub>O.</td><td>Lung volume has to settle before it can be released. The plateau ceiling is the safety limit on the high step.</td></tr>
+        <tr><td>5</td><td>Take the plateau from a <b>0.3-second inspiratory pause setting</b>, not from a manual hold button.</td><td>A manual hold held too long lets pressure equilibrate past the plateau and reads erroneously low, which inflates the computed compliance and the ratio with it.</td></tr>
+        <tr><td>6</td><td>Drop PEEP by 10 cmH<sub>2</sub>O in a single step, not a ramp, and record the exhaled volume of that one breath.</td><td>A ramp lets the lung derecruit across several breaths, and the released volume is then split across breaths the calculation does not see.</td></tr>
+        <tr><td>7</td><td>Record the plateau at the low PEEP.</td><td>It gives the compliance of the already-open lung, which is both the denominator of the ratio and the predictor of how much of the released volume was mere inflation.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>The arithmetic, in the order you would do it</h3>
+    <div class="eq">effective low pressure&nbsp;=&nbsp;the larger of (low PEEP, airway opening pressure)</div>
+    <div class="eq">C<sub>RS,low</sub>&nbsp;=&nbsp;set V<sub>T</sub> / (plateau at low PEEP &minus; effective low pressure)</div>
+    <div class="eq">released volume&nbsp;=&nbsp;exhaled V<sub>T</sub> of the release breath &minus; set V<sub>T</sub></div>
+    <div class="eq">recruited volume&nbsp;=&nbsp;released volume &minus; C<sub>RS,low</sub> &times; (high PEEP &minus; effective low pressure)</div>
+    <div class="eq big">R/I&nbsp;=&nbsp;[ recruited volume / (high PEEP &minus; effective low pressure) ] / C<sub>RS,low</sub></div>
+    <p>Every term is measured, and no coefficient is fitted, which is why this ratio is computed in the rig below while the four models listed in the reference section are not. The second line is where an unrecognised airway closure does its damage: dividing by a pressure difference the lung never experienced inflates C<sub>RS,low</sub>, and the ratio moves in a direction that has nothing to do with recruitment. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener">PMID 31577153</a> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/37523486/" target="_blank" rel="noopener">PMID 37523486</a></p>
+
+    <div class="rig rig-wide" id="rig10">
+      <div class="rig-head"><span class="t">Rig 10 &middot; R/I ratio from the four numbers the manoeuvre gives you</span><span class="s">Enter the breath. Watch where the released volume goes.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="grid2">
+            <div>
+              <div class="grp">
+                <h5>The two PEEP levels</h5>
+                <div class="ctl">
+                  <label for="v10ph">High PEEP<span class="val" id="v10ph_v">15 cmH2O</span></label>
+                  <input type="range" id="v10ph" min="8" max="26" step="1" value="15">
+                </div>
+                <div class="ctl">
+                  <label for="v10pl">Low PEEP<span class="val" id="v10pl_v">5 cmH2O</span></label>
+                  <input type="range" id="v10pl" min="0" max="16" step="1" value="5">
+                </div>
+                <div class="ctl">
+                  <label for="v10aop">Airway opening pressure<span class="val" id="v10aop_v">none</span></label>
+                  <input type="range" id="v10aop" min="0" max="26" step="1" value="0" aria-describedby="v10aop_h">
+                  <span class="hint" id="v10aop_h">0 means the low-flow inflation found no closure. Anything above the low PEEP replaces it everywhere in the arithmetic.</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="grp">
+                <h5>The three volumes and the plateau</h5>
+                <div class="ctl">
+                  <label for="v10wt">Weight<span class="val" id="v10wt_v">20 kg</span></label>
+                  <input type="range" id="v10wt" min="3" max="80" step="1" value="20">
+                </div>
+                <div class="ctl">
+                  <label for="v10vt">Set V<sub>T</sub><span class="val" id="v10vt_v">400 mL</span></label>
+                  <input type="range" id="v10vt" min="20" max="700" step="10" value="400">
+                </div>
+                <div class="ctl">
+                  <label for="v10ex">Exhaled V<sub>T</sub> of the release breath<span class="val" id="v10ex_v">700 mL</span></label>
+                  <input type="range" id="v10ex" min="20" max="1600" step="10" value="700">
+                </div>
+                <div class="ctl">
+                  <label for="v10pp">Plateau at the low PEEP<span class="val" id="v10pp_v">25 cmH2O</span></label>
+                  <input type="range" id="v10pp" min="6" max="40" step="1" value="25">
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn" type="button" id="v10closed" aria-pressed="false">Load a closed airway, AOP 12</button>
+          <button class="btn" type="button" id="v10reset" style="margin-top:6px">Reset</button>
+        </div>
+        <div class="rig-view">
+          <svg id="v10svg" viewBox="0 0 620 430" role="img" aria-labelledby="v10title"><title id="v10title">Left panel splits the volume released by the single-breath PEEP drop into the part predicted by the compliance of the already-open lung and the remainder attributed to recruitment, drawn as one stacked column. Right panel is a vertical recruitment-to-inflation scale from zero to two with the high-recruiter region above 0.5 shaded, the published median marked, and the computed ratio marked as a pointer. Raising the airway opening pressure above the low PEEP shortens the effective pressure change and moves both panels.</title></svg>
+          <div class="readout c4">
+            <div><span class="k">Effective low pressure</span><span class="v" id="v10_pe">&mdash;</span></div>
+            <div><span class="k">C<sub>RS</sub> at low PEEP</span><span class="v" id="v10_crs">&mdash;</span></div>
+            <div class="pin"><span class="k">Recruited volume</span><span class="v" id="v10_vrec">&mdash;</span></div>
+            <div class="pin"><span class="k">R/I ratio</span><span class="v" id="v10_ri">&mdash;</span></div>
+          </div>
+          <div class="flags"><div class="flag" id="v10f1" hidden></div><div class="flag" id="v10f2" hidden></div></div>
+        </div>
+      </div>
+      <div class="rig-foot" id="v10foot"><b>The ratio is a comparison of two compliances, so it does not care how big the patient is.</b> What it does care about is the pressure the lung actually saw, which is why the opening-pressure slider moves it so hard.</div>
+    </div>
+    <p class="tbl-note">Every number in this rig is one you measured or one of the five arithmetic lines above; no constant is fitted and no coefficient is supplied by this tool. The R/I scale is drawn to 2.0 because that is the top of the range reported in the validation cohort of 45 adults, and the 0.5 line is the cut those authors proposed and later work has used. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener">PMID 31577153</a> The rig refuses to report a ratio when the opening pressure reaches the high PEEP, which is the same situation that made the ratio unobtainable in 4 of those 45 patients.</p>
+
+    <h3>Reading the number, and what it has and has not been shown to do</h3>
+    <div class="facts">
+      <div class="fact"><span class="n">01</span><p><b>At or above 0.5 the lung is worth recruiting; near zero it is not.</b> In the validation cohort, high recruiters oxygenated better at PEEP 15 (p = 0.004), while low recruiters dropped their systolic pressure there instead (p = 0.008). <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener">PMID 31577153</a></p></div>
+      <div class="fact"><span class="n">02</span><p><b>The haemodynamic half of that has since been measured directly.</b> Raising PEEP by 10 cmH<sub>2</sub>O increased pulmonary vascular resistance in low recruiters, 160 to 243 dyn&middot;s/cm<sup>&minus;5</sup> (p &lt; 0.01), and left it unchanged in high recruiters (p = 0.55); the right-to-left end-diastolic area ratio moved the same way. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38924520/" target="_blank" rel="noopener">PMID 38924520</a></p></div>
+      <div class="fact"><span class="n">03</span><p><b>The ratio tracks the injury variable, not just the oxygenation.</b> Measured against lung volumes by nitrogen dilution, R/I across a 10 cmH<sub>2</sub>O range correlated with the PEEP-induced fall in dynamic strain at r = &minus;0.94 (p &lt; 0.001), while the change in compliance, driving pressure and PaO<sub>2</sub>/FiO<sub>2</sub> did not. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/37523486/" target="_blank" rel="noopener">PMID 37523486</a></p></div>
+      <div class="fact"><span class="n">04</span><p><b>Recruitability is not uniform across the 10 cmH<sub>2</sub>O the manoeuvre averages over.</b> In 17 of 20 patients the relationship between R/I and PEEP fit a parabola, so a single ratio measured from 15 to 5 is a mean over a range in which recruitment rose and then fell. Values in the middle, roughly 0.5 to 0.7, are the ones this most affects and the hardest to act on. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/37523486/" target="_blank" rel="noopener">PMID 37523486</a></p></div>
+      <div class="fact"><span class="n">05</span><p><b>It behaves the same way outside ARDS.</b> In 20 adults under general anaesthesia for open abdominal surgery the median was 0.41 (range 0 to 0.86), and it correlated with recruited volume scaled to PEEP-induced inflation on electrical impedance tomography, r = 0.82. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40690301/" target="_blank" rel="noopener">PMID 40690301</a></p></div>
+      <div class="fact"><span class="n">06</span><p><b>No trial has randomised PEEP to this ratio, in adults or in children, and there is no pediatric R/I dataset at all.</b> The pediatric literature reaches only as far as the opening-pressure manoeuvre: a bench adaptation with two illustrative cases <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38379913/" target="_blank" rel="noopener">PMID 38379913</a> and one 12-infant bronchiolitis cohort <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40590612/" target="_blank" rel="noopener">PMID 40590612</a>. Read the ratio as a way of deciding whether the PEEP question is worth asking in this patient, not as a target.</p></div>
+    </div>
+
+    <div class="note"><b>Where these manoeuvres are taught, and what that source is.</b> The bedside procedure above follows the calculator and video pages at <a href="https://rtmaven.com/ri-ratio" target="_blank" rel="noopener">rtmaven.com/ri-ratio</a>, built by Thomas Piraino RRT with Lu Chen, Michele Bertoni and Ewan Goligher, the same group behind PMID 31577153 and behind the occlusion coefficients of section 03. <span class="mono">rtmaven.com &middot; free web calculator and teaching videos, not peer-reviewed; the R/I page, its four videos and the About page were retrieved from the live site during this build</span> The four demonstration videos are hosted on Vimeo rather than YouTube: <a href="https://vimeo.com/316708822" target="_blank" rel="noopener">Recruitability Manoeuvre</a> (1:13) walks the PEEP drop and the plateau read; <a href="https://vimeo.com/316788443" target="_blank" rel="noopener">Airway Opening Pressure</a> (1:35) shows the low-flow inflation on a Servo-i; <a href="https://vimeo.com/410711032" target="_blank" rel="noopener">Checking for Airway Closure, PB980</a> (1:06) and <a href="https://vimeo.com/415148224" target="_blank" rel="noopener">Checking for Airway Closure, PB840</a> (1:56) repeat it on the two Puritan Bennett platforms. Treat all five pages as instruction in how to run the manoeuvre on a real ventilator, and the papers cited above as the evidence for what the number then means.</div>
+   </div>
+  </div>
+ </div>
+</section>
+<!-- ============ 11 DEAD SPACE AND SHUNT ============ -->
+<section>
+ <div class="wrap">
+  <div class="split">
+   <div class="numeral">11<small>Two failures</small></div>
+   <div>
+    <h2>Dead space and shunt are different failures</h2>
+    <p>Both are ventilation-perfusion mismatch and they sit at opposite ends of the same axis. Shunt is perfusion without ventilation, V/Q approaching zero. Dead space is ventilation without perfusion, V/Q approaching infinity. The clinical separation follows from the dissociation curves, not from the anatomy.</p>
+    <div class="grid2">
+      <div class="cardt">
+        <p class="ov">Shunt</p>
+        <p><b>An oxygenation problem, and it resists FiO<sub>2</sub>.</b> Blood leaving a shunt unit never contacts alveolar gas, so raising inspired oxygen raises the PaO<sub>2</sub> of the ventilated units, whose haemoglobin is already nearly saturated, and adds almost nothing. Petersson states the rule directly: in contrast to other causes, hypoxaemia due to shunt responds poorly to supplemental oxygen. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></p>
+      </div>
+      <div class="cardt">
+        <p class="ov">Dead space</p>
+        <p><b>A CO<sub>2</sub> problem, and it usually presents as work, not as hypercapnia.</b> CO<sub>2</sub> dissociation is nearly linear over the physiological range, so an over-ventilated unit can carry away extra CO<sub>2</sub> and compensate for an underventilated one. Oxygen has no such reserve: haemoglobin in the over-ventilated units is already almost fully loaded, so those units cannot make up the shortfall, which is why shunt resists FiO<sub>2</sub> while wasted ventilation can be answered by breathing more. The commonest result of wasted ventilation is therefore increased minute ventilation and work of breathing rather than a raised PaCO<sub>2</sub>, because drive defends PaCO<sub>2</sub> until it cannot. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></p>
+      </div>
+    </div>
+    <div class="callout"><p><b>A rising dead space fraction in a spontaneously breathing child shows up first as tachypnea and effort, and only later as a number on a gas.</b></p></div>
+    <p>Benatar's iso-shunt lines are the graphical expression of the oxygen half and remain the reference construction <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/4581075/" target="_blank" rel="noopener">PMID 4581075</a>. Petros later showed the lines need modification at low FiO<sub>2</sub>: in 20 recovering ICU patients, the apparent venous admixture computed from the original diagram rose from 0.11 to 0.19 as FiO<sub>2</sub> fell from 0.60 to 0.21, because relative V/Q mismatch contributes at low FiO<sub>2</sub> in a way the pure-shunt model does not capture. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8198900/" target="_blank" rel="noopener">PMID 8198900</a></p>
+
+    <h3>Dead-space markers, and what each costs</h3>
+    <div class="scrollx"><table>
+      <caption>Four bedside markers of wasted ventilation, with the population each number came from.</caption>
+      <thead><tr><th style="width:16%">Marker</th><th style="width:22%">Formula</th><th style="width:14%">Needs</th><th>Population evidence</th></tr></thead>
+      <tbody>
+        <tr><td><b>Physiologic V<sub>D</sub>/V<sub>T</sub></b><br>Bohr-Enghoff</td><td>(PaCO<sub>2</sub> &minus; mixed expired PCO<sub>2</sub>) / PaCO<sub>2</sub></td><td>Volumetric capnography plus an arterial gas</td><td><span class="tag t-adult">adult</span> mean 0.58 &plusmn; 0.09 early in ARDS; 0.63 &plusmn; 0.10 in non-survivors versus 0.54 &plusmn; 0.09, p &lt; 0.001; each 0.05 increase OR 1.45 (1.15&ndash;1.83) for death <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/11973365/" target="_blank" rel="noopener">PMID 11973365</a>. <span class="tag t-peds">pediatric</span> median 0.47 (IQR 0.38&ndash;0.61) in 131 children with ARDS <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
+        <tr><td><b>Alveolar dead space fraction</b><br>AVDSf</td><td>(PaCO<sub>2</sub> &minus; end-tidal PCO<sub>2</sub>) / PaCO<sub>2</sub></td><td>Capnography plus a gas</td><td><span class="tag t-peds">pediatric</span> at PARDS onset 0.13 (0.06&ndash;0.23) in survivors versus 0.31 (0.19&ndash;0.42) in non-survivors, p &lt; 0.001, AUC 0.76 (0.66&ndash;0.85), better than initial oxygenation index or PaO<sub>2</sub>/FiO<sub>2</sub>, in 266 children <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/26669646/" target="_blank" rel="noopener">PMID 26669646</a>. Optimal cut 0.22 in a 69-child prospective cohort, close to the previously suggested 0.25 <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/35295701/" target="_blank" rel="noopener">PMID 35295701</a>. In 2335 patients with 8004 values, AVDSf above 0.3 carried higher mortality than below 0.2 within every severity category; maximum AVDSf within 12 h of admission gave AUC 0.768 (0.732&ndash;0.803) <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36759925/" target="_blank" rel="noopener">PMID 36759925</a></td></tr>
+        <tr><td><b>Ventilatory ratio</b></td><td>(minute ventilation in <b>mL/min</b> &times; PaCO<sub>2</sub> in mmHg) / (predicted body weight in kg &times; 100 &times; 37.5)<br><span class="ax">The unit is load-bearing: substituting minute ventilation in L/min makes the ratio 1000-fold too low.</span></td><td>Ventilator numbers plus a gas</td><td><span class="tag t-adult">adult</span> correlates with V<sub>D</sub>/V<sub>T</sub>; independently associated with mortality after adjusting for PaO<sub>2</sub>/FiO<sub>2</sub> and PEEP (OR 1.51, p = 0.024) and for APACHE II (OR 1.59, p = 0.04) <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/30211618/" target="_blank" rel="noopener">PMID 30211618</a>. The pediatric form uses age-adjusted predicted minute ventilation <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
+        <tr><td><b>CO<sub>2</sub> ventilatory equivalent</b></td><td>minute ventilation / VCO<sub>2</sub></td><td>Volumetric capnography, no gas needed</td><td><span class="tag t-peds">pediatric</span> associated with mortality (p = 0.003) alongside V<sub>D</sub>/V<sub>T</sub> (p = 0.002) and ventilatory ratio (p = 0.013), adjusting for oxygenation index, immunosuppression and severity, in 131 children. In the same model AVDSf was not associated with mortality, and oxygenation index was not associated with mortality once any dead-space marker was in the model <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td></tr>
+      </tbody>
+    </table></div>
+    <div class="banner"><b>The conflict is real and is left standing.</b> Two single-centre pediatric cohorts find AVDSf discriminates mortality; a third, at a different sample size, finds it does not once other dead-space markers are in the model. This tool shows the disagreement rather than resolving it.</div>
+
+    <h3>Dead space in the smallest patients is a large fraction of the delivered breath</h3>
+    <p>In 81 ventilated infants, median gestational age 28.7 weeks, dead space measured by the modified Bohr-Enghoff equation was <b>5.7 mL/kg (IQR 5.1&ndash;7.0) in respiratory distress syndrome and 6.4 (5.1&ndash;7.5) in bronchopulmonary dysplasia against 3.5 (2.8&ndash;4.2) in 20 term controls</b>, p &lt; 0.001. Minute ventilation was higher in both disease groups while alveolar ventilation was the same as controls (p = 0.54). <span class="tag t-peds">neonatal / infant</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/33603211/" target="_blank" rel="noopener">PMID 33603211</a><span class="erratum"><b>Erratum on record</b> for PMID 33603211 &mdash; Pediatr Res 2022;91(1):265, PMID 34404931. These are the values rig 8's infant preset uses. This page holds the PubMed linkage only and did not retrieve the erratum, so it makes no claim about which of these numbers it touches; read it before carrying them to a patient.</span></p>
+    <p>Against a 6 mL/kg tidal volume, a 6 mL/kg dead space means the alveolar breath is close to nothing. That is why an adult-derived tidal-volume target is not a pediatric one, and PALICC-2 accordingly recommends measuring the dead space to tidal volume ratio at PARDS onset. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></p>
+
+    <div class="rig" id="rig5">
+      <div class="rig-head"><span class="t">Rig 5 &middot; Two failures, two levers</span><span class="s">Press one lever. Watch the other panel not move.</span></div>
+      <div class="rig-body">
+        <div class="rig-ctrl">
+          <div class="grp">
+            <h5>The three compartments</h5>
+            <div class="ctl">
+              <label for="v5shunt">Shunt fraction<span class="val" id="v5shunt_v">10%</span></label>
+              <input type="range" id="v5shunt" min="0" max="50" step="1" value="10">
+            </div>
+            <div class="ctl">
+              <label for="v5vd">Dead space fraction<span class="val" id="v5vd_v">0.35</span></label>
+              <input type="range" id="v5vd" min="0.2" max="0.7" step="0.01" value="0.35">
+            </div>
+          </div>
+          <div class="grp">
+            <h5>The two levers</h5>
+            <div class="ctl">
+              <label for="v5fio2">FiO<sub>2</sub><span class="val" id="v5fio2_v">0.40</span></label>
+              <input type="range" id="v5fio2" min="0.21" max="1" step="0.01" value="0.40">
+            </div>
+            <div class="ctl">
+              <label for="v5ve">Minute ventilation<span class="val" id="v5ve_v">1.0 x baseline</span></label>
+              <input type="range" id="v5ve" min="0.5" max="2.5" step="0.05" value="1">
+            </div>
+            <div class="ctl">
+              <label for="v5vco2">VCO<sub>2</sub><span class="val" id="v5vco2_v">1.0 x baseline</span></label>
+              <input type="range" id="v5vco2" min="0.5" max="2" step="0.05" value="1">
+            </div>
+            <div class="seg c2" style="margin-top:10px">
+              <button class="btn" type="button" id="v5o2btn">Raise FiO<sub>2</sub> to 1.0</button>
+              <button class="btn" type="button" id="v5vebtn">Double the ventilation</button>
+            </div>
+          </div>
+          <div class="grp">
+            <h5>Reference bands</h5>
+            <div class="seg c3" id="v5pop" role="radiogroup" aria-label="Population for the reference bands">
+              <button class="tg" type="button" role="radio" aria-checked="false" data-v="inf">Infant</button>
+              <button class="tg" type="button" role="radio" aria-checked="true" data-v="chi">Child</button>
+              <button class="tg" type="button" role="radio" aria-checked="false" data-v="adu">Adult</button>
+            </div>
+            <button class="btn" type="button" id="v5reset">Reset</button>
+          </div>
+        </div>
+        <div class="rig-view">
+          <svg id="v5svg" viewBox="0 0 620 430" role="img" aria-labelledby="v5title"><title id="v5title">Left panel plots a qualitative family of arterial oxygenation curves against inspired oxygen fraction, one per shunt fraction, flattening as shunt rises. Right panel plots relative arterial carbon dioxide against minute ventilation, one curve per dead space fraction. Raising inspired oxygen moves only the left panel and raising minute ventilation moves only the right.</title></svg>
+          <div class="readout c4">
+            <div><span class="k">FiO<sub>2</sub> lever yield</span><span class="v" id="v5_yield">&mdash;</span></div>
+            <div><span class="k">Alveolar share of breath</span><span class="v" id="v5_alv">&mdash;</span></div>
+            <div class="pin"><span class="k">Relative PaCO<sub>2</sub></span><span class="v" id="v5_paco2">&mdash;</span></div>
+            <div class="pin"><span class="k">Band for this population</span><span class="v" id="v5_band">&mdash;</span></div>
+          </div>
+          <div class="flags"><div class="flag" id="v5flag" hidden></div></div>
+        </div>
+      </div>
+      <div class="rig-foot" id="v5foot"><b>The two panels never move together.</b> FiO<sub>2</sub> moves only the left panel and minute ventilation only the right. Against shunt, FiO<sub>2</sub> is the lever that fails: shunt is answered by recruitment, by the mean airway pressure of section 08, not by oxygen.</div>
+    </div>
+    <p class="tbl-note">Honesty note on the left panel, printed again inside the figure. The Benatar iso-shunt nomogram constants were not retrievable during verification, so no curve here carries a PaO<sub>2</sub> value and none is read off a source. The family is drawn qualitatively from content mixing alone &mdash; arterial content is the shunt-weighted mix of end-capillary and venous content, with an author-chosen saturating rise of end-capillary content against FiO<sub>2</sub>. End-capillary content is drawn saturation-limited: it rises across the low-FiO<sub>2</sub> range and is nearly flat above about 0.3, because haemoglobin there is already almost fully loaded and what FiO<sub>2</sub> adds beyond that is dissolved oxygen. That flatness is the point of plotting content rather than PaO<sub>2</sub>. PaO<sub>2</sub> would keep climbing where content does not, and the oxyhaemoglobin dissociation curve that separates the two was not retrievable during verification and is not reconstructed, so no PaO<sub>2</sub> curve is drawn. The right panel is exact proportionality, PaCO<sub>2</sub> proportional to VCO<sub>2</sub> divided by alveolar ventilation, plotted relative to the baseline state rather than in mmHg, so no unit-conversion constant is asserted.</p>
    </div>
   </div>
  </div>
@@ -1110,7 +1192,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <div class="banner"><b>The formula is described here and is not displayed.</b> Four papers state that ASV computes the rate and tidal-volume pair as a function of the Otis least-work formula, and none of them reproduces the formula with its constants in any text that could be retrieved. The implementation constants are proprietary. The curve in the rig below teaches the shape of the trade-off and is not the ASV algorithm.</div>
 
     <h3>The evidence that ASV picks disease-appropriate settings</h3>
-    <p>In 243 patients over 1327 ventilator-days, in <b>passive</b> patients ASV delivered different pairs by underlying condition: in COPD 9.3 mL/kg predicted body weight (IQR 8.2&ndash;10.8) at 13 breaths/min (11&ndash;16), in acute lung injury or ARDS 7.6 mL/kg (6.7&ndash;8.8) at 18 breaths/min (16&ndash;22). <b>In patients who were actively triggering, the pairs did not differ between COPD, ALI/ARDS and normal lungs.</b> <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/17846747/" target="_blank" rel="noopener">PMID 17846747</a> That last sentence is the honest limit: the differentiation the mode is sold on disappears in exactly the patients who are awake.</p>
+    <p>In 243 patients over 1327 ventilator-days, in <b>passive</b> patients ASV delivered different pairs by underlying condition: in COPD 9.3 mL/kg predicted body weight (IQR 8.2&ndash;10.8) at 13 breaths/min (11&ndash;16), in acute lung injury or ARDS 7.6 mL/kg (6.7&ndash;8.8) at 18 breaths/min (16&ndash;22). <b>In patients who were actively triggering, the pairs did not differ between COPD, ALI/ARDS and normal lungs.</b> <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/17846747/" target="_blank" rel="noopener">PMID 17846747</a> That is the limit: the differentiation the mode is sold on disappears in exactly the patients who are awake.</p>
 
     <h3>The evidence that it adapts to worsening mechanics</h3>
     <p>In 22 healthy women undergoing laparoscopy in Trendelenburg, pneumoperitoneum reduced respiratory compliance by 44.4% and raised airway resistance by 29.1%. With minute ventilation held constant, ASV automatically raised inspiratory pressure by <b>3.2 &plusmn; 0.9 cmH<sub>2</sub>O (+19%, p &lt; 0.01)</b>, rate by 1.3 &plusmn; 0.5 breaths/min (+9%) and T<sub>I</sub>/T<sub>tot</sub> by 43.3%. PaCO<sub>2</sub> rose 13%, from 4.4 &plusmn; 0.6 to 5.0 &plusmn; 0.9 kPa (p &lt; 0.01), and clinician intervention was needed in one patient. <span class="tag t-adult">adult, anesthesia, healthy lungs</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/19142087/" target="_blank" rel="noopener">PMID 19142087</a> This is the cleanest published demonstration of a mode responding to a defined compliance insult, and it is the anchor for the simulator in section 14.</p>
@@ -1121,7 +1203,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <div class="fact"><span class="n">02</span><p><b>The closed loop above it does not add outcome.</b> IntelliVent-ASV, which additionally controls FiO<sub>2</sub> and PEEP, was safe in 50 passive adults and ventilated with less pressure, volume and FiO<sub>2</sub> than ASV (plateau 24 to 20 cmH<sub>2</sub>O, p = 0.005; FiO<sub>2</sub> 40% to 30%, p &lt; 0.001) with equivalent oxygenation. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/22460854/" target="_blank" rel="noopener">PMID 22460854</a> The Cochrane review of 62 trials and 5052 participants found automated closed-loop systems probably reduce duration of ventilation by a relative 24% (95% CI 18&ndash;30, 51 RCTs, moderate certainty), ICU stay by 14% and hospital stay by 10%, and probably reduce reintubation (RR 0.73, 0.59&ndash;0.89), post-extubation noninvasive ventilation (RR 0.74, 0.62&ndash;0.88), prolonged ventilation (RR 0.54, 0.34&ndash;0.87) and tracheostomy (RR 0.75, 0.62&ndash;0.91), with little to no effect on mortality (RR 0.94, 0.82&ndash;1.07, 38 RCTs). Only 3 trials and 218 participants of that total are children. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40678933/" target="_blank" rel="noopener">PMID 40678933</a> A separate meta-analysis of 20 weaning trials found no significant difference between ASV and pressure support on any outcome. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/34839229/" target="_blank" rel="noopener">PMID 34839229</a></p></div>
     </div>
 
-    <h3>The pediatric ASV evidence, in full, because it is small enough to state completely</h3>
+    <h3>The pediatric ASV evidence, stated in full</h3>
     <div class="scrollx"><table>
       <caption>Every pediatric ASV study that could be retrieved. <span class="tag t-peds">pediatric</span> There is no pediatric ASV outcome trial.</caption>
       <thead><tr><th style="width:14%">Study</th><th style="width:22%">Design</th><th>Result</th></tr></thead>
@@ -1131,7 +1213,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
         <tr><td><a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/36091711/" target="_blank" rel="noopener">PMID 36091711</a></td><td>30 children, median 21 months, 40% with PARDS, randomised crossover of closed-loop FiO<sub>2</sub> on ASV 1.1 against manual titration</td><td>Time in the optimal SpO<sub>2</sub> zone 96.1% (93.7&ndash;98.6) versus 78.4% (51.3&ndash;94.8), p &lt; 0.001, at the cost of 52 automated FiO<sub>2</sub> changes per patient versus 1 manual.</td></tr>
       </tbody>
     </table></div>
-    <p>An accompanying editorial asks the right question to close on: whether intensivists should be reliant on assistive technology. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/34314571/" target="_blank" rel="noopener">PMID 34314571</a></p>
+    <p>An accompanying editorial asks whether intensivists should be reliant on assistive technology. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/34314571/" target="_blank" rel="noopener">PMID 34314571</a></p>
 
     <div class="rig" id="rig8">
       <div class="rig-head"><span class="t">Rig 8 &middot; The V<sub>T</sub>-rate pair</span><span class="s">Stiffen the lung. Watch the minimum move right.</span></div>
@@ -1211,7 +1293,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <div class="callout"><p><b>Every mode compensates for worsening compliance somewhere, and the mode determines which variable carries the news.</b> Volume control puts it in pressure, pressure control puts it in volume, adaptive pressure control and ASV absorb it into the algorithm, pressure support puts it into the patient, and NAVA puts it into the E<sub>di</sub> trace. Only one of those five destinations is a person.</p></div>
 
     <h3>A second insult that behaves differently: rising auto-PEEP</h3>
-    <p>Two patients are hidden inside this rule, and the ledger reads differently for each. What applied PEEP buys in obstruction is a reduction in the work of triggering, and a paralysed patient does no triggering, so in the passive patient there is no benefit side to weigh at all; the mode-dependent plateau and tidal-volume behaviour described here is that passive case, while the percentage rule itself belongs to the spontaneously breathing patient. Marini's rule is that applied PEEP below the critical closing pressure, reasonably estimated at about <b>80% of the occlusion-measured auto-PEEP</b> <span class="tag t-derived">figure unverified</span>, narrows the alveolar-to-airway pressure difference without a proportionate rise in lung volume, provided expiration is flow-limited. In flow-controlled volume-cycled ventilation, added PEEP has little effect on plateau until auto-PEEP is nearly counterbalanced, after which plateau rises in proportion to the PEEP increment. In pressure-targeted ventilation with the inspiratory pressure referenced to PEEP, added PEEP below auto-PEEP raises the effective driving pressure and therefore the tidal volume; once auto-PEEP is counterbalanced, further increments do not raise tidal volume and may lower it as the hyperinflated lung stiffens. <span class="tag t-adult">adult review</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> The denominator is the weaker half of that rule: the expiratory-hold measurement that supplies the auto-PEEP number is invalid in the actively breathing patient the percentage is addressed to, and in asthma it can read falsely low, because units that close before end-expiration hide their pressure from the manometer. Where the percentage came from, how it was restated on the way into pediatric text, and what is wrong with the measurement it divides are worked through in <a href="asthma-critical-care.html#c9">asthma critical care</a>.</p>
+    <p>Two patients are hidden inside this rule, and it works out differently for each. What applied PEEP buys in obstruction is a reduction in the work of triggering, and a paralysed patient does no triggering, so in the passive patient there is no benefit side to weigh at all; the mode-dependent plateau and tidal-volume behaviour described here is that passive case, while the percentage rule itself belongs to the spontaneously breathing patient. Marini's rule is that applied PEEP below the critical closing pressure, reasonably estimated at about <b>80% of the occlusion-measured auto-PEEP</b> <span class="tag t-derived">figure unverified</span>, narrows the alveolar-to-airway pressure difference without a proportionate rise in lung volume, provided expiration is flow-limited. In flow-controlled volume-cycled ventilation, added PEEP has little effect on plateau until auto-PEEP is nearly counterbalanced, after which plateau rises in proportion to the PEEP increment. In pressure-targeted ventilation with the inspiratory pressure referenced to PEEP, added PEEP below auto-PEEP raises the effective driving pressure and therefore the tidal volume; once auto-PEEP is counterbalanced, further increments do not raise tidal volume and may lower it as the hyperinflated lung stiffens. <span class="tag t-adult">adult review</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> The denominator is the weaker half of that rule: the expiratory-hold measurement that supplies the auto-PEEP number is invalid in the actively breathing patient the percentage is addressed to, and in asthma it can read falsely low, because units that close before end-expiration hide their pressure from the manometer. Where the percentage came from, how it was restated on the way into pediatric text, and what is wrong with the measurement it divides are worked through in <a href="asthma-critical-care.html#c9">asthma critical care</a>.</p>
     <p>Monitoring plateau in volume control, or tidal volume in pressure control, is how the clinician knows when the added PEEP is optimised. Paradoxical responses do occur and were documented in patients with airway obstruction under controlled ventilation <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/16003057/" target="_blank" rel="noopener">PMID 16003057</a>; the offsetting effect in COPD during acute ventilatory failure is the classic demonstration <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a>, and the mode-by-mode framing is standard in obstructive-ventilation practice <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/33169215/" target="_blank" rel="noopener">PMID 33169215</a>.</p>
     <p class="tbl-note"><b>On the 80% figure.</b> The mode-dependent behaviour above is stated by Marini 2011 and is not in question. The specific 80% fraction could not be confirmed against that paper's full text: the abstract carries no numeric content and no open full text was reachable, so the figure is left attributed and flagged rather than dropped or restated as if verified. The adjacent classic demonstration in COPD reports the counterbalancing effect without this tool asserting a percentage for it <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a>. Do not carry 80% to the bedside as a rule from this page.</p>
 
@@ -1312,7 +1394,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       </a>
       <a class="lnk" href="ards-subphenotype-explorer.html">
         <span class="lk">ards-subphenotype-explorer.html</span>
-        <span class="lv">Whether the PEEP question in sections 08 and 09 has one answer or two. The hypo- and hyperinflammatory latent classes, their interaction with PEEP strategy in ALVEOLI and with fluid strategy in FACTT, which published classifiers can and cannot be run on a patient, and what does not transport to children.</span>
+        <span class="lv">Whether the PEEP question in sections 09 and 10 has one answer or two. The hypo- and hyperinflammatory latent classes, their interaction with PEEP strategy in ALVEOLI and with fluid strategy in FACTT, which published classifiers can and cannot be run on a patient, and what does not transport to children.</span>
       </a>
     </div>
    </div>
@@ -1348,63 +1430,69 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <tr><td>S16</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/11208628/" target="_blank" rel="noopener">PMID 11208628</a></td><td><b>Mathematical model</b> of the adult ARDS lung; no patients</td><td>Hickling 2001, <i>AJRCCM</i>. Why the trial must be decremental, the 2 to 3.5 cmH<sub>2</sub>O offset below open-lung PEEP, and the much larger maximum slope on the decremental limb.</td></tr>
       <tr><td>S17</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/17110872/" target="_blank" rel="noopener">PMID 17110872</a></td><td><b>Animal</b>; 8 pigs, repeated lavage model, CT-confirmed</td><td>Suarez-Sipmann 2007, <i>Crit Care Med</i>. The compliance turning point at PEEP 14 and open-lung PEEP at 16: the one-step-above rule.</td></tr>
       <tr><td>S18</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/28973363/" target="_blank" rel="noopener">PMID 28973363</a></td><td>Adult; 1010 patients, moderate-to-severe ARDS, 120 ICUs in 9 countries</td><td>The ART trial, <i>JAMA</i> 2017. Mortality, ventilator-free days and pneumothorax with recruitment plus best-compliance titration.</td></tr>
-      <tr><td>S19</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30776290/" target="_blank" rel="noopener">PMID 30776290</a></td><td>Adult, aged 16 and older; 200 patients, moderate-to-severe ARDS, 14 North American hospitals</td><td>EPVent-2, <i>JAMA</i> 2019. That the esophageal-guided alternative was also negative.</td></tr>
-      <tr><td>S20</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25693014/" target="_blank" rel="noopener">PMID 25693014</a></td><td>Adult; 3562 patients pooled from 9 randomised ARDS trials; mediation analysis</td><td>Driving pressure and survival, <i>N Engl J Med</i> 2015. The variable that survives both negative PEEP trials, and the reason rig 4 reports driving pressure.</td></tr>
-      <tr><td>S21</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/29373802/" target="_blank" rel="noopener">PMID 29373802</a></td><td><b>Pediatric</b>; 1134 children with PARDS, multicentre retrospective</td><td><i>AJRCCM</i> 2018. That PEEP below the ARDSNet table was associated with higher mortality in children.</td></tr>
-      <tr><td>S22</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></td><td><b>Pediatric</b>; consensus guideline for PARDS</td><td>PALICC-2 executive summary, <i>Pediatr Crit Care Med</i> 2023. The recommendation numbers, wording and strength labels in section 09, the dead-space recommendation, and the oxygenation index definition.</td></tr>
-      <tr><td>S23</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36661436/" target="_blank" rel="noopener">PMID 36661436</a></td><td><b>Pediatric</b>; systematic review supporting PALICC-2, 26 pediatric studies and 36 adult meta-analyses</td><td><i>Pediatr Crit Care Med</i> 2023. That no recommendation on ventilator mode was possible, stated as a research statement.</td></tr>
-      <tr><td>S24</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/41982967/" target="_blank" rel="noopener">PMID 41982967</a></td><td><b>Pediatric</b>; narrative review of PEEP titration in PARDS</td><td><i>Transl Pediatr</i> 2026. That compliance-based maneuvers, stress index, pressure-volume curves, esophageal manometry and EIT all lack pediatric outcome data.</td></tr>
-      <tr><td>S25</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33024000/" target="_blank" rel="noopener">PMID 33024000</a></td><td><b>Pediatric</b>; 101 children with acute hypoxemic respiratory failure, single PICU, retrospective</td><td><i>Respir Care</i> 2021. The pediatric morbidity signal at a dynamic driving pressure below 15 cmH<sub>2</sub>O, with no mortality difference.</td></tr>
-      <tr><td>S26</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/11973365/" target="_blank" rel="noopener">PMID 11973365</a></td><td>Adult; 179 intubated patients, early ARDS</td><td><i>N Engl J Med</i> 2002. The adult physiologic dead-space fraction and its mortality association.</td></tr>
-      <tr><td>S27</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30211618/" target="_blank" rel="noopener">PMID 30211618</a></td><td>Adult; single-centre prospective ARDS cohort plus two ARDS Network trials</td><td><i>AJRCCM</i> 2019. The ventilatory ratio formula and its independent mortality association.</td></tr>
-      <tr><td>S28</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/26669646/" target="_blank" rel="noopener">PMID 26669646</a></td><td><b>Pediatric</b>; 266 of 283 children with PARDS, single tertiary PICU</td><td><i>Pediatr Crit Care Med</i> 2016. Alveolar dead space fraction at PARDS onset and its discrimination.</td></tr>
-      <tr><td>S29</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35295701/" target="_blank" rel="noopener">PMID 35295701</a></td><td><b>Pediatric</b>; 69 children with PARDS, median age 4.5 y, prospective under a lung-protective protocol</td><td><i>Front Pediatr</i> 2022. The 0.22 optimal cut, close to the previously suggested 0.25.</td></tr>
-      <tr><td>S30</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36759925/" target="_blank" rel="noopener">PMID 36759925</a></td><td><b>Pediatric</b> and young adult; 2335 patients, 8004 values, single-centre retrospective</td><td><i>Crit Care</i> 2023. Risk stratification by alveolar dead space fraction across the first week.</td></tr>
-      <tr><td>S31</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td><td><b>Pediatric</b>; 131 children with ARDS, median age 5.8 y, quaternary PICU, retrospective</td><td><i>Pediatr Crit Care Med</i> 2024. The CO<sub>2</sub> ventilatory equivalent, the pediatric median V<sub>D</sub>/V<sub>T</sub>, and the finding that conflicts with S28 and S30 on AVDSf. Both sides are shown.</td></tr>
-      <tr><td>S32</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></td><td>Not population-based; physiology review spanning adult clinical scenarios</td><td>Petersson, <i>Eur Respir J</i> 2014. That shunt responds poorly to supplemental oxygen, and that wasted ventilation presents as work rather than hypercapnia. The qualitative claim the left panel of rig 5 exists to support.</td></tr>
-      <tr><td>S33</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/4581075/" target="_blank" rel="noopener">PMID 4581075</a></td><td>Adult; the original iso-shunt nomogram. <b>No abstract indexed; curve constants could not be retrieved</b></td><td>Benatar 1973, <i>Br J Anaesth</i>. Cited only as the origin of the iso-shunt construction. No value is taken from it and no curve in rig 5 carries a PaO<sub>2</sub> number.</td></tr>
-      <tr><td>S34</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8198900/" target="_blank" rel="noopener">PMID 8198900</a></td><td>Adult; 20 spontaneously breathing patients recovering in intensive therapy, FiO<sub>2</sub> 0.21&ndash;0.60</td><td>Petros 1994, <i>Br J Anaesth</i>. The low-FiO<sub>2</sub> caveat: apparent venous admixture rising from 0.11 to 0.19 as FiO<sub>2</sub> fell. Printed inside rig 5.</td></tr>
-      <tr><td>S35</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33603211/" target="_blank" rel="noopener">PMID 33603211</a></td><td><b>Neonatal / infant</b>; 81 ventilated infants, median gestational age 28.7 weeks; 35 RDS, 26 BPD, 20 term controls</td><td><i>Pediatr Res</i> 2022. Dead space in mL/kg by group. The three presets in rig 8 and the strongest argument against transporting an adult mL/kg target.<span class="erratum"><b>Erratum on record</b> &mdash; Pediatr Res 2022;91(1):265, PMID 34404931. Linkage only; the erratum was not retrieved. The dead-space values this page prints and seeds rig 8 with come from the original record, so consult the erratum before relying on them.</span></td></tr>
-      <tr><td>S36</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/42306311/" target="_blank" rel="noopener">PMID 42306311</a></td><td>Adult; 30 ventilated ICU patients, prospective physiological crossover at 6 mL/kg</td><td><i>Ann Intensive Care</i> 2026. The diminishing CO<sub>2</sub> return with rate, the rising alveolar dead space, and the two mechanical-power endpoints that anchor the power bar in rig 6.</td></tr>
-      <tr><td>S37</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/10581089/" target="_blank" rel="noopener">PMID 10581089</a></td><td>Adult; original description of NAVA. <b>No abstract indexed; internal scaling not recovered</b></td><td>Sinderby 1999, <i>Nat Med</i>. Cited for the concept only. The internal E<sub>di</sub>-to-pressure mapping is not displayed anywhere in this tool.</td></tr>
-      <tr><td>S38</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32893313/" target="_blank" rel="noopener">PMID 32893313</a></td><td>Adult; 306 patients with acute respiratory failure, multicentre RCT</td><td><i>Intensive Care Med</i> 2020. Ventilator-free days with NAVA, and the absence of a survival difference.</td></tr>
-      <tr><td>S39</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32408883/" target="_blank" rel="noopener">PMID 32408883</a></td><td>Adult; 78 critically ill adults at risk of prolonged ventilation, 4 ICUs, feasibility RCT</td><td><i>Crit Care</i> 2020. Exploratory outcomes, in a trial powered for adherence rather than effect.</td></tr>
-      <tr><td>S40</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25886793/" target="_blank" rel="noopener">PMID 25886793</a></td><td><b>Pediatric</b>; 13 children needing noninvasive ventilation, PICU crossover</td><td><i>Crit Care</i> 2015. Wasted efforts and total time in asynchrony on NIV-NAVA versus conventional NIV.</td></tr>
-      <tr><td>S41</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27749511/" target="_blank" rel="noopener">PMID 27749511</a></td><td><b>Pediatric</b>; randomised controlled trial in pediatric acute respiratory failure</td><td><i>Pediatr Crit Care Med</i> 2016. Early NIV-NAVA against flow-triggered NIV pressure support, in the same direction on synchrony.</td></tr>
-      <tr><td>S42</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32631305/" target="_blank" rel="noopener">PMID 32631305</a></td><td><b>Pediatric</b>; difficult-to-wean pediatric ARDS, physiologic crossover</td><td><i>BMC Pediatr</i> 2020. Pressure support against NAVA in the hardest pediatric group.</td></tr>
-      <tr><td>S43</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23863816/" target="_blank" rel="noopener">PMID 23863816</a></td><td><b>Pediatric</b>; 6 infants and children aged 4 weeks to 5 years, randomised crossover on NIV</td><td><i>Pediatr Crit Care Med</i> 2013. The trigger delays that seed the counters in rig 7: about 149 ms on pressure support, 61 ms on NAVA.</td></tr>
-      <tr><td>S44</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31487718/" target="_blank" rel="noopener">PMID 31487718</a></td><td><b>Neonatal</b>; 40 preterm infants 28+0 to 36+6 weeks with respiratory distress under 48 h of age, RCT</td><td><i>Neonatology</i> 2019. Negative on both FiO<sub>2</sub> at 12 hours and intubation.</td></tr>
-      <tr><td>S45</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40708902/" target="_blank" rel="noopener">PMID 40708902</a></td><td><b>Pediatric</b>; 11 studies, 224 children, systematic review and meta-analysis</td><td><i>Front Pediatr</i> 2025. What differs and what does not, and the authors' own statement that the level of evidence remains low.</td></tr>
-      <tr><td>S46</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35407471/" target="_blank" rel="noopener">PMID 35407471</a></td><td>Adult; narrative review of NAVA</td><td><i>J Clin Med</i> 2022. The user-facing statement that delivered pressure is the NAVA level times E<sub>di</sub>.</td></tr>
-      <tr><td>S47</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36151518/" target="_blank" rel="noopener">PMID 36151518</a></td><td><b>Neonatal</b>; 24 newborns breathing spontaneously in room air, 16 preterm and 8 term</td><td><i>BMC Pediatr</i> 2022. The E<sub>di</sub> reference ranges shaded on the top trace of rig 7, labelled neonatal because no pediatric normative dataset exists.</td></tr>
-      <tr><td>S48</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/15436363/" target="_blank" rel="noopener">PMID 15436363</a></td><td>Adult human physiology; origin of the least-work frequency. <b>No abstract indexed; formula constants not recovered</b></td><td>Otis 1950, <i>J Appl Physiol</i>. Cited for the existence of a work-minimising frequency. The formula is not displayed and rig 8 does not claim to reproduce it.</td></tr>
-      <tr><td>S49</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/17846747/" target="_blank" rel="noopener">PMID 17846747</a></td><td>Adult; 243 patients over 1327 ventilator-days, 11-bed medicosurgical ICU</td><td><i>Intensive Care Med</i> 2008. The disease-specific V<sub>T</sub>-rate pairs in passive patients, and the loss of differentiation once patients trigger. Two of the four data points in rig 8.</td></tr>
-      <tr><td>S50</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19142087/" target="_blank" rel="noopener">PMID 19142087</a></td><td>Adult; 22 ASA I women, gynaecological laparoscopy, healthy lungs; pneumoperitoneum as a defined compliance insult</td><td><i>Eur J Anaesthesiol</i> 2009. The measured ASV response that seeds the ASV panel of the simulator.</td></tr>
-      <tr><td>S51</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/20593352/" target="_blank" rel="noopener">PMID 20593352</a></td><td><b>Model, bench and adult</b>; simulation, test lung and stable post-cardiothoracic ICU patients</td><td><i>Int J Artif Organs</i> 2010. The delivered tidal volumes by modelled condition, and that the algorithm was originally designed for 8&ndash;12 mL/kg.</td></tr>
-      <tr><td>S52</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21383619/" target="_blank" rel="noopener">PMID 21383619</a></td><td>Adult; 10 patients with acute lung injury on an open-lung strategy</td><td><i>Anesthesiology</i> 2011. The unwanted rate and tidal-volume combination, and that users switched back.</td></tr>
-      <tr><td>S53</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/22460854/" target="_blank" rel="noopener">PMID 22460854</a></td><td>Adult; 50 sedated, passively ventilated ICU patients with acute respiratory failure</td><td><i>Intensive Care Med</i> 2012. IntelliVent-ASV was safe and used less pressure, volume and oxygen at equivalent oxygenation.</td></tr>
-      <tr><td>S54</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36484170/" target="_blank" rel="noopener">PMID 36484170</a></td><td>Adult; narrative review of closed-loop modes</td><td><i>Curr Opin Crit Care</i> 2023. The description of what ASV computes and in what order.</td></tr>
-      <tr><td>S55</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35973716/" target="_blank" rel="noopener">PMID 35973716</a></td><td>Adult; 17 randomised and completed, ARDS, median PaO<sub>2</sub>/FiO<sub>2</sub> 146.6 mmHg, mostly passive; crossover</td><td><i>Respir Care</i> 2022. The counterweight to S52: a newer implementation staying close to lung-protective targets.</td></tr>
-      <tr><td>S56</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34293255/" target="_blank" rel="noopener">PMID 34293255</a></td><td><b>Pediatric</b>; 26 PICU patients, median age 16 months, heterogeneous lung disease, no detectable effort</td><td><i>Pediatr Pulmonol</i> 2021. The only pediatric randomised ASV comparison. Driving pressure, and the two pediatric data points in rig 8.</td></tr>
-      <tr><td>S57</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/22591622/" target="_blank" rel="noopener">PMID 22591622</a></td><td><b>Pediatric</b>; 15 children over 7 kg, median age 45 months, weaning phase, spontaneously breathing</td><td><i>Crit Care</i> 2012. The closed-loop weaning safety pilot and its 94% time-in-window result.</td></tr>
-      <tr><td>S58</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36091711/" target="_blank" rel="noopener">PMID 36091711</a></td><td><b>Pediatric</b>; 30 children, median age 21 months, 40% with PARDS, on ASV 1.1</td><td><i>Front Med</i> 2022. Time in the optimal saturation zone, and the number of automated setting changes it took.</td></tr>
-      <tr><td>S59</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34314571/" target="_blank" rel="noopener">PMID 34314571</a></td><td><b>Pediatric</b>; editorial, no abstract; publication type confirmed as editorial</td><td><i>Pediatr Pulmonol</i> 2021. The closing question about reliance on assistive technology.</td></tr>
-      <tr><td>S60</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34839229/" target="_blank" rel="noopener">PMID 34839229</a></td><td>Adult; 20 randomised trials comparing NAVA, PAV, ASV or SmartCare with pressure support</td><td><i>J Crit Care</i> 2022. NAVA's mortality association, PAV's weaning advantage, and that ASV differed from pressure support on nothing.</td></tr>
-      <tr><td>S61</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40678933/" target="_blank" rel="noopener">PMID 40678933</a></td><td>Adult <b>and pediatric</b>; 62 trials, 5052 participants, of which 3 trials and 218 participants are children</td><td>Cochrane 2025. What automated weaning does to duration, reintubation and tracheostomy, and how little of that evidence is pediatric.</td></tr>
-      <tr><td>S62</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25693449/" target="_blank" rel="noopener">PMID 25693449</a></td><td>Adult; 50 ICU patients, 7027 hours, 8.7 million breaths, prospective observational</td><td>Blanch 2015, <i>Intensive Care Med</i>. The adult asynchrony prevalence and its mortality association.</td></tr>
-      <tr><td>S63</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/26914624/" target="_blank" rel="noopener">PMID 26914624</a></td><td><b>Pediatric</b>; 45 ventilated children 0&ndash;18 y, 57 651 breaths, tertiary PICU</td><td><i>Pediatr Crit Care Med</i> 2016. That a third of pediatric breaths were asynchronous and that ineffective triggering dominates.</td></tr>
-      <tr><td>S64</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34054119/" target="_blank" rel="noopener">PMID 34054119</a></td><td><b>Pediatric</b>; 29 ventilated children, 87 analysed study days, mixed PICU</td><td><i>Pediatr Crit Care Med</i> 2021. The time course, and that severe asynchrony did not prolong ventilation. Stated alongside S62 rather than reconciled with it.</td></tr>
-      <tr><td>S65</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27334266/" target="_blank" rel="noopener">PMID 27334266</a></td><td>Adult; review of esophageal manometry</td><td><i>Intensive Care Med</i> 2016. That the injurious stretch is transpulmonary rather than airway.</td></tr>
-      <tr><td>S66</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27626833/" target="_blank" rel="noopener">PMID 27626833</a></td><td>Adult; concise clinical review</td><td>Brochard, <i>AJRCCM</i> 2017. The patient self-inflicted lung injury framing.</td></tr>
-      <tr><td>S67</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">PMID 21700908</a></td><td>Adult; pulmonary perspective on dynamic hyperinflation and auto-PEEP</td><td>Marini 2011, <i>AJRCCM</i>. The 80% rule, and the mode-dependent response of plateau and tidal volume to added PEEP. The basis of the auto-PEEP insult in the simulator.</td></tr>
-      <tr><td>S68</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/16003057/" target="_blank" rel="noopener">PMID 16003057</a></td><td>Adult; patients with airway obstruction during controlled ventilation</td><td><i>Crit Care Med</i> 2005. That paradoxical responses to added PEEP occur.</td></tr>
-      <tr><td>S69</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a></td><td>Adult; COPD in acute ventilatory failure on controlled ventilation</td><td><i>Am Rev Respir Dis</i> 1993. The classic demonstration of the offsetting effect.</td></tr>
-      <tr><td>S70</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33169215/" target="_blank" rel="noopener">PMID 33169215</a></td><td>Adult; review of obstructive and asthmatic ventilation</td><td><i>Intensive Care Med</i> 2020. That the mode-by-mode framing of added PEEP is standard practice.</td></tr>
-      <tr><td>S71</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/10793162/" target="_blank" rel="noopener">PMID 10793162</a></td><td>Adult; 861 patients with acute lung injury or ARDS</td><td>ARMA, <i>N Engl J Med</i> 2000. The source of the PEEP/FiO<sub>2</sub> tables that PALICC-2 refers children back to.</td></tr>
-      <tr><td>S72</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39800404/" target="_blank" rel="noopener">PMID 39800404</a></td><td><b>Pediatric</b>; <b>clinical trial protocol only, no results</b></td><td>CoCO<sub>2</sub>, <i>BMJ Open</i> 2025. Cited as the state of the pediatric mode question: registered, not answered.</td></tr>
-      <tr><td>S73</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21128755/" target="_blank" rel="noopener">PMID 21128755</a></td><td>Not population-based; ventilator taxonomy review</td><td><i>Expert Rev Respir Med</i> 2010. Background for the control-variable framing carried over from fundamentals.</td></tr>
-      <tr><td>S74</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/42412522/" target="_blank" rel="noopener">PMID 42412522</a></td><td>Adult; tutorial review, ARDS and COPD load-capacity phenotypes</td><td>Work of breathing by the Campbell diagram, <i>Respir Care</i> 2026. Background for the work framing in sections 03 and 06.</td></tr>
-      <tr><td>S75</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32976348/" target="_blank" rel="noopener">PMID 32976348</a></td><td><b>Pediatric</b>; pilot of effort-driven ventilator management in children</td><td>Hotz 2020, <i>Pediatr Crit Care Med</i>. The closest pediatric analogue to an effort-target strategy, named as a feasibility pilot.</td></tr>
+      <tr><td>S19</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25693014/" target="_blank" rel="noopener">PMID 25693014</a></td><td>Adult; 3562 patients pooled from 9 randomised ARDS trials; mediation analysis</td><td>Driving pressure and survival, <i>N Engl J Med</i> 2015. That driving pressure is the ventilation variable that stratifies risk, which is what the simulator's mode table means by calling it the risk-stratifying variable and why rig 4 reports it.</td></tr>
+      <tr><td>S20</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></td><td><b>Pediatric</b>; consensus guideline for PARDS</td><td>PALICC-2 executive summary, <i>Pediatr Crit Care Med</i> 2023. The recommendation numbers, wording and strength labels in section 09, the dead-space recommendation, and the oxygenation index definition.</td></tr>
+      <tr><td>S21</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener">PMID 31577153</a></td><td>Adult; 45 patients with ARDS, prospective clinical trial</td><td>Chen 2020, <i>AJRCCM</i> 201(2):178&ndash;187. The single-breath method, its validation against multiple pressure-volume curves (r = 0.798, bias &minus;21 mL), the median of 0.5 across a 0 to 2.0 range, the 0.5 cut, the oxygenation and blood-pressure split between high and low recruiters, and the 4 patients whose opening pressure exceeded the high PEEP. Everything rig 10 computes.</td></tr>
+      <tr><td>S22</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/37523486/" target="_blank" rel="noopener">PMID 37523486</a></td><td>Adult; 20 patients, moderate-to-severe COVID-19 ARDS, prospective physiologic study</td><td>Grieco 2023, <i>Anesthesiology</i> 139(6):801&ndash;814. The five-line arithmetic restated, the 5 L/min low-flow screening inflation after an 8-second exhalation, the correlation with the fall in dynamic strain (r = &minus;0.94) where compliance and PaO<sub>2</sub>/FiO<sub>2</sub> gave none, and the parabolic behaviour across the 15 to 5 cmH<sub>2</sub>O range in 17 of 20.</td></tr>
+      <tr><td>S23</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38924520/" target="_blank" rel="noopener">PMID 38924520</a></td><td>Adult; 23 patients with ARDS, 10 low and 13 high recruiters, pulmonary artery catheter and echocardiography</td><td>Cappio Borlino 2024, <i>AJRCCM</i> 210(7):900&ndash;907. That a 10 cmH<sub>2</sub>O PEEP increase raised pulmonary vascular resistance in low recruiters and not in high recruiters, with the right-to-left end-diastolic area ratio moving the same way.</td></tr>
+      <tr><td>S24</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40690301/" target="_blank" rel="noopener">PMID 40690301</a></td><td>Adult; 20 patients under general anaesthesia for open abdominal surgery, not ARDS</td><td>Ros&agrave; 2025, <i>Anesthesiology</i> 143(5):1211&ndash;1224. The median of 0.41 across 0 to 0.86 outside ARDS, and the correlation with recruited volume scaled to PEEP-induced inflation on electrical impedance tomography (r = 0.82).</td></tr>
+      <tr><td>S25</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39021144/" target="_blank" rel="noopener">PMID 39021144</a></td><td>Adult; narrative review of bedside PEEP selection</td><td>Ros&agrave; 2024, <i>Minerva Anestesiol</i> 90(7&ndash;8):694&ndash;706. Background for the step table: how the manoeuvre is run and read at the bedside rather than in a protocol.</td></tr>
+      <tr><td>S26</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/28557528/" target="_blank" rel="noopener">PMID 28557528</a></td><td>Adult; cohort report of complete airway closure in ARDS</td><td>Chen 2018, <i>AJRCCM</i> 197(1):132&ndash;136. The phenomenon itself: complete small-airway closure, the opening pressure that reverses it, and why every mechanic computed against set PEEP is computed against the wrong denominator when it is present.</td></tr>
+      <tr><td>S27</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32701573/" target="_blank" rel="noopener">PMID 32701573</a></td><td>Adult; 51 patients with ARDS pooled from two cohorts, stratified by body mass index</td><td>Coudroy 2020, <i>Anesthesiology</i> 133(4):867&ndash;878. The prevalence of complete airway closure, 41% overall (95% CI 28 to 55), 22% in the lowest body-mass-index tercile against 65% in the highest, and the overstatement of driving pressure and elastance when it is ignored.</td></tr>
+      <tr><td>S28</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30560279/" target="_blank" rel="noopener">PMID 30560279</a></td><td>Not population-based; correspondence arguing from lavage data</td><td>Coudroy 2019, <i>Intensive Care Med</i> 45(2):290&ndash;291. Surfactant depletion as the proposed mechanism of airway closure, cited as a proposal rather than as a demonstration.</td></tr>
+      <tr><td>S29</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38379913/" target="_blank" rel="noopener">PMID 38379913</a></td><td><b>Pediatric</b>; bench across simulated patients of 3 to 50 kg, plus two illustrative cases of pediatric ARDS</td><td>Rodriguez Guerineau 2024, <i>Front Pediatr</i> 12:1310494. The pediatric adaptation of the opening-pressure manoeuvre: 6 mL/kg by continuous low flow over 3 seconds up to 20 kg and 4 seconds above it, the excessive flows shorter inflations produced at 30 and 50 kg, and the unreadable 3 kg simulation.</td></tr>
+      <tr><td>S30</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40590612/" target="_blank" rel="noopener">PMID 40590612</a></td><td><b>Pediatric</b>; 12 infants with acute bronchiolitis on invasive ventilation, single PICU, prospective</td><td>Varela 2025, <i>Pediatr Crit Care Med</i> 26(9):e1096&ndash;e1104. Airway closure in 7 of 12, median opening pressure 14 cmH<sub>2</sub>O (IQR 11 to 17), and what correcting for it did to driving pressure and to weight-normalised compliance. The only pediatric cohort here with measured opening pressures.</td></tr>
+      <tr><td>S31</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36661436/" target="_blank" rel="noopener">PMID 36661436</a></td><td><b>Pediatric</b>; systematic review supporting PALICC-2, 26 pediatric studies and 36 adult meta-analyses</td><td><i>Pediatr Crit Care Med</i> 2023. That no recommendation on ventilator mode was possible, stated as a research statement.</td></tr>
+      <tr><td>S32</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/11973365/" target="_blank" rel="noopener">PMID 11973365</a></td><td>Adult; 179 intubated patients, early ARDS</td><td><i>N Engl J Med</i> 2002. The adult physiologic dead-space fraction and its mortality association.</td></tr>
+      <tr><td>S33</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30211618/" target="_blank" rel="noopener">PMID 30211618</a></td><td>Adult; single-centre prospective ARDS cohort plus two ARDS Network trials</td><td><i>AJRCCM</i> 2019. The ventilatory ratio formula and its independent mortality association.</td></tr>
+      <tr><td>S34</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/26669646/" target="_blank" rel="noopener">PMID 26669646</a></td><td><b>Pediatric</b>; 266 of 283 children with PARDS, single tertiary PICU</td><td><i>Pediatr Crit Care Med</i> 2016. Alveolar dead space fraction at PARDS onset and its discrimination.</td></tr>
+      <tr><td>S35</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35295701/" target="_blank" rel="noopener">PMID 35295701</a></td><td><b>Pediatric</b>; 69 children with PARDS, median age 4.5 y, prospective under a lung-protective protocol</td><td><i>Front Pediatr</i> 2022. The 0.22 optimal cut, close to the previously suggested 0.25.</td></tr>
+      <tr><td>S36</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36759925/" target="_blank" rel="noopener">PMID 36759925</a></td><td><b>Pediatric</b> and young adult; 2335 patients, 8004 values, single-centre retrospective</td><td><i>Crit Care</i> 2023. Risk stratification by alveolar dead space fraction across the first week.</td></tr>
+      <tr><td>S37</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38771137/" target="_blank" rel="noopener">PMID 38771137</a></td><td><b>Pediatric</b>; 131 children with ARDS, median age 5.8 y, quaternary PICU, retrospective</td><td><i>Pediatr Crit Care Med</i> 2024. The CO<sub>2</sub> ventilatory equivalent, the pediatric median V<sub>D</sub>/V<sub>T</sub>, and the finding that conflicts with S28 and S30 on AVDSf. Both sides are shown.</td></tr>
+      <tr><td>S38</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25063240/" target="_blank" rel="noopener">PMID 25063240</a></td><td>Not population-based; physiology review spanning adult clinical scenarios</td><td>Petersson, <i>Eur Respir J</i> 2014. That shunt responds poorly to supplemental oxygen, and that wasted ventilation presents as work rather than hypercapnia. The qualitative claim the left panel of rig 5 exists to support.</td></tr>
+      <tr><td>S39</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/4581075/" target="_blank" rel="noopener">PMID 4581075</a></td><td>Adult; the original iso-shunt nomogram. <b>No abstract indexed; curve constants could not be retrieved</b></td><td>Benatar 1973, <i>Br J Anaesth</i>. Cited only as the origin of the iso-shunt construction. No value is taken from it and no curve in rig 5 carries a PaO<sub>2</sub> number.</td></tr>
+      <tr><td>S40</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8198900/" target="_blank" rel="noopener">PMID 8198900</a></td><td>Adult; 20 spontaneously breathing patients recovering in intensive therapy, FiO<sub>2</sub> 0.21&ndash;0.60</td><td>Petros 1994, <i>Br J Anaesth</i>. The low-FiO<sub>2</sub> caveat: apparent venous admixture rising from 0.11 to 0.19 as FiO<sub>2</sub> fell. Printed inside rig 5.</td></tr>
+      <tr><td>S41</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33603211/" target="_blank" rel="noopener">PMID 33603211</a></td><td><b>Neonatal / infant</b>; 81 ventilated infants, median gestational age 28.7 weeks; 35 RDS, 26 BPD, 20 term controls</td><td><i>Pediatr Res</i> 2022. Dead space in mL/kg by group. The three presets in rig 8 and the strongest argument against transporting an adult mL/kg target.<span class="erratum"><b>Erratum on record</b> &mdash; Pediatr Res 2022;91(1):265, PMID 34404931. Linkage only; the erratum was not retrieved. The dead-space values this page prints and seeds rig 8 with come from the original record, so consult the erratum before relying on them.</span></td></tr>
+      <tr><td>S42</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/42306311/" target="_blank" rel="noopener">PMID 42306311</a></td><td>Adult; 30 ventilated ICU patients, prospective physiological crossover at 6 mL/kg</td><td><i>Ann Intensive Care</i> 2026. The diminishing CO<sub>2</sub> return with rate, the rising alveolar dead space, and the two mechanical-power endpoints that anchor the power bar in rig 6.</td></tr>
+      <tr><td>S43</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/10581089/" target="_blank" rel="noopener">PMID 10581089</a></td><td>Adult; original description of NAVA. <b>No abstract indexed; internal scaling not recovered</b></td><td>Sinderby 1999, <i>Nat Med</i>. Cited for the concept only. The internal E<sub>di</sub>-to-pressure mapping is not displayed anywhere in this tool.</td></tr>
+      <tr><td>S44</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32893313/" target="_blank" rel="noopener">PMID 32893313</a></td><td>Adult; 306 patients with acute respiratory failure, multicentre RCT</td><td><i>Intensive Care Med</i> 2020. Ventilator-free days with NAVA, and the absence of a survival difference.</td></tr>
+      <tr><td>S45</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32408883/" target="_blank" rel="noopener">PMID 32408883</a></td><td>Adult; 78 critically ill adults at risk of prolonged ventilation, 4 ICUs, feasibility RCT</td><td><i>Crit Care</i> 2020. Exploratory outcomes, in a trial powered for adherence rather than effect.</td></tr>
+      <tr><td>S46</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25886793/" target="_blank" rel="noopener">PMID 25886793</a></td><td><b>Pediatric</b>; 13 children needing noninvasive ventilation, PICU crossover</td><td><i>Crit Care</i> 2015. Wasted efforts and total time in asynchrony on NIV-NAVA versus conventional NIV.</td></tr>
+      <tr><td>S47</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27749511/" target="_blank" rel="noopener">PMID 27749511</a></td><td><b>Pediatric</b>; randomised controlled trial in pediatric acute respiratory failure</td><td><i>Pediatr Crit Care Med</i> 2016. Early NIV-NAVA against flow-triggered NIV pressure support, in the same direction on synchrony.</td></tr>
+      <tr><td>S48</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32631305/" target="_blank" rel="noopener">PMID 32631305</a></td><td><b>Pediatric</b>; difficult-to-wean pediatric ARDS, physiologic crossover</td><td><i>BMC Pediatr</i> 2020. Pressure support against NAVA in the hardest pediatric group.</td></tr>
+      <tr><td>S49</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23863816/" target="_blank" rel="noopener">PMID 23863816</a></td><td><b>Pediatric</b>; 6 infants and children aged 4 weeks to 5 years, randomised crossover on NIV</td><td><i>Pediatr Crit Care Med</i> 2013. The trigger delays that seed the counters in rig 7: about 149 ms on pressure support, 61 ms on NAVA.</td></tr>
+      <tr><td>S50</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31487718/" target="_blank" rel="noopener">PMID 31487718</a></td><td><b>Neonatal</b>; 40 preterm infants 28+0 to 36+6 weeks with respiratory distress under 48 h of age, RCT</td><td><i>Neonatology</i> 2019. Negative on both FiO<sub>2</sub> at 12 hours and intubation.</td></tr>
+      <tr><td>S51</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40708902/" target="_blank" rel="noopener">PMID 40708902</a></td><td><b>Pediatric</b>; 11 studies, 224 children, systematic review and meta-analysis</td><td><i>Front Pediatr</i> 2025. What differs and what does not, and the authors' own statement that the level of evidence remains low.</td></tr>
+      <tr><td>S52</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35407471/" target="_blank" rel="noopener">PMID 35407471</a></td><td>Adult; narrative review of NAVA</td><td><i>J Clin Med</i> 2022. The user-facing statement that delivered pressure is the NAVA level times E<sub>di</sub>.</td></tr>
+      <tr><td>S53</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36151518/" target="_blank" rel="noopener">PMID 36151518</a></td><td><b>Neonatal</b>; 24 newborns breathing spontaneously in room air, 16 preterm and 8 term</td><td><i>BMC Pediatr</i> 2022. The E<sub>di</sub> reference ranges shaded on the top trace of rig 7, labelled neonatal because no pediatric normative dataset exists.</td></tr>
+      <tr><td>S54</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/15436363/" target="_blank" rel="noopener">PMID 15436363</a></td><td>Adult human physiology; origin of the least-work frequency. <b>No abstract indexed; formula constants not recovered</b></td><td>Otis 1950, <i>J Appl Physiol</i>. Cited for the existence of a work-minimising frequency. The formula is not displayed and rig 8 does not claim to reproduce it.</td></tr>
+      <tr><td>S55</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/17846747/" target="_blank" rel="noopener">PMID 17846747</a></td><td>Adult; 243 patients over 1327 ventilator-days, 11-bed medicosurgical ICU</td><td><i>Intensive Care Med</i> 2008. The disease-specific V<sub>T</sub>-rate pairs in passive patients, and the loss of differentiation once patients trigger. Two of the four data points in rig 8.</td></tr>
+      <tr><td>S56</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19142087/" target="_blank" rel="noopener">PMID 19142087</a></td><td>Adult; 22 ASA I women, gynaecological laparoscopy, healthy lungs; pneumoperitoneum as a defined compliance insult</td><td><i>Eur J Anaesthesiol</i> 2009. The measured ASV response that seeds the ASV panel of the simulator.</td></tr>
+      <tr><td>S57</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/20593352/" target="_blank" rel="noopener">PMID 20593352</a></td><td><b>Model, bench and adult</b>; simulation, test lung and stable post-cardiothoracic ICU patients</td><td><i>Int J Artif Organs</i> 2010. The delivered tidal volumes by modelled condition, and that the algorithm was originally designed for 8&ndash;12 mL/kg.</td></tr>
+      <tr><td>S58</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21383619/" target="_blank" rel="noopener">PMID 21383619</a></td><td>Adult; 10 patients with acute lung injury on an open-lung strategy</td><td><i>Anesthesiology</i> 2011. The unwanted rate and tidal-volume combination, and that users switched back.</td></tr>
+      <tr><td>S59</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/22460854/" target="_blank" rel="noopener">PMID 22460854</a></td><td>Adult; 50 sedated, passively ventilated ICU patients with acute respiratory failure</td><td><i>Intensive Care Med</i> 2012. IntelliVent-ASV was safe and used less pressure, volume and oxygen at equivalent oxygenation.</td></tr>
+      <tr><td>S60</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36484170/" target="_blank" rel="noopener">PMID 36484170</a></td><td>Adult; narrative review of closed-loop modes</td><td><i>Curr Opin Crit Care</i> 2023. The description of what ASV computes and in what order.</td></tr>
+      <tr><td>S61</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/35973716/" target="_blank" rel="noopener">PMID 35973716</a></td><td>Adult; 17 randomised and completed, ARDS, median PaO<sub>2</sub>/FiO<sub>2</sub> 146.6 mmHg, mostly passive; crossover</td><td><i>Respir Care</i> 2022. The counterweight to S52: a newer implementation staying close to lung-protective targets.</td></tr>
+      <tr><td>S62</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34293255/" target="_blank" rel="noopener">PMID 34293255</a></td><td><b>Pediatric</b>; 26 PICU patients, median age 16 months, heterogeneous lung disease, no detectable effort</td><td><i>Pediatr Pulmonol</i> 2021. The only pediatric randomised ASV comparison. Driving pressure, and the two pediatric data points in rig 8.</td></tr>
+      <tr><td>S63</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/22591622/" target="_blank" rel="noopener">PMID 22591622</a></td><td><b>Pediatric</b>; 15 children over 7 kg, median age 45 months, weaning phase, spontaneously breathing</td><td><i>Crit Care</i> 2012. The closed-loop weaning safety pilot and its 94% time-in-window result.</td></tr>
+      <tr><td>S64</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36091711/" target="_blank" rel="noopener">PMID 36091711</a></td><td><b>Pediatric</b>; 30 children, median age 21 months, 40% with PARDS, on ASV 1.1</td><td><i>Front Med</i> 2022. Time in the optimal saturation zone, and the number of automated setting changes it took.</td></tr>
+      <tr><td>S65</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34314571/" target="_blank" rel="noopener">PMID 34314571</a></td><td><b>Pediatric</b>; editorial, no abstract; publication type confirmed as editorial</td><td><i>Pediatr Pulmonol</i> 2021. The closing question about reliance on assistive technology.</td></tr>
+      <tr><td>S66</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34839229/" target="_blank" rel="noopener">PMID 34839229</a></td><td>Adult; 20 randomised trials comparing NAVA, PAV, ASV or SmartCare with pressure support</td><td><i>J Crit Care</i> 2022. NAVA's mortality association, PAV's weaning advantage, and that ASV differed from pressure support on nothing.</td></tr>
+      <tr><td>S67</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40678933/" target="_blank" rel="noopener">PMID 40678933</a></td><td>Adult <b>and pediatric</b>; 62 trials, 5052 participants, of which 3 trials and 218 participants are children</td><td>Cochrane 2025. What automated weaning does to duration, reintubation and tracheostomy, and how little of that evidence is pediatric.</td></tr>
+      <tr><td>S68</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/25693449/" target="_blank" rel="noopener">PMID 25693449</a></td><td>Adult; 50 ICU patients, 7027 hours, 8.7 million breaths, prospective observational</td><td>Blanch 2015, <i>Intensive Care Med</i>. The adult asynchrony prevalence and its mortality association.</td></tr>
+      <tr><td>S69</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/26914624/" target="_blank" rel="noopener">PMID 26914624</a></td><td><b>Pediatric</b>; 45 ventilated children 0&ndash;18 y, 57 651 breaths, tertiary PICU</td><td><i>Pediatr Crit Care Med</i> 2016. That a third of pediatric breaths were asynchronous and that ineffective triggering dominates.</td></tr>
+      <tr><td>S70</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34054119/" target="_blank" rel="noopener">PMID 34054119</a></td><td><b>Pediatric</b>; 29 ventilated children, 87 analysed study days, mixed PICU</td><td><i>Pediatr Crit Care Med</i> 2021. The time course, and that severe asynchrony did not prolong ventilation. Stated alongside S62 rather than reconciled with it.</td></tr>
+      <tr><td>S71</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27334266/" target="_blank" rel="noopener">PMID 27334266</a></td><td>Adult; review of esophageal manometry</td><td><i>Intensive Care Med</i> 2016. That the injurious stretch is transpulmonary rather than airway.</td></tr>
+      <tr><td>S72</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27626833/" target="_blank" rel="noopener">PMID 27626833</a></td><td>Adult; concise clinical review</td><td>Brochard, <i>AJRCCM</i> 2017. The patient self-inflicted lung injury framing.</td></tr>
+      <tr><td>S73</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">PMID 21700908</a></td><td>Adult; pulmonary perspective on dynamic hyperinflation and auto-PEEP</td><td>Marini 2011, <i>AJRCCM</i>. The 80% rule, and the mode-dependent response of plateau and tidal volume to added PEEP. The basis of the auto-PEEP insult in the simulator.</td></tr>
+      <tr><td>S74</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/16003057/" target="_blank" rel="noopener">PMID 16003057</a></td><td>Adult; patients with airway obstruction during controlled ventilation</td><td><i>Crit Care Med</i> 2005. That paradoxical responses to added PEEP occur.</td></tr>
+      <tr><td>S75</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a></td><td>Adult; COPD in acute ventilatory failure on controlled ventilation</td><td><i>Am Rev Respir Dis</i> 1993. The classic demonstration of the offsetting effect.</td></tr>
+      <tr><td>S76</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33169215/" target="_blank" rel="noopener">PMID 33169215</a></td><td>Adult; review of obstructive and asthmatic ventilation</td><td><i>Intensive Care Med</i> 2020. That the mode-by-mode framing of added PEEP is standard practice.</td></tr>
+      <tr><td>S77</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/10793162/" target="_blank" rel="noopener">PMID 10793162</a></td><td>Adult; 861 patients with acute lung injury or ARDS</td><td>ARMA, <i>N Engl J Med</i> 2000. The source of the PEEP/FiO<sub>2</sub> tables that PALICC-2 refers children back to.</td></tr>
+      <tr><td>S78</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39800404/" target="_blank" rel="noopener">PMID 39800404</a></td><td><b>Pediatric</b>; <b>clinical trial protocol only, no results</b></td><td>CoCO<sub>2</sub>, <i>BMJ Open</i> 2025. Cited as the state of the pediatric mode question: registered, not answered.</td></tr>
+      <tr><td>S79</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21128755/" target="_blank" rel="noopener">PMID 21128755</a></td><td>Not population-based; ventilator taxonomy review</td><td><i>Expert Rev Respir Med</i> 2010. Background for the control-variable framing carried over from fundamentals.</td></tr>
+      <tr><td>S80</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/42412522/" target="_blank" rel="noopener">PMID 42412522</a></td><td>Adult; tutorial review, ARDS and COPD load-capacity phenotypes</td><td>Work of breathing by the Campbell diagram, <i>Respir Care</i> 2026. Background for the work framing in sections 03 and 06.</td></tr>
+      <tr><td>S81</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/32976348/" target="_blank" rel="noopener">PMID 32976348</a></td><td><b>Pediatric</b>; pilot of effort-driven ventilator management in children</td><td>Hotz 2020, <i>Pediatr Crit Care Med</i>. The closest pediatric analogue to an effort-target strategy, named as a feasibility pilot.</td></tr>
     </tbody>
   </table></div>
 
@@ -1437,8 +1525,8 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 
   <div class="tool-footer">
     <p style="font-size:11.5px; max-width:86ch"><b>Educational use only.</b> This page is a teaching tool about patient effort, support scaling and gas exchange during mechanical ventilation. It is not clinical decision support, it gives no patient-specific advice, it is not FDA-cleared, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
-    <p style="font-size:11.5px; max-width:86ch">Every identifier in this table was resolved against PubMed E-utilities on 2026-08-31; first author, year and journal were matched for each. <b>Correction screening, re-run 2026-09-01.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 75 of 75 source PMIDs were screened, and two carry an erratum &mdash; PMID 22710796 and PMID 33603211 &mdash; with no retraction and no expression of concern anywhere. One erratum carries a PubMed record of its own, PMID 34404931, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 75. Both are marked on their row in the table above, and the dead-space values taken from PMID 33603211, which seed the infant preset of rig 8, carry the marker at the point of use as well. What the screen returns is the linkage and not the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Four published models that could not be sourced in full &mdash; the Otis least-work formula as implemented in adaptive support ventilation, the internal E<sub>di</sub>-to-pressure scaling in NAVA, the Benatar iso-shunt construction, and the adaptive-pressure-control support curve of the bench series &mdash; are described in words, are listed with their reasons in the table above, and are not computed anywhere in the tool. Numbers that no source establishes are labelled derived, consensus, extrapolated or author-chosen in place rather than dropped silently. Session-only; no data leaves this device.</p>
-    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.0 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
+    <p style="font-size:11.5px; max-width:86ch">Every identifier in this table was resolved against PubMed E-utilities; the sources carried over from v1.0 on 2026-08-31 and the ten added in v2.0 on 2026-09-01, with first author, year and journal matched for each. <b>Correction screening.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 81 of 81 source PMIDs have been screened by that method, the ten added in v2.0 on 2026-09-01 and the rest on 2026-08-31, and two carry an erratum &mdash; PMID 22710796 and PMID 33603211 &mdash; with no retraction and no expression of concern anywhere. None of the ten new sources returned any erratum, retraction or expression-of-concern linkage. One erratum carries a PubMed record of its own, PMID 34404931, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 81. Both are marked on their row in the table above, and the dead-space values taken from PMID 33603211, which seed the infant preset of rig 8, carry the marker at the point of use as well. What the screen returns is the linkage and not the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Four published models that could not be sourced in full &mdash; the Otis least-work formula as implemented in adaptive support ventilation, the internal E<sub>di</sub>-to-pressure scaling in NAVA, the Benatar iso-shunt construction, and the adaptive-pressure-control support curve of the bench series &mdash; are described in words, are listed with their reasons in the table above, and are not computed anywhere in the tool. Numbers that no source establishes are labelled derived, consensus, extrapolated or author-chosen in place rather than dropped silently. One non-peer-reviewed source is used and is labelled where it appears: the bedside procedure in section 10 follows the R/I and airway-closure pages of rtmaven.com, a free teaching site and calculator built by the group behind PMID 31577153; its four demonstration videos are hosted on Vimeo and are linked in that section. It is cited for how to run the manoeuvre on a real ventilator, never for what the number means. Session-only; no data leaves this device.</p>
+    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
   </div>
  </div>
 </footer>
@@ -1720,8 +1808,13 @@ function rig1(){
   poly(s.vol,YC,stroke(SLATE,2.2));
 
   /* direct labels, no legend */
-  svg.appendChild(txt(Rr+4,YA(s.paw[Math.round(s.paw.length*0.18)]),"P vent",{cls:"lbl",style:fill(SLATE)}));
-  if(showTP) svg.appendChild(txt(Rr+4,YA(sum[Math.round(sum.length*0.10)])-8,"transpulmonary",{cls:"lbl",style:fill(NEG)}));
+  /* At low effort the two traces nearly coincide, so their direct labels have to
+     be pushed apart the way every other figure on this page pushes its labels. */
+  var yPv=YA(s.paw[Math.round(s.paw.length*0.18)]);
+  var yTp=YA(sum[Math.round(sum.length*0.10)])-8;
+  if(showTP && Math.abs(yPv-yTp)<15){ if(yTp<=yPv) yPv=yTp+15; else yTp=yPv+15; }
+  svg.appendChild(txt(Rr+4,yPv,"P vent",{cls:"lbl",style:fill(SLATE)}));
+  if(showTP) svg.appendChild(txt(Rr+4,yTp,"transpulmonary",{cls:"lbl",style:fill(NEG)}));
   svg.appendChild(txt(Rr+4,YB(sum[Math.round(sum.length*0.10)]),"sum",{cls:"lbl",style:fill(NEG)}));
   svg.appendChild(txt(Rr+4,YB(-peak*0.75)+4,"P mus",{cls:"lbl",style:fill(CAU)}));
   if(peak>0.5) svg.appendChild(txt(X(0.30),YB((s.paw[150]+sum[150])/2)+4,"the part no monitor shows",{cls:"ax",style:fill(MUT)}));
@@ -1777,7 +1870,10 @@ const R2BANDS = {
      takes the conservative end of each published range ("above 1 to 1.5, below
      3.5 to 5"); that choice is stated on the face of the figure. */
   ajrccm:{ pmus:[0,0],   pl:[0,0],   p01:[1.5,3.5],occ:[0,0],
-           pesSwing:"AJRCCM 2020 states an esophageal swing of at least −3 to −2 and at most −12 to −8 cmH₂O, not a predicted Pmus band; Pmus is larger by chest-wall recoil.",
+           /* Held as two lines because SVG does not wrap: as one string this ran
+              about 290 px past the right edge of the viewBox and lost its own point. */
+           pesSwing:["AJRCCM 2020 states an esophageal swing of at least −3 to −2 and at most",
+                     "−12 to −8 cmH₂O, not a predicted Pmus band; Pmus is larger by chest-wall recoil."],
            p01Note:"conservative end of \"above 1 to 1.5, below 3.5 to 5\"",
            label:"AJRCCM 2020 (PMID 32516052)" }
 };
@@ -1820,16 +1916,23 @@ function rig2(){
     var hasBand = !!(band && band[1]>band[0]);
     var inBand = hasBand && val>=band[0] && val<=band[1];
     var mCol = hasBand ? (inBand?POS:NEG) : SLATE;
-    if(!hasBand) svg.appendChild(txt(L-8,y+17,"not stated in this source",{cls:"ax",anchor:"end",style:fill(FAINT)}));
+    /* Two lines: end-anchored from x 124 the single line started at about x −1. */
+    if(!hasBand){
+      svg.appendChild(txt(L-8,y+15,"not stated in",{cls:"ax",anchor:"end",style:fill(FAINT)}));
+      svg.appendChild(txt(L-8,y+26,"this source",{cls:"ax",anchor:"end",style:fill(FAINT)}));
+    }
     svg.appendChild(cir(X(val),y+10,5,fill(mCol)));
     svg.appendChild(txt(X(val),y-22,fmt(val,1)+" "+unit,{cls:"lbl",anchor:"middle",style:fill(mCol)}));
   }
+  /* The rows are spaced to leave a clear gap under the predicted-Pmus row for the
+     two-line esophageal-swing note; at the old spacing it landed on that row's own
+     axis numbers. */
   scale(60,"ΔPocc, magnitude",30,occAbs,B.occ,[3.1,10.7],6.7,"cmH₂O");
   scale(140,"predicted Pmus",25,pmus,B.pmus,null,null,"cmH₂O");
-  if(B.pesSwing) svg.appendChild(txt(L,170,B.pesSwing,{cls:"prov",style:fill(FAINT)}));
-  scale(220,"predicted ΔPL,dyn",35,pl,B.pl,null,null,"cmH₂O");
-  scale(295,"P0.1",10,p01,B.p01,[4.1,6.0],4.9,"cmH₂O");
-  svg.appendChild(txt(L-124,350,"Bands: "+B.label+(B.p01Note?"  ·  P0.1 band is the "+B.p01Note:""),{cls:"prov",style:fill(FAINT)}));
+  if(B.pesSwing) provBlock(svg,L,190,B.pesSwing,11);
+  scale(245,"predicted ΔPL,dyn",35,pl,B.pl,null,null,"cmH₂O");
+  scale(320,"P0.1",10,p01,B.p01,[4.1,6.0],4.9,"cmH₂O");
+  svg.appendChild(txt(L-124,378,"Bands: "+B.label+(B.p01Note?"  ·  P0.1 band is the "+B.p01Note:""),{cls:"prov",style:fill(FAINT)}));
   svg.appendChild(txt(L-124,20,"Conversion: Pmus = "+(simple?"−3/4":"−0.74")+" × ΔPocc;  ΔPL,dyn = ΔPaw − "+(simple?"2/3":"0.66")+" × ΔPocc. Both from PMID 31694692, derived in adults.",{cls:"prov",style:fill(FAINT)}));
 
   $("v2_pmus").innerHTML=fmt(pmus,1)+"<small> cmH₂O</small>";
@@ -1944,16 +2047,15 @@ function rig3(){
   curve(function(p){ return F.ps(p)-0.5; },stroke(NEG,1.4,"stroke-dasharray:2 3"),0,25,Y);
 
   /* The two published anchors of PMID 19863830, drawn as anchors and joined by
-     nothing. The breakpoint is a Pmus the paper states; the 6 cmH2O floor is a
-     pressure the paper states. The Pmus at which the floor is reached, and the
-     path between the two, are not reported, so neither is drawn. */
+     nothing. In the plot each carries only a short tag; the sentence that says
+     what the anchor MEANS is set below the axis, where it cannot land on a
+     curve, on an axis number or on a direct label. Every long in-plot caption
+     this figure used to carry collided with something in some control state. */
   svg.appendChild(ln(X(R3.BREAK),T,X(R3.BREAK),B,stroke(CAU,1,"stroke-dasharray:3 4")));
   svg.appendChild(cir(X(R3.BREAK),Y(R3.VT/R3.C),4,fill(CAU)));
-  svg.appendChild(txt(X(R3.BREAK)+5,T+11,"Pmus 10: published breakpoint, target VT held below here",{cls:"ax",style:fill(CAU)}));
+  svg.appendChild(txt(X(R3.BREAK)+5,T+11,"Pmus 10",{cls:"ax",style:fill(CAU)}));
   svg.appendChild(ln(X(R3.BREAK),Y(R3.FLOOR),X(25),Y(R3.FLOOR),stroke(POS,1.6,"stroke-dasharray:6 3")));
-  svg.appendChild(cir(X(25),Y(R3.FLOOR),4,fill(POS)));
-  svg.appendChild(txt(X(R3.BREAK)+5,Y(R3.FLOOR)-17,"published 6 cmH₂O floor (PMID 19863830)",{cls:"ax",style:fill(POS)}));
-  svg.appendChild(txt(X(R3.BREAK)+5,Y(R3.FLOOR)-6,"the Pmus at which it is reached is not reported",{cls:"ax",style:fill(POS)}));
+  svg.appendChild(txt(X(R3.BREAK)+5,Y(R3.FLOOR)-5,"floor 6 cmH₂O",{cls:"ax",style:fill(POS)}));
 
   /* direct labels at the right-hand end, no legend */
   /* Direct labels, no legend. Curves can land on the same value, so the labels
@@ -1963,14 +2065,23 @@ function rig3(){
     {y:Y(F.vcPk(25)), t:"+ R × flow (peak)",       c:SLATE},
     {y:Y(F.pc(25))-4, t:"pressure control",        c:NEG},
     {y:Y(F.pc(25))+9, t:"pressure support",        c:NEG},
-    {y:Y(R3.FLOOR),   t:"adaptive floor, anchor",  c:POS}
+    {y:Y(R3.FLOOR),   t:"6 cmH₂O floor",           c:POS}
   ].sort(function(a,b){ return a.y-b.y; });
-  for(var li=1;li<labs.length;li++){ if(labs[li].y-labs[li-1].y<13) labs[li].y=labs[li-1].y+13; }
+  /* 15, not 13: a .lbl line box is about 13.9 px tall, so a 13 px push left
+     adjacent labels overlapping by ~0.9 px in every state that stacked them. */
+  for(var li=1;li<labs.length;li++){ if(labs[li].y-labs[li-1].y<15) labs[li].y=labs[li-1].y+15; }
   labs.forEach(function(o){ svg.appendChild(txt(Rr+34,o.y+4,o.t,{cls:"lbl",style:fill(o.c)})); });
 
   svg.appendChild(ln(X(cur),T,X(cur),B,stroke(INK,1.4)));
   svg.appendChild(cir(X(cur),T-6,4,fill(INK)));
-  provBlock(svg,L,B+52,[
+  /* What the two anchors mean, in words, below the axis. */
+  provBlock(svg,L,B+48,[
+    "Pmus 10 cmH₂O — the effort above which the bench study's target volume was no longer held."],13,CAU);
+  provBlock(svg,L,B+63,[
+    "6 cmH₂O — the lowest inspiratory pressure one of the three ventilator groups would go to.",
+    "It held that floor from Pmus 10 upward, so a patient on those machines keeps a small fixed",
+    "amount of help at any effort. The other two groups went on withdrawing support instead."],13,POS);
+  provBlock(svg,L,B+116,[
     "C 25 mL/cmH₂O, R 10 cmH₂O/L/s, target VT 320 mL — bench conditions of PMID 19863830.",
     "Volume control is drawn as the plateau; the fine dotted line adds R × flow to give the peak.",
     "Adaptive pressure control and NAVA are NOT drawn as curves. That source publishes two",
@@ -1995,7 +2106,7 @@ function rig3(){
     html+='</tr>';
   });
   var span = showWork ? 5 : 3;
-  html+='<tr><td style="color:'+CAU+'"><b>Adaptive pressure control</b><br><span class="ax">AutoFlow, VC+, APV, PRVC</span></td><td colspan="'+span+'"><b>Not computed.</b> PMID 19863830 reports two anchors — the target volume held below P<sub>mus</sub> 10 cmH₂O, and a 6 cmH₂O pressure floor — and no function joining them. Both anchors are marked on the figure; the curve between and beyond them is not drawn, because drawing it would require a coefficient the source does not publish.</td></tr>';
+  html+='<tr><td style="color:'+CAU+'"><b>Adaptive pressure control</b><br><span class="ax">AutoFlow, VC+, APV, PRVC</span></td><td colspan="'+span+'"><b>Not computed.</b> PMID 19863830 reports two anchors and no function joining them: the target volume held below P<sub>mus</sub> 10 cmH₂O, and a 6 cmH₂O floor below which one of the three ventilator groups would not set inspiratory pressure at any effort. Both anchors are marked on the figure; the curve between and beyond them is not drawn, because drawing it would require a coefficient the source does not publish.</td></tr>';
   html+='<tr><td style="color:'+DEEP+'"><b>NAVA</b></td><td colspan="'+span+'"><b>Not computed.</b> Support rises with effort, which is the direction that matters here, but the ventilator-internal scaling from E<sub>di</sub> to delivered pressure is not published by any manufacturer, so no slope is drawn. Rig 7 shows the published relationship — pressure follows the E<sub>di</sub> signal above E<sub>di</sub> minimum, at a level the clinician sets — without asserting an internal constant.</td></tr>';
   html+='</tbody></table><p class="tbl-note">Patient work is interpolated between the two endpoints PMID 19863830 reports, 0 and 1.88 J/L across Pmus 0 to 25. Ventilator work is a relative index against the passive requirement, not joules, and for volume control it is taken from the peak rather than the plateau.</p>';
   $("v3tblmount").innerHTML=html;
@@ -2081,8 +2192,9 @@ function rig4(){
 
   /* right panel: the twenty-unit column */
   var cx=452, cw=118, uy0=T, uh=(B-T)/R4.N;
-  svg.appendChild(txt(cx,T-28,"Twenty units,",{cls:"lbl",style:fill(INK)}));
-  svg.appendChild(txt(cx,T-14,"dependent at the bottom",{cls:"lbl",style:fill(INK)}));
+  /* T-28 put the first line's box above the viewBox top and clipped its ascenders. */
+  svg.appendChild(txt(cx,T-20,"Twenty units,",{cls:"lbl",style:fill(INK)}));
+  svg.appendChild(txt(cx,T-7,"dependent at the bottom",{cls:"lbl",style:fill(INK)}));
   for(var i=0;i<R4.N;i++){
     var open=r4Open(i,sp,peep,dp,mode);
     var over=open && (peep+dp) > (R4.POD + ((R4.N-1)/2-i)*0.3);
@@ -2200,13 +2312,17 @@ function rig5(){
     svg.appendChild(pth(d,stroke(on?NEG:PALE,on?2.4:1.3)));
     sLabs.push({y:YA(r5Ca(1.0,sf)),t:Math.round(sf*100)+"%",c:on?NEG:FAINT});
   });
-  for(var si=1;si<sLabs.length;si++){ if(sLabs[si].y-sLabs[si-1].y<11) sLabs[si].y=sLabs[si-1].y+11; }
+  for(var si=1;si<sLabs.length;si++){ if(sLabs[si].y-sLabs[si-1].y<13) sLabs[si].y=sLabs[si-1].y+13; }
   sLabs.forEach(function(o){ svg.appendChild(txt(aR+4,o.y+3,o.t,{cls:"ax",style:fill(o.c)})); });
   svg.appendChild(cir(XA(F),YA(r5Ca(F,s)),5,fill(NEG)));
-  svg.appendChild(txt(aL,B+48,"Shape only. Individual curve values are not read off any source; the",{cls:"prov",style:fill(FAINT)}));
-  svg.appendChild(txt(aL,B+61,"iso-shunt nomogram constants were not retrievable. PMID",{cls:"prov",style:fill(FAINT)}));
-  svg.appendChild(txt(aL,B+74,"8198900 reports a gradient, not a cut-point: venous admixture rose",{cls:"prov",style:fill(FAINT)}));
-  svg.appendChild(txt(aL,B+87,"from 0.11 to 0.19 as FiO₂ fell across 0.60 to 0.21.",{cls:"prov",style:fill(FAINT)}));
+  /* Re-wrapped to stay left of the CO2 panel at x 372: the two long lines used to
+     run under the right-hand provenance block at the same y. */
+  provBlock(svg,aL,B+48,[
+    "Shape only. Individual curve values are not read",
+    "off any source; the iso-shunt nomogram constants",
+    "were not retrievable. PMID 8198900 reports a",
+    "gradient, not a cut-point: venous admixture rose",
+    "from 0.11 to 0.19 as FiO₂ fell across 0.60 to 0.21."]);
 
   /* RIGHT: CO2 */
   var bL=372, bR=572, cMaxY=3;
@@ -2223,13 +2339,19 @@ function rig5(){
   svg.appendChild(txt(bL,T-6,"a ratio to baseline, not mmHg",{cls:"ax",style:fill(FAINT)}));
   svg.appendChild(txt((bL+bR)/2,B+32,"minute ventilation, × baseline",{cls:"lbl",anchor:"middle",style:fill(INK)}));
   function rel(v,vdf){ return vco2 * ((1-0.35)/(1-vdf)) / v; }
+  var vLabs=[];
   [0.35,0.50,0.65].forEach(function(vdf){
     var d="";
     for(var v=0.5;v<=2.5001;v+=0.02){ d+=(d?"L":"M")+fmt(XB(v),1)+" "+fmt(YB(rel(v,vdf)),1); }
     var on=Math.abs(vdf-vd)<0.03;
     svg.appendChild(pth(d,stroke(on?CAU:PALE,on?2.4:1.3)));
-    svg.appendChild(txt(XB(2.5)+4,YB(rel(2.5,vdf))+3,fmt(vdf,2),{cls:"ax",style:fill(on?CAU:FAINT)}));
+    vLabs.push({y:YB(rel(2.5,vdf)), t:fmt(vdf,2), c:on?CAU:FAINT});
   });
+  /* The three curves converge at high minute ventilation, so their end labels
+     need the same push-apart pass the shunt family already had. */
+  vLabs.sort(function(a,b){ return a.y-b.y; });
+  for(var vi=1;vi<vLabs.length;vi++){ if(vLabs[vi].y-vLabs[vi-1].y<13) vLabs[vi].y=vLabs[vi-1].y+13; }
+  vLabs.forEach(function(o){ svg.appendChild(txt(XB(2.5)+4,o.y+3,o.t,{cls:"ax",style:fill(o.c)})); });
   svg.appendChild(ln(bL,YB(1),bR,YB(1),stroke(HAIR,1)));
   svg.appendChild(cir(XB(ve),YB(rel(ve,vd)),5,fill(CAU)));
   provBlock(svg,bL,B+48,[
@@ -2245,7 +2367,7 @@ function rig5(){
   setFlag("v5flag", true, s>=0.30?"warn":"",
     s>=0.30 ? "At "+Math.round(s*100)+"% shunt the oxygen lever returns only "+Math.round((1-s)*100)+"% of what it returns in a shunt-free lung. Read the flatness above FiO₂ 0.3 as content and not as PaO₂: haemoglobin there is already loaded, so what FiO₂ adds is dissolved oxygen. "+R5POP[pop].band
             : R5POP[pop].band);
-  $("v5foot").innerHTML="<b>The two panels never move together.</b> FiO₂ moves only the left panel and minute ventilation only the right. Against shunt FiO₂ is the lever that fails, and rising shunt is answered by recruitment — mean airway pressure, section 11 — not by more oxygen. Against dead space minute ventilation does work, and it costs more as the fraction rises.";
+  $("v5foot").innerHTML="<b>The two panels never move together.</b> FiO₂ moves only the left panel and minute ventilation only the right. Against shunt FiO₂ is the lever that fails, and rising shunt is answered by recruitment — mean airway pressure, section 08 — not by more oxygen. Against dead space minute ventilation does work, and it costs more as the fraction rises.";
 }
 var R5S = { raf:null, target:null, el:null };
 function r5Animate(which){
@@ -2343,7 +2465,9 @@ function rig6(){
   svg.appendChild(txt(bL,bB+27,"rate, breaths/min",{cls:"ax",style:fill(FAINT)}));
 
   /* ---- LEFT lower: predicted vs measured relative PaCO2 against rate ---- */
-  var pL=44, pR=296, pT=210, pB=306, pMax=2.5;
+  /* pR pulled in from 296 so the two direct labels past it end clear of the
+     oxygenation-index numeral in the right-hand column at x 348. */
+  var pL=44, pR=284, pT=210, pB=306, pMax=2.5;
   var XP=function(r){ return pL+((r-10)/35)*(pR-pL); };
   var YP=function(v){ return pB-(clamp(v,0,pMax)/pMax)*(pB-pT); };
   svg.appendChild(ln(pL,pB,pR,pB,stroke(RULE,1)));
@@ -2364,7 +2488,14 @@ function rig6(){
   svg.appendChild(pth(d1,stroke(SLATE,2,"stroke-dasharray:5 4")));
   svg.appendChild(pth(d2,stroke(CAU,2.2)));
   var yPred=YP(relAt(45,false)), yMeas=YP(relAt(45,true));
-  if(Math.abs(yPred-yMeas)<12){ if(yPred<=yMeas){ yMeas=yPred+12; } else { yPred=yMeas+12; } }
+  if(Math.abs(yPred-yMeas)<14){ if(yPred<=yMeas){ yMeas=yPred+14; } else { yPred=yMeas+14; } }
+  /* Both curves can bottom out together at high inspiratory pressure, which put
+     the labels down on the rate-axis tick row; they are held inside the panel. */
+  yPred=clamp(yPred,pT+10,pB-2); yMeas=clamp(yMeas,pT+10,pB-2);
+  if(Math.abs(yPred-yMeas)<14){
+    if(yPred<=yMeas){ yMeas=Math.min(pB-2,yPred+14); if(yMeas-yPred<14) yPred=yMeas-14; }
+    else            { yPred=Math.min(pB-2,yMeas+14); if(yPred-yMeas<14) yMeas=yPred-14; }
+  }
   svg.appendChild(txt(pR+3,yPred,"predicted",{cls:"ax",style:fill(SLATE)}));
   svg.appendChild(txt(pR+3,yMeas,"measured",{cls:"ax",style:fill(CAU)}));
   svg.appendChild(cir(XP(S.rate),YP(relAt(S.rate,true)),4,fill(CAU)));
@@ -2401,7 +2532,9 @@ function rig6(){
     "Same PIP, same PEEP, same duty cycle: the",
     "rectangular form carries exactly twice the",
     "pressure-time area above PEEP."]);
-  svg.appendChild(txt(wL,282,"Oxygenation index",{cls:"lbl",style:fill(INK)}));
+  /* The 24 px numeral has a tall ascent box; at y 306 it reached back into the
+     caption above it, so the caption moved up rather than the numeral down. */
+  svg.appendChild(txt(wL,278,"Oxygenation index",{cls:"lbl",style:fill(INK)}));
   svg.appendChild(txt(wL,306,isFinite(S.oi)? fmt(S.oi,1) : "—",{style:"font-family:var(--mono);font-size:24px;fill:"+INK}));
   provBlock(svg,wL+62,300,[
     "= FiO₂ "+fmt(S.fio2,2)+" × mean Paw "+fmt(S.pawRect,1),
@@ -2836,6 +2969,164 @@ function r9Animate(){
 <script>
 "use strict";
 /* =========================================================================
+   RIG 10 - recruitment-to-inflation ratio from the single-breath release.
+   Every term here is one the operator measured. There is no fitted constant
+   and no coefficient supplied by this tool, which is why this model IS
+   computed while the four listed in the reference section are not:
+     effective low pressure  Pe   = max(low PEEP, airway opening pressure)
+     Crs,low                      = setVT / (plateau_low - Pe)
+     released volume              = exhaled release breath - setVT
+     recruited volume        Vrec = released - Crs,low x (PEEPhigh - Pe)
+     Crec                         = Vrec / (PEEPhigh - Pe)
+     R/I                          = Crec / Crs,low
+   Source of the five lines: PMID 31577153, restated in PMID 37523486.
+   The ratio is REFUSED, not clamped, when the opening pressure reaches the
+   high PEEP: that is the case in which the validation cohort could not
+   assess recruitment either, in 4 of its 45 patients.
+   ========================================================================= */
+const R10 = { RIMAX:2.0, CUT:0.5, MEDIAN:0.5, ANAES:0.41 };
+function r10Calc(ph, pl, aop, setvt, exvt, pplat){
+  var pe = Math.max(pl, aop);
+  var dP = ph - pe;
+  var out = { pe:pe, dP:dP, crs:null, released:exvt-setvt, vrec:null, crec:null, ri:null, why:null };
+  if(dP <= 0){ out.why="aop-above-high"; return out; }
+  var dPlow = pplat - pe;
+  if(dPlow <= 0){ out.why="plateau-below-pe"; return out; }
+  out.crs = setvt / dPlow;
+  out.vrec = out.released - out.crs*dP;
+  out.crec = out.vrec / dP;
+  out.ri = out.crec / out.crs;
+  return out;
+}
+function rig10(){
+  var ph=+$("v10ph").value, pl=+$("v10pl").value, aop=+$("v10aop").value,
+      wt=+$("v10wt").value, setvt=+$("v10vt").value, exvt=+$("v10ex").value, pplat=+$("v10pp").value;
+  $("v10ph_v").textContent=ph+" cmH2O";
+  $("v10pl_v").textContent=pl+" cmH2O";
+  $("v10aop_v").textContent = aop===0 ? "none" : aop+" cmH2O";
+  $("v10wt_v").textContent=wt+" kg";
+  $("v10vt_v").textContent=setvt+" mL";
+  $("v10ex_v").textContent=exvt+" mL";
+  $("v10pp_v").textContent=pplat+" cmH2O";
+  var C=r10Calc(ph,pl,aop,setvt,exvt,pplat);
+
+  var svg=$("v10svg"); clear(svg,"v10title");
+  var T=34, B=252;
+  /* Direct labels only, no legend. Both panels run their label sets through the
+     same placer: push apart by 15 px (a .lbl line box is ~13.9 px tall), then
+     lift the whole stack if it has been pushed past the floor. Without the lift,
+     an extreme input state slid a label off the bottom of the viewBox. */
+  function place(list, x, lo, hi){
+    if(!list.length) return;
+    list.sort(function(a,b){ return a.y-b.y; });
+    for(var i=1;i<list.length;i++){ if(list[i].y-list[i-1].y<15) list[i].y=list[i-1].y+15; }
+    var over=list[list.length-1].y-hi;
+    if(over>0){ var shift=Math.min(over, list[0].y-lo); list.forEach(function(o){ o.y-=shift; }); }
+    list.forEach(function(o){ svg.appendChild(txt(x,o.y+4,o.t,{cls:"lbl",style:fill(o.c)})); });
+  }
+
+  /* ---------------- left panel: where the released volume went -------------- */
+  var bx=96, bw=76, AX=56, AR=250;
+  var infl = C.crs===null ? 0 : Math.max(0, C.crs*C.dP);
+  var vmax=Math.max(200, Math.abs(C.released)*1.15, infl*1.15, (C.vrec||0)*1.15);
+  var VY=function(v){ return B-(clamp(v,0,vmax)/vmax)*(B-T); };
+  svg.appendChild(ln(AX,B,AR,B,stroke(RULE,1)));
+  svg.appendChild(ln(AX,T,AX,B,stroke(RULE,1)));
+  [0,0.25,0.5,0.75,1].forEach(function(f){ var v=vmax*f;
+    svg.appendChild(ln(AX-4,VY(v),AX,VY(v),stroke(RULE,1)));
+    svg.appendChild(txt(AX-7,VY(v)+3,fmt(v,0),{cls:"ax",anchor:"end",style:fill(FAINT)}));
+  });
+  svg.appendChild(txt(AX,T-13,"volume released by the PEEP drop, mL",{cls:"lbl",style:fill(INK)}));
+  if(C.crs!==null){
+    var rec=C.vrec, lefts=[];
+    svg.appendChild(rct(bx,VY(infl),bw,B-VY(infl),fill(PALE)));
+    svg.appendChild(ln(bx,VY(infl),bx+bw,VY(infl),stroke(SLATE,1.4)));
+    lefts.push({y:(VY(infl)+B)/2, t:"inflation "+fmt(infl,0), c:SLATE});
+    if(rec>=0){
+      svg.appendChild(rct(bx,VY(infl+rec),bw,VY(infl)-VY(infl+rec),fill(POSBG)));
+      svg.appendChild(ln(bx,VY(infl+rec),bx+bw,VY(infl+rec),stroke(POS,1.8)));
+      lefts.push({y:(VY(infl)+VY(infl+rec))/2, t:"recruitment "+fmt(rec,0), c:POS});
+    }else{
+      /* a negative remainder is a measurement problem, and is drawn as one */
+      svg.appendChild(rct(bx,VY(infl),bw,VY(Math.max(0,infl+rec))-VY(infl),fill(NEGBG)));
+      lefts.push({y:VY(infl)+10, t:"deficit "+fmt(rec,0), c:NEG});
+    }
+    place(lefts, bx+bw+9, T, B+30);
+  }else{
+    svg.appendChild(txt(AX,(T+B)/2,"not computable in this state",{cls:"lbl",style:fill(NEG)}));
+  }
+
+  /* ---------------- right panel: the R/I scale ----------------------------- */
+  var sx=352, sw=40;
+  var RY=function(r){ return B-(clamp(r,0,R10.RIMAX)/R10.RIMAX)*(B-T); };
+  svg.appendChild(rct(sx,RY(R10.RIMAX),sw,RY(R10.CUT)-RY(R10.RIMAX),fill(POSBG)));
+  svg.appendChild(ln(sx,B,sx,T,stroke(RULE,1)));
+  [0,0.5,1.0,1.5,2.0].forEach(function(r){
+    svg.appendChild(ln(sx-4,RY(r),sx,RY(r),stroke(RULE,1)));
+    svg.appendChild(txt(sx-7,RY(r)+3,r.toFixed(1),{cls:"ax",anchor:"end",style:fill(FAINT)}));
+  });
+  svg.appendChild(txt(sx-30,T-13,"recruitment-to-inflation ratio",{cls:"lbl",style:fill(INK)}));
+  svg.appendChild(ln(sx,RY(R10.CUT),sx+sw,RY(R10.CUT),stroke(POS,1.6,"stroke-dasharray:5 3")));
+  var rights=[
+    {y:RY(R10.CUT),   t:"0.5 — high-recruiter cut",  c:POS},
+    {y:RY(R10.MEDIAN),t:"0.5 — median, 45 adults",   c:MUT},
+    {y:RY(R10.ANAES), t:"0.41 — median, anaesthesia",c:MUT}
+  ];
+  svg.appendChild(cir(sx+sw-8,RY(R10.MEDIAN),3,fill(MUT)));
+  svg.appendChild(cir(sx+sw-8,RY(R10.ANAES),3,fill(MUT)));
+  if(C.ri!==null && isFinite(C.ri)){
+    /* The verdict word is scoped to the published range. Arithmetic outside it is
+       still reported, because it is what the entered numbers give, but it is not
+       called recruitable: no source characterises a lung there. */
+    var verdict = C.ri<0 ? "not interpretable"
+                : C.ri>R10.RIMAX ? "off scale, above 2.0"
+                : C.ri>=R10.CUT ? "high recruiter" : "low recruiter";
+    /* The printed value is width-capped so the direct label cannot run off the
+       viewBox in an extreme input state; the readout above prints it in full. */
+    var rtxt = C.ri>99 ? ">99" : (C.ri<-99 ? "<-99" : fmt(C.ri,2));
+    var rc = C.ri<0 ? NEG : (C.ri>=R10.CUT ? POS : CAU);
+    var yy = RY(C.ri);
+    svg.appendChild(ln(sx,yy,sx+sw,yy,stroke(rc,2.4)));
+    svg.appendChild(cir(sx+sw,yy,4.5,fill(rc)));
+    rights.push({y:yy, t:"R/I "+rtxt+" — "+verdict, c:rc});
+  }
+  place(rights, sx+sw+8, T, B+30);
+
+  provBlock(svg,60,B+42,[
+    "Pe = max(low PEEP, airway opening pressure) — the pressure the lung actually sees at end expiration.",
+    "Crs,low = set VT / (plateau at low PEEP − Pe).   released = exhaled release breath − set VT.",
+    "recruited = released − Crs,low × (high PEEP − Pe).   R/I = [recruited / (high PEEP − Pe)] / Crs,low.",
+    "Five measured inputs, no fitted constant. Method PMID 31577153; restated PMID 37523486."]);
+
+  /* ---------------- readouts ---------------------------------------------- */
+  $("v10_pe").textContent = fmt(C.pe,0)+" cmH2O"+(aop>pl?" (AOP)":"");
+  $("v10_crs").innerHTML = C.crs===null ? "&mdash;"
+      : fmt(C.crs,1)+" <small>mL/cmH<sub>2</sub>O &middot; "+fmt(C.crs/wt,2)+"/kg</small>";
+  $("v10_vrec").textContent = C.vrec===null ? "—" : fmt(C.vrec,0)+" mL";
+  $("v10_ri").textContent = C.ri===null || !isFinite(C.ri) ? "—" : fmt(C.ri,2);
+
+  /* ---------------- flags -------------------------------------------------- */
+  if(C.why==="aop-above-high"){
+    setFlag("v10f1",true,"warn","The opening pressure is at or above the high PEEP, so the release never crosses it and recruitment cannot be separated from reopening. PMID 31577153 hit this in 4 of 45 patients and reported no ratio for them. Raise the high PEEP at least 5 cmH2O above the opening pressure, or report no ratio.");
+  }else if(C.why==="plateau-below-pe"){
+    setFlag("v10f1",true,"warn","The plateau at the low PEEP is at or below the effective low pressure, so the low-PEEP compliance has no denominator. Recheck the plateau; it should come from a 0.3 s pause setting, not a manual hold.");
+  }else if(C.vrec<0){
+    setFlag("v10f1",true,"warn","The release breath returned less gas than the already-open lung alone accounts for, so the recruited volume comes out negative. That is a measurement problem rather than a physiologic one: check for a circuit leak, an exhalation cut short by the rate, or a plateau read from a manual hold held long enough to drift low.");
+  }else if(C.ri!==null && C.ri>=0.5 && C.ri<=0.7){
+    setFlag("v10f1",true,"on","This sits in the band the sequential-lung-volume study found hardest to act on. Recruitability was parabolic across the 10 cmH2O range in 17 of 20 patients, so a mid-range ratio is an average over a span in which recruitment rose and then fell. PMID 37523486");
+  }else setFlag("v10f1",false,"","");
+
+  if(aop>pl && C.crs!==null){
+    var naive = setvt/Math.max(pplat-pl,1e-9);
+    setFlag("v10f2",true,"on","Ignoring the opening pressure would put the low-PEEP compliance at "+fmt(naive,1)+" instead of "+fmt(C.crs,1)+" mL/cmH2O, and would stretch the pressure change from "+fmt(C.dP,0)+" to "+fmt(ph-pl,0)+" cmH2O. Both errors move the ratio, and neither is visible on the ventilator.");
+  }else setFlag("v10f2",false,"","");
+
+  $("v10foot").innerHTML = (aop>pl)
+    ? "<b>With the airway closed, set PEEP is not the pressure at the alveolus.</b> Everything in the arithmetic above now runs against the opening pressure instead, and the ratio you would have reported from PEEP alone was measuring a pressure change the lung never experienced."
+    : "<b>The ratio is a comparison of two compliances, so it does not care how big the patient is.</b> What it does care about is the pressure the lung actually saw, which is why the opening-pressure slider moves it so hard.";
+}
+
+/* =========================================================================
    SELF TEST - runs the model functions against closed forms and against
    the published anchors on load. Inputs are built here, not read from the
    DOM, so a test failure is a model failure and not a slider position.
@@ -2930,7 +3221,29 @@ function runSelfTest(){
   t("Simulator VC: plateau rises by VT x (1/Cnew - 1/Cold)",
     Math.abs((v40.pplat-v0.pplat)-predicted)<0.02, "predicted "+fmt(predicted,2)+", observed "+fmt(v40.pplat-v0.pplat,2)+" cmH2O");
 
-  /* 13. NAVA removes the trigger inference, so auto-PEEP cannot waste an effort. */
+  /* 13. Rig 10: the R/I arithmetic, checked against a closed form written here
+        independently of the rig, plus the airway-closure substitution and the
+        refusal that mirrors the four patients the source could not assess. */
+  var ri1=r10Calc(15,5,0,400,700,25);
+  t("R/I worked example reproduces the closed form by hand",
+    Math.abs(ri1.crs-20)<1e-9 && Math.abs(ri1.vrec-100)<1e-9 && Math.abs(ri1.ri-0.5)<1e-12,
+    "PEEP 15 to 5, set VT 400 mL, release breath 700 mL, plateau 25: Crs,low = 400/20 = 20 mL/cmH2O, inflation = 200 mL, recruited = 100 mL, Crec = 10, R/I = "+fmt(ri1.ri,3));
+  var riA=r10Calc(15,5,8,400,700,25);
+  var peH=8, dPH=15-8, crsH=400/(25-8), vrecH=(700-400)-crsH*dPH, riH=(vrecH/dPH)/crsH;
+  t("Airway opening pressure replaces low PEEP everywhere in the arithmetic, not just in one line",
+    Math.abs(riA.crs-crsH)<1e-9 && Math.abs(riA.dP-dPH)<1e-9 && Math.abs(riA.ri-riH)<1e-12,
+    "at AOP 8 the effective pressure change is "+fmt(riA.dP,0)+" not 10, Crs,low is "+fmt(riA.crs,2)+" not 20, and R/I is "+fmt(riA.ri,3)+" not "+fmt(ri1.ri,3));
+  t("An opening pressure at or below the low PEEP drops out of the arithmetic entirely",
+    Math.abs(r10Calc(15,5,3,400,700,25).ri-ri1.ri)<1e-12 && Math.abs(r10Calc(15,5,5,400,700,25).ri-ri1.ri)<1e-12,
+    "AOP 3 and AOP 5 against a low PEEP of 5 both return R/I "+fmt(ri1.ri,3));
+  t("The ratio is refused, not clamped, when the opening pressure reaches the high PEEP",
+    r10Calc(15,5,15,400,700,25).ri===null && r10Calc(15,5,18,400,700,25).ri===null,
+    "PMID 31577153 could not assess recruitment in 4 of 45 patients for exactly this reason, and reported no ratio rather than a censored one");
+  t("R/I is a ratio of two compliances, so it is invariant to patient size",
+    Math.abs(r10Calc(15,5,0,80,140,25).ri-ri1.ri)<1e-12,
+    "scaling set VT and the release breath by 0.2 with the same pressures returns R/I "+fmt(r10Calc(15,5,0,80,140,25).ri,3)+", unchanged");
+
+  /* 14. NAVA removes the trigger inference, so auto-PEEP cannot waste an effort. */
   var ps=runR7("ps",8,6,0,1.5,25), nv=runR7("nava",8,6,0,1.5,25);
   t("Auto-PEEP wastes efforts on pressure support and not on NAVA",
     ps.wasted>0 && nv.wasted===0, "pressure support "+ps.wasted+" of 3, NAVA "+nv.wasted+" of 3");
@@ -3018,6 +3331,18 @@ function wireAll(){
     $("v8trig").setAttribute("aria-pressed","false"); rig8();
   });
 
+  bind(["v10ph","v10pl","v10aop","v10wt","v10vt","v10ex","v10pp"],rig10);
+  $("v10closed").addEventListener("click",function(){
+    $("v10ph").value=20; $("v10pl").value=5; $("v10aop").value=12;
+    $("v10vt").value=400; $("v10ex").value=700; $("v10pp").value=25;
+    rig10();
+  });
+  $("v10reset").addEventListener("click",function(){
+    $("v10ph").value=15; $("v10pl").value=5; $("v10aop").value=0; $("v10wt").value=20;
+    $("v10vt").value=400; $("v10ex").value=700; $("v10pp").value=25;
+    rig10();
+  });
+
   bind(["v9mag","v9plim","v9edi"],rig9);
   bindSeg("v9ins",function(){ R9S.applied=false; R9S.breath=0; rig9(); });
   bindToggle("v9comp",rig9);
@@ -3033,10 +3358,10 @@ function wireAll(){
   });
 
   window.addEventListener("resize",function(){
-    rig1(); rig2(); rig3(); rig4(); rig5(); rig6(); rig7(); rig8();
+    rig1(); rig2(); rig3(); rig4(); rig5(); rig6(); rig7(); rig8(); rig10();
   },{passive:true});
 }
-function renderAll(){ rig1(); rig2(); rig3(); rig4(); rig5(); rig6(); rig7(); rig8(); rig9(); }
+function renderAll(){ rig1(); rig2(); rig3(); rig4(); rig5(); rig6(); rig7(); rig8(); rig9(); rig10(); }
 
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded",function(){
