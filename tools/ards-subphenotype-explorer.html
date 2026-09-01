@@ -682,7 +682,7 @@
 
     <p>Surfactant protein D is there deliberately: it marks alveolar type II epithelial injury and barely separates the classes. sRAGE is the type I epithelial marker, angiopoietin-2 endothelial, protein C and PAI-1 coagulation, the rest cytokines. sRAGE separates strongly, so epithelial injury is not absent, although the systemic inflammatory and endothelial rows dominate. These classes are not gradations of lung injury severity; they are systemic host-response states discovered in a lung cohort, which is why the same two reappear in sepsis without ARDS and why the pediatric authors caution that they may not be specific to ARDS at all.</p>
 
-    <p>The clinical correlates follow the biology. In the pediatric cohort, vasopressor use was 80% against 35%, sepsis was the ARDS trigger in 39% against 7%, and bronchiolitis in 6% against 28%. Severity spread across both: 32% mild, 39% moderate and 29% severe PARDS in the hypoinflammatory class, and 47% of the hyperinflammatory class mild or moderate rather than severe. For CRP and the routine markers a reader reaches for first, see <a href="#s5">section 05</a>: none is an input to any model here, and CRP was tested as a classifier and performed worse. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34883088/" target="_blank" rel="noopener">PMID 34883088</a></p>
+    <p>The clinical correlates follow the biology. In the pediatric cohort, vasopressor use was 80% against 35%, sepsis was the ARDS trigger in 39% against 7%, and bronchiolitis in 6% against 28%. Severity spread across both: 32% mild, 39% moderate and 29% severe PARDS in the hypoinflammatory class, and 47% of the hyperinflammatory class mild or moderate rather than severe. For CRP and the routine markers a reader reaches for first, see <a href="#s5">section 05</a>: none feeds any classifier model here, CRP was tested as a classifier and performed worse, and section 05 lets a reader enter a CRP value to compare it against the published class distributions instead. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34883088/" target="_blank" rel="noopener">PMID 34883088</a></p>
 
     <div class="fig">
       <div class="fig-title">Figure 2 &mdash; Separation ladder</div>
@@ -718,6 +718,12 @@
             <td class="num">not reported as a single figure</td>
             <td>Yes &mdash; intercept 2.25, IL-8 &minus;1.97, bicarbonate 1.71, sTNFr1 &minus;1.71</td>
             <td><span class="status-chip st-partial">Partial</span><br><span style="font-size:11.5px">Log-transformed <em>and z-scaled</em>; the FACTT means and SDs are not published, so it cannot be evaluated on a new patient.</span></td>
+          </tr>
+          <tr>
+            <td>Sinha 2018, SAILS (Table S3A)</td><td>Adult ARDS</td><td>CRP, bicarbonate, creatinine</td>
+            <td class="num">0.85 (Youden 0.41; sens 0.76, spec 0.82) vs LCA in SAILS</td>
+            <td>No &mdash; only Wald z-values and p-values are printed, in the main-text paper and in Supplementary Table S3A; no coefficient, intercept or standard error appears anywhere in the article or its supplement</td>
+            <td><span class="status-chip st-unavailable">Unavailable</span><br><span style="font-size:11.5px">A Wald z-statistic is coefficient &divide; standard error; the standard error is not published, so the coefficient cannot be recovered from it. This tool computes a distribution comparison from the same paper's published CRP class means instead &mdash; <a href="#s5">section 05</a>, not a probability.</span></td>
           </tr>
           <tr>
             <td>Sinha 2020, Lancet Respir Med (Figure 2), 3-variable</td><td>Adult ARDS</td><td>IL-8, bicarbonate, protein C</td>
@@ -954,13 +960,28 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
         </div>
 
         <div class="callout callout--tint" style="margin:var(--md) 0 0">
-          <h4>Why CRP is not an input, and what the bedside panel does carry</h4>
-          <p style="margin:0;font-size:12.5px">No model on this page takes CRP, implementable or display-only, and neither does the prospectively validated PHIND assay. That is a tested result rather than an oversight. SAILS is the one trial cohort that measured CRP, and Sinha 2018 put it head to head: CRP with the two routine variables contributing most to class definition, bicarbonate and creatinine, reached AUC 0.85 (Youden 0.41, sensitivity 0.76, specificity 0.82), against AUC 0.93 for the same pair with sTNFr1 in place of CRP, p&lt;0.0001. The authors' words are that &ldquo;the CRP-based models performed only modestly&rdquo;. CRP does separate the classes &mdash; 23.6 against 20.5 mg/dL, p&lt;0.001 &mdash; a real difference and a useless one at the bedside. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30291376/" target="_blank" rel="noopener">PMID 30291376</a></p>
+          <h4>CRP &mdash; a live comparison, not a fifth model</h4>
+          <p style="margin:0;font-size:12.5px">No <em>model</em> on this page takes CRP, implementable or display-only, and neither does the prospectively validated PHIND assay. SAILS is the one trial cohort that measured CRP, and Sinha 2018 put it head to head against the routine variables that contribute most to class definition: CRP with bicarbonate and creatinine reached AUC 0.85 (Youden 0.41, sensitivity 0.76, specificity 0.82), against AUC 0.93 for the same pair with sTNFr1 in place of CRP, p&lt;0.0001. That equation cannot be built here &mdash; the paper and its supplement print only the model's Wald z-statistics and p-values (Table S3A), never its coefficients, intercept or standard errors, so nothing licenses computing a probability from it (<a href="#s3">section 03</a>). What the field below does instead is compare an entered value against the paper's published class means &mdash; a distribution comparison, never a classification. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30291376/" target="_blank" rel="noopener">PMID 30291376</a></p>
+
+          <div class="field" style="margin-top:var(--md)">
+            <label for="in-crp">C-reactive protein</label>
+            <div class="row"><input type="number" id="in-crp" min="0" max="60" step="any" inputmode="decimal" placeholder="not entered" aria-describedby="h-crp"><span class="unit">mg/dL</span></div>
+            <div class="hint" id="h-crp">Feeds no equation on this page. Compares the entered value against the published SAILS class means only.</div>
+          </div>
+          <div id="crpReadout" class="res-row" style="margin-top:0"></div>
+
+          <blockquote style="margin:var(--sm) 0 0;padding-left:12px;border-left:3px solid var(--rule);font-size:12.5px;color:var(--ink-muted)">
+            &ldquo;[T]he CRP-based models performed only modestly.&rdquo; The authors attribute this to CRP not being &ldquo;reliable as indicators of severity of inflammation in ARDS or in critical illness&rdquo;, to &ldquo;the perturbing influence of anthropometric factors such as age and BMI on CRP that are not observed with IL-6 and IL-8&rdquo;, and to the fact that &ldquo;the higher incidence of liver impairment in the hyper-inflammatory subphenotype may also lead to lower CRP levels compromising its utility as a classifier.&rdquo;
+            <footer style="margin-top:4px;font-size:11.5px;color:var(--ink-quiet)">&mdash; Sinha et al., <em>Intensive Care Med</em> 2018, Discussion. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30291376/" target="_blank" rel="noopener">PMID 30291376</a></footer>
+          </blockquote>
+
+          <p style="margin:8px 0 0;font-size:12.5px">In COVID-19 ARDS CRP does not even separate the classes: 231 against 236 mg/L, p=0.6343 (n=483), while procalcitonin, ferritin, LDH, D-dimer and lactate each did. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34543591/" target="_blank" rel="noopener">PMID 34543591</a></p>
+
           <details class="dtl">
             <summary>The rest of the bedside panel, and where CRP does appear</summary>
-            <p style="margin:0;font-size:12.5px">CRP <em>is</em> in one published latent class model: it was added as a class-defining variable to the extended SAILS LCA, where it changed nothing &mdash; the two-class solution held and 98% of patients kept their original assignment. Sinha 2018 offers reasons it classifies poorly: absolute CRP may not indicate the severity of inflammation in ARDS or critical illness, age and BMI perturb it in ways they do not perturb IL-6 and IL-8, and the greater liver impairment of the hyperinflammatory class may itself lower it. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30291376/" target="_blank" rel="noopener">PMID 30291376</a></p>
-            <p style="margin:8px 0 0;font-size:12.5px">In COVID-19 ARDS (n=483, single health system) CRP did not separate the classifier-assigned subphenotypes at all: 231 mg/L (142&ndash;300) against 236 (152&ndash;300), p=0.6343, and 227 (142&ndash;300) against 254 (162&ndash;300), p=0.1131, by latent class. In the same table procalcitonin (0.6 [0.3&ndash;1.4] against 2.3 [0.7&ndash;7.0] ng/mL), ferritin, lactate dehydrogenase, D-dimer and lactate each did separate, all p&le;0.0005. Those are the only subphenotype-stratified figures for procalcitonin, ferritin and lactate available anywhere, because that paper states these markers were not measured in the prior ARDS phenotyping cohorts &mdash; and they come from a COVID-19 population. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34543591/" target="_blank" rel="noopener">PMID 34543591</a></p>
-            <p style="margin:8px 0 0;font-size:12.5px">The bedside markers that do carry signal are the organ-injury ones. Sinha 2018 reports the hyperinflammatory subphenotype with hyperbilirubinemia, higher creatinine and lower platelets, and the pediatric EHR classifier listed above selected mean INR, minimum lactate, minimum platelets, minimum absolute neutrophil count and mean conjugated bilirubin &mdash; that paper ranks its variables by a directionless gain measure and prints no per-variable direction, so none is asserted here. <strong>None of this is an input to anything this page computes, and none of it is a classifier.</strong></p>
+            <p style="margin:0;font-size:12.5px">CRP <em>is</em> in one published latent class model: it was added as a class-defining variable to the extended SAILS LCA, where it changed nothing &mdash; the two-class solution held and 98% of patients kept their original assignment. The authors' own reasoning for why it classifies poorly is quoted above. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30291376/" target="_blank" rel="noopener">PMID 30291376</a></p>
+            <p style="margin:8px 0 0;font-size:12.5px">The fuller COVID-19 figures: CRP did not separate the classifier-assigned subphenotypes at all, 231 mg/L (142&ndash;300) against 236 (152&ndash;300), p=0.6343, and 227 (142&ndash;300) against 254 (162&ndash;300), p=0.1131, by latent class (n=483, single health system). In the same table procalcitonin (0.6 [0.3&ndash;1.4] against 2.3 [0.7&ndash;7.0] ng/mL), ferritin, lactate dehydrogenase, D-dimer and lactate each did separate, all p&le;0.0005. Those are the only subphenotype-stratified figures for procalcitonin, ferritin and lactate available anywhere, because that paper states these markers were not measured in the prior ARDS phenotyping cohorts &mdash; and they come from a COVID-19 population. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34543591/" target="_blank" rel="noopener">PMID 34543591</a></p>
+            <p style="margin:8px 0 0;font-size:12.5px">The bedside markers that do carry signal are the organ-injury ones. Sinha 2018 reports the hyperinflammatory subphenotype with hyperbilirubinemia, higher creatinine and lower platelets, and the pediatric EHR classifier listed above selected mean INR, minimum lactate, minimum platelets, minimum absolute neutrophil count and mean conjugated bilirubin &mdash; that paper ranks its variables by a directionless gain measure and prints no per-variable direction, so none is asserted here. <strong>None of this feeds any equation this page computes, and none of it is a classifier.</strong></p>
           </details>
         </div>
       </div>
@@ -1316,7 +1337,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
     </div>
 
     <div class="tool-footer">
-      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; Updated 2026-09-01 &middot;
+      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot;
       Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot; session-only, no data leaves this device
       <details class="dtl" style="margin-top:var(--sm)"><summary>How the sources and coefficients were verified</summary>
       <div style="text-align:left">Every PMID and DOI here was resolved against PubMed E-utilities and PubMed Central, most recently on 2026-09-01, with first author, year and journal matched for each of the twenty primary sources. Retraction screening was run by <em>erratum linkage</em> as well as by publication type, because a publication-type screen alone cannot see an erratum published as its own record: that screen returns <em>two</em> errata, both to Famous 2017 &mdash; PMID 30547667 (2018, the exchanged fluid-arm labels) and PMID 31469324 (2019, supplementary assay-dilution and a driving-pressure mislabel). Both are in the reference table and the first is cited beside the finding it corrects. No retraction was found. Coefficients were transcribed from the table or figure named in each row and re-checked by forward computation against the published cohort medians. The published operating characteristics are reproduced as printed and are <em>not</em> recomputed here, because that would need patient-level data this page does not have. Numbers that no source establishes are labelled DERIVED, marked as not re-verifiable, or are absent.</div>
@@ -1373,6 +1394,17 @@ const MEDIANS = {
 };
 const PAED_HYPO  = { il8: 28,  il6: 13,  stnfr1: 1545, protc: 63, vaso: 0 };
 const PAED_HYPER = { il8: 118, il6: 207, stnfr1: 4140, protc: 39, vaso: 1 };
+
+/* CRP is not a term in any model above - Sinha 2018 (PMID 30291376) prints only
+   Wald z-statistics and p-values for its CRP-based classifier (Table S3A), never
+   the coefficients, intercept or standard errors needed to invert them. These are
+   the paper's published class means (Table 1 / in-text), used ONLY to draw a
+   distribution comparison in section 05, never to compute a probability. */
+const CRP_STATS = {
+  hyper: { mean: 23.6, sd: 12.3 },
+  hypo:  { mean: 20.5, sd: 11.5 },
+  n: 745, pText: "p<0.001", pmid: "30291376"
+};
 
 const MODELS = [
   {
@@ -1486,6 +1518,8 @@ const MODELS = [
    is the point: a model that cannot be run is more instructive when it is
    shown with its reason than when it is deleted. */
 const DEAD_MODELS = [
+  { name: "Sinha 2018, SAILS (CRP, bicarbonate, creatinine)", status: "UNAVAILABLE", pmid: "30291376",
+    why: "The 3-variable model reached AUC 0.85 against LCA class, but the paper prints only its Wald z-statistics and p-values (Supplementary Table S3A), never the coefficients, intercept or standard errors a reader would need to invert them. Creatinine is also not an input anywhere else on this page. The CRP field in the calculator's inputs compares an entered value against the paper's published class means instead of computing a probability from it." },
   { name: "Famous 2017, FACTT (Table 6)", status: "PARTIAL", pmid: "27513822",
     why: "The three predictors were log-transformed and z-scaled. Converting a raw value to the z score the model expects needs the FACTT cohort mean and SD of each log-transformed variable, and those constants are not published. The coefficients are complete on the page and unusable on a patient; the tool does not back-calculate them from reported medians." },
   { name: "Yehya 2024, CHOP-derived (Table 3)", status: "PARTIAL", pmid: "37813544",
@@ -2053,6 +2087,41 @@ function renderDeadModels() {
     box.appendChild(chip);
     mount.appendChild(box);
   });
+}
+
+/* ---- CRP distribution comparison -----------------------------------------
+   Deliberately NOT a classifier: it never returns a probability, a verdict
+   word, or anything drawn from the res-verdict styling the four model rows
+   use. It reads one number back against two published means and stops. */
+function readCrpValue() {
+  const e = $("in-crp"); if (!e) return null;
+  const raw = e.value.trim();
+  if (raw === "") { e.removeAttribute("aria-invalid"); return null; }
+  const v = parseFloat(raw);
+  if (!isFinite(v) || v < 0) { e.setAttribute("aria-invalid", "true"); return null; }
+  e.removeAttribute("aria-invalid");
+  return v;
+}
+function renderCrpReadout() {
+  const box = $("crpReadout"); if (!box) return;
+  const v = readCrpValue();
+  const hyper = CRP_STATS.hyper, hypo = CRP_STATS.hypo;
+  const meansLine = "Published SAILS class means (n=" + CRP_STATS.n + "): hyperinflammatory " +
+    fmt(hyper.mean, 1) + " &plusmn; " + fmt(hyper.sd, 1) + " mg/dL, hypoinflammatory " +
+    fmt(hypo.mean, 1) + " &plusmn; " + fmt(hypo.sd, 1) + " mg/dL (" + CRP_STATS.pText + ").";
+  if (v === null) {
+    box.innerHTML = "<p style=\"margin:0;font-size:12.5px;color:var(--ink-quiet)\">Enter a value to compare it against the published class means. " +
+      meansLine + " No class probability is computed here.</p>";
+    return;
+  }
+  const dHyper = v - hyper.mean, dHypo = v - hypo.mean;
+  const nearer = Math.abs(dHyper) <= Math.abs(dHypo) ? "hyperinflammatory" : "hypoinflammatory";
+  box.innerHTML = "<p style=\"margin:0;font-size:12.5px\"><b>" + fmt(v, 1) + " mg/dL entered.</b> " + meansLine +
+    " This value sits " + fmt(Math.abs(dHyper), 1) + " mg/dL from the hyperinflammatory mean and " +
+    fmt(Math.abs(dHypo), 1) + " mg/dL from the hypoinflammatory mean &mdash; numerically nearer the " + nearer +
+    " mean. <b>That is a distribution comparison, not a class probability</b>: no equation on this page takes CRP, " +
+    "the two distributions overlap widely relative to the 3.1 mg/dL gap between their means, and this number is " +
+    "not a verdict. See the authors' own caveat above.</p>";
 }
 </script>
 <script>
@@ -2633,11 +2702,17 @@ function wire() {
     STATE.example = null;
     redrawAll();
   });
+  /* CRP is wired separately and deliberately does not touch STATE.example or
+     redrawAll(): it feeds no model, so typing it must never retire a loaded
+     example or move any of the four model rows. */
+  bind(["in-crp"], renderCrpReadout);
   $("btnClear").addEventListener("click", function () {
     ["in-il8", "in-il6", "in-stnfr1", "in-protc", "in-hco3"].forEach(function (id) { $(id).value = ""; $(id).removeAttribute("aria-invalid"); });
     $("in-vaso").value = "";
+    $("in-crp").value = ""; $("in-crp").removeAttribute("aria-invalid");
     STATE.example = null;
     redrawAll();
+    renderCrpReadout();
   });
   $("btnHypo").addEventListener("click", function () { loadExample(PAED_HYPO, "hypo"); });
   $("btnHyper").addEventListener("click", function () { loadExample(PAED_HYPER, "hyper"); });
@@ -2727,6 +2802,7 @@ function initTheme() {
   readInputs();
   renderDeadModels();
   renderResults();
+  renderCrpReadout();
   drawF1(); drawF2(); drawF3(); drawF4(); drawF5();
   drawF6(); drawF7(); drawF8(); drawF9(); drawF10();
   runReproChecks();
