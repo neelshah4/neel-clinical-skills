@@ -215,7 +215,7 @@ footer .mono{color:var(--ink-faint)}
   <div class="split">
    <div class="numeral">0<small>Ground floor</small></div>
    <div>
-    <h2>Five things that are just true</h2>
+    <h2>Baseline facts</h2>
     <p>Levy noticed the problem in 1979, Rothe explained what the container was doing, Brengelmann closed it with conservation of energy. The argument is rebuilt here from five plain facts, four working rigs and seven PICU cases.</p>
     <p>Nobody disputes the facts. The fight is over which of them causes which, and holding all five at once dissolves most of it.</p>
 
@@ -291,10 +291,10 @@ footer .mono{color:var(--ink-faint)}
 
     <p>He then put that line on the same axes as Starling's cardiac function curve. Where they crossed was the only state both the heart and the vessels would accept: cardiac output and right atrial pressure were chosen by neither half, and fell out of the intersection.</p>
 
-    <h3>What was brilliant</h3>
+    <h3>Output set by the crossing of the curves</h3>
     <p>Neither the heart nor the circulation independently sets cardiac output. That was a real advance and is still why the diagram is taught. Change the volume and the vascular line shifts; change contractility and the cardiac curve shifts; the new crossing tells you where the patient lands.</p>
 
-    <h3>Where it went wrong, in the same paper</h3>
+    <h3>The gap between the algebra and the prose</h3>
     <p>The mathematics described a relationship; the words described a mechanism. Guyton wrote that right atrial pressure was not a primary determinant of cardiac output but was settled simultaneously with output by the interaction of heart and vessels. A few pages away he wrote that it was a back pressure opposing venous return, and that mean circulatory filling pressure promoted it.</p>
 
     <blockquote>
@@ -364,7 +364,7 @@ footer .mono{color:var(--ink-faint)}
     <p>Levy's answer is fact 01 and fact 02 together. The heart moves blood from the venous side to the arterial side; as flow rises arterial pressure rises, and because arteries are stretchy the arterial compartment holds <i>more</i> blood. Total volume is fixed, so that extra came out of the veins, and venous pressure falls with right atrial pressure.</p>
     <p>Right atrial pressure limited nothing. It fell because the pump moved blood uphill and there was less left to distend the veins.</p>
 
-    <h3>The disappearing gradient</h3>
+    <h3>The size of the gradient</h3>
     <p>Then Levy pointed at the numbers. Take mean systemic pressure at about 7 mmHg and right atrial pressure at about 2 mmHg; the famous gradient for venous return is 5 mmHg. The heart generated 100 mmHg at the aorta against 2 at the right atrium, roughly twenty times larger.</p>
     <p style="font-size:14px; color:var(--ink-muted)">Read those as classical animal-preparation figures, not patient values. The 5 mmHg gradient holds up: Magder puts the difference between mean systemic filling pressure and right atrial pressure at 3 to 6 mmHg (ref 15). A Pms of 7 mmHg does not; human bedside estimates run roughly 19 to 21 mmHg, as part III sets out. The comparison is unaffected, since 98 over 5 is about twenty either way. Levy's full text could not be retrieved this run, so treat these as the figures the argument is conventionally told with rather than values quoted from the paper.</p>
     <p>If the 5 mmHg gradient were the engine, raising right atrial pressure by 5 mmHg would stop the circulation. It does not; patients live at a central venous pressure of 15. The small number was never the energy source but a pressure difference created inside the circulation as blood passed through it.</p>
@@ -391,7 +391,7 @@ footer .mono{color:var(--ink-faint)}
     <h2>Return of the elastic state</h2>
     <p>Pressure and flow are both outputs of something, and Rothe's answer is the shape of the container.</p>
 
-    <h3>Three words people use interchangeably and should not</h3>
+    <h3>Capacity, compliance, and capacitance</h3>
     <table>
       <caption>The vocabulary that makes the rest of it possible.</caption>
       <thead><tr><th scope="col" style="width:22%">Term</th><th scope="col">What it actually means</th></tr></thead>
@@ -413,7 +413,7 @@ footer .mono{color:var(--ink-faint)}
       <p><b style="font-family:var(--sans)">The correction almost everyone needs.</b> Stressed and unstressed volume are not two pools of blood in separate compartments. Inside a pressurised vessel every millilitre is at the same pressure and equally under stress. The split is a bookkeeping line on one contained volume, separating the resting size of the container from the extra associated with stretching it. There is no hidden reserve tank waiting to be tapped.</p>
     </div>
 
-    <h3>What mean systemic pressure actually is</h3>
+    <h3>What mean systemic pressure is</h3>
     <p class="eq big">P<sub>ms</sub> = &Sigma;V<sub>s</sub> / &Sigma;C</p>
     <p>Total stressed volume divided by total compliance. Not the pressure of any one vessel, and not the average of the pressures measured during flow, but a property of the whole elastic container: how full it is relative to how big it is.</p>
     <p>Which gives two ways to raise it: put more blood in, or make the container smaller.</p>
@@ -505,7 +505,7 @@ footer .mono{color:var(--ink-faint)}
     <h2>The phantom pressure</h2>
     <p>Rothe had given Pms an address in the small veins. Brengelmann went back to the apparatus to ask whether anything lived there.</p>
 
-    <h3>What the machine actually did</h3>
+    <h3>What the machine did</h3>
     <p>Guyton drained the right atrium through an external collapsible tube, a Starling resistor, into a mechanical pump. The pump delivered into the pulmonary artery and the left heart returned the same flow to the systemic circulation. An external reservoir was connected but closed while each curve was recorded, so the volume inside the peripheral vasculature stayed fixed. One flowmeter sat on the pump outflow, and every point was taken after a new steady state settled.</p>
     <p>At steady state, pump output and cardiac output and venous return are necessarily the same number. The experiment never measured venous return as a flow distinct from cardiac output; it measured the steady flow through the vascular subsystem and the right atrial pressure that came with it.</p>
 
@@ -526,12 +526,12 @@ footer .mono{color:var(--ink-faint)}
     </ol>
     <p>Trace the points and you get Guyton's curve. Nothing in the apparatus was ever held at Pms. It took paired changes in flow and right atrial pressure, real segmental pressure differences, compliant compartments, conservation of blood volume, and a return to the same vascular volume at every point.</p>
 
-    <h3>The equation survives. The picture does not.</h3>
+    <h3>The equation survives; the picture does not.</h3>
     <p>Brengelmann then ran a three-compartment model with an ideal pump. At zero flow all three compartments sat at Pms; the moment flow started none did, arterial pressure rising above it and both venous pressures falling below, with volume moving accordingly. The model still produced the familiar near-linear flow against right atrial pressure relationship, and its algebra still rearranged into flow equals (Pms minus right atrial pressure) over an effective resistance.</p>
     <p>Pms is in that derivation for one reason: total vascular volume was stipulated fixed, and at zero flow that volume sits across the combined compliances at one common pressure. Pms is the compact way of writing the constraint. The derivation never found a vessel held at Pms; it introduced the zero-flow pressure while accounting for volume under flow.</p>
     <p>The denominator misleads in the same way. Once Pms sat in the small veins, the resistance to venous return read as a physical venous resistance between it and the right atrium. It is not; it is a composite of arterial and venous resistances with how compliance is distributed across the network, which is why Guyton first called it an impedance.</p>
 
-    <h3>So what is the phantom</h3>
+    <h3>What the phantom is</h3>
     <p>Local pressure gradients are real. Neighbouring segments hold different pressures at the same instant, blood passes through real resistive pathways, and pressure falls along them as energy dissipates. None of that is in question.</p>
     <p>The gradient from Pms to right atrial pressure has a different status. Right atrial pressure is a local pressure in a flowing circulation; Pms is the common pressure reached when flow stops. The equation sets them side by side as though they were opposite ends of one pathway. This is not water running downhill, where both points exist at once and gravity releases stored energy. In the circulation the heart supplies the energy and sets up the flowing profile.</p>
     <div class="callout">
@@ -580,7 +580,7 @@ footer .mono{color:var(--ink-faint)}
   <div class="split">
    <div class="numeral">D<small>Rig four</small></div>
    <div>
-    <h2>What actually changed?</h2>
+    <h2>What changed</h2>
     <p>Everything above is about where flow and pressure come from. This section is the bedside version: you did something, the numbers moved, and you have to decide whether to do it again. Two questions get most of the way there. What did you change, the contents or the container? And what did the change become, flow or pressure?</p>
 
     <h3>Contents and container</h3>
@@ -660,7 +660,7 @@ footer .mono{color:var(--ink-faint)}
     <p>Each has the reflex answer most of us were taught, what is physically happening instead, and what changes about the plan.</p>
 
     <details class="case">
-      <summary class="case-btn"><span class="case-n">01</span><span><span class="case-t">Six-month-old in septic shock, 20 mL/kg over 15 minutes</span><span class="case-sub">CVP goes 4 to 9. What did the bolus do?</span></span><span class="case-mk">+</span></summary>
+      <summary class="case-btn"><span class="case-n">01</span><span><span class="case-t">Six-month-old in septic shock, 20 mL/kg over 15 minutes</span><span class="case-sub">CVP goes 4 to 9. What the bolus did to output.</span></span><span class="case-mk">+</span></summary>
       <div class="case-body">
         <span class="tagline t-reflex">The reflex answer</span>
         <p>The bolus raised mean systemic pressure, widening the gradient for venous return, so more blood came back and output rose.</p>
@@ -674,7 +674,7 @@ footer .mono{color:var(--ink-faint)}
     </details>
 
     <details class="case">
-      <summary class="case-btn"><span class="case-n">02</span><span><span class="case-t">Pediatric ARDS, PEEP up from 8 to 14, CVP 8 to 14, cardiac index falls</span><span class="case-sub">The number went up and the flow went down. Why?</span></span><span class="case-mk">+</span></summary>
+      <summary class="case-btn"><span class="case-n">02</span><span><span class="case-t">Pediatric ARDS, PEEP up from 8 to 14, CVP 8 to 14, cardiac index falls</span><span class="case-sub">The number went up and the flow went down.</span></span><span class="case-mk">+</span></summary>
       <div class="case-body">
         <span class="tagline t-reflex">The reflex answer</span>
         <p>PEEP raised right atrial pressure, which opposes mean systemic pressure, so the gradient narrowed and venous return fell.</p>
@@ -691,7 +691,7 @@ footer .mono{color:var(--ink-faint)}
     </details>
 
     <details class="case">
-      <summary class="case-btn"><span class="case-n">03</span><span><span class="case-t">VA ECMO circuit chatter at target flow</span><span class="case-sub">The single best demonstration in the whole argument</span></span><span class="case-mk">+</span></summary>
+      <summary class="case-btn"><span class="case-n">03</span><span><span class="case-t">VA ECMO circuit chatter at target flow</span><span class="case-sub">Where the causal direction is not in dispute</span></span><span class="case-mk">+</span></summary>
       <div class="case-body">
         <span class="tagline t-reflex">The reflex answer</span>
         <p>The patient is hypovolemic. Give volume.</p>
@@ -723,7 +723,7 @@ footer .mono{color:var(--ink-faint)}
     </details>
 
     <details class="case">
-      <summary class="case-btn"><span class="case-n">05</span><span><span class="case-t">Norepinephrine started in warm septic shock, cardiac output goes up</span><span class="case-sub">A vasoconstrictor that increases flow is not a paradox</span></span><span class="case-mk">+</span></summary>
+      <summary class="case-btn"><span class="case-n">05</span><span><span class="case-t">Norepinephrine started in warm septic shock, cardiac output goes up</span><span class="case-sub">Alpha-adrenergic venoconstriction can raise cardiac output</span></span><span class="case-mk">+</span></summary>
       <div class="case-body">
         <span class="tagline t-reflex">The reflex answer</span>
         <p>It squeezed the arteries and raised the pressure. The rise in output is a happy accident, or came from recruiting unstressed volume out of a venous reservoir.</p>
@@ -773,7 +773,7 @@ footer .mono{color:var(--ink-faint)}
   <div class="split">
    <div class="numeral">VII<small>Carry-out</small></div>
    <div>
-    <h2>What actually changes on rounds tomorrow</h2>
+    <h2>What changes on rounds tomorrow</h2>
     <ol class="steps">
       <li><b>CVP is a readout, not a knob.</b> No intervention sets it. It is where the heart's ability to clear volume meets the container's ability to hold it.</li>
       <li><b>A rising CVP with a flat stroke volume is a completed experiment.</b> You bought congestion and no flow. That is the moment to stop, not to repeat. Congestion is also not the same as excess total body volume: it can come from volume, the container, poor acceptance, or any combination, so reaching for the diuretic every time answers one third of it.</li>
@@ -881,7 +881,7 @@ footer .mono{color:var(--ink-faint)}
 
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">Educational use only.</b> This page is a teaching tool about a disputed area of cardiovascular physiology. It is not clinical decision support, it gives no patient-specific advice, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators, and every case is a teaching vignette rather than a protocol. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
 
-  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
+  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
  </div>
 </footer>
 

@@ -246,6 +246,7 @@ select{width:100%; font-family:var(--sans); font-size:13px; padding:8px 10px; mi
 
 /* ---------- self test ---------- */
 .st{border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); padding:var(--md); margin:var(--md) 0}
+.st.fail{border-color:var(--neg); background:var(--neg-bg)}
 .st-h{font-family:var(--sans); font-size:14px; font-weight:620; margin-bottom:10px}
 .st-h.pass{color:var(--pos)}
 .st-h.fail{color:var(--neg)}
@@ -372,7 +373,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">02<small>The equation</small></div>
    <div>
-    <h2>Two pressures, one equation</h2>
+    <h2>The equation of motion, with both pressure sources</h2>
     <p>Fundamentals gave the <a href="ventilator-fundamentals.html">equation of motion</a> for a passive patient. The full form has two pressure sources on the left:</p>
     <div class="eq big">P<sub>vent</sub> + P<sub>mus</sub> = V<sub>T</sub>/C<sub>RS</sub> + (R<sub>aw</sub> &times; inspiratory flow) + PEEP + PEEP<sub>i</sub></div>
     <p>Inertance is the only term dropped, and it is dropped because it is small. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a> Everything that follows in this tool is bookkeeping on that single line.</p>
@@ -459,7 +460,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">03<small>Measuring</small></div>
    <div>
-    <h2>Measuring the effort you cannot see</h2>
+    <h2>Two bedside measurements of inspiratory effort</h2>
     <p>Two bedside measurements convert the invisible term into a number, and both are occlusion maneuvers.</p>
 
     <h3>Whole-breath occlusion, &Delta;P<sub>occ</sub></h3>
@@ -580,7 +581,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">05<small>The hold</small></div>
    <div>
-    <h2>Plateau pressure lies when the patient is working, and how long you must hold</h2>
+    <h2>Plateau pressure during active effort, and how long the hold must last</h2>
     <p>An <a href="ventilator-fundamentals.html">inspiratory hold</a> against an active patient is not the same maneuver as an inspiratory hold against a passive one, and this is now quantified in children. Herrera ran an ASL 5000 bench across three pediatric age ranges, several simulated lung conditions, three levels of inspiratory effort and three modes &mdash; volume control, pressure control with adaptive targeting, and pressure support &mdash; alongside a secondary analysis of airway pressure waveforms from children with pediatric acute respiratory distress syndrome enrolled in a lung- and diaphragm-protective ventilation trial. <span class="tag t-peds">pediatric</span> <span class="tag t-bench">bench</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/42273925/" target="_blank" rel="noopener">PMID 42273925</a></p>
     <div class="scrollx"><table>
       <caption>Time to a steady plateau, by inspiratory effort. Median (range).</caption>
@@ -606,7 +607,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="split">
    <div class="numeral">06<small>Scaling</small></div>
    <div>
-    <h2>Support scaling: what happens when the patient pushes harder</h2>
+    <h2>How support scaling responds to rising patient effort</h2>
     <p>Read every row against the equation of motion. Fix one term and the others must move.</p>
     <div class="scrollx"><table>
       <caption>What each mode sets, and what rising effort does to it.</caption>
@@ -705,14 +706,14 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div class="numeral">08<small>Levers</small></div>
    <div>
     <h2>The separate determinants of CO<sub>2</sub> clearance and of oxygenation</h2>
-    <h3>CO<sub>2</sub> clearance has two determinants and one of them fights back</h3>
+    <h3>Tidal volume and dead space set CO<sub>2</sub> clearance</h3>
     <p>Alveolar ventilation is minute ventilation minus the dead space contribution:</p>
     <div class="eq">V<sub>A</sub> = (V<sub>T</sub> &minus; V<sub>D</sub>) &times; rate&nbsp;&nbsp;&nbsp;&nbsp;PaCO<sub>2</sub> tracks VCO<sub>2</sub> / V<sub>A</sub></div>
     <p>Both terms of the subtraction matter, which is why rate and tidal volume are not interchangeable ways of raising minute ventilation: at fixed tidal volume, every added breath adds a whole dead-space volume.</p>
     <p>The cost of doing it with rate was measured. In 30 ventilated adults stepped from rate 15 to 33/min at a fixed tidal volume of 6 mL/kg, a 50% increase in minute ventilation (rate 17 to 25) lowered PaCO<sub>2</sub> by only <b>5.1 mmHg (95% CI 4.2&ndash;5.9)</b>, systematically less than the alveolar ventilation equation predicts if dead space fraction were constant. It is not constant: alveolar dead space rose from 132 to 189 mL (p &lt; 0.001) and dead space fraction from 0.60 to 0.65. Incremental CO<sub>2</sub> elimination per litre of added minute ventilation fell as rate rose (beta &minus;0.95 mL CO<sub>2</sub>/L per breath/min, 95% CI &minus;1.41 to &minus;0.49). Mechanical power rose exponentially: <b>+181% with complete expiration and +122% at fixed I:E by rate 27</b>. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/42306311/" target="_blank" rel="noopener">PMID 42306311</a></p>
     <div class="callout"><p><b>Raising the rate buys progressively less CO<sub>2</sub> clearance for exponentially more power.</b></p></div>
 
-    <h3>Oxygenation has three determinants and only two of them are yours</h3>
+    <h3>FiO<sub>2</sub>, mean airway pressure, and shunt fraction set oxygenation</h3>
     <p>FiO<sub>2</sub> works on everything except shunt. Shunt fraction is the disease. Mean airway pressure is the recruitment lever, and it is computable from the settings. Hess gives both forms, and notes that mean alveolar pressure differs from mean airway pressure when inspiratory and expiratory resistance differ. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">PMID 25336536</a></p>
     <div class="eq">constant flow, triangular:&nbsp;&nbsp;mean P<sub>aw</sub> = 0.5 &times; (PIP &minus; PEEP) &times; (T<sub>I</sub>/T<sub>tot</sub>) + PEEP</div>
     <div class="eq">pressure targeted, rectangular:&nbsp;&nbsp;mean P<sub>aw</sub> = (PIP &minus; PEEP) &times; (T<sub>I</sub>/T<sub>tot</sub>) + PEEP</div>
@@ -1107,7 +1108,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <p>In 50 adults across 7027 hours and 8.7 million breaths, asynchrony was present in every patient and every mode; median asynchrony index 3.41% (IQR 1.95&ndash;5.77), commonest event ineffective effort during expiration at 2.38% (1.36&ndash;3.61); patients above an index of 10% had higher ICU and hospital mortality. <span class="tag t-adult">adult</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25693449/" target="_blank" rel="noopener">Blanch 2015, PMID 25693449</a></p>
     <p>In children it is worse. In 45 ventilated children analysed over 57 651 breaths, <b>33% of breaths were asynchronous</b> and asynchrony occurred in every patient; ineffective triggering accounted for 68%, delayed termination 19%, double triggering 4%. <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/26914624/" target="_blank" rel="noopener">PMID 26914624</a> A later pediatric series found roughly one breath in three asynchronous, rising over time and highest on the day of extubation, with no correlation to comfort score and no association with prolonged ventilation. <span class="tag t-peds">pediatric</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/34054119/" target="_blank" rel="noopener">PMID 34054119</a> So in children asynchrony is common and its outcome significance is not established.</p>
 
-    <h3>What the pediatric NAVA evidence actually shows: synchrony, consistently, and little else reliably</h3>
+    <h3>What the pediatric NAVA evidence shows: synchrony, consistently, and little else reliably</h3>
     <div class="facts">
       <div class="fact"><span class="n">01</span><p>Thirteen children in a crossover of conventional noninvasive ventilation and NIV-NAVA: trigger and cycling-off dyssynchrony both shorter with NAVA (p &lt; 0.05); wasted efforts 0% (0&ndash;0) versus 12% (4&ndash;20) and 6% (2&ndash;22); total time in asynchrony 8% (6&ndash;10) versus 27% (19&ndash;56) and 32% (21&ndash;38), p = 0.05. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25886793/" target="_blank" rel="noopener">PMID 25886793</a></p></div>
       <div class="fact"><span class="n">02</span><p>Six infants and children on noninvasive ventilation, randomised crossover: trigger delay <b>61 ms (56&ndash;79) with NAVA versus 149 ms (134&ndash;180)</b> at initial pressure support and 146 ms (101&ndash;162) at the best-tuned expiratory trigger setting, p = 0.001 and 0.02. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/23863816/" target="_blank" rel="noopener">PMID 23863816</a></p></div>
@@ -1197,7 +1198,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <h3>The evidence that it adapts to worsening mechanics</h3>
     <p>In 22 healthy women undergoing laparoscopy in Trendelenburg, pneumoperitoneum reduced respiratory compliance by 44.4% and raised airway resistance by 29.1%. With minute ventilation held constant, ASV automatically raised inspiratory pressure by <b>3.2 &plusmn; 0.9 cmH<sub>2</sub>O (+19%, p &lt; 0.01)</b>, rate by 1.3 &plusmn; 0.5 breaths/min (+9%) and T<sub>I</sub>/T<sub>tot</sub> by 43.3%. PaCO<sub>2</sub> rose 13%, from 4.4 &plusmn; 0.6 to 5.0 &plusmn; 0.9 kPa (p &lt; 0.01), and clinician intervention was needed in one patient. <span class="tag t-adult">adult, anesthesia, healthy lungs</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/19142087/" target="_blank" rel="noopener">PMID 19142087</a> This is the cleanest published demonstration of a mode responding to a defined compliance insult, and it is the anchor for the simulator in section 14.</p>
 
-    <h3>The two failures to show alongside that</h3>
+    <h3>Limitations of that adaptation evidence</h3>
     <div class="facts">
       <div class="fact"><span class="n">01</span><p><b>The pair it chooses can be the wrong pair when a lung-protective strategy is in force.</b> In 10 adults with acute lung injury on an open-lung strategy, switching from pressure control to ASV dropped rate from 31 &plusmn; 5 to 21 &plusmn; 6 breaths/min (difference 10, 95% CI 3&ndash;17, p = 0.008) and raised tidal volume from 6.5 &plusmn; 0.8 to 9.0 &plusmn; 1.6 mL/kg predicted body weight (difference 2.5, 95% CI 0.4&ndash;4.6, p = 0.02). Pressure limiting corrected the tidal volume but dropped minute ventilation enough that users switched back. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21383619/" target="_blank" rel="noopener">PMID 21383619</a> In simulation and bench testing, ASV delivered 6&ndash;8 mL/kg in modelled acute lung injury, 8&ndash;10 in open-lung ALI and healthy lungs, and above 10 in every COPD condition tested; the authors note the algorithm was originally designed to deliver 8&ndash;12 mL/kg. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/20593352/" target="_blank" rel="noopener">PMID 20593352</a> A later crossover in 17 mostly passive adults with ARDS found ASV close to standard of care, 6.3 mL/kg ideal body weight (5.9&ndash;7.0) versus 6.04 (6.0&ndash;6.1), p = 0.035, at a lower rate, with plateau and driving pressures not different. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/35973716/" target="_blank" rel="noopener">PMID 35973716</a> The size of the failure depends on the algorithm version and the case mix, so both results stand.</p></div>
       <div class="fact"><span class="n">02</span><p><b>The closed loop above it does not add outcome.</b> IntelliVent-ASV, which additionally controls FiO<sub>2</sub> and PEEP, was safe in 50 passive adults and ventilated with less pressure, volume and FiO<sub>2</sub> than ASV (plateau 24 to 20 cmH<sub>2</sub>O, p = 0.005; FiO<sub>2</sub> 40% to 30%, p &lt; 0.001) with equivalent oxygenation. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/22460854/" target="_blank" rel="noopener">PMID 22460854</a> The Cochrane review of 62 trials and 5052 participants found automated closed-loop systems probably reduce duration of ventilation by a relative 24% (95% CI 18&ndash;30, 51 RCTs, moderate certainty), ICU stay by 14% and hospital stay by 10%, and probably reduce reintubation (RR 0.73, 0.59&ndash;0.89), post-extubation noninvasive ventilation (RR 0.74, 0.62&ndash;0.88), prolonged ventilation (RR 0.54, 0.34&ndash;0.87) and tracheostomy (RR 0.75, 0.62&ndash;0.91), with little to no effect on mortality (RR 0.94, 0.82&ndash;1.07, 38 RCTs). Only 3 trials and 218 participants of that total are children. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/40678933/" target="_blank" rel="noopener">PMID 40678933</a> A separate meta-analysis of 20 weaning trials found no significant difference between ASV and pressure support on any outcome. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/34839229/" target="_blank" rel="noopener">PMID 34839229</a></p></div>
@@ -1292,7 +1293,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     </table></div>
     <div class="callout"><p><b>Every mode compensates for worsening compliance somewhere, and the mode determines which variable carries the news.</b> Volume control puts it in pressure, pressure control puts it in volume, adaptive pressure control and ASV absorb it into the algorithm, pressure support puts it into the patient, and NAVA puts it into the E<sub>di</sub> trace. Only one of those five destinations is a person.</p></div>
 
-    <h3>A second insult that behaves differently: rising auto-PEEP</h3>
+    <h3>Rising auto-PEEP as a second mechanical insult</h3>
     <p>Two patients are hidden inside this rule, and it works out differently for each. What applied PEEP buys in obstruction is a reduction in the work of triggering, and a paralysed patient does no triggering, so in the passive patient there is no benefit side to weigh at all; the mode-dependent plateau and tidal-volume behaviour described here is that passive case, while the percentage rule itself belongs to the spontaneously breathing patient. Marini's rule is that applied PEEP below the critical closing pressure, reasonably estimated at about <b>80% of the occlusion-measured auto-PEEP</b> <span class="tag t-derived">figure unverified</span>, narrows the alveolar-to-airway pressure difference without a proportionate rise in lung volume, provided expiration is flow-limited. In flow-controlled volume-cycled ventilation, added PEEP has little effect on plateau until auto-PEEP is nearly counterbalanced, after which plateau rises in proportion to the PEEP increment. In pressure-targeted ventilation with the inspiratory pressure referenced to PEEP, added PEEP below auto-PEEP raises the effective driving pressure and therefore the tidal volume; once auto-PEEP is counterbalanced, further increments do not raise tidal volume and may lower it as the hyperinflated lung stiffens. <span class="tag t-adult">adult review</span> <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011, PMID 21700908</a> The denominator is the weaker half of that rule: the expiratory-hold measurement that supplies the auto-PEEP number is invalid in the actively breathing patient the percentage is addressed to, and in asthma it can read falsely low, because units that close before end-expiration hide their pressure from the manometer. Where the percentage came from, how it was restated on the way into pediatric text, and what is wrong with the measurement it divides are worked through in <a href="asthma-critical-care.html#c9">asthma critical care</a>.</p>
     <p>Monitoring plateau in volume control, or tidal volume in pressure control, is how the clinician knows when the added PEEP is optimised. Paradoxical responses do occur and were documented in patients with airway obstruction under controlled ventilation <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/16003057/" target="_blank" rel="noopener">PMID 16003057</a>; the offsetting effect in COPD during acute ventilatory failure is the classic demonstration <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a>, and the mode-by-mode framing is standard in obstructive-ventilation practice <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/33169215/" target="_blank" rel="noopener">PMID 33169215</a>.</p>
     <p class="tbl-note"><b>On the 80% figure.</b> The mode-dependent behaviour above is stated by Marini 2011 and is not in question. The specific 80% fraction could not be confirmed against that paper's full text: the abstract carries no numeric content and no open full text was reachable, so the figure is left attributed and flagged rather than dropped or restated as if verified. The adjacent classic demonstration in COPD reports the counterbalancing effect without this tool asserting a percentage for it <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/8420430/" target="_blank" rel="noopener">PMID 8420430</a>. Do not carry 80% to the bedside as a rule from this page.</p>
@@ -1526,7 +1527,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="tool-footer">
     <p style="font-size:11.5px; max-width:86ch"><b>Educational use only.</b> This page is a teaching tool about patient effort, support scaling and gas exchange during mechanical ventilation. It is not clinical decision support, it gives no patient-specific advice, it is not FDA-cleared, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
     <p style="font-size:11.5px; max-width:86ch">Every identifier in this table was resolved against PubMed E-utilities; the sources carried over from v1.0 on 2026-08-31 and the ten added in v2.0 on 2026-09-01, with first author, year and journal matched for each. <b>Correction screening.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 81 of 81 source PMIDs have been screened by that method, the ten added in v2.0 on 2026-09-01 and the rest on 2026-08-31, and two carry an erratum &mdash; PMID 22710796 and PMID 33603211 &mdash; with no retraction and no expression of concern anywhere. None of the ten new sources returned any erratum, retraction or expression-of-concern linkage. One erratum carries a PubMed record of its own, PMID 34404931, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 81. Both are marked on their row in the table above, and the dead-space values taken from PMID 33603211, which seed the infant preset of rig 8, carry the marker at the point of use as well. What the screen returns is the linkage and not the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Four published models that could not be sourced in full &mdash; the Otis least-work formula as implemented in adaptive support ventilation, the internal E<sub>di</sub>-to-pressure scaling in NAVA, the Benatar iso-shunt construction, and the adaptive-pressure-control support curve of the bench series &mdash; are described in words, are listed with their reasons in the table above, and are not computed anywhere in the tool. Numbers that no source establishes are labelled derived, consensus, extrapolated or author-chosen in place rather than dropped silently. One non-peer-reviewed source is used and is labelled where it appears: the bedside procedure in section 10 follows the R/I and airway-closure pages of rtmaven.com, a free teaching site and calculator built by the group behind PMID 31577153; its four demonstration videos are hosted on Vimeo and are linked in that section. It is cited for how to run the manoeuvre on a real ventilator, never for what the number means. Session-only; no data leaves this device.</p>
-    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
+    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
   </div>
  </div>
 </footer>
@@ -3248,23 +3249,29 @@ function runSelfTest(){
   t("Auto-PEEP wastes efforts on pressure support and not on NAVA",
     ps.wasted>0 && nv.wasted===0, "pressure support "+ps.wasted+" of 3, NAVA "+nv.wasted+" of 3");
 
+  /* Rendering is intentionally quiet: this checks the page's own arithmetic
+     against closed forms and published anchors, not a feature to show off.
+     A pass renders one line and no table. A failure is never hidden. */
   var mount=$("selftest-mount"); if(!mount) return;
-  var fails=R.filter(function(r){ return !r.pass; }).length;
-  var box=document.createElement("div"); box.className="st";
+  var fails=R.filter(function(r){ return !r.pass; });
+  var box=document.createElement("div"); box.className="st"+(fails.length?" fail":"");
   var h=document.createElement("div");
-  h.className="st-h "+(fails?"fail":"pass");
-  h.textContent=(fails?"Self-test: "+fails+" of "+R.length+" checks FAILED":"Self-test: "+R.length+" of "+R.length+" analytic checks pass")+" — the models on this page are checked against closed forms and published anchors on every load.";
+  h.className="st-h "+(fails.length?"fail":"pass");
+  h.textContent=fails.length
+    ? "A model check on this page did not match its closed form or published anchor. Figures below may be wrong until this is fixed."
+    : "Every model on this page matched its closed form or published anchor on this load.";
   box.appendChild(h);
-  var tbl=document.createElement("table"), tb=document.createElement("tbody");
-  R.forEach(function(r){
-    var tr=document.createElement("tr");
-    var td1=document.createElement("td"); td1.className="r "+(r.pass?"p":"f"); td1.textContent=r.pass?"PASS":"FAIL";
-    var td2=document.createElement("td");
-    var nm=document.createElement("div"); nm.textContent=r.name; td2.appendChild(nm);
-    var wy=document.createElement("div"); wy.className="why"; wy.textContent=r.detail; td2.appendChild(wy);
-    tr.appendChild(td1); tr.appendChild(td2); tb.appendChild(tr);
-  });
-  tbl.appendChild(tb); box.appendChild(tbl);
+  if(fails.length){
+    var tbl=document.createElement("table"), tb=document.createElement("tbody");
+    fails.forEach(function(r){
+      var tr=document.createElement("tr");
+      var td=document.createElement("td");
+      var nm=document.createElement("div"); nm.textContent=r.name; td.appendChild(nm);
+      var wy=document.createElement("div"); wy.className="why"; wy.textContent=r.detail; td.appendChild(wy);
+      tr.appendChild(td); tb.appendChild(tr);
+    });
+    tbl.appendChild(tb); box.appendChild(tbl);
+  }
   mount.appendChild(box);
 }
 

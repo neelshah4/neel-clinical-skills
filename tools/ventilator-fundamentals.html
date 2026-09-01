@@ -383,7 +383,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <li><span class="n">16</span><a href="#s16">What this model cannot show</a></li>
       <li><span class="n">17</span><a href="#s17">Where the rest of this lives</a></li>
       <li><span class="n">18</span><a href="#s18">How the simulator works</a></li>
-      <li><span class="n">19</span><a href="#s19">Analytic checks the model must pass</a></li>
+      <li><span class="n">19</span><a href="#s19">Internal consistency checks</a></li>
     </ol>
   </nav>
 </div>
@@ -989,7 +989,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
     <h3>The trigger ladder</h3>
     <p>Before any flow can occur, the effort must first close the gap between alveolar pressure and circuit pressure. That gap is auto-PEEP. The rig models the two thresholds like this: <span class="tag t-derived">derived</span></p>
     <span class="eq big">pressure trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>P</sub><br>flow trigger fires when P<sub>mus</sub>(t) &ge; auto-PEEP + sensitivity<sub>F</sub> &times; R</span>
-    <h4>Three consequences</h4>
+    <h4>What follows from the two thresholds</h4>
     <ol class="steps">
       <li><b>Flow triggering is cheaper than pressure triggering only when sensitivity<sub>F</sub> &times; R is smaller than sensitivity<sub>P</sub>.</b> At a flow sensitivity of 1 L/min (0.0167 L/s) and a resistance of 10 cmH<sub>2</sub>O/L/s, the flow trigger costs 0.17 cmH<sub>2</sub>O against a 1 cmH<sub>2</sub>O pressure trigger. At a resistance of 100 cmH<sub>2</sub>O/L/s, a small tube in a small child, the same setting costs 1.7 cmH<sub>2</sub>O and the flow trigger has become the more expensive one. Slide R in the rig and watch the two thresholds cross in the readout &mdash; but watch it as <b>this model's prediction, not as an observation</b>. <span class="tag t-derived">derived</span> Two things stand between the crossover and a bedside claim. The rig carries a single lumped R, so the whole of it is charged against the flow trigger, when at a real bedside only the part of the resistance lying between the flow sensor and the alveolus is; section 03 already says the lumping is a simplification, and this is where it bites hardest. And neither human head-to-head in this page's evidence base tested it: T&uuml;t&uuml;nc&uuml; 1997 found no significant difference between the two triggers and <b>excluded COPD</b>, the population in which a high resistance would drive the crossover, and Thiagarajan 2004 in children varied compliance rather than resistance. No study confirming the crossover was found.</li>
       <li><b>Neither setting can help with auto-PEEP</b>, because auto-PEEP sits outside the sensitivity term in both expressions. Hess makes this concrete: on an airway-pressure, flow, volume and esophageal-pressure trace in a patient with auto-PEEP, the decrease in esophageal pressure required to trigger the ventilator <i>is</i> the amount of auto-PEEP, expiratory flow does not return to zero, and the inspiratory effort shown fails to trigger at all. The fix is a shorter &tau; or a longer T<sub>E</sub>, or applied PEEP to offset the threshold load. Never a more sensitive trigger.</li>
@@ -1004,7 +1004,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <figcaption>Select the flow trigger in the rig and drag the resistance slider without touching the sensitivity. The sensitivity segment in step 1 grows on its own, because the pressure needed to produce a set flow is that flow times the resistance, so the same setting is a heavier load through a narrower tube.</figcaption>
     </figure>
 
-    <h3>What the comparative evidence actually shows</h3>
+    <h3>What the comparative evidence shows</h3>
     <p>In 16 orotracheally intubated adults recovering from acute respiratory failure without COPD, randomized across pressure triggering at &minus;1 cmH<sub>2</sub>O and flow triggering at 0.7 to 2.0 L/min, each at full and at 75% support, work of breathing during partial support was 0.38 &plusmn; 0.24 J/L with pressure triggering and 0.42 &plusmn; 0.26 J/L with flow triggering. Tracheal occlusion pressure and rapid shallow breathing index were likewise comparable, and total ventilation, blood gases and haemodynamics did not differ across the four conditions. The authors concluded that the choice of triggering system did not significantly affect short-term gas exchange, mechanics or inspiratory workload. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/9187592/" target="_blank" rel="noopener">T&uuml;t&uuml;nc&uuml; 1997, PMID 9187592</a> <span class="tag t-adult">adult, COPD excluded</span></p>
     <p>The one pediatric head-to-head runs the same way, with one subgroup exception. In <b>16 ventilated children</b>, median age 12.8 months and median weight 11.0 kg, breathing spontaneously and unsupported between SIMV breaths with work measured by esophageal balloon, flow triggering on a Servo 300 gave <b>0.8 J/L (IQR 0.5 to 1.0)</b> against <b>0.9 J/L</b> for pressure triggering on the same machine and 0.9 J/L on a Servo 900C, a difference that did not reach significance. When lung compliance was below 0.75 mL/kg/cmH<sub>2</sub>O, flow triggering fell to 0.8 J/L (IQR 0.6 to 1.1) against 1.1 and 1.2 J/L for the two pressure-trigger conditions, p &le; 0.017. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/15215009/" target="_blank" rel="noopener">Thiagarajan 2004, PMID 15215009</a> <span class="tag t-peds">pediatric, n = 16</span> The authors put it as a may, and so does this page: flow triggering may not reduce work in ventilated children generally, and may be worth choosing when compliance is low.</p>
     <p>On a modern ventilator in a patient without severe obstruction, <b>the trigger type is a small effect and the auto-PEEP is a large one.</b> Note the exclusion in the adult trial: that cohort had no COPD, which is precisely the population in which the threshold-load argument bites. Note also what neither study did, which is vary resistance.</p>
@@ -1158,11 +1158,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
    <div>
     <h2>Reading the three scalars</h2>
     <p>Pressure-time, flow-time and volume-time share one x-axis. Read each panel as the answer to one question. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/25336536/" target="_blank" rel="noopener">Hess 2014, PMID 25336536</a></p>
-    <h3>Pressure-time answers: what did it cost?</h3>
+    <h3>The pressure-time trace</h3>
     <p>In volume control the trace decomposes visually. The vertical step off PEEP is V&#775; &times; R, the slope is V&#775;/C, the top is PIP, and a hold reveals P<sub>plat</sub>. In pressure control the trace is a rectangle by construction and answers nothing about the lung; in pressure modes the information has moved to the flow panel.</p>
-    <h3>Flow-time answers: how fast, and did it finish?</h3>
+    <h3>The flow-time trace</h3>
     <p>Inspiratory flow above the line, expiratory below. Two facts to extract on every glance: the shape of the expiratory limb, and whether it reaches zero before the next breath starts. The decay is exponential with time constant &tau;, so a long, low, dragging expiratory limb is a long &tau;, and &tau; is R &times; C.</p>
-    <h3>Volume-time answers: did it all come back?</h3>
+    <h3>The volume-time trace</h3>
     <p>A difference between inspired and expired tidal volume means a leak: bronchopleural fistula, a leak around the cuff, a leak around a mask. Hess names volume-time graphics as the detector for this, and it is the panel that pediatric practice needs most, because an uncuffed or minimally cuffed tube makes the inspiratory-expiratory gap a routine finding rather than an alarm. This model has no leak, so V<sub>Ti</sub> and V<sub>Te</sub> match here by construction; the panel is here so the shape is familiar when they do not.</p>
     <figure class="fg">
       <p class="fgh">Nine cells, one model, no stored pictures</p>
@@ -1239,7 +1239,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <figcaption>The marker tracks the rig. In pressure control it is withdrawn and replaced by a note, because a matrix that silently returns an answer in a mode where the reasoning does not hold is worse than no matrix at all.</figcaption>
     </figure>
 
-    <h3>Four things that will fool this procedure</h3>
+    <h3>Situations that can fool this procedure</h3>
     <div class="facts">
       <div class="fact"><span class="n">i</span><p><b>Unmeasured auto-PEEP.</b> With total PEEP unmeasured, the driving pressure is computed as plateau minus <i>set</i> PEEP, which is falsely high, and respiratory-system compliance is therefore underestimated. A trapping asthmatic reads as a stiff lung. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/21700908/" target="_blank" rel="noopener">Marini 2011</a></p></div>
       <div class="fact"><span class="n">ii</span><p><b>Pressure control.</b> The peak is set and cannot rise, so a resistance problem never appears as a pressure change at all. It appears as a falling tidal volume and an inspiratory flow that no longer decays to zero. In a small child this compounds with tube size: peak at the Y-piece overestimated plateau at every tube from 3.0 to 8.0 mm, most with a short inspiratory time or a high resistance. <a class="cite" href="https://pubmed.ncbi.nlm.nih.gov/31688716/" target="_blank" rel="noopener">Ilia 2020</a></p></div>
@@ -1330,7 +1330,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
       <figcaption>Two gates, one loop. The trigger gate asks what starts a breath and the cycle gate asks what ends it; everything between them is the mode. Expiration has no gate of its own, which is why T<sub>E</sub> is an outcome rather than a setting.</figcaption>
     </figure>
 
-    <h3>Every parameter that is a modelling decision, not a finding</h3>
+    <h3>Every modelling-decision parameter</h3>
     <div class="scrollx"><table>
       <caption>No published source establishes any of these. They are labelled here and again at the point of use.</caption>
       <thead><tr><th style="width:34%">Parameter</th><th>Value</th><th>Why</th></tr></thead>
@@ -1360,13 +1360,13 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 <section id="s19">
  <div class="wrap">
   <div class="split">
-   <div class="numeral">19<small>Self-test</small></div>
+   <div class="numeral">19<small>Checks</small></div>
    <div>
-    <h2>Analytic checks the model must pass</h2>
+    <h2>Internal consistency checks</h2>
     <p>These run against the model functions when the page loads, not against a stored answer key. A content or model edit that breaks the physiology turns a row red. Every tolerance is printed with its check.</p>
     <details id="selftest-details">
-      <summary id="selftest-summary">Self-test report <span class="stcount" id="selftest-count">running</span></summary>
-      <div id="selftest-mount"><div class="st"><div class="st-h">Self-test has not run. It needs JavaScript.</div></div></div>
+      <summary id="selftest-summary">Model checks<span class="stcount" id="selftest-count"></span></summary>
+      <div id="selftest-mount"><div class="st"><div class="st-h">Checks have not run. This needs JavaScript.</div></div></div>
     </details>
    </div>
   </div>
@@ -1465,7 +1465,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   </ol>
 
   <div class="tool-footer">
-    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.0 &middot; Updated 2026-09-01 &middot;
+    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot;
     Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
     Every PMID and DOI in the reference table was resolved against PubMed E-utilities on 2026-08-31, with first author, journal and year matched. <b>Correction screening, re-run 2026-09-01.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 30 of 30 source PMIDs were screened, the two added on 2026-09-01 by the same method on that date, and none carries an erratum, a retraction or an expression of concern, so no reference row and no statement on this page is marked or changed by it. The only linkages these records carry are eleven CommentIn entries, which are commentaries and not corrections. Model parameters that no publication establishes are labelled MODEL CHOICE in place rather than dropped. Session-only; no data leaves this device.
   </div>
@@ -2688,18 +2688,21 @@ function renderSelfTest(R){
   while(mount.firstChild) mount.removeChild(mount.firstChild);
   var passed = R.filter(function(r){return r.pass;}).length;
   /* FAIL LOUDLY. The <details> is collapsed only while every check passes.
-     One failure force-opens it, reddens the summary, and leaves it open. */
+     One failure force-opens it, reddens the summary, and leaves it open.
+     Nothing here reports a passing count -- only a failure is surfaced. */
   var det = $("selftest-details"), cnt = $("selftest-count");
-  if(cnt) cnt.textContent = passed + " / " + R.length + (passed===R.length ? " passed" : " PASSED, " + (R.length-passed) + " FAILED");
+  if(cnt) cnt.textContent = passed===R.length ? "" : (R.length-passed) + " of " + R.length + " failed";
   if(det){
     if(passed === R.length){ det.classList.remove("failing"); det.open = false; }
     else { det.classList.add("failing"); det.open = true; }
   }
   var box = document.createElement("div"); box.className = "st";
-  var h = document.createElement("div");
-  h.className = "st-h " + (passed===R.length ? "pass" : "fail");
-  h.textContent = "Self-test: " + passed + " / " + R.length + " checks passed";
-  box.appendChild(h);
+  if(passed !== R.length){
+    var h = document.createElement("div");
+    h.className = "st-h fail";
+    h.textContent = (R.length-passed) + " of " + R.length + " checks failed";
+    box.appendChild(h);
+  }
   var tbl = document.createElement("table"), tb = document.createElement("tbody");
   R.forEach(function(r){
     var tr = document.createElement("tr");

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ARDS Inflammatory Subphenotypes &mdash; what the models can and cannot tell you</title>
+<title>ARDS Inflammatory Subphenotypes: Classifiers, Cut-points, and Pediatric Transportability</title>
 <meta name="description" content="A teaching tool for latent-class subphenotypes of ARDS: which published classifiers can actually be run, what a cut-point costs, what the treatment-effect evidence is and is not, and why the adult signature transports poorly to children.">
 <meta property="og:title" content="ARDS Inflammatory Subphenotypes">
 <meta property="og:description" content="What the models can and cannot tell you. Educational use only.">
@@ -553,7 +553,7 @@
     <div>
       <div class="eyebrow">Respiratory / ARDS</div>
       <h1>ARDS Inflammatory Subphenotypes</h1>
-      <p class="sub">What the models can and cannot tell you. Latent class analysis, the classifier ladder, and heterogeneity of treatment effect &mdash; with the arithmetic shown and the transportability gap stated.</p>
+      <p class="sub">What the models can and cannot tell you. Latent class analysis, the classifier ladder, and heterogeneity of treatment effect, with the arithmetic shown and the transportability gap stated.</p>
     </div>
     <div class="hero-controls">
       <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle color theme">Dark theme</button>
@@ -580,7 +580,7 @@
     <ol>
       <li><span class="n">01</span><a href="#s1">What a latent class model actually does</a></li>
       <li><span class="n">02</span><a href="#s2">What separates the two classes</a></li>
-      <li><span class="n">03</span><a href="#s3">The classifier ladder, and where it breaks</a></li>
+      <li><span class="n">03</span><a href="#s3">The classifier ladder and the implementability gate</a></li>
       <li><span class="n">04</span><a href="#s4">The implementable equations, written out</a></li>
       <li><span class="n">05</span><a href="#s5">The calculator</a></li>
       <li><span class="n">06</span><a href="#s6">What a cut-point costs</a></li>
@@ -588,22 +588,22 @@
       <li><span class="n">08</span><a href="#s8">Children: what transports, and what does not</a></li>
       <li><span class="n">09</span><a href="#s9">The age traps in the inputs themselves</a></li>
       <li><span class="n">10</span><a href="#s10">What the two-class model does not see</a></li>
-      <li><span class="n">11</span><a href="#s11">Where the field stands, and what would move it</a></li>
+      <li><span class="n">11</span><a href="#s11">Current evidence and remaining gaps</a></li>
       <li><span class="n">12</span><a href="#refs">References and provenance</a></li>
     </ol>
   </nav>
 
   <!-- ============================ SECTION 1 ============================ -->
   <section class="sec" id="s1">
-    <h2 class="sec-h"><span class="n">01</span>What a latent class model actually does</h2>
+    <h2 class="sec-h"><span class="n">01</span>What a latent class model does</h2>
 
     <p>Latent class analysis is a finite mixture model: it treats the observed spread of biomarkers and vital signs as the sum of two or more unobserved distributions and fits them without looking at outcome. The classes are therefore not defined by who died, so the mortality gap that appears afterwards is a property of the biology rather than of the fitting procedure.</p>
 
-    <p>Two facts carry to the bedside. In every trial cohort of this lineage &mdash; ARMA, ALVEOLI, FACTT, SAILS, HARP-2, ROSE, and the pediatric RESTORE/BALI, CHOP and UCSF cohorts &mdash; a two-class model has beaten a one-class model, and a third class has not improved fit. And class membership is a probability rather than a label, which every classifier downstream inherits.</p>
+    <p>Two facts carry to the bedside. In every trial cohort of this lineage (ARMA, ALVEOLI, FACTT, SAILS, HARP-2, ROSE, and the pediatric RESTORE/BALI, CHOP and UCSF cohorts), a two-class model has beaten a one-class model, and a third class has not improved fit. And class membership is a probability rather than a label, which every classifier downstream inherits.</p>
 
     <details class="dtl">
       <summary>How well the classes separate, and what the two-class result is a claim about</summary>
-      <p style="margin:var(--sm) 0 0">Separation is good and not perfect. Calfee's two-class entropy was 0.78 in ARMA and 0.87 in ALVEOLI &mdash; the ARMA value sits below the 0.80 that the same table's footnote gives as the mark of a useful model &mdash; and Dahmer's was 0.908 in children, with average posterior class probabilities of 0.973 in both pediatric classes. The 0.89 often quoted for ARMA and ALVEOLI belongs to Delucchi's latent transition model, a different analysis in a different paper, and is not the figure either LCA reported.</p>
+      <p style="margin:var(--sm) 0 0">Separation is good and not perfect. Calfee's two-class entropy was 0.78 in ARMA and 0.87 in ALVEOLI; the ARMA value sits below the 0.80 that the same table's footnote gives as the mark of a useful model; and Dahmer's was 0.908 in children, with average posterior class probabilities of 0.973 in both pediatric classes. The 0.89 often quoted for ARMA and ALVEOLI belongs to Delucchi's latent transition model, a different analysis in a different paper, and is not the figure either LCA reported.</p>
       <p style="margin:var(--sm) 0 0">The two-class result is also a claim about this lineage rather than about the field. The 2026 scoping review cited here covers sixty adult studies across clinical, biological, computational, imaging, omics and machine-learning domains, and reports reproducibility as strongest in the biological and computational frameworks and weakest in imaging and omics.</p>
     </details>
 
@@ -695,7 +695,7 @@
 
   <!-- ============================ SECTION 3 ============================ -->
   <section class="sec" id="s3">
-    <h2 class="sec-h"><span class="n">03</span>The classifier ladder, and where it breaks</h2>
+    <h2 class="sec-h"><span class="n">03</span>The classifier ladder and the implementability gate</h2>
 
     <p>Latent class analysis needs a full biomarker panel and a statistician, and everything since 2017 has tried to get the same answer from fewer inputs: full LCA, then a three- or four-variable logistic regression on research biomarkers, then a machine-learning model on routine clinical data. Accuracy against the LCA reference stays high all the way down. Implementability does not.</p>
 
@@ -775,7 +775,7 @@
     </div>
 
     <div class="callout callout--caution">
-      <h4>The Yehya 2024 problem, stated plainly</h4>
+      <h4>The Yehya 2024 intercept-sign problem</h4>
       <p style="margin:0">Its four printed intercepts carry no sign, and read as printed the model would call every patient hyperinflammatory. This tool does not guess the missing signs.</p>
       <details class="dtl"><summary>Why the printed table cannot be the model that produced the printed performance</summary>
       <p>Table 3 prints four models whose intercepts read 16.262, 29.439, 23.285 and 39.756, all positive, alongside all-positive biomarker coefficients applied to log-transformed values that are themselves always positive. A logistic model of that shape returns a probability above 0.5 for every patient, so its specificity would be zero &mdash; against the AUROCs of 0.95 to 0.99 that the same table reports. The printed table cannot be the model that produced the printed performance, and this tool does not guess the missing signs.</p>
@@ -799,11 +799,11 @@
 
     <p>These are transcribed from the published tables and figures so a reader can check the tool's arithmetic against the source. All logarithms are natural, and all models return the probability of the <strong>hyperinflammatory</strong> class except Famous 2017, below.</p>
 
-    <p><strong>The <em>+ 1</em> inside every logarithm is published rather than a convenience</strong>, and a model missing its transformation constant cannot be run at all &mdash; the whole of the case against Famous 2017. Dahmer 2022 states it in Methods: &ldquo;As described for the adult ARDS algorithms, a value of 1 was added to the measured biomarker value prior to log transformation and use in the model&rdquo;. That sentence licenses this page to compute with all four equations rather than only display them. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34883088/" target="_blank" rel="noopener">PMID 34883088</a></p>
+    <p><strong>The <em>+ 1</em> inside every logarithm is published rather than a convenience</strong>, and a model missing its transformation constant cannot be run at all, the whole of the case against Famous 2017. Dahmer 2022 states it in Methods: &ldquo;As described for the adult ARDS algorithms, a value of 1 was added to the measured biomarker value prior to log transformation and use in the model&rdquo;. That sentence licenses this page to compute with all four equations rather than only display them. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34883088/" target="_blank" rel="noopener">PMID 34883088</a></p>
 
     <div class="callout callout--caution">
       <h4>Which coefficients a reader cannot re-check by search</h4>
-      <p style="margin:0">The Sinha 2020 coefficients exist only inside <strong>Figure 2, a rasterised image</strong> &mdash; not in the article text, the JATS XML or any table &mdash; so they cannot be found by text search and were transcribed by reading the figure. A reader checking this tool should check those eight numbers against the figure itself.</p>
+      <p style="margin:0">The Sinha 2020 coefficients exist only inside <strong>Figure 2, a rasterised image</strong> (not in the article text, the JATS XML or any table), so they cannot be found by text search and were transcribed by reading the figure. A reader checking this tool should check those eight numbers against the figure itself.</p>
       <details class="dtl">
         <summary>What was re-read, and from where</summary>
         <p style="margin:0">The two ancillary equations come from Dahmer 2022 Table 4, machine-readable text: intercepts &minus;19.446 and &minus;18.476, the four coefficients, the AUCs, both cut-points and both sensitivity/specificity pairs were re-read from that table and match. Everything else in the Sinha rows (derivation n=1558, validation n=715, validation AUCs 0.94 and 0.95) was re-read from the article text and matches.</p>
@@ -841,11 +841,11 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
       + 2.3439 x vasopressor use</pre>
 
     <div class="callout callout--caution">
-      <h4>Famous 2017 and why it is not here</h4>
+      <h4>Famous 2017: not implemented here</h4>
       <p style="margin:0">Its three predictors were z-scaled and the scaling constants are not published, so a complete-looking equation cannot be evaluated on a patient.</p>
       <details class="dtl"><summary>The coefficients, and what the signs imply</summary>
       <p>Table 6 gives intercept 2.25, IL-8 &minus;1.97, bicarbonate 1.71, sTNFr1 &minus;1.71, with a footnote stating that all three predictors were log-transformed <strong>and z-scaled</strong>. Converting a raw IL-8 to the z score the model expects requires the mean and standard deviation of log IL-8 in FACTT, and those constants are not published. The equation is complete on the page and unusable in practice.</p>
-      <p style="margin-bottom:0">The signs also run opposite to every model above &mdash; higher IL-8 lowers the logit &mdash; implying the modeled outcome is subphenotype 1, the hypoinflammatory class. The paper does not state the coding, so the sign pattern is the only evidence and this tool labels that reading an inference rather than a published fact.</p>
+      <p style="margin-bottom:0">The signs also run opposite to every model above (higher IL-8 lowers the logit), implying the modeled outcome is subphenotype 1, the hypoinflammatory class. The paper does not state the coding, so the sign pattern is the only evidence and this tool labels that reading an inference rather than a published fact.</p>
       </details>
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/27513822/" target="_blank" rel="noopener">PMID 27513822</a>
     </div>
@@ -877,14 +877,10 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
       <div class="rig-foot" id="f4foot"></div>
     </div>
 
-    <details class="repro" id="reproBlock">
-      <summary class="repro-head" id="reproHead">Internal arithmetic self-check</summary>
-      <p style="font-size:12.5px;color:var(--ink-muted);margin:0 0 var(--sm);max-width:78ch">Every implementable model is fed published cohort medians here and must return the probability those coefficients imply. Targets were computed from the same coefficients and medians rather than printed in the papers, so they are labelled <span class="derived-tag">Derived</span>. <strong>This proves the engine evaluates the transcribed equations correctly. It cannot prove the transcription is right</strong> &mdash; a mis-typed coefficient would pass.</p>
-      <div class="tablewrap"><table class="repro-table" id="reproTable"><tbody></tbody></table></div>
-      <details class="dtl">
-        <summary>What is not checkable in a browser</summary>
-        <p style="font-size:12px;color:var(--ink-quiet);margin:0;max-width:78ch">The published operating characteristics &mdash; 40% called hyperinflammatory at 0.295 with sensitivity 0.84 and specificity 0.87 in SAILS, and the pediatric sensitivities of 0.35 and 0.89 at the two cut-offs &mdash; are properties of whole cohorts, and reproducing them needs patient-level SAILS and RESTORE/BALI data this page does not carry. They are printed in the calculator as published figures, never as figures this tool recomputed.</p>
-      </details>
+    <p class="cite-note" id="reproNote"></p>
+    <details class="dtl">
+      <summary>What is not checkable in a browser</summary>
+      <p style="font-size:12px;color:var(--ink-quiet);margin:0;max-width:78ch">The published operating characteristics &mdash; 40% called hyperinflammatory at 0.295 with sensitivity 0.84 and specificity 0.87 in SAILS, and the pediatric sensitivities of 0.35 and 0.89 at the two cut-offs &mdash; are properties of whole cohorts, and reproducing them needs patient-level SAILS and RESTORE/BALI data this page does not carry. They are printed in the calculator as published figures, never as figures this tool recomputed.</p>
     </details>
   </section>
 
@@ -1162,7 +1158,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
 
     <div class="callout callout--neg">
       <h4>The sentence that governs the whole panel</h4>
-      <p style="margin:0">Every row above is a secondary analysis of a trial designed to answer a different question, and &mdash; excepting the two observational rows, weaker still &mdash; every one of those trials was negative overall. No trial has randomized patients on subphenotype; a 2026 scoping review of sixty adult studies named prospective phenotype-stratified trials as the outstanding need. Until one is done, this table describes hypotheses rather than therapy.</p>
+      <p style="margin:0">Every row above is a secondary analysis of a trial designed to answer a different question, and (excepting the two observational rows, weaker still) every one of those trials was negative overall. No trial has randomized patients on subphenotype; a 2026 scoping review of sixty adult studies named prospective phenotype-stratified trials as the outstanding need. Until one is done, this table describes hypotheses rather than therapy.</p>
     </div>
 
     <div class="fig">
@@ -1195,7 +1191,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
 
     <div class="callout callout--neg">
       <h4>Pediatric heterogeneity of treatment effect is not established</h4>
-      <p>This tool displays no pediatric treatment recommendation of any kind. The evidence is two studies pointing in opposite directions. The one randomized pediatric test &mdash; the RESTORE targeted sedation protocol, examined by subphenotype in the Dahmer cohort &mdash; showed no interaction with either duration of ventilation or mortality.</p>
+      <p>This tool displays no pediatric treatment recommendation of any kind. The evidence is two studies pointing in opposite directions. The one randomized pediatric test (the RESTORE targeted sedation protocol, examined by subphenotype in the Dahmer cohort) showed no interaction with either duration of ventilation or mortality.</p>
       <p style="margin-bottom:0">The one observational pediatric signal, from the CHOP cohort, ran the <em>opposite way</em> to the adult observational steroid signal: methylprednisolone was associated with lower mortality in the hypoinflammatory class (adjusted HR 0.31, 95% CI 0.10&ndash;0.96) and higher mortality in the hyperinflammatory class (adjusted HR 3.13, 95% CI 1.36&ndash;7.21), interaction p=0.017; under inverse-probability treatment weighting the interaction weakened to p=0.083 (HR 0.22, 95% CI 0.06&ndash;0.80 and 1.93, 0.97&ndash;3.84). Two observational analyses of the same drug class disagreeing on direction is not a basis for treating a child differently.</p>
       <details class="dtl">
         <summary>On the 0.017 &mdash; the paper disagrees with itself</summary>
@@ -1210,14 +1206,14 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
 
     <p>Three of the highest-weighted variables in these models change meaning across the pediatric age range, and the models were not built to notice.</p>
 
-    <p><strong>Creatinine</strong> is among the most influential variables in the adult clinical classifier, alongside bicarbonate and vasopressor use &mdash; a ranking read off that paper's variable-importance figure rather than a printed table. It is also the most age-dependent input in the panel: 1.0 mg/dL is unremarkable in an adult and severe kidney injury in a toddler, so any adult model taking raw creatinine reads young children as less sick than they are. This tool implements none of those classifiers, although the trap matters because their EHR-embedded versions are the ones most likely to reach a PICU.</p>
+    <p><strong>Creatinine</strong> is among the most influential variables in the adult clinical classifier, alongside bicarbonate and vasopressor use, a ranking read off that paper's variable-importance figure rather than a printed table. It is also the most age-dependent input in the panel: 1.0 mg/dL is unremarkable in an adult and severe kidney injury in a toddler, so any adult model taking raw creatinine reads young children as less sick than they are. This tool implements none of those classifiers, although the trap matters because their EHR-embedded versions are the ones most likely to reach a PICU.</p>
 
     <p><strong>Bicarbonate</strong> is the most heavily weighted clinical variable per unit: at &minus;0.2596 per mmol/L, a 6 mmol/L shift, about one standard deviation in the adult derivation cohort, moves the logit by 1.56. Across its interquartile range it is not the largest swing in either Sinha equation &mdash; Figure 8 puts IL-8 above it in both, and vasopressor use as well in the four-variable model &mdash; although it is the only one a routine blood gas already reports, and the only one whose normal range moves with age.</p>
 
     <p><strong>Vasopressor use</strong> carries the largest coefficient of any term in the ancillary models, 2.08 and 2.34, and records a decision rather than a measurement. The threshold at which a PICU starts an infusion is not the adult ICU's, and it has drifted across the period these cohorts span. A binary worth two logit units and set by local practice is a fragility rather than a feature.</p>
 
     <div class="callout">
-      <h4>Two further limits on the pediatric derivation cohorts</h4>
+      <h4>Further limits on the pediatric derivation cohorts</h4>
       <p style="margin:0">Infants under 30 days are too sparsely represented to support any conclusion in that age group &mdash; Dahmer 2022's own reading: not absent, but too few for any claim. The cohorts were also assembled under <strong>three different case definitions across four cohorts</strong>, and mixing definitions mixes the populations the coefficients came from, including inside a single paper.</p>
       <details class="dtl"><summary>Which definition each cohort used</summary>
       <p style="margin:0">Yehya's CHOP cohort used the Berlin definition and enrolled 2014 to 2019; his UCSF validation cohort used the 1994 American-European Consensus Conference definition of acute lung injury and enrolled 2008 to 2017; Dahmer's applied PALICC oxygenation criteria within RESTORE and BALI; LEOPARDS used PARDS criteria. PALICC-2 is not Berlin. <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34883088/" target="_blank" rel="noopener">PMID 34883088</a><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/37813544/" target="_blank" rel="noopener">PMID 37813544</a><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36661420/" target="_blank" rel="noopener">PMID 36661420</a></p>
@@ -1277,7 +1273,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
 
   <!-- ============================ SECTION 11 ============================ -->
   <section class="sec" id="s11">
-    <h2 class="sec-h"><span class="n">11</span>Where the field actually stands, and what would move it</h2>
+    <h2 class="sec-h"><span class="n">11</span>Current evidence and remaining gaps</h2>
 
     <p>Prospective identification is now solved as an engineering problem. In PHIND, 30 UK and Irish ICUs measured IL-6 and TNFR1 on a near-patient benchtop immunoanalyser with a run time of about an hour and combined them with an arterial bicarbonate to assign subphenotype in real time. Of 490 patients subphenotyped, 89 (18%) were hyperinflammatory and 401 (82%) hypoinflammatory. Sixty-day mortality was 51% (45 of 88) against 28% (111 of 398), risk ratio 1.8 (95% CI 1.4&ndash;2.4, p&lt;0.0001), adjusted odds ratio 2.7 (95% CI 1.6&ndash;4.4, p=0.0002). <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/41887245/" target="_blank" rel="noopener">PMID 41887245</a></p>
 
@@ -1337,7 +1333,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
     </div>
 
     <div class="tool-footer">
-      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot;
+      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-09-01 &middot;
       Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot; session-only, no data leaves this device
       <details class="dtl" style="margin-top:var(--sm)"><summary>How the sources and coefficients were verified</summary>
       <div style="text-align:left">Every PMID and DOI here was resolved against PubMed E-utilities and PubMed Central, most recently on 2026-09-01, with first author, year and journal matched for each of the twenty primary sources. Retraction screening was run by <em>erratum linkage</em> as well as by publication type, because a publication-type screen alone cannot see an erratum published as its own record: that screen returns <em>two</em> errata, both to Famous 2017 &mdash; PMID 30547667 (2018, the exchanged fluid-arm labels) and PMID 31469324 (2019, supplementary assay-dilution and a driving-pressure mislabel). Both are in the reference table and the first is cited beside the finding it corrects. No retraction was found. Coefficients were transcribed from the table or figure named in each row and re-checked by forward computation against the published cohort medians. The published operating characteristics are reproduced as printed and are <em>not</em> recomputed here, because that would need patient-level data this page does not have. Numbers that no source establishes are labelled DERIVED, marked as not re-verifiable, or are absent.</div>
@@ -2619,7 +2615,9 @@ function drawF10() {
    transcribed coefficients and the published cohort medians. The targets are
    DERIVED, not printed in the papers, and are labelled as such on the page.
    This checks the engine, not the transcription: a mis-typed coefficient would
-   pass. That limit is stated on the page beside the table.
+   pass. That limit is stated in the note printed on the page. On failure this
+   logs details to the console and replaces the note with a visible alert;
+   nothing about the check silently disappears.
    ========================================================================= */
 function runReproChecks() {
   const rows = [];
@@ -2632,23 +2630,21 @@ function runReproChecks() {
       rows.push({ model: m.name, what: chk.what, expect: chk.expect, got: got, ok: Math.abs(got - chk.expect) <= chk.tol, tol: chk.tol });
     });
   });
-  const tb = $("reproTable").querySelector("tbody");
-  while (tb.firstChild) tb.removeChild(tb.firstChild);
-  const head = document.createElement("tr");
-  head.innerHTML = "<th>Model</th><th>Input</th><th>Target</th><th>Computed here</th><th>Result</th>";
-  tb.appendChild(head);
-  rows.forEach(function (r) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = "<td>" + r.model + "</td><td>" + r.what + "</td>" +
-      "<td class=\"num\">P = " + fmt(r.expect, 4) + " <span class=\"derived-tag\">Derived</span></td>" +
-      "<td class=\"num\">P = " + fmt(r.got, 4) + "</td>" +
-      "<td class=\"st " + (r.ok ? "ok" : "no") + "\">" + (r.ok ? "PASS" : "FAIL") + " (tol " + r.tol + ")</td>";
-    tb.appendChild(tr);
-  });
   const nPass = rows.filter(r => r.ok).length;
-  const h = $("reproHead");
-  h.textContent = "Internal arithmetic self-check - " + nPass + " of " + rows.length + " pass";
-  h.className = "repro-head " + (nPass === rows.length ? "pass" : "fail");
+  const note = $("reproNote");
+  if (nPass === rows.length) {
+    note.className = "cite-note";
+    note.removeAttribute("role");
+    note.textContent = "Each implementable model's arithmetic was checked against a target derived from its own published coefficients and cohort medians, which verifies the engine rather than the transcription.";
+  } else {
+    const failed = rows.filter(function (r) { return !r.ok; });
+    failed.forEach(function (r) {
+      console.error("[repro-check] FAILED", r.model, r.what, "expected", r.expect, "got", r.got, "tolerance", r.tol);
+    });
+    note.className = "callout callout--neg";
+    note.setAttribute("role", "alert");
+    note.textContent = "Arithmetic check failed for " + failed.length + " of " + rows.length + " model checks. Do not trust the calculator outputs on this page until this is fixed.";
+  }
   return { pass: nPass, total: rows.length };
 }
 </script>

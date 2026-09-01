@@ -634,7 +634,7 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
       {/* TRAJECTORY */}
       <section className="card sectiongap">
         <div className="card-label">Step 3 · RAI trajectory</div>
-        <h3>Track the score across ICU days</h3>
+        <h3>RAI trajectory across ICU days</h3>
         <p className="hint">Log the RAI on successive days to watch the trend relative to the renal-angina threshold (8). Session-only; nothing is saved to this device.</p>
         <div className="floorbanner" style={{marginTop:"var(--sm)"}}><b>Serial RAI is not a validated instrument, and nothing here should be acted on.</b> The index was derived and validated as a single Day-0 measurement predicting Day-3 severe AKI (Basu 2014, PMID 24048379; Basu 2018, PMID 30035208). Neither study analysed a daily series, so no source on this page reports outcomes by RAI trajectory and no citation supports a management decision taken on the slope. Two of the three injury inputs also ratchet: cumulative percent fluid overload and cumulative eCrCl decline measured from a fixed baseline can only move upward, so in any child accumulating fluid the trajectory drifts positive by construction rather than by new injury. The warning above, that discrimination degrades outside the admission window, applies with full force here. Treat this panel as a plot of the numbers you typed.</div>
         <div className="row cols2">
@@ -865,7 +865,7 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
 
         <section className="card">
           <div className="card-label">Inputs · clinical factors</div>
-          <h3>These drive the estimate</h3>
+          <h3>Organ support, creatinine, and fluid balance</h3>
           <p className="hint">Renal angina is auto-computed from organ support + creatinine + fluid overload. Any field may be blank.</p>
           <div className="field" id="lbl-organ-support">Organ support & risk context <span className="field-note">· ventilation + vasoactive → RAI risk 5; transplant → risk 3</span></div>
           <div className="seg" role="group" aria-labelledby="lbl-organ-support">
@@ -1068,7 +1068,7 @@ function App(){
 
       <footer>
         <div className="footer-inner">
-          Neel Shah, MD · Pediatric Critical Care Medicine · v2.0 · Updated 2026-08-31 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
+          Neel Shah, MD · Pediatric Critical Care Medicine · v2.1 · Updated 2026-09-01 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
           <div style={{marginTop:"6px"}}>Evidence: renal angina index, AWARE, and pediatric biomarker meta-analyses. Identifiers were last checked against PubMed on 2026-08-31; this page performs no check of its own when it loads. Staging implements KDIGO 2012; the 2026 KDIGO AKI/AKD revision was in public review through 11 May 2026 and is not finally published as of this date. Session-only; no data leaves this device.</div>
         </div>
       </footer>
