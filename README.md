@@ -1,6 +1,6 @@
 # Neel Clinical Skills
 
-Seven interactive teaching tools for pediatric and adult critical care. Each one is a single
+Eleven interactive teaching tools for pediatric and adult critical care. Each one is a single
 self-contained HTML page: open it, move the inputs, and watch the physiology or the diagnostic
 reasoning change. No install, no account, no server. Nothing you type leaves your browser.
 
@@ -22,6 +22,10 @@ Every tool is independently linkable. You can send a colleague one URL and they 
 | [Albuterol Delivery During HFNC](tools/albuterol-hfnc-delivery.html) | Charts inhaled lung dose as a percentage of the nominal nebulizer dose against high-flow nasal cannula flow rate, so the flow-versus-delivery tradeoff is visible rather than asserted. |
 | [PRx, CPPopt and the MAP Challenge](tools/prx-cppopt-map-challenge.html) | Cerebral autoregulation made concrete: animated pressure-reactivity waveforms, a PRx versus CPP U-curve you can move, a norepinephrine and MAP challenge simulator, and a walkthrough of the protocol. |
 | [The Venous Return Wars](tools/venous-return-wars.html) | An interactive teaching essay on the Guyton versus Brengelmann dispute, with three live rigs you drive yourself: two tanks and a pump, a venous return curve you can reshape, and a vasodilate-then-defend-blood-pressure sequence. |
+| [Critical Asthma: Drugs, Noninvasive Support, and the Ventilator](tools/asthma-critical-care.html) | Ten agents in one pharmacology table that shows where its sources disagree rather than averaging them, a toxicity matrix for what stacks when three drugs run at once, an interactive Campbell diagram for CPAP and BiPAP, and two PEEP schematics built from adult physiology that is labelled as adult. |
+| [Ventilator Fundamentals](tools/ventilator-fundamentals.html) | The equation of motion, made movable. Pressure, flow and volume are solved live rather than drawn, so changing compliance or resistance redraws real curves. Covers holds and what each measures, volume control against pressure control and PRVC, trigger types, and how inspiratory time, rise time and cycle-off work. |
+| [Ventilator Advanced](tools/ventilator-advanced.html) | Patient effort graphed against ventilator pressure; why PRVC withdraws support as the patient works harder while pressure control holds it constant; the decremental trial that finds best-compliance PEEP; and deadspace against shunt. |
+| [ARDS Inflammatory Subphenotypes](tools/ards-subphenotype-explorer.html) | Exploratory only. Runs the published hypo- and hyperinflammatory classifiers that print their coefficients, refuses the ones that do not, and reports a range rather than a number when an input is missing. Pediatric results carry how poorly the adult signature transports to children. |
 
 ## How to use them
 
