@@ -1,6 +1,6 @@
 # Neel Clinical Skills
 
-Eleven interactive teaching tools for pediatric and adult critical care. Each one is a single
+Twelve interactive teaching tools for pediatric and adult critical care. Each one is a single
 self-contained HTML page: open it, move the inputs, and watch the physiology or the diagnostic
 reasoning change. No install, no account, no server. Nothing you type leaves your browser.
 
@@ -26,6 +26,7 @@ Every tool is independently linkable. You can send a colleague one URL and they 
 | [Ventilator Fundamentals](tools/ventilator-fundamentals.html) | The equation of motion, made movable. Pressure, flow and volume are solved live rather than drawn, so changing compliance or resistance redraws real curves. Covers holds and what each measures, volume control against pressure control and PRVC, trigger types, and how inspiratory time, rise time and cycle-off work. |
 | [Ventilator Advanced](tools/ventilator-advanced.html) | Patient effort graphed against ventilator pressure; why PRVC withdraws support as the patient works harder while pressure control holds it constant; the decremental trial that finds best-compliance PEEP; and deadspace against shunt. |
 | [ARDS Inflammatory Subphenotypes](tools/ards-subphenotype-explorer.html) | Exploratory only. Runs the published hypo- and hyperinflammatory classifiers that print their coefficients, refuses the ones that do not, and reports a range rather than a number when an input is missing. Pediatric results carry how poorly the adult signature transports to children. |
+| [Pediatric Dysnatremia and Diabetes Insipidus](tools/pediatric-dysnatremia-di.html) | Two tabs for one episode. Reads sodium, weight-indexed urine output and urine concentration into a ranked differential; says plainly when the data cannot separate SIADH from salt wasting, and names the next test. Then runs a vasopressin infusion in mU/kg/hr against live charts. Stores nothing. | v1.0 |
 
 ## How to use them
 
