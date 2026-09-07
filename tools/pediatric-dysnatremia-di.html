@@ -157,6 +157,7 @@
   /* ---------- header ---------- */
   header.hero { padding: var(--xl) 0 var(--md); }
   .head-row { display:flex; justify-content:space-between; align-items:flex-start; gap:var(--md); flex-wrap:wrap; }
+  .head-btns { display:flex; gap:8px; flex-wrap:wrap; }
   .theme-btn { font-family:var(--sans); font-size:12.5px; font-weight:560; min-height:44px; padding:0 14px; background:transparent; border:1px solid var(--edge); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out); }
   .theme-btn:hover { background:var(--tint); color:var(--ink); }
   .chips { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--lg); }
@@ -198,6 +199,19 @@
   .tier-h .badge { font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--slate); border:1px solid var(--slate-pale); border-radius:999px; padding:2px 8px; }
   .tier-h .t { font-family:var(--sans); font-size:15px; font-weight:640; }
   .tier-h .s { font-size:12.5px; color:var(--ink-quiet); font-family:var(--sans); }
+  /* ROUND 5. The optional tiers fold. On a 375px screen the four input blocks put the
+     ranked differential 4,933px down the page, six screens of scrolling before the reader
+     reaches the thing they opened the tool for. Context and tier 1 stay open because they
+     are the minimum the engine reasons from; the rest opens on a tap, and reopens itself
+     whenever it already holds a value, so folding can never hide an entered number. */
+  .tier.fold > summary.tier-h { cursor:pointer; list-style:none; margin-bottom:0; }
+  .tier.fold[open] > summary.tier-h { margin-bottom:var(--sm); }
+  .tier.fold > summary.tier-h::-webkit-details-marker { display:none; }
+  .tier.fold > summary.tier-h::after { content:"+"; margin-left:auto; font-family:var(--mono); font-size:15px; color:var(--slate); }
+  .tier.fold[open] > summary.tier-h::after { content:"\2212"; }
+  .tier.fold > summary.tier-h:focus-visible { outline:2px solid var(--slate); outline-offset:3px; }
+  .tier-h .cnt { font-family:var(--mono); font-size:11px; color:var(--slate); border:1px solid var(--slate-pale); border-radius:999px; padding:2px 8px; }
+  .tier-h .cnt:empty { display:none; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:var(--sm) var(--md); }
   .field { display:flex; flex-direction:column; gap:3px; min-width:0; }
   .field label { font-size:12.5px; font-weight:560; color:var(--ink-muted); }
@@ -272,8 +286,16 @@
   /* 44px is the touch target, not the type size: the pill is the whole box so a
      thumb on a bedside tablet has something to hit. 83 of these are the only
      controls on the page that were under the floor. */
-  .citechip { display:inline-flex; align-items:center; min-height:44px; font-family:var(--mono); font-size:11px; letter-spacing:-.01em; color:var(--slate); border:1px solid var(--slate-pale); border-radius:999px; padding:0 11px; margin:2px 5px 2px 0; text-decoration:none; white-space:nowrap; vertical-align:middle; }
-  .citechip:hover { background:var(--tint); color:var(--ink); }
+  /* Every PMID is provenance rather than answer, so it is written into the DOM and
+     kept out of sight until the Sources button in the header asks for it. Hidden by
+     CSS and never removed, so a screen reader following the toggle, and the printer
+     below, still reach it. .citecol is the same rule for a whole table column: the
+     chip and the column heading that names it go together, or the table keeps an
+     empty column. */
+  .citechip, .citecol { display:none; }
+  :root[data-cites="on"] .citechip { display:inline-flex; align-items:center; min-height:44px; font-family:var(--mono); font-size:11px; letter-spacing:-.01em; color:var(--slate); border:1px solid var(--slate-pale); border-radius:999px; padding:0 11px; margin:2px 5px 2px 0; text-decoration:none; white-space:nowrap; vertical-align:middle; }
+  :root[data-cites="on"] th.citecol, :root[data-cites="on"] td.citecol { display:table-cell; }
+  :root[data-cites="on"] .citechip:hover { background:var(--tint); color:var(--ink); }
   .nexttest { border:1px solid var(--slate-pale); border-radius:var(--radius); background:var(--paper-2); padding:var(--md); }
   .nexttest ol { margin:var(--xs) 0 0; padding-left:22px; font-size:15px; line-height:1.55; }
   .gate { border:1px solid var(--caution); background:var(--caution-bg); border-radius:var(--radius); padding:10px 14px; font-family:var(--sans); font-size:15px; line-height:1.55; margin-bottom:var(--sm); }
@@ -369,7 +391,11 @@
     /* Both figures are authored 880 user units wide and a printed page is not. */
     .fig-scroll { overflow:visible !important; background:none !important; }
     .fig svg, .fig-scroll > svg { min-width:0 !important; width:100% !important; height:auto; }
-    .citechip { min-height:0; padding:1px 6px; display:inline-block; }
+    /* A printed copy of a reference tool that hides its references is not a copy
+       of the tool, so print overrides the header toggle and shows every chip. The
+       shrink is restated for the toggled-on selector, which out-specifies it. */
+    .citechip, :root[data-cites="on"] .citechip { min-height:0; padding:1px 6px; display:inline-block; }
+    th.citecol, td.citecol, :root[data-cites="on"] th.citecol, :root[data-cites="on"] td.citecol { display:table-cell; }
     .dtl summary { min-height:0; display:block; }
   }
   @media (max-width: 700px) {
@@ -412,7 +438,10 @@
       <p class="ov">Pediatric critical care &middot; sodium, water and the posterior pituitary</p>
       <h1>Dysnatremia and diabetes insipidus at the bedside</h1>
     </div>
-    <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle color theme">&#9790; Dark</button>
+    <div class="head-btns">
+      <button class="theme-btn" id="citeToggle" type="button" aria-pressed="false" aria-label="Show source PMIDs">Sources</button>
+      <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle color theme">&#9790; Dark</button>
+    </div>
   </div>
   <p class="lede">Work out which pattern the child is in; then run the vasopressin infusion if it is central diabetes insipidus. Where the inputs cannot settle a question, the tool says so and names the test that would.</p>
 
@@ -441,10 +470,10 @@
 <div class="panel" id="panel-interpret" role="tabpanel" aria-labelledby="tab-interpret" tabindex="0">
 
   <h2>Interpret the pattern</h2>
-  <p>Enter what you have; every tier is optional. A criterion appears only once the input it depends on is entered, so nothing here is a statement about a box you left empty.</p>
+  <p>Every tier is optional. A criterion appears only once its input is entered.</p>
 
   <div class="tier">
-    <div class="tier-h"><span class="badge">Context</span><span class="t">Age, size, the neonatal gate</span><span class="s">Sets which thresholds may run</span></div>
+    <div class="tier-h"><span class="badge">Context</span><span class="t">Age, size, neonatal gate</span><span class="s">Which thresholds run</span></div>
     <div class="grid">
       <div class="field">
         <label for="dx-age">Postnatal age</label>
@@ -457,48 +486,48 @@
             <option value="y" selected>years</option>
           </select>
         </div>
-        <div class="hint" id="h-dx-age">Below about 6 weeks the urine-osmolality, polyuria and sodium rules are switched off rather than degraded.</div>
+        <div class="hint" id="h-dx-age">Below about 6 weeks the osmolality, polyuria and sodium rules switch off.</div>
       </div>
       <div class="field" id="dx-ga-field" hidden>
         <label for="dx-ga">Gestational age at birth</label>
         <div class="row"><input type="number" id="dx-ga" min="20" max="44" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">weeks</span></div>
-        <div class="hint" id="h-dx-ga">Blocks a salt-wasting call on a urine sodium below 35 weeks. Ignored while hidden.</div>
+        <div class="hint" id="h-dx-ga">Below 35 weeks, blocks a salt-wasting call on a urine sodium.</div>
       </div>
       <div class="field">
         <label for="dx-wt">Weight</label>
         <div class="row"><input type="number" id="dx-wt" min="0.3" max="150" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">kg</span></div>
-        <div class="hint">Urine output is computed, never typed in.</div>
+        <div class="hint">Used to compute urine output.</div>
       </div>
     </div>
   </div>
 
   <div class="tier">
-    <div class="tier-h"><span class="badge">Tier 1</span><span class="t">At the bedside now</span><span class="s">Sodium and a measured urine volume</span></div>
+    <div class="tier-h"><span class="badge">Tier 1</span><span class="t">At the bedside now</span><span class="s">Sodium and a timed urine volume</span></div>
     <div class="grid">
       <div class="field">
         <label for="dx-na">Serum sodium</label>
         <div class="row"><input type="number" id="dx-na" min="90" max="200" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mmol/L</span></div>
-        <div class="hint">Reference interval 137&ndash;143 mmol/L, ages 0.45&ndash;17 y, n=1000 [P] (Leonard 2023) &mdash; narrower than the adult 135&ndash;145.</div>
+        <div class="hint">Pediatric interval 137&ndash;143 mmol/L, 0.45&ndash;17 y, n=1000 [P] (Leonard 2023). Adult 135&ndash;145 is wider.</div>
       </div>
       <div class="field">
-        <label for="dx-na-prev">Serum sodium, previous value</label>
+        <label for="dx-na-prev">Previous serum sodium</label>
         <div class="row"><input type="number" id="dx-na-prev" min="90" max="200" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mmol/L</span></div>
-        <div class="hint">With the interval below, gives the trend. A rising sodium is what makes dilute urine inappropriate.</div>
+        <div class="hint">With the interval below, gives the trend.</div>
       </div>
       <div class="field">
-        <label for="dx-na-hrs">Hours between those two sodiums</label>
+        <label for="dx-na-hrs">Hours between the two</label>
         <div class="row"><input type="number" id="dx-na-hrs" min="0.25" max="72" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">h</span></div>
         <div class="hint" id="dx-na-trend">&mdash;</div>
       </div>
       <div class="field">
-        <label for="dx-uvol">Urine volume collected</label>
+        <label for="dx-uvol">Urine volume</label>
         <div class="row"><input type="number" id="dx-uvol" min="0" max="20000" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mL</span></div>
-        <div class="hint">Over a timed interval.</div>
+        <div class="hint">Timed collection.</div>
       </div>
       <div class="field">
         <label for="dx-uhrs">Over how many hours</label>
         <div class="row"><input type="number" id="dx-uhrs" min="0.25" max="48" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">h</span></div>
-        <div class="hint">Fractional intervals are fine.</div>
+        <div class="hint">Decimals are fine.</div>
       </div>
       <div class="field">
         <label for="dx-uop-out">Urine output (computed)</label>
@@ -508,18 +537,18 @@
     </div>
   </div>
 
-  <div class="tier">
-    <div class="tier-h"><span class="badge">Tier 2</span><span class="t">Routine chemistry</span><span class="s">Concentration and the urine sodium</span></div>
+  <details class="tier fold" id="tier2">
+    <summary class="tier-h"><span class="badge">Tier 2</span><span class="t">Routine chemistry</span><span class="s">Concentration and urine sodium</span><span class="cnt" id="cnt-tier2"></span></summary>
     <div class="grid">
       <div class="field">
         <label for="dx-uosm">Urine osmolality</label>
         <div class="row"><input type="number" id="dx-uosm" min="0" max="1600" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mOsm/kg</span></div>
-        <div class="hint" id="h-dx-uosm">The measurement. Specific gravity is a proxy for it.</div>
+        <div class="hint" id="h-dx-uosm">Specific gravity is a proxy for this.</div>
       </div>
       <div class="field">
         <label for="dx-sg">Urine specific gravity</label>
         <div class="row"><input type="number" id="dx-sg" min="1" max="1.08" step="0.001" inputmode="decimal" placeholder="e.g. 1.010"></div>
-        <div class="hint" id="h-dx-sg">Enter as 1.010, not 1010. Used when no osmolality is available, at its own lower confidence tier.</div>
+        <div class="hint" id="h-dx-sg">Enter as 1.010, not 1010. Substitutes for osmolality at a lower confidence tier.</div>
       </div>
       <div class="field">
         <label for="dx-sosm">Serum osmolality</label>
@@ -529,7 +558,7 @@
       <div class="field">
         <label for="dx-una">Spot urine sodium</label>
         <div class="row"><input type="number" id="dx-una" min="0" max="400" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mmol/L</span></div>
-        <div class="hint">The most useful test in hyponatremia when volume assessment is doing the work.</div>
+        <div class="hint">Most useful when volume assessment is carrying the hyponatremia.</div>
       </div>
       <div class="field">
         <label for="dx-uglu">Urine glucose</label>
@@ -538,32 +567,32 @@
           <option value="neg">negative</option>
           <option value="pos">positive</option>
         </select>
-        <div class="hint">Positive, with a high serum glucose, is the commonest osmotic diuresis.</div>
+        <div class="hint">Positive with a high serum glucose: the commonest osmotic diuresis.</div>
       </div>
       <div class="field">
         <label for="dx-sglu">Serum glucose</label>
         <div class="row"><input type="number" id="dx-sglu" min="0" max="1500" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mg/dL</span></div>
-        <div class="hint">Read only alongside a urine glucose.</div>
+        <div class="hint">Read alongside the urine glucose.</div>
       </div>
     </div>
-  </div>
+  </details>
 
-  <div class="tier">
-    <div class="tier-h"><span class="badge">Tier 3</span><span class="t">Targeted tests</span><span class="s">The ones that discriminate</span></div>
+  <details class="tier fold" id="tier3">
+    <summary class="tier-h"><span class="badge">Tier 3</span><span class="t">Targeted tests</span><span class="s">The discriminating ones</span><span class="cnt" id="cnt-tier3"></span></summary>
     <div class="grid">
       <div class="field">
         <label for="dx-ddavp">Desmopressin response</label>
         <select id="dx-ddavp">
           <option value="" selected>not done</option>
-          <option value="rise">urine osmolality rose more than 50%</option>
-          <option value="norise">urine osmolality did not rise more than 50%</option>
+          <option value="rise">rose more than 50%</option>
+          <option value="norise">did not rise more than 50%</option>
         </select>
-        <div class="hint">The relative criterion, not the adult &gt;750 mOsm/kg one. The only input here that separates central from nephrogenic DI.</div>
+        <div class="hint">The relative criterion, not the adult &gt;750 mOsm/kg one. The only input separating central from nephrogenic DI.</div>
       </div>
       <div class="field">
         <label for="dx-copeptin">Baseline plasma copeptin</label>
         <div class="row"><input type="number" id="dx-copeptin" min="0" max="500" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">pmol/L</span></div>
-        <div class="hint">Adult cut-points only; no pediatric baseline cut-point is established.</div>
+        <div class="hint">Adult cut-points only; no pediatric one is established.</div>
       </div>
       <div class="field">
         <label for="dx-feurate">Fractional excretion of urate</label>
@@ -577,7 +606,7 @@
           <option value="normal">both normal</option>
           <option value="abn">one or both abnormal</option>
         </select>
-        <div class="hint">Criteria for SIADH, not optional extras.</div>
+        <div class="hint">SIADH criteria, not optional extras.</div>
       </div>
       <div class="field">
         <label for="dx-vol">Clinical volume status</label>
@@ -587,14 +616,14 @@
           <option value="eu">euvolemic</option>
           <option value="hyper">hypervolemic</option>
         </select>
-        <div class="hint" id="h-dx-vol">This tool&rsquo;s weakest input. See the note on any hyponatremic result.</div>
+        <div class="hint" id="h-dx-vol">This tool&rsquo;s weakest input; see the note on any hyponatremic result.</div>
       </div>
     </div>
-  </div>
+  </details>
 
   <div class="tier">
     <div class="tier-h"><span class="badge">Confounders</span><span class="t">What breaks the inputs above</span><span class="s">An unticked box means not present</span></div>
-    <details class="more" id="dx-checks-wrap" open><summary>Nine boxes, none ticked &mdash; unticked is read as &ldquo;not present&rdquo;</summary><div class="mb">
+    <details class="more" id="dx-checks-wrap"><summary>Nine boxes, none ticked</summary><div class="mb">
     <div class="checks" id="dx-checks">
       <label><input type="checkbox" id="cf-contrast"><span>IV iodinated contrast recently given</span></label>
       <label><input type="checkbox" id="cf-mannitol"><span>Mannitol given</span></label>
@@ -602,7 +631,7 @@
       <label><input type="checkbox" id="cf-protein"><span>Heavy proteinuria</span></label>
       <label><input type="checkbox" id="cf-ketones"><span>Ketonuria</span></label>
       <label><input type="checkbox" id="cf-diuretic"><span>Diuretic active</span></label>
-      <label><input type="checkbox" id="cf-freewater"><span>Hypotonic maintenance fluid or a high free-water intake running</span></label>
+      <label><input type="checkbox" id="cf-freewater"><span>Hypotonic maintenance fluid or high free-water intake running</span></label>
       <label><input type="checkbox" id="cf-vaso"><span>Vasopressin infusion running now, or stopped within about 24 h</span></label>
       <label><input type="checkbox" id="cf-avpr"><span>Nephrogenic risk: lithium, amphotericin, foscarnet, cisplatin, hypokalemia, hypercalcemia, obstructive uropathy, or a family history</span></label>
     </div>
@@ -666,13 +695,13 @@
     <p>Onset is reported at <strong>1 to 6 hours</strong> in one pediatric series and from the <strong>third hour, peaking at the sixth</strong>, in a mixed-age one. These are different studies in different patients and this tool does not average them into a single figure.</p>
     <div class="tbl-scroll">
       <table class="cite-table">
-        <thead><tr><th>What</th><th>Figure</th><th class="pop">Population &middot; n</th><th>Source</th></tr></thead>
+        <thead><tr><th>What</th><th>Figure</th><th class="pop">Population &middot; n</th><th class="citecol">Source</th></tr></thead>
         <tbody>
-          <tr><td>Plasma half-life</td><td class="mono">10&ndash;20 min</td><td class="pop">[A] &middot; 2</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
-          <tr><td>Steady state after a rate change</td><td class="mono">40&ndash;80 min</td><td class="pop">[A] &middot; 2</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
-          <tr><td>Antidiuretic effect, urine flow below 2 mL/kg/hr with a rising specific gravity</td><td class="mono">1&ndash;6 h</td><td class="pop">[P] &middot; 3</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
-          <tr><td>Antidiuretic effect, onset and peak</td><td class="mono">3rd h, peak 6th h</td><td class="pop">[MIX] &middot; 12</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
-          <tr><td>Polyuria returns after the infusion stops</td><td class="mono">3 h</td><td class="pop">[MIX] &middot; 12</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
+          <tr><td>Plasma half-life</td><td class="mono">10&ndash;20 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
+          <tr><td>Steady state after a rate change</td><td class="mono">40&ndash;80 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
+          <tr><td>Antidiuretic effect, urine flow below 2 mL/kg/hr with a rising specific gravity</td><td class="mono">1&ndash;6 h</td><td class="pop">[P] &middot; 3</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
+          <tr><td>Antidiuretic effect, onset and peak</td><td class="mono">3rd h, peak 6th h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
+          <tr><td>Polyuria returns after the infusion stops</td><td class="mono">3 h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -851,46 +880,46 @@
   <p style="font-size:15px;color:var(--ink-muted)">Population tags: <span class="mono">[P]</span> pediatric, <span class="mono">[N]</span> neonatal, <span class="mono">[A]</span> adult, <span class="mono">[MIX]</span> mixed age. Every threshold carries its tag and its n in the output, not only here.</p>
   <div class="tbl-scroll">
     <table class="cite-table">
-      <thead><tr><th>Source</th><th>What it is used for here</th><th class="pop">Population &middot; n</th><th>Identifier</th></tr></thead>
+      <thead><tr><th>Source</th><th>What it is used for here</th><th class="pop">Population &middot; n</th><th class="citecol">Identifier</th></tr></thead>
       <tbody>
-        <tr><td>Chung 1987, <em>Am J Med</em></td><td>Clinical volume assessment identified 47% of hypovolemic and 48% of normovolemic patients; spot urine sodium separated them, 18.4 &plusmn; 3.1 vs 72 &plusmn; 3.7 mEq/L, p&lt;0.001</td><td class="pop">[A]? &middot; 58</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/3674097/" target="_blank" rel="noopener">PMID 3674097</a></td></tr>
-        <tr><td>Aperia 1983, <em>Acta Paediatr Scand Suppl</em></td><td>Newborn maximal urine osmolality only slightly above plasma; adult level not reached until the second year; preterm &lt;35 weeks cannot retain sodium in negative balance; water-loaded newborns dilute to 30&ndash;50 mOsm/kg</td><td class="pop">[N] &middot; review</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/6310948/" target="_blank" rel="noopener">PMID 6310948</a></td></tr>
-        <tr><td>Chadha 2001, <em>Pediatr Nephrol</em></td><td>Specific gravity rises 0.003 per 10 g/L protein and about 0.002 per 10 g/L glucose; large molecules such as contrast and mannitol raise specific gravity relative to osmolality; reagent strip only interpretable at pH 7.0&ndash;7.5</td><td class="pop">method review</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/11354785/" target="_blank" rel="noopener">PMID 11354785</a></td></tr>
-        <tr><td>Fenske 2008, <em>JCEM</em></td><td>SIADH requires low serum osmolality, urine osmolality &gt;100 mOsm/kg, clinical euvolemia, urine sodium &gt;30 mmol/L; urine-sodium AUC 0.96 off diuretics and 0.85 on them; FE-urate AUC 0.96, PPV 100% at a 12% cut-off</td><td class="pop">[A] &middot; 86</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/18477658/" target="_blank" rel="noopener">PMID 18477658</a></td></tr>
-        <tr><td>Sterns &amp; Silver 2008, <em>JASN</em></td><td>The reported measures of volume depletion do not stand scrutiny; the two syndromes cannot be told apart, and the distinction does not change the use of hypertonic saline in intracranial disease</td><td class="pop">[A] &middot; review</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/18216309/" target="_blank" rel="noopener">PMID 18216309</a></td></tr>
-        <tr><td>Bitew 2009, <em>CJASN</em></td><td>FE-phosphate, renin and aldosterone, and persistence of hypouricemia and raised FE-urate after correction, as concepts only</td><td class="pop">[A] &middot; 3</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19201917/" target="_blank" rel="noopener">PMID 19201917</a></td></tr>
-        <tr><td>Imran 2010, <em>J Clin Lab Anal</em></td><td>Specific gravity correlates about 0.75 with osmolality; at pH 7 a specific gravity of 1.010 predicts about 300 mOsm/kg, and +0.010 adds 203 mOsm/kg by refractometry or 182 by strip; pathological urines correlate significantly worse</td><td class="pop">[A]? &middot; 504</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21089176/" target="_blank" rel="noopener">PMID 21089176</a></td></tr>
-        <tr><td>Hardesty 2012, <em>Neurocrit Care</em></td><td>Cerebral salt wasting in 15 of 291 operations (5%), more common than SIADH (9, 3%); 47% of those had hyponatremic seizures</td><td class="pop">[P] &middot; 291 ops</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21822747/" target="_blank" rel="noopener">PMID 21822747</a></td></tr>
-        <tr><td>Wong &amp; Man 2012, <em>JPEM</em></td><td>The adult desmopressin criterion of urine osmolality &gt;750 mOsm/kg could not be reached in their pediatric patients</td><td class="pop">[P] &middot; series</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23426815/" target="_blank" rel="noopener">PMID 23426815</a></td></tr>
-        <tr><td>Sorkhi 2013, <em>Iran J Child Neurol</em></td><td>The only pediatric operational CSWS definition found: sodium &le;130, urine output &ge;3 mL/kg/hr, specific gravity &ge;1.020, urine sodium &ge;100 mEq/L. Of 102 screened, 9 were hyponatremic: 4 CSWS, 3 SIADH, 2 undetermined</td><td class="pop">[P] &middot; 7 classified</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/24665304/" target="_blank" rel="noopener">PMID 24665304</a></td></tr>
-        <tr><td>Pedrosa 2018, <em>Endocr Pract</em></td><td>Post-dehydration urine osmolality and the urine-to-serum ratio separated every diagnostic group except complete central DI from nephrogenic DI, which needed vasopressin levels</td><td class="pop">[MIX] &middot; 52</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30106630/" target="_blank" rel="noopener">PMID 30106630</a></td></tr>
-        <tr><td>Fenske 2018, <em>NEJM</em></td><td>Hypertonic-saline-stimulated copeptin above 4.9 pmol/L; accuracy 96.5% (95% CI 92.1&ndash;98.6) against 76.6% (68.9&ndash;83.2) for the water-deprivation test, P&lt;0.001</td><td class="pop">[A] &middot; 141 analysed</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30067922/" target="_blank" rel="noopener">PMID 30067922</a></td></tr>
-        <tr><td>Ferenchick 2019, <em>Crit Care Med</em></td><td>DI after discontinuation of a vasopressin infusion in 1.53% of 1,896 patients, against 2 of 1,320 (0.15%) controls; 16 of 29 followed a cardiothoracic intervention; no neurosurgical patients; V2 downregulation proposed, not shown</td><td class="pop">[A]-predominant &middot; 1,896</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31567344/" target="_blank" rel="noopener">PMID 31567344</a></td></tr>
-        <tr><td>Maesaka 2020, <em>Curr Opin Nephrol Hypertens</em></td><td>Renal salt wasting in 24 of 62 hyponatremic ward patients, 21 with no cerebral disease; the competing view of the same controversy</td><td class="pop">[A]? &middot; 62</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31904619/" target="_blank" rel="noopener">PMID 31904619</a></td></tr>
-        <tr><td>Mercier 2020, <em>Arch Pediatr</em></td><td>Hyponatremia &lt;135 mmol/L and severe &lt;130 mmol/L in children; SIADH-type antidiuresis complicating ordinary acute pediatric illness; hypotonic maintenance fluid as the iatrogenic driver</td><td class="pop">[P] &middot; review</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33028494/" target="_blank" rel="noopener">PMID 33028494</a></td></tr>
-        <tr><td>Ram&iacute;rez-Guerrero 2021, <em>Rev Clin Esp</em></td><td>Urine osmolality &gt;300 mOsm/L for a solute diuresis, &lt;150 for a water diuresis, 150&ndash;300 for both mechanisms coexisting</td><td class="pop">[A] &middot; review</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34509418/" target="_blank" rel="noopener">PMID 34509418</a></td></tr>
-        <tr><td>Leonard 2023, <em>Ann Clin Biochem</em></td><td>Plasma sodium reference interval 137&ndash;143 mmol/L for ages 0.45&ndash;16.99 years; neonates excluded from the non-partitioned interval</td><td class="pop">[P] &middot; 1,000</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/37669625/" target="_blank" rel="noopener">PMID 37669625</a></td></tr>
-        <tr><td>Newell-Price 2025, <em>JCEM</em></td><td>Polyuria as &ge;3 L/24 h in adults, &ge;2 L/m&sup2;/24 h in children, or &gt;40 mL/kg/24 h; urine osmolality &le;300 mOsm/kg confirms hypotonic urine and &ge;800 indicates a solute diuresis; urine osmolality rising more than 50% after desmopressin; baseline copeptin 21.4 pmol/L for vasopressin resistance</td><td class="pop">[A] &middot; 3 cases</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39148427/" target="_blank" rel="noopener">PMID 39148427</a></td></tr>
-        <tr><td>Atila 2025, <em>Lancet Diabetes Endocrinol</em></td><td>Basal plasma sodium above 145 mmol/L identified vasopressin deficiency with 100% specificity (95% CI 61&ndash;100); sodium below 135 identified primary polydipsia with 100% specificity (34&ndash;100); copeptin above 5.6 pmol/L with 100% specificity (74&ndash;100); hypotonic polyuria entry criterion &gt;50 mL/kg/24 h</td><td class="pop">[A] &middot; 299</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40294614/" target="_blank" rel="noopener">PMID 40294614</a></td></tr>
-        <tr><td>Garibaldi 2025, <em>JPEM</em></td><td>The water-deprivation test is the pediatric gold standard but has suboptimal accuracy and needs admission; the hypertonic saline test is rarely used in children; a stimulated copeptin cut-off of 9.3 pmol/L in 20 children</td><td class="pop">[P] &middot; 20 for the cut-off</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40420740/" target="_blank" rel="noopener">PMID 40420740</a></td></tr>
-        <tr><td>Endotext, <em>Endocrine Testing for SIADH</em>, NCBI Bookshelf NBK279055</td><td>Hyponatremia &lt;136 mmol/L in a state of euvolemia; urine osmolality &gt;100 and urine sodium &gt;30; FE-urate cut-off 12%; normal thyroid hormones, cortisol and creatinine; oedema, anasarca, jugular venous distension and pulmonary oedema stated to be inconsistent with SIADH</td><td class="pop">[A] &middot; chapter</td><td><a class="citechip" href="https://www.ncbi.nlm.nih.gov/books/NBK279055/" target="_blank" rel="noopener">NBK279055</a></td></tr>
-        <tr><td>Lugo 1997, <em>JPEM</em></td><td>Initial vasopressin 0.25&ndash;1.0 mU/kg/hr; targets urine output 2&ndash;3 mL/kg/hr, specific gravity 1.010&ndash;1.020, serum sodium 140&ndash;145 mEq/L; replace urine above 3 mL/kg/hr with 0 to 0.5 normal saline; specific gravity r = 0.96 p = 0.009, urine output r = 0.93 p = 0.02, no correlation with serum sodium or serum osmolality</td><td class="pop">[P] PICU &middot; 14</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/9467135/" target="_blank" rel="noopener">PMID 9467135</a></td></tr>
-        <tr><td>Lee 1995, <em>JPEM</em></td><td>Started at 1.3&ndash;2.7 mU/kg/hr &mdash; the highest published pediatric antidiuretic starting range; effect (urine flow &lt;2 mL/kg/hr with rising specific gravity) at 1 to 6 hours</td><td class="pop">[P] &middot; 3</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
-        <tr><td>Bryant 1994, <em>Cancer</em></td><td>Very low dose infusion at an initial 0.08&ndash;0.10 mU/kg/hr during chemotherapy hyperhydration</td><td class="pop">[P] &middot; 2 treated</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/7923015/" target="_blank" rel="noopener">PMID 7923015</a></td></tr>
-        <tr><td>Chanson 1987, <em>Crit Care Med</em></td><td>1.6 &plusmn; 0.26 mU/kg/hr effective; antidiuretic effect began at the third hour and peaked by the sixth; polyuria recurred 3 hours after discontinuation; no pressor effects observed</td><td class="pop">[MIX] &middot; 12</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
-        <tr><td>Devaraja 2021, <em>Endocrinol Diabetes Metab Case Rep</em></td><td>Started at 0.0001 units/kg/h (0.1 mU/kg/hr); rate first adjusted by 50%, reduced to 25% because large steps swung the sodium; hourly titration and hourly urine output; electrolytes 6-hourly; 2 units in 49.9 mL giving 0.04 units/mL; urine-output target 3&ndash;4 mL/kg/hr, raised when the fixed hypotonic intake drove the sodium down</td><td class="pop">[P] &middot; 1</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33597311/" target="_blank" rel="noopener">PMID 33597311</a></td></tr>
-        <tr><td>Levine 2018, <em>AACE Clin Case Rep</em></td><td>Titration by 0.05&ndash;0.1 mU/kg/hr no more often than every 1 to 2 hours; half-life 10&ndash;20 minutes; steady state at 40&ndash;80 minutes; a 5 mU/mL pharmacy solution; sodium nadir 121 and peak 160 mEq/L in one patient</td><td class="pop">[A] &middot; 2</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
-        <tr><td>Choong 2009, <em>AJRCCM</em></td><td>Pediatric pressor dosing 0.0005&ndash;0.002 U/kg/min, i.e. 30&ndash;120 mU/kg/hr; mortality 10 of 33 vs 5 of 32, RR 1.94 (0.75&ndash;5.05), p = 0.24; adverse-event rate ratio difference 12.0% (&minus;2.6 to 26.7), p = 0.15</td><td class="pop">[P] RCT &middot; 65</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19608718/" target="_blank" rel="noopener">PMID 19608718</a></td></tr>
-        <tr><td>Wise-Faberowski 2004, <em>J Neurosurg Anesthesiol</em></td><td>Normal saline restricted to two thirds maintenance; sodium held 130&ndash;150 mEq/L; mean 24-hour sodium change 8.36 &plusmn; 6.43 vs 17.6 &plusmn; 9.2 mEq/L in 19 historical controls. The paper states no dose, so none is attributed to it</td><td class="pop">[P] &middot; 18</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/15211159/" target="_blank" rel="noopener">PMID 15211159</a></td></tr>
-        <tr><td>Pratheesh 2013, <em>Childs Nerv Syst</em></td><td>Craniopharyngioma resection: post-operative DI 80% in children vs 63% in adults, permanent DI 55.6% in children, triphasic response 23%</td><td class="pop">[P] 45 &middot; [A] 57</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23386174/" target="_blank" rel="noopener">PMID 23386174</a></td></tr>
-        <tr><td>Finken 2011, <em>Horm Res Paediatr</em></td><td>Triphasic response in 6 of 21 (29%) after primary craniopharyngioma resection; the only predictor was duration of surgery, 8.5 h vs 4.6 h, p = 0.03, with the authors attributing the absence of others to sample size</td><td class="pop">[P] &middot; 21</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21701131/" target="_blank" rel="noopener">PMID 21701131</a></td></tr>
-        <tr><td>Bazus 2024, <em>Childs Nerv Syst</em></td><td>17 of 26 (65.4%) had initial DI then hyponatremia a few days later; 8 (30.8%) then had isolated persistent DI</td><td class="pop">[P] &middot; 26</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38761265/" target="_blank" rel="noopener">PMID 38761265</a></td></tr>
-        <tr><td>Alharfi 2013, <em>Pediatr Crit Care Med</em></td><td>Central DI in 18% of 180 children with severe TBI; at diagnosis median urine output 6.8 mL/kg/hr (IQR 5&ndash;11) and median sodium 154 mmol/L (IQR 149&ndash;159); mortality 87.5%, with 71.4% declared brain dead after the diagnosis; early onset strongly associated with mortality, p&lt;0.001</td><td class="pop">[P] &middot; 180 severe TBI</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23314181/" target="_blank" rel="noopener">PMID 23314181</a></td></tr>
-        <tr><td>Punukollu 2024, <em>Neurosurg Rev</em></td><td>New post-operative DI in 28% (95% CI 18&ndash;40%) after pediatric Rathke&rsquo;s cleft cyst resection &mdash; the non-craniopharyngioma comparator</td><td class="pop">[P] meta &middot; 12 studies</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39738909/" target="_blank" rel="noopener">PMID 39738909</a></td></tr>
-        <tr><td>Du 2022, <em>Front Endocrinol</em></td><td>Hypothalamo-hypophyseal injury score above 3 as a potential predictor of adipsic DI, and of severe hypernatremia during admission (OR 15.487, 1.852&ndash;129.539, p = 0.011) and at follow-up (OR 28.637, 3.060&ndash;267.981, p = 0.003)</td><td class="pop">[MIX] 44 P / 134 A</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36120435/" target="_blank" rel="noopener">PMID 36120435</a></td></tr>
-        <tr><td>Didsbury 2023, <em>CJASN</em></td><td>Guideline position that sodium should be reduced by &lt;0.5 mmol/L per hour or &lt;10&ndash;12 mmol/L per 24 hours; 402 episodes in 358 children, no association found between rapid correction and neurological investigation or mortality</td><td class="pop">[P] &middot; 402 episodes</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36888887/" target="_blank" rel="noopener">PMID 36888887</a></td></tr>
-        <tr><td>Suppadungsuk 2024, <em>Kidney Med</em></td><td>Osmotic demyelination incidence 0.23% overall, 0.73% with rapid correction and 0.10% without, odds ratio 3.16 (95% CI 1.54&ndash;6.49); rapid variably defined as &gt;8 to 12 mmol/L in 24 hours</td><td class="pop">[A] meta &middot; 26,710</td><td><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39967825/" target="_blank" rel="noopener">PMID 39967825</a></td></tr>
-        <tr><td>Royal Children&rsquo;s Hospital Melbourne, <em>Hyponatraemia</em>, last updated November 2023</td><td>Correction should not exceed 8 mmol/L in 24 hours in a non-seizing child, target 6&ndash;8 mmol/L in 24 hours; rapid correction can cause osmotic demyelination; no maximum rate is given for the seizing child and correction is not to be delayed</td><td class="pop">institutional CPG</td><td><a class="citechip" href="https://www.rch.org.au/clinicalguide/guideline_index/hyponatraemia/" target="_blank" rel="noopener">rch.org.au</a></td></tr>
+        <tr><td>Chung 1987, <em>Am J Med</em></td><td>Clinical volume assessment identified 47% of hypovolemic and 48% of normovolemic patients; spot urine sodium separated them, 18.4 &plusmn; 3.1 vs 72 &plusmn; 3.7 mEq/L, p&lt;0.001</td><td class="pop">[A]? &middot; 58</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/3674097/" target="_blank" rel="noopener">PMID 3674097</a></td></tr>
+        <tr><td>Aperia 1983, <em>Acta Paediatr Scand Suppl</em></td><td>Newborn maximal urine osmolality only slightly above plasma; adult level not reached until the second year; preterm &lt;35 weeks cannot retain sodium in negative balance; water-loaded newborns dilute to 30&ndash;50 mOsm/kg</td><td class="pop">[N] &middot; review</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/6310948/" target="_blank" rel="noopener">PMID 6310948</a></td></tr>
+        <tr><td>Chadha 2001, <em>Pediatr Nephrol</em></td><td>Specific gravity rises 0.003 per 10 g/L protein and about 0.002 per 10 g/L glucose; large molecules such as contrast and mannitol raise specific gravity relative to osmolality; reagent strip only interpretable at pH 7.0&ndash;7.5</td><td class="pop">method review</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/11354785/" target="_blank" rel="noopener">PMID 11354785</a></td></tr>
+        <tr><td>Fenske 2008, <em>JCEM</em></td><td>SIADH requires low serum osmolality, urine osmolality &gt;100 mOsm/kg, clinical euvolemia, urine sodium &gt;30 mmol/L; urine-sodium AUC 0.96 off diuretics and 0.85 on them; FE-urate AUC 0.96, PPV 100% at a 12% cut-off</td><td class="pop">[A] &middot; 86</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/18477658/" target="_blank" rel="noopener">PMID 18477658</a></td></tr>
+        <tr><td>Sterns &amp; Silver 2008, <em>JASN</em></td><td>The reported measures of volume depletion do not stand scrutiny; the two syndromes cannot be told apart, and the distinction does not change the use of hypertonic saline in intracranial disease</td><td class="pop">[A] &middot; review</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/18216309/" target="_blank" rel="noopener">PMID 18216309</a></td></tr>
+        <tr><td>Bitew 2009, <em>CJASN</em></td><td>FE-phosphate, renin and aldosterone, and persistence of hypouricemia and raised FE-urate after correction, as concepts only</td><td class="pop">[A] &middot; 3</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19201917/" target="_blank" rel="noopener">PMID 19201917</a></td></tr>
+        <tr><td>Imran 2010, <em>J Clin Lab Anal</em></td><td>Specific gravity correlates about 0.75 with osmolality; at pH 7 a specific gravity of 1.010 predicts about 300 mOsm/kg, and +0.010 adds 203 mOsm/kg by refractometry or 182 by strip; pathological urines correlate significantly worse</td><td class="pop">[A]? &middot; 504</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21089176/" target="_blank" rel="noopener">PMID 21089176</a></td></tr>
+        <tr><td>Hardesty 2012, <em>Neurocrit Care</em></td><td>Cerebral salt wasting in 15 of 291 operations (5%), more common than SIADH (9, 3%); 47% of those had hyponatremic seizures</td><td class="pop">[P] &middot; 291 ops</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21822747/" target="_blank" rel="noopener">PMID 21822747</a></td></tr>
+        <tr><td>Wong &amp; Man 2012, <em>JPEM</em></td><td>The adult desmopressin criterion of urine osmolality &gt;750 mOsm/kg could not be reached in their pediatric patients</td><td class="pop">[P] &middot; series</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23426815/" target="_blank" rel="noopener">PMID 23426815</a></td></tr>
+        <tr><td>Sorkhi 2013, <em>Iran J Child Neurol</em></td><td>The only pediatric operational CSWS definition found: sodium &le;130, urine output &ge;3 mL/kg/hr, specific gravity &ge;1.020, urine sodium &ge;100 mEq/L. Of 102 screened, 9 were hyponatremic: 4 CSWS, 3 SIADH, 2 undetermined</td><td class="pop">[P] &middot; 7 classified</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/24665304/" target="_blank" rel="noopener">PMID 24665304</a></td></tr>
+        <tr><td>Pedrosa 2018, <em>Endocr Pract</em></td><td>Post-dehydration urine osmolality and the urine-to-serum ratio separated every diagnostic group except complete central DI from nephrogenic DI, which needed vasopressin levels</td><td class="pop">[MIX] &middot; 52</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30106630/" target="_blank" rel="noopener">PMID 30106630</a></td></tr>
+        <tr><td>Fenske 2018, <em>NEJM</em></td><td>Hypertonic-saline-stimulated copeptin above 4.9 pmol/L; accuracy 96.5% (95% CI 92.1&ndash;98.6) against 76.6% (68.9&ndash;83.2) for the water-deprivation test, P&lt;0.001</td><td class="pop">[A] &middot; 141 analysed</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30067922/" target="_blank" rel="noopener">PMID 30067922</a></td></tr>
+        <tr><td>Ferenchick 2019, <em>Crit Care Med</em></td><td>DI after discontinuation of a vasopressin infusion in 1.53% of 1,896 patients, against 2 of 1,320 (0.15%) controls; 16 of 29 followed a cardiothoracic intervention; no neurosurgical patients; V2 downregulation proposed, not shown</td><td class="pop">[A]-predominant &middot; 1,896</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31567344/" target="_blank" rel="noopener">PMID 31567344</a></td></tr>
+        <tr><td>Maesaka 2020, <em>Curr Opin Nephrol Hypertens</em></td><td>Renal salt wasting in 24 of 62 hyponatremic ward patients, 21 with no cerebral disease; the competing view of the same controversy</td><td class="pop">[A]? &middot; 62</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/31904619/" target="_blank" rel="noopener">PMID 31904619</a></td></tr>
+        <tr><td>Mercier 2020, <em>Arch Pediatr</em></td><td>Hyponatremia &lt;135 mmol/L and severe &lt;130 mmol/L in children; SIADH-type antidiuresis complicating ordinary acute pediatric illness; hypotonic maintenance fluid as the iatrogenic driver</td><td class="pop">[P] &middot; review</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33028494/" target="_blank" rel="noopener">PMID 33028494</a></td></tr>
+        <tr><td>Ram&iacute;rez-Guerrero 2021, <em>Rev Clin Esp</em></td><td>Urine osmolality &gt;300 mOsm/L for a solute diuresis, &lt;150 for a water diuresis, 150&ndash;300 for both mechanisms coexisting</td><td class="pop">[A] &middot; review</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/34509418/" target="_blank" rel="noopener">PMID 34509418</a></td></tr>
+        <tr><td>Leonard 2023, <em>Ann Clin Biochem</em></td><td>Plasma sodium reference interval 137&ndash;143 mmol/L for ages 0.45&ndash;16.99 years; neonates excluded from the non-partitioned interval</td><td class="pop">[P] &middot; 1,000</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/37669625/" target="_blank" rel="noopener">PMID 37669625</a></td></tr>
+        <tr><td>Newell-Price 2025, <em>JCEM</em></td><td>Polyuria as &ge;3 L/24 h in adults, &ge;2 L/m&sup2;/24 h in children, or &gt;40 mL/kg/24 h; urine osmolality &le;300 mOsm/kg confirms hypotonic urine and &ge;800 indicates a solute diuresis; urine osmolality rising more than 50% after desmopressin; baseline copeptin 21.4 pmol/L for vasopressin resistance</td><td class="pop">[A] &middot; 3 cases</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39148427/" target="_blank" rel="noopener">PMID 39148427</a></td></tr>
+        <tr><td>Atila 2025, <em>Lancet Diabetes Endocrinol</em></td><td>Basal plasma sodium above 145 mmol/L identified vasopressin deficiency with 100% specificity (95% CI 61&ndash;100); sodium below 135 identified primary polydipsia with 100% specificity (34&ndash;100); copeptin above 5.6 pmol/L with 100% specificity (74&ndash;100); hypotonic polyuria entry criterion &gt;50 mL/kg/24 h</td><td class="pop">[A] &middot; 299</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40294614/" target="_blank" rel="noopener">PMID 40294614</a></td></tr>
+        <tr><td>Garibaldi 2025, <em>JPEM</em></td><td>The water-deprivation test is the pediatric gold standard but has suboptimal accuracy and needs admission; the hypertonic saline test is rarely used in children; a stimulated copeptin cut-off of 9.3 pmol/L in 20 children</td><td class="pop">[P] &middot; 20 for the cut-off</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/40420740/" target="_blank" rel="noopener">PMID 40420740</a></td></tr>
+        <tr><td>Endotext, <em>Endocrine Testing for SIADH</em>, NCBI Bookshelf NBK279055</td><td>Hyponatremia &lt;136 mmol/L in a state of euvolemia; urine osmolality &gt;100 and urine sodium &gt;30; FE-urate cut-off 12%; normal thyroid hormones, cortisol and creatinine; oedema, anasarca, jugular venous distension and pulmonary oedema stated to be inconsistent with SIADH</td><td class="pop">[A] &middot; chapter</td><td class="citecol"><a class="citechip" href="https://www.ncbi.nlm.nih.gov/books/NBK279055/" target="_blank" rel="noopener">NBK279055</a></td></tr>
+        <tr><td>Lugo 1997, <em>JPEM</em></td><td>Initial vasopressin 0.25&ndash;1.0 mU/kg/hr; targets urine output 2&ndash;3 mL/kg/hr, specific gravity 1.010&ndash;1.020, serum sodium 140&ndash;145 mEq/L; replace urine above 3 mL/kg/hr with 0 to 0.5 normal saline; specific gravity r = 0.96 p = 0.009, urine output r = 0.93 p = 0.02, no correlation with serum sodium or serum osmolality</td><td class="pop">[P] PICU &middot; 14</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/9467135/" target="_blank" rel="noopener">PMID 9467135</a></td></tr>
+        <tr><td>Lee 1995, <em>JPEM</em></td><td>Started at 1.3&ndash;2.7 mU/kg/hr &mdash; the highest published pediatric antidiuretic starting range; effect (urine flow &lt;2 mL/kg/hr with rising specific gravity) at 1 to 6 hours</td><td class="pop">[P] &middot; 3</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
+        <tr><td>Bryant 1994, <em>Cancer</em></td><td>Very low dose infusion at an initial 0.08&ndash;0.10 mU/kg/hr during chemotherapy hyperhydration</td><td class="pop">[P] &middot; 2 treated</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/7923015/" target="_blank" rel="noopener">PMID 7923015</a></td></tr>
+        <tr><td>Chanson 1987, <em>Crit Care Med</em></td><td>1.6 &plusmn; 0.26 mU/kg/hr effective; antidiuretic effect began at the third hour and peaked by the sixth; polyuria recurred 3 hours after discontinuation; no pressor effects observed</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
+        <tr><td>Devaraja 2021, <em>Endocrinol Diabetes Metab Case Rep</em></td><td>Started at 0.0001 units/kg/h (0.1 mU/kg/hr); rate first adjusted by 50%, reduced to 25% because large steps swung the sodium; hourly titration and hourly urine output; electrolytes 6-hourly; 2 units in 49.9 mL giving 0.04 units/mL; urine-output target 3&ndash;4 mL/kg/hr, raised when the fixed hypotonic intake drove the sodium down</td><td class="pop">[P] &middot; 1</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33597311/" target="_blank" rel="noopener">PMID 33597311</a></td></tr>
+        <tr><td>Levine 2018, <em>AACE Clin Case Rep</em></td><td>Titration by 0.05&ndash;0.1 mU/kg/hr no more often than every 1 to 2 hours; half-life 10&ndash;20 minutes; steady state at 40&ndash;80 minutes; a 5 mU/mL pharmacy solution; sodium nadir 121 and peak 160 mEq/L in one patient</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
+        <tr><td>Choong 2009, <em>AJRCCM</em></td><td>Pediatric pressor dosing 0.0005&ndash;0.002 U/kg/min, i.e. 30&ndash;120 mU/kg/hr; mortality 10 of 33 vs 5 of 32, RR 1.94 (0.75&ndash;5.05), p = 0.24; adverse-event rate ratio difference 12.0% (&minus;2.6 to 26.7), p = 0.15</td><td class="pop">[P] RCT &middot; 65</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19608718/" target="_blank" rel="noopener">PMID 19608718</a></td></tr>
+        <tr><td>Wise-Faberowski 2004, <em>J Neurosurg Anesthesiol</em></td><td>Normal saline restricted to two thirds maintenance; sodium held 130&ndash;150 mEq/L; mean 24-hour sodium change 8.36 &plusmn; 6.43 vs 17.6 &plusmn; 9.2 mEq/L in 19 historical controls. The paper states no dose, so none is attributed to it</td><td class="pop">[P] &middot; 18</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/15211159/" target="_blank" rel="noopener">PMID 15211159</a></td></tr>
+        <tr><td>Pratheesh 2013, <em>Childs Nerv Syst</em></td><td>Craniopharyngioma resection: post-operative DI 80% in children vs 63% in adults, permanent DI 55.6% in children, triphasic response 23%</td><td class="pop">[P] 45 &middot; [A] 57</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23386174/" target="_blank" rel="noopener">PMID 23386174</a></td></tr>
+        <tr><td>Finken 2011, <em>Horm Res Paediatr</em></td><td>Triphasic response in 6 of 21 (29%) after primary craniopharyngioma resection; the only predictor was duration of surgery, 8.5 h vs 4.6 h, p = 0.03, with the authors attributing the absence of others to sample size</td><td class="pop">[P] &middot; 21</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/21701131/" target="_blank" rel="noopener">PMID 21701131</a></td></tr>
+        <tr><td>Bazus 2024, <em>Childs Nerv Syst</em></td><td>17 of 26 (65.4%) had initial DI then hyponatremia a few days later; 8 (30.8%) then had isolated persistent DI</td><td class="pop">[P] &middot; 26</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/38761265/" target="_blank" rel="noopener">PMID 38761265</a></td></tr>
+        <tr><td>Alharfi 2013, <em>Pediatr Crit Care Med</em></td><td>Central DI in 18% of 180 children with severe TBI; at diagnosis median urine output 6.8 mL/kg/hr (IQR 5&ndash;11) and median sodium 154 mmol/L (IQR 149&ndash;159); mortality 87.5%, with 71.4% declared brain dead after the diagnosis; early onset strongly associated with mortality, p&lt;0.001</td><td class="pop">[P] &middot; 180 severe TBI</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/23314181/" target="_blank" rel="noopener">PMID 23314181</a></td></tr>
+        <tr><td>Punukollu 2024, <em>Neurosurg Rev</em></td><td>New post-operative DI in 28% (95% CI 18&ndash;40%) after pediatric Rathke&rsquo;s cleft cyst resection &mdash; the non-craniopharyngioma comparator</td><td class="pop">[P] meta &middot; 12 studies</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39738909/" target="_blank" rel="noopener">PMID 39738909</a></td></tr>
+        <tr><td>Du 2022, <em>Front Endocrinol</em></td><td>Hypothalamo-hypophyseal injury score above 3 as a potential predictor of adipsic DI, and of severe hypernatremia during admission (OR 15.487, 1.852&ndash;129.539, p = 0.011) and at follow-up (OR 28.637, 3.060&ndash;267.981, p = 0.003)</td><td class="pop">[MIX] 44 P / 134 A</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36120435/" target="_blank" rel="noopener">PMID 36120435</a></td></tr>
+        <tr><td>Didsbury 2023, <em>CJASN</em></td><td>Guideline position that sodium should be reduced by &lt;0.5 mmol/L per hour or &lt;10&ndash;12 mmol/L per 24 hours; 402 episodes in 358 children, no association found between rapid correction and neurological investigation or mortality</td><td class="pop">[P] &middot; 402 episodes</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36888887/" target="_blank" rel="noopener">PMID 36888887</a></td></tr>
+        <tr><td>Suppadungsuk 2024, <em>Kidney Med</em></td><td>Osmotic demyelination incidence 0.23% overall, 0.73% with rapid correction and 0.10% without, odds ratio 3.16 (95% CI 1.54&ndash;6.49); rapid variably defined as &gt;8 to 12 mmol/L in 24 hours</td><td class="pop">[A] meta &middot; 26,710</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39967825/" target="_blank" rel="noopener">PMID 39967825</a></td></tr>
+        <tr><td>Royal Children&rsquo;s Hospital Melbourne, <em>Hyponatraemia</em>, last updated November 2023</td><td>Correction should not exceed 8 mmol/L in 24 hours in a non-seizing child, target 6&ndash;8 mmol/L in 24 hours; rapid correction can cause osmotic demyelination; no maximum rate is given for the seizing child and correction is not to be delayed</td><td class="pop">institutional CPG</td><td class="citecol"><a class="citechip" href="https://www.rch.org.au/clinicalguide/guideline_index/hyponatraemia/" target="_blank" rel="noopener">rch.org.au</a></td></tr>
       </tbody>
     </table>
   </div>
@@ -1046,7 +1075,7 @@ const C = {}; /* shared criteria, so the same sentence is authored once */
 C.polyuriaPossible = {
   k: "poly2", need: ["uop"], w: 2, hard: true, pivotal: true, gate: "neoGate",
   test: i => i.uop >= T.uopPossible,
-  yes: i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is at or above the 2 mL/kg/hr possible-polyuria mark (about 50 mL/kg/24 h, the entry criterion used in an adult cohort of 299)",
+  yes: i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is at or above the 2 mL/kg/hr possible-polyuria mark (about 50 mL/kg/24 h, the entry criterion in an adult cohort of 299)",
   no:  i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is below the 2 mL/kg/hr possible-polyuria mark",
   miss: "urine output — needs a urine volume, the interval it was collected over, and a weight",
   gateMiss: "urine output against a polyuria threshold — suppressed below about 6 weeks of postnatal age. The 2 mL/kg/hr mark is an entry criterion from an adult outpatient cohort and the 3 mL/kg/hr mark comes from children with acute intracranial disease; neither cohort contained a neonate, and a term newborn's urine output is not comparable to either",
@@ -1122,8 +1151,8 @@ C.sgDiCompatible = {
   neutral: i => i.sg > T.sgIso && i.sg < T.sgConc,
   mid: i => "Specific gravity " + fmt(i.sg, 3) + " sits between 1.010 and 1.020. On the published refractometric relation that band spans roughly 300 to 500 mOsm/kg, which is where partial vasopressin deficiency and partial vasopressin resistance live, so it is scored neither way. It is a band, not a value: no osmolality has been measured",
   test: i => i.sg <= T.sgIso,
-  yes: i => "Specific gravity " + fmt(i.sg, 3) + " is at or below 1.010, the reading that predicts about 300 mOsm/kg, so the urine is dilute in direction. This is a specific gravity and not an osmolality - the correlation between the two is about 0.75 and is poorer in pathological urine - so this entry is graded at the lower confidence tier and says so in its label",
-  no:  i => "Specific gravity " + fmt(i.sg, 3) + " is at or above 1.020, which the same relation puts at roughly 500 mOsm/kg, so the urine is not dilute in direction and an unopposed water diuresis is argued against. The reading is imprecise, so this counts against the entry rather than excluding it",
+  yes: i => "Specific gravity " + fmt(i.sg, 3) + " is at or below 1.010, which predicts about 300 mOsm/kg, so the urine is dilute in direction. Being a specific gravity, this entry is graded at the lower confidence tier and says so in its label",
+  no:  i => "Specific gravity " + fmt(i.sg, 3) + " is at or above 1.020, which the same relation puts at roughly 500 mOsm/kg, so the urine is not dilute in direction and an unopposed water diuresis is argued against. The reading is imprecise, so this counts against the entry without excluding it",
   miss: "urine specific gravity",
   gateMiss: "urine specific gravity as a concentration band - suppressed below about 6 weeks of postnatal age, because the relation it rests on comes from cohorts that contained no neonates",
   pmids: [9467135, 21089176, 11354785]
@@ -1164,7 +1193,7 @@ C.soluteLoadGiven = {
 C.naHigh = {
   k: "na145", need: ["na"], w: 3, gate: "neoGate",
   test: i => i.na >= T.naAvpd,
-  yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is at or above 145, the value that identified vasopressin deficiency with 100% specificity (95% CI 61–100) in an adult validation cohort",
+  yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is at or above 145, which identified vasopressin deficiency with 100% specificity (95% CI 61–100) in an adult validation cohort",
   no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 145",
   miss: "serum sodium",
   gateMiss: "serum sodium against the 145 mmol/L mark — suppressed below about 6 weeks of postnatal age. That threshold comes from an adult validation cohort and no neonatal equivalent is established",
@@ -1283,7 +1312,12 @@ C.copeptinHigh = {
   yes: i => "Baseline copeptin " + fmt(i.copeptin, 1) + " pmol/L is above 21.4, an adult cut-off reported with 100% sensitivity and specificity for vasopressin resistance. No pediatric baseline cut-off is established",
   no:  i => "Baseline copeptin " + fmt(i.copeptin, 1) + " pmol/L is at or below the adult 21.4 pmol/L cut-off for vasopressin resistance",
   miss: "baseline plasma copeptin",
-  pmids: [39148427]
+  /* Garibaldi 2025 sources the second half of the sentence above: the only pediatric
+     copeptin cut-off found is a STIMULATED one, 9.3 pmol/L in 20 children, which is
+     why no baseline pediatric cut-off is established. It was carried only by the
+     next-test list before that list dropped its chips, so it is attached here to the
+     criterion whose text actually rests on it. */
+  pmids: [39148427, 40420740]
 };
 C.copeptinLow = {
   k: "copLo", need: ["copeptin"], w: 2,
@@ -1441,7 +1475,7 @@ const DIAGNOSES = [
     missingKey: ["the fluid orders — this is checked from the prescription, not inferred from labs", "a sodium trend"],
     note: "The absence of a rising sodium is what separates this from diabetes insipidus. Hypotonic maintenance fluid is the dominant iatrogenic cause of hyponatremia in hospitalised children.",
     pmids: [33028494] },
-  { id: "vasopressin-withdrawal-di", label: "Diabetes insipidus after a vasopressin infusion was stopped", branch: "poly", pop: "[A]-predominant",
+  { id: "vasopressin-withdrawal-di", label: "Diabetes insipidus after vasopressin was stopped", branch: "poly", pop: "[A]-predominant",
     crit: [C.vasoStopped, C.polyuriaPossible, C.uosmDiCompatible, C.sgDiCompatible, C.naHighNoAttr, C.naRising],
     missingKey: ["paired serum and urine osmolality with serial sodium over the next 6 to 12 hours"],
     note: "Occurrence 1.53% among 1,896 adults given vasopressin for shock, against 2 of 1,320 (0.15%) in a norepinephrine control group; 16 of the 29 cases followed a cardiothoracic intervention including ECMO and ventricular assist device placement, and there were no neurosurgical patients in the cohort. The cohort is adult-predominant and no pediatric incidence figure exists. The authors propose transient V2-receptor downregulation; they did not demonstrate it.",
@@ -1837,8 +1871,8 @@ function interpretDx(i) {
       if (i.cfHtsaline) dem.push("hypertonic saline");
       if (i.cfProtein) dem.push("heavy proteinuria");
       if (i.glycosuria) dem.push("glycosuria");
-      out.gates.push({ id: "gate-sg-tier", t: "This verdict is graded on a specific gravity, not on an osmolality",
-        b: "No urine osmolality has been entered, so the concentration limb below is carried by the specific gravity at this tool's lower confidence tier: nothing scored on it may be called consistent, and every entry that used it names the tier in its label. The tier is licensed rather than merely tolerated. In 14 PICU children with acute central diabetes insipidus, vasopressin was titrated on specific gravity because specific gravity tracked the dose at r=0.96, p=0.009, while serum sodium and serum osmolality tracked nothing at all. The imprecision is real as well: against measured osmolality the correlation is about 0.75 across 504 clinical specimens and is poorer in pathological urine. The marks used are the published refractometric relation — 1.010 for about 300 mOsm/kg, about another 200 per further 0.010 — read as bands and never turned into a number this tool then treats as an osmolality. <strong>A urine osmolality is what leaves this tier</strong>, and it stays first on the next-test list."
+      out.gates.push({ id: "gate-sg-tier", t: "Graded on a specific gravity, not an osmolality",
+        b: "No urine osmolality is entered, so concentration runs on the specific gravity at this tool's lower confidence tier. Nothing scored on it may be called consistent, and every entry that used it names the tier in its label. The tier is licensed rather than merely tolerated. In 14 PICU children with acute central diabetes insipidus, vasopressin was titrated on specific gravity because specific gravity tracked the dose at r=0.96, p=0.009, while serum sodium and serum osmolality tracked nothing at all. The imprecision is real as well: against measured osmolality the correlation is about 0.75 across 504 clinical specimens and is poorer in pathological urine. The marks used are the published refractometric relation — 1.010 for about 300 mOsm/kg, about another 200 per further 0.010 — read as bands and never turned into a number this tool then treats as an osmolality. <strong>A urine osmolality is what leaves this tier</strong>, and it stays first on the next-test list."
           + (dem.length ? " Confidence here is demoted one further step, because " + dem.join(", ") + " " + (dem.length > 1 ? "are" : "is") + " present and raises specific gravity for a reason unrelated to vasopressin action. The reading is still scored — it is halved in weight, not discarded — and the label says demoted." : "")
           + (i.cfKetones ? " Ketonuria is recorded. It demotes this reading and nothing more: no source in this build states that ketones raise refractometric specific gravity, or by how much, so it is carried as caution rather than used to refuse the reading." : ""),
         p: [9467135, 21089176, 11354785] });
@@ -1994,33 +2028,33 @@ const V = {
    mechanical rather than editorial. */
 const NODES = {
   "node-000-empty": { requires: [], asserts: [V.nothingEntered], cls: "quiet", title: "Nothing entered yet",
-    body: ["Enter whatever you have. A serum sodium on its own, or a timed urine volume with a weight, is enough to get a ranked differential and a named next test. The tool will not invent the rest."] },
+    body: ["Enter whatever you have. A serum sodium alone, or a timed urine volume with a weight, is enough for a ranked differential and a named next test. The tool will not invent the rest."] },
 
-  "node-010-thin": { requires: [], asserts: [], cls: "caution", title: "Not enough to classify — this is a ranked differential, not a diagnosis",
-    body: ["What is entered narrows the field but cannot settle it. The differential below is ordered by what the entered values support, and every entry carries the list of what has not been entered. Treat the ordering as a prompt for the next test, not as a verdict.",
+  "node-010-thin": { requires: [], asserts: [], cls: "caution", title: "Not enough to classify yet",
+    body: ["What is entered narrows the field but cannot settle it, so the list below is a ranked differential and not a diagnosis. The ordering follows what the entered values support, and every entry carries the list of what has not been entered; treat it as a prompt for the next test.",
            "The tests that would move this on are named underneath."] },
 
   "node-100-water-diuresis": { requires: ["uop", "uosm", "na"], asserts: [V.polyuria, V.hypotonicUrine, V.naHighOrRising], cls: "", title: "Polyuria with a hypotonic urine and a high or rising sodium",
     body: ["This is the pairing that defines diabetes insipidus: a urine that stays inappropriately dilute while the serum sodium climbs. Dilute urine on its own is not diabetes insipidus — it is appropriate in a water-loaded child.",
-           "Central and nephrogenic diabetes insipidus are shown together and ranked equally below, and they will stay that way until a desmopressin response is entered. Nothing else on this tab separates them: in a mixed-age cohort of 52, post-dehydration urine osmolality and the urine-to-serum ratio separated every diagnostic group except complete central diabetes insipidus from nephrogenic, which needed vasopressin levels. The management tab of this tool covers central DI only, and opening it does not mean nephrogenic DI has been excluded."],
+           "Central and nephrogenic diabetes insipidus are ranked equally below and stay level until a desmopressin response is entered. Nothing else on this tab separates them: in a mixed-age cohort of 52, post-dehydration urine osmolality and the urine-to-serum ratio separated every diagnostic group except complete central diabetes insipidus from nephrogenic, which needed vasopressin levels. The management tab covers central DI only, and opening it does not mean nephrogenic DI has been excluded."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr, urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg, serum sodium " + fmt(i.na, 0) + " mmol/L" + (i.naDelta !== null && i.naHrs !== null ? ", moving " + (i.naDelta >= 0 ? "+" : "") + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h" : ", with no trend entered") + "." ] },
 
-  "node-105-water-diuresis-na-not-high": { requires: ["uop", "uosm", "na"], asserts: [V.polyuria, V.hypotonicUrine, V.naNotHighNotRising], cls: "caution", title: "Polyuria with a hypotonic urine, and a serum sodium that is neither high nor rising",
-    body: ["The urine is dilute and the volume is high, but the sodium is not doing what diabetes insipidus makes it do. A dilute urine is the appropriate response to a water load, and in a child who is being given free water it is the expected finding rather than a diagnosis. The sodium, not the urine, is the discriminator.",
-           "What would settle this, in order: the fluid orders, read from the prescription rather than inferred from the labs; a paired serum and urine osmolality drawn at the same time; and a second sodium with the interval between the two, so the trend is measured rather than assumed."],
+  "node-105-water-diuresis-na-not-high": { requires: ["uop", "uosm", "na"], asserts: [V.polyuria, V.hypotonicUrine, V.naNotHighNotRising], cls: "caution", title: "Polyuria with a hypotonic urine, and a sodium neither high nor rising",
+    body: ["The urine is dilute and the volume is high, but the sodium is not doing what diabetes insipidus makes it do. A dilute urine is the appropriate response to a water load, so in a child being given free water it is the expected finding. The sodium is the discriminator here, and the urine is not.",
+           "What would settle this, in order: the fluid orders, read from the prescription rather than inferred from the labs; a paired serum and urine osmolality drawn at the same time; and a second sodium with the interval between the two, so the trend is measured."],
     dyn: (i) => [ "On the entered values: serum sodium " + fmt(i.na, 0) + " mmol/L, which is below the 145 mmol/L mark, " + (i.naDelta !== null && i.naHrs !== null ? "and moving " + (i.naDelta >= 0 ? "+" : "") + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, which is not a rise of 3 mmol/L or more within 12 h." : "and no previous sodium has been entered, so no trend has been measured.") ] },
 
-  "node-110-solute": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.soluteEstablished], cls: "", title: "Polyuria with a urine that is not hypotonic — a solute is driving it",
-    body: ["Urine volume is total osmoles excreted divided by urine osmolality, so polyuria has exactly two mechanisms: the numerator rose, or the denominator fell. This node is reserved for the two situations that place it on the solute side without ambiguity: a urine osmolality at or above 800, at which a solute diuresis is the dominant mechanism, or a urine osmolality above 300 with a positive urine glucose naming the solute.",
+  "node-110-solute": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.soluteEstablished], cls: "", title: "Polyuria — a solute is driving it",
+    body: ["The urine is not hypotonic. Urine volume is total osmoles excreted divided by urine osmolality, so polyuria has exactly two mechanisms: the numerator rose, or the denominator fell. Two readings put it on the solute side without ambiguity: a urine osmolality at or above 800, at which a solute diuresis is the dominant mechanism, or above 300 with a positive urine glucose naming the solute.",
            "Name the solute before treating the volume. Urine glucose, urine urea and urine electrolytes are the tests that do it. Mannitol and iodinated contrast are common in exactly the neurological population where diabetes insipidus is being considered, and both raise specific gravity more than they raise osmolality."] },
 
-  "node-115-partial-band": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.partialBand], cls: "caution", title: "Polyuria with a urine osmolality between 300 and 800 — the band that separates nothing",
-    body: ["A urine osmolality in this band can be seen with partial vasopressin deficiency or with partial vasopressin resistance, so it does not exclude diabetes insipidus, and without a named solute it does not establish a solute diuresis either. The tool therefore scores this measurement neither way for the diabetes insipidus entries rather than counting it against them. Partial deficiency is the commonest posterior-pituitary picture after craniopharyngioma resection and after traumatic brain injury, which is the population this tool exists for.",
+  "node-115-partial-band": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.partialBand], cls: "caution", title: "Polyuria, urine osmolality 300 to 800 — the band that separates nothing",
+    body: ["A urine osmolality in this band can be seen with partial vasopressin deficiency or with partial vasopressin resistance, so it does not exclude diabetes insipidus, and without a named solute it does not establish a solute diuresis either. The tool scores it neither way for the diabetes insipidus entries rather than counting it against them. Partial deficiency is the commonest posterior-pituitary picture after craniopharyngioma resection and after traumatic brain injury, the population this tool exists for.",
            "The source that draws this band says further evaluation is necessary, and this is what it means concretely: a desmopressin trial with paired pre and post urine osmolality, using the relative criterion of a rise of more than 50% rather than the adult 750 mOsm/kg criterion a pediatric series could not reach; a baseline copeptin if a trial is unsafe or unavailable; and a urine glucose with urine urea and urine electrolytes to test the solute side of the same band."],
     dyn: (i) => [ "On the entered values: urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg" + (i.uglu === "neg" ? ", with a negative urine glucose, so glucose is not the solute" : ", with no urine glucose entered") + "." ] },
 
-  "node-150-polyuria-dilute-no-na": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.hypotonicUrine, V.naAbsent], cls: "caution", title: "Polyuria with a hypotonic urine, and no serum sodium entered",
-    body: ["The urine half of the question is answered and the plasma half is not. A dilute urine at a high volume is exactly what a water-loaded child should produce, and it is also what a child in diabetes insipidus produces; the serum sodium is what separates them, and it has not been entered.",
+  "node-150-polyuria-dilute-no-na": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.hypotonicUrine, V.naAbsent], cls: "caution", title: "Polyuria with a hypotonic urine, and no sodium entered",
+    body: ["The urine half of the question is answered and the plasma half is not. A dilute urine at a high volume is what a water-loaded child produces and what a child in diabetes insipidus produces; the serum sodium separates them, and it has not been entered.",
            "<strong>Send a serum sodium, and a serum osmolality drawn at the same time as the urine.</strong> A previous sodium with the interval between the two is worth as much as the single value, because a rise of 3 mmol/L or more within 12 hours against a urine that stays dilute is the pattern, and one number cannot show it."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr and urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg." ] },
 
@@ -2029,112 +2063,112 @@ const NODES = {
      and the tool used to refuse it. These four nodes answer it. Each names the tier
      in its own title, because the reader has to be told which measurement the verdict
      is standing on. None of them states an osmolality. */
-  "node-160-sg-water-diuresis": { requires: ["uop", "sg", "na"], asserts: [V.polyuria, V.sgDilute, V.naHighOrRising], cls: "", title: "Polyuria with a dilute urine on the specific gravity and a high or rising sodium — the diabetes insipidus pattern, graded on a specific gravity",
+  "node-160-sg-water-diuresis": { requires: ["uop", "sg", "na"], asserts: [V.polyuria, V.sgDilute, V.naHighOrRising], cls: "", title: "Polyuria, dilute urine on the specific gravity, high or rising sodium",
     body: ["This is the pairing that defines diabetes insipidus: a urine that stays inappropriately dilute while the serum sodium climbs. The concentration half of that argument is standing on a specific gravity rather than an osmolality, so the verdict is real and the confidence is capped — no entry below can be called consistent, and each one that used the specific gravity says so in its label.",
            "That tier is licensed rather than tolerated. In 14 PICU children with acute central diabetes insipidus, vasopressin was titrated on specific gravity because specific gravity tracked the dose at r=0.96, p=0.009, while serum sodium and serum osmolality tracked nothing at all. It is also imprecise: about 0.75 against measured osmolality across 504 clinical specimens, and worse in pathological urine. A urine osmolality is the test that leaves this tier, and it is first on the list underneath.",
-           "Central and nephrogenic diabetes insipidus are shown together and ranked equally below, and they stay that way until a desmopressin response is entered. The management tab covers central DI only, and opening it does not mean nephrogenic DI has been excluded."],
+           "Central and nephrogenic diabetes insipidus are ranked equally below and stay level until a desmopressin response is entered. The management tab covers central DI only, and opening it does not mean nephrogenic DI has been excluded."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr, specific gravity " + fmt(i.sg, 3) + ", serum sodium " + fmt(i.na, 0) + " mmol/L" + (i.naDelta !== null && i.naHrs !== null ? ", moving " + (i.naDelta >= 0 ? "+" : "") + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h" : ", with no trend entered") + "." ] },
 
-  "node-165-sg-na-not-high": { requires: ["uop", "sg", "na"], asserts: [V.polyuria, V.sgDilute, V.naNotHighNotRising], cls: "caution", title: "Polyuria with a dilute urine on the specific gravity, and a sodium that is neither high nor rising",
-    body: ["The urine is dilute in direction and the volume is high, but the sodium is not doing what diabetes insipidus makes it do. A dilute urine is the appropriate response to a water load, and in a child being given free water it is the expected finding rather than a diagnosis. The sodium, not the urine, is the discriminator here.",
+  "node-165-sg-na-not-high": { requires: ["uop", "sg", "na"], asserts: [V.polyuria, V.sgDilute, V.naNotHighNotRising], cls: "caution", title: "Polyuria, dilute urine on the specific gravity, sodium neither high nor rising",
+    body: ["The urine is dilute in direction and the volume is high, but the sodium is not doing what diabetes insipidus makes it do. A dilute urine is the appropriate response to a water load, so in a child being given free water it is the expected finding. The sodium is the discriminator here, and the urine is not.",
            "The concentration half is a specific gravity, so every entry that used it is graded at the lower confidence tier. What would settle this, in order: the fluid orders read from the prescription; a urine osmolality with a serum osmolality drawn at the same time; and a second sodium with the interval between the two."],
     dyn: (i) => [ "On the entered values: specific gravity " + fmt(i.sg, 3) + " and serum sodium " + fmt(i.na, 0) + " mmol/L, which is below the 145 mmol/L mark, " + (i.naDelta !== null && i.naHrs !== null ? "moving " + (i.naDelta >= 0 ? "+" : "") + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, which is not a rise of 3 mmol/L or more within 12 h." : "with no previous sodium entered, so no trend has been measured.") ] },
 
-  "node-170-sg-no-na": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgDilute, V.naAbsent], cls: "caution", title: "Polyuria with a dilute urine on the specific gravity, and no serum sodium entered",
-    body: ["The urine half of the question has an answer, at the specific-gravity tier, and the plasma half has none. A dilute urine at a high volume is exactly what a water-loaded child produces and exactly what a child in diabetes insipidus produces; the serum sodium is what separates them.",
+  "node-170-sg-no-na": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgDilute, V.naAbsent], cls: "caution", title: "Polyuria, dilute urine on the specific gravity, no sodium entered",
+    body: ["The urine half has an answer, at the specific-gravity tier, and the plasma half has none. A dilute urine at a high volume is what a water-loaded child produces and what a child in diabetes insipidus produces; the serum sodium separates them.",
            "<strong>Send a serum sodium.</strong> A previous sodium with the interval between the two is worth as much as the single value, because a rise of 3 mmol/L or more within 12 hours against a urine that stays dilute is the pattern, and one number cannot show it."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr and specific gravity " + fmt(i.sg, 3) + "." ] },
 
-  "node-175-sg-mid-band": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgMidBand], cls: "caution", title: "Polyuria with a specific gravity between 1.010 and 1.020 — the band that separates nothing",
-    body: ["On the published refractometric relation this band spans roughly 300 to 500 mOsm/kg, which is where partial vasopressin deficiency and partial vasopressin resistance live. It is scored neither for nor against the two diabetes insipidus entries rather than counted against them. Partial deficiency is the commonest posterior-pituitary picture after craniopharyngioma resection and after traumatic brain injury, which is the population this tool exists for.",
+  "node-175-sg-mid-band": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgMidBand], cls: "caution", title: "Polyuria, specific gravity between 1.010 and 1.020 — separates nothing",
+    body: ["On the published refractometric relation this band spans roughly 300 to 500 mOsm/kg, where partial vasopressin deficiency and partial vasopressin resistance live. It is scored neither for nor against the two diabetes insipidus entries rather than counted against them. Partial deficiency is the commonest posterior-pituitary picture after craniopharyngioma resection and after traumatic brain injury, the population this tool exists for.",
            "It is also a band on a proxy, not a measurement: the relation is a population average and the correlation with measured osmolality is about 0.75. <strong>A urine osmolality is what resolves this</strong>, with a urine glucose and urine electrolytes to test the solute side of the same band, and a desmopressin trial using the relative criterion of a rise of more than 50% rather than the adult 750 mOsm/kg criterion a pediatric series could not reach."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr and specific gravity " + fmt(i.sg, 3) + "." ] },
 
-  "node-180-sg-concentrated": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgConcentrated], cls: "caution", title: "Polyuria with a specific gravity at or above 1.020 — the urine is not dilute in direction",
-    body: ["Urine volume is total osmoles excreted divided by urine osmolality, so polyuria has two mechanisms: the numerator rose, or the denominator fell. A specific gravity at or above 1.020 sits at roughly 500 mOsm/kg on the published relation, which puts this on the solute side rather than the water side and argues against an unopposed water diuresis. It is a proxy reading, so this counts against the diabetes insipidus entries below without excluding them.",
+  "node-180-sg-concentrated": { requires: ["uop", "sg"], asserts: [V.polyuria, V.sgConcentrated], cls: "caution", title: "Polyuria, specific gravity at or above 1.020 — not dilute in direction",
+    body: ["A specific gravity at or above 1.020 sits at roughly 500 mOsm/kg on the published relation, which puts this on the solute side rather than the water side and argues against an unopposed water diuresis. Urine volume is total osmoles excreted divided by urine osmolality, so polyuria has two mechanisms: the numerator rose, or the denominator fell. This is a proxy reading, so it counts against the diabetes insipidus entries below without excluding them.",
            "Name the solute before treating the volume. Urine glucose, urine urea and urine electrolytes are the tests that do it, and a urine osmolality is what turns this band into a measurement."],
     dyn: (i) => [ "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr and specific gravity " + fmt(i.sg, 3) + (i.uglu === "pos" ? ", with a positive urine glucose naming the solute." : (i.uglu === "neg" ? ", with a negative urine glucose, so glucose is not the solute." : ", with no urine glucose entered.")) ] },
 
-  "node-120-mixed": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.mixedBand], cls: "caution", title: "Polyuria with a urine osmolality between 150 and 300 — both mechanisms coexist",
-    body: ["This band is where a water diuresis and a solute diuresis overlap, and the tool says mixed rather than picking a side. Above 300 a solute contributes; below 150 the diuresis is purely water; between the two, both are running.",
+  "node-120-mixed": { requires: ["uop", "uosm"], asserts: [V.polyuria, V.mixedBand], cls: "caution", title: "Polyuria, urine osmolality 150 to 300 — both mechanisms coexist",
+    body: ["This band is where a water diuresis and a solute diuresis overlap, and the tool says mixed rather than picking a side. Above 300 a solute contributes, below 150 the diuresis is purely water, and between the two both are running.",
            "A urine glucose with urine electrolytes, and an estimate of free-water clearance, are what separate the components."] },
 
-  "node-130-vaso-withdrawal": { requires: ["cfVaso", "uop"], asserts: [V.vaso, V.polyuria], cls: "caution", title: "Polyuria with a vasopressin infusion running or recently stopped",
-    body: ["The box asks one question and covers both states, so read this both ways. If the infusion is still running, a dilute urine at volume is being produced despite exogenous vasopressin, which argues against untreated vasopressin deficiency and points at the kidney or at a solute. If it was stopped within about the last 24 hours, polyuria after the wean is a described entity worth naming before assuming a new pituitary problem, and the answer below is demoted rather than withheld on that account.",
+  "node-130-vaso-withdrawal": { requires: ["cfVaso", "uop"], asserts: [V.vaso, V.polyuria], cls: "caution", title: "Polyuria on, or just after, a vasopressin infusion",
+    body: ["The box covers both states, so read this both ways. If the infusion is still running, a dilute urine at volume is being produced despite exogenous vasopressin, which argues against untreated vasopressin deficiency and points at the kidney or at a solute. If it was stopped within about the last 24 hours, polyuria after the wean is a described entity worth naming before assuming a new pituitary problem, and the answer below is demoted rather than withheld.",
            "On the withdrawal reading: In an adult-predominant ICU cohort, diabetes insipidus after discontinuation of a vasopressin infusion occurred in 1.53% of 1,896 patients given vasopressin for shock, against 2 of 1,320 (0.15%) in a norepinephrine control group. Sixteen of the 29 cases followed a cardiothoracic intervention including coronary artery bypass, valve replacement, ECMO and ventricular assist device placement, and there were no neurosurgical patients in the cohort.",
            "No pediatric incidence figure exists — the pediatric literature was searched and returned nothing — so the 1.53% must not be transferred to a child as a probability. The proposed mechanism is transient downregulation of V2 receptors after supraphysiological exposure; the authors state it may be involved and did not demonstrate it. Paired serum and urine osmolality with serial sodium over the next 6 to 12 hours is what confirms or drops it."] },
 
-  "node-140-dilute-hypertonic-no-poly": { requires: ["uosm", "na"], asserts: [V.hypotonicUrine, V.naHigh, V.notPolyuric], cls: "caution", title: "A dilute urine against a high serum sodium, and no measured polyuria",
-    body: ["A urine that stays dilute while the plasma is hypertonic is inappropriate whatever the volume is, so this combination is worth naming. But it is not polyuria, and the tool will not call it that: the polyuria half of the diabetes insipidus argument rests on a measured urine output, and a checkbox is not an observation of urine output.",
+  "node-140-dilute-hypertonic-no-poly": { requires: ["uosm", "na"], asserts: [V.hypotonicUrine, V.naHigh, V.notPolyuric], cls: "caution", title: "Dilute urine, high sodium, and no measured polyuria",
+    body: ["A urine that stays dilute while the plasma is hypertonic is inappropriate whatever the volume is, so this combination is worth naming. It is still not polyuria: the polyuria half of the diabetes insipidus argument rests on a measured urine output, and a checkbox is not an observation of urine output.",
            "Collect a timed urine volume with the interval and the weight, so the output can be computed rather than assumed, and draw a paired serum and urine osmolality at the same time."],
     dyn: (i) => [ i.uop === null
       ? "On the entered values: urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg and serum sodium " + fmt(i.na, 0) + " mmol/L. No urine output has been entered, so nothing on this screen is a statement about the urine volume."
       : "On the entered values: urine output " + fmt(i.uop, 2) + " mL/kg/hr, which is below the 2 mL/kg/hr possible-polyuria mark; urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg; serum sodium " + fmt(i.na, 0) + " mmol/L." ] },
 
-  "node-200-hypo-ambiguous": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.unaPresent, V.concUsable, V.bothHypoSupported], cls: "caution", title: "Hyponatremia with inappropriate antidiuresis — SIADH and salt wasting overlap here",
+  "node-200-hypo-ambiguous": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.unaPresent, V.concUsable, V.bothHypoSupported], cls: "caution", title: "Hyponatremia — SIADH and salt wasting overlap here",
     body: ["Both are supported by what is entered, and this tool will not pick between them. The classic discriminator is effective arterial blood volume, and clinical assessment of volume status in hyponatremia identified hypovolemia correctly in 47% and euvolemia in 48% of patients in the only prospective study that measured it — approximately coin-flip, in adults, with no pediatric replication. That is why the volume toggle on this tab prints its sentence and is not scored.",
            "No laboratory test has been shown in an adequately powered study to separate the two, and none at all has been studied in children. Fractional excretion of urate is raised in both, so it confirms inappropriate antidiuresis and cannot adjudicate. The candidate discriminators — fractional excretion of urate before and after correction, fractional excretion of phosphate, renin and aldosterone — rest on a three-patient report.",
            "What would actually move this is not a laboratory test. It is cumulative sodium and fluid balance with serial weights over 24 to 48 hours: net negative sodium balance with weight loss points to salt wasting, net positive water balance with a stable or rising weight points to SIADH. No validated threshold exists for either. One senior review argues the distinction does not change management, because hyponatremia complicating intracranial disease is treated with hypertonic saline regardless of volume status."] },
 
-  "node-210-hypo-vol-no-una": { requires: ["na", "vol"], asserts: [V.naLow, V.volSet, V.unaAbsent], cls: "caution", title: "The volume assessment is carrying this argument, and it is this tool's weakest input",
-    body: ["A volume status has been set and there is no spot urine sodium. That is the one combination this tool refuses to run with, because the volume call is the weakest thing in the whole differential: clinical assessment identified only 47% of hypovolemic and 48% of normovolemic hyponatremic patients in the only prospective study that measured it, and there is no pediatric replication. In a sedated ventilated child there is neither thirst nor a postural sign, and weight change is confounded by resuscitation, so assuming it performs better in children is unsupported.",
+  "node-210-hypo-vol-no-una": { requires: ["na", "vol"], asserts: [V.naLow, V.volSet, V.unaAbsent], cls: "caution", title: "Volume status is carrying this, and it is this tool's weakest input",
+    body: ["A volume status has been set and there is no spot urine sodium, which is the one combination this tool refuses to run with. The volume call is the weakest thing in the whole differential: clinical assessment identified only 47% of hypovolemic and 48% of normovolemic hyponatremic patients in the only prospective study that measured it, and there is no pediatric replication. In a sedated ventilated child there is neither thirst nor a postural sign, and weight change is confounded by resuscitation, so assuming it performs better in children is unsupported.",
            "In that same study a spot urine sodium separated the two groups cleanly — mean 18.4 ± 3.1 mmol/L in the saline-responsive hypovolemic patients against 72 ± 3.7 in the saline-unresponsive normovolemic patients, p<0.001. <strong>Send a spot urine sodium.</strong> It is the single most useful next test here, and the tool will not break a SIADH-versus-salt-wasting tie on the volume toggle alone."] },
 
-  "node-220-hypo-hypovolemic": { requires: ["na", "una"], asserts: [V.naLow, V.unaBelow30], cls: "", title: "Hyponatremia with a low urine sodium — ask whether the antidiuresis is appropriate",
-    body: ["Before calling SIADH, ask whether the antidiuresis is appropriate to a low effective arterial blood volume. A hypovolemic child with a non-osmotic vasopressin stimulus produces concentrated urine and hyponatremia and satisfies every SIADH criterion except euvolemia — which is the criterion clinical examination gets wrong about half the time.",
+  "node-220-hypo-hypovolemic": { requires: ["na", "una"], asserts: [V.naLow, V.unaBelow30], cls: "", title: "Hyponatremia, low urine sodium — ask if the antidiuresis is appropriate",
+    body: ["Before calling SIADH, ask whether the antidiuresis is appropriate to a low effective arterial blood volume. A hypovolemic child with a non-osmotic vasopressin stimulus produces concentrated urine and hyponatremia and meets every SIADH criterion except euvolemia, the criterion clinical examination gets wrong about half the time.",
            "A urine sodium below 30 mmol/L, in the absence of a diuretic, is the pattern reported in the saline-responsive group. An oedematous state produces the same low urine sodium for a different reason, so read this against the examination as well as the number."] },
 
-  "node-230-hypo-diuretic": { requires: ["na", "cfDiuretic", "una"], asserts: [V.naLow, V.diuretic, V.unaPresent], cls: "caution", title: "Hyponatremia on a diuretic — the urine sodium cannot carry the argument",
-    body: ["A diuretic is active and a urine sodium has been entered, so that urine sodium is not interpretable in the usual way and every urine-sodium-dependent line below has been downweighted rather than deleted. The area under the curve for urine sodium in diagnosing inappropriate antidiuresis falls from 0.96 without diuretics to 0.85 on them. Fractional excretion of urate is the salvage test in this setting, with a positive predictive value of 100% at a 12% cut-off in a cohort where 57 of 86 patients were on diuretics.",
+  "node-230-hypo-diuretic": { requires: ["na", "cfDiuretic", "una"], asserts: [V.naLow, V.diuretic, V.unaPresent], cls: "caution", title: "Hyponatremia on a diuretic — the urine sodium cannot carry it",
+    body: ["A diuretic is active and a urine sodium has been entered, so that urine sodium is not interpretable in the usual way and every urine-sodium-dependent line below has been downweighted rather than deleted. The area under the curve for urine sodium in diagnosing inappropriate antidiuresis falls from 0.96 without diuretics to 0.85 on them, and fractional excretion of urate is the salvage test, with a positive predictive value of 100% at a 12% cut-off in a cohort where 57 of 86 patients were on diuretics.",
            "Read the result carefully: a raised fractional excretion of urate confirms that the antidiuresis is inappropriate. It is raised in salt wasting too, so it does not tell you which of the two you are looking at.",
            "The diuretic is also a candidate cause in its own right and is listed as one in the differential below, not only as a confounder."] },
 
-  "node-235-hypo-diuretic-no-una": { requires: ["na", "cfDiuretic"], asserts: [V.naLow, V.diuretic, V.unaAbsent], cls: "caution", title: "Hyponatremia on a diuretic, and no urine sodium has been entered",
-    body: ["A diuretic is active and no spot urine sodium has been entered, so nothing on this screen has been downweighted for the diuretic yet — there is no urine-sodium argument to downweight. That matters for what you send next rather than for how you read what is here.",
+  "node-235-hypo-diuretic-no-una": { requires: ["na", "cfDiuretic"], asserts: [V.naLow, V.diuretic, V.unaAbsent], cls: "caution", title: "Hyponatremia on a diuretic, no urine sodium entered",
+    body: ["A diuretic is active and no spot urine sodium has been entered, so nothing on this screen has been downweighted for the diuretic; there is no urine-sodium argument to downweight. That matters for what you send next rather than for how you read what is here.",
            "A urine sodium drawn while the diuretic is running is a much weaker test than the same sample off it: the area under the curve for urine sodium in diagnosing inappropriate antidiuresis falls from 0.96 to 0.85. Fractional excretion of urate is the salvage test, positive predictive value 100% at a 12% cut-off in a cohort where 57 of 86 patients were on diuretics — and it is raised in salt wasting as well, so it confirms the antidiuresis and does not adjudicate between the two.",
            "The diuretic is also a candidate cause of the hyponatremia in its own right, and is listed as one in the differential below."] },
 
   "node-240-hypo-thin": { requires: ["na"], asserts: [V.naLow], cls: "caution", title: "Hyponatremia, and not enough to say why",
-    body: ["A low serum sodium is entered and the tests that would classify it are not. The differential below is ranked on what is available and every entry names what is missing from it. The ordering is a prompt for the next test and not a verdict; where two entries are level the list says so.",
+    body: ["A low serum sodium is entered and the tests that would classify it are not. The differential below is ranked on what is available, every entry names what is missing, and where two entries are level the list says so.",
            "The first three things worth having, in order, are a spot urine sodium, a paired serum and urine osmolality drawn at the same time, and a cortisol with a TSH and free T4."],
     dyn: (i) => i.sgScorable ? ["The concentration limb here is a specific gravity and not an osmolality, so every entry below that used it is graded at this tool's lower confidence tier and names the tier in its label. A specific gravity at or above 1.010 sits at about 300 mOsm/kg or more on the published relation, which clears the 100 mOsm/kg floor for an inappropriately concentrated urine; below 1.010 the relation cannot resolve that floor at all and the reading is scored neither way."] : [] },
 
-  "node-250-siadh-pattern": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.concUsable, V.unaAbove30, V.cswDefinitionUnmet, V.siadhSupported], cls: "", title: "Hyponatremia with an inappropriately concentrated urine and a high urine sodium — the SIADH pattern",
+  "node-250-siadh-pattern": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.concUsable, V.unaAbove30, V.cswDefinitionUnmet, V.siadhSupported], cls: "", title: "Hyponatremia, inappropriately concentrated urine, high urine sodium — the SIADH pattern",
     body: ["What is entered fits inappropriate antidiuresis. Salt wasting sits below it here on two measured values and not on the volume toggle: the urine sodium is below the 100 mmol/L level used in the pediatric salt-wasting case definition, and the urine output is below the 3 mL/kg/hr mark used operationally in the same series. That definition rests on 7 classified patients, 2 of whose 9 hyponatremic children its authors could not classify by their own criteria, so read this as the case definition not being met rather than as salt wasting having been excluded.",
            "Read one caution into this. The euvolemia criterion is the weak link in every SIADH diagnosis: clinical assessment of volume status identified euvolemia correctly in 48% of hyponatremic patients in the only prospective study that measured it, and there is no pediatric replication. That is why the volume toggle is displayed and not scored on this tab, and why it did not decide this verdict. Cumulative sodium and fluid balance with serial weights over 24 to 48 hours is the discriminator the literature actually points to, and nobody has quantified a threshold for it.",
            "Normal thyroid hormones and a normal cortisol are criteria for this diagnosis, not optional extras — adrenal insufficiency mimics it and worsens when treated as it."],
     dyn: (i) => [ "On the entered values: spot urine sodium " + fmt(i.una, 0) + " mmol/L and urine output " + fmt(i.uop, 2) + " mL/kg/hr." ] },
 
-  "node-260-hypo-neither": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.unaPresent, V.concUsable, V.notBothHypoSupported], cls: "caution", title: "Hyponatremia, and the entered values do not support either SIADH or salt wasting as this tool defines them",
-    body: ["A urine sodium and a urine osmolality are both available, and at least one of the two inappropriate-antidiuresis entries is argued against by them rather than merely unsupported. The reasons are listed against that entry in the differential below; read them there rather than from this box.",
-           "This is not the same as having a diagnosis. It means the two entries that would normally compete here are not both in play, so the ranking below is doing the work and the missing-input list under each entry is what would change it."],
+  "node-260-hypo-neither": { requires: ["na", "una", "uosm"], asserts: [V.naLow, V.unaPresent, V.concUsable, V.notBothHypoSupported], cls: "caution", title: "Hyponatremia: the values support neither SIADH nor salt wasting as defined here",
+    body: ["A urine sodium and a urine osmolality are both available, and at least one of the two inappropriate-antidiuresis entries is argued against by them rather than merely unsupported. The reasons sit against that entry in the differential below.",
+           "This is not the same as having a diagnosis. The two entries that would normally compete here are not both in play, so the ranking below is doing the work and the missing-input list under each entry is what would change it."],
     dyn: (i, c) => { const out = []; ["siadh", "csw"].forEach(function (id) { const cf = c.conf(id); if (["consistent", "possible"].indexOf(cf) === -1) out.push((id === "siadh" ? "SIADH" : "Cerebral salt wasting") + " is currently " + (CONF_LABEL[cf] || cf) + "."); }); return out.length ? [out.join(" ")] : []; } },
 
-  "node-270-hyperglycemia": { requires: ["na", "sglu"], asserts: [V.naLow, V.tonicityUnknown], cls: "caution", title: "A high serum glucose with a low sodium — read the tonicity before reading the sodium",
+  "node-270-hyperglycemia": { requires: ["na", "sglu"], asserts: [V.naLow, V.tonicityUnknown], cls: "caution", title: "High serum glucose with a low sodium — read the tonicity first",
     body: ["Glucose is an effective osmole. At this glucose, water is drawn out of cells and the measured sodium falls without the plasma becoming hypotonic, so this sodium is not yet evidence of hypotonicity and may be a measurement of the glucose rather than of the water. Fluid restriction or hypertonic saline decided on this number alone would be decided on the wrong number.",
            "<strong>Send a measured serum osmolality drawn at the same time as the sodium</strong>, and treat the glucose. Until a serum osmolality is entered this tool does not run the SIADH-versus-salt-wasting differential on this sodium: those entries are marked below as not assessable rather than being ranked. This tool also ships no glucose correction factor — the published factors disagree with one another and none was derived in children — and the 200 mg/dL trigger is this tool's own figure, in the same sense as the dose flags on the titration tab, with no source naming it."],
     dyn: (i) => [ "On the entered values: serum glucose " + fmt(i.sglu, 0) + " mg/dL, serum sodium " + fmt(i.na, 0) + " mmol/L, and no measured serum osmolality." ] },
 
   /* ROUND 4 QA, m2. The old headline said there was "no measurement" while a specific
      gravity was on screen above it. There is a measurement; it is not usable here. */
-  "node-300-polyuria-no-conc": { requires: ["uop"], asserts: [V.polyuria, V.noUsableConc], cls: "caution", title: "Polyuria, and no usable measurement of what the urine is doing",
-    body: ["A urine output at or above the polyuria mark is entered and there is no usable urine osmolality. Polyuria splits on that single measurement — below 150 mOsm/kg it is a water diuresis, above 300 a solute contributes, 300 to 800 is the band that separates nothing because partial vasopressin deficiency lives there too, and at or above 800 a solute diuresis dominates — so without it the differential below cannot be narrowed further.",
+  "node-300-polyuria-no-conc": { requires: ["uop"], asserts: [V.polyuria, V.noUsableConc], cls: "caution", title: "Polyuria, and no usable measurement of urine concentration",
+    body: ["A urine output at or above the polyuria mark is entered and there is no usable urine osmolality. Polyuria splits on that single measurement: below 150 mOsm/kg a water diuresis, above 300 a solute contributes, 300 to 800 the band that separates nothing because partial vasopressin deficiency lives there too, and at or above 800 a solute diuresis dominates. Without it the differential below cannot be narrowed further.",
            "Send a urine osmolality with a urine glucose and urine electrolytes."],
     dyn: (i) => (i.sgTier && !i.sgScorable)
       ? ["A specific gravity is entered and is displayed above. It is not missing — it is not being classified, for the reason given in the gate above — so it is not a usable measurement of urine concentration here."]
       : [] },
 
   "node-310-nothing-abnormal": { requires: ["na", "uop"], asserts: [V.naInPedInterval, V.notPolyuric, V.notNeonate], cls: "quiet", title: "No dysnatremia and no polyuria in what is entered",
-    body: ["The serum sodium is inside the pediatric reference interval of 137 to 143 mmol/L (ages 0.45 to 17 years, n=1000), and the measured urine output is below the polyuria mark. Note that interval is narrower than the adult 135 to 145 convention: a child at 136 is below the pediatric interval and inside the adult one, and this tool uses the pediatric one.",
+    body: ["The serum sodium is inside the pediatric reference interval of 137 to 143 mmol/L (ages 0.45 to 17 years, n=1000), and the measured urine output is below the polyuria mark. That interval is narrower than the adult 135 to 145 convention: a child at 136 is below the pediatric interval and inside the adult one, and this tool uses the pediatric one.",
            "That is a statement about the values entered and about nothing else."],
     dyn: (i) => [ "On the entered values: serum sodium " + fmt(i.na, 0) + " mmol/L and urine output " + fmt(i.uop, 2) + " mL/kg/hr." ] },
 
-  "node-315-na-normal-no-uop": { requires: ["na"], asserts: [V.naInPedInterval, V.uopAbsent, V.notNeonate], cls: "quiet", title: "The serum sodium is inside the pediatric reference interval, and no urine output has been entered",
+  "node-315-na-normal-no-uop": { requires: ["na"], asserts: [V.naInPedInterval, V.uopAbsent, V.notNeonate], cls: "quiet", title: "Sodium inside the pediatric reference interval, no urine output entered",
     body: ["The serum sodium is inside the pediatric reference interval of 137 to 143 mmol/L (ages 0.45 to 17 years, n=1000). That interval is narrower than the adult 135 to 145 convention: a child at 136 is below the pediatric interval and inside the adult one, and this tool uses the pediatric one.",
            "No urine volume, collection interval or weight has been entered, so nothing on this screen is a statement about the urine output. If polyuria is the question, that is the measurement to collect."],
     dyn: (i) => [ "On the entered values: serum sodium " + fmt(i.na, 0) + " mmol/L." ] },
 
-  "node-320-neonatal": { requires: [], asserts: [V.neonate], cls: "caution", title: "Below about 6 weeks of postnatal age, this tool will not classify the sodium or the urine",
+  "node-320-neonatal": { requires: [], asserts: [V.neonate], cls: "caution", title: "Below about 6 weeks, this tool will not classify the sodium or the urine",
     body: ["Every threshold this tool uses on this tab comes from a cohort that contained no neonates, and the tool gates them out rather than degrading them. A term newborn's maximal urine osmolality is only slightly above that of plasma, and adult concentrating capacity is not reached until the second year, so the urine osmolality thresholds do not apply. The 2 mL/kg/hr polyuria mark is an entry criterion from an adult outpatient cohort and the 3 mL/kg/hr mark comes from children with acute intracranial disease, so the polyuria thresholds do not apply either. The 135 mmol/L hyponatremia mark and the 137 to 143 mmol/L pediatric reference interval both come from work that excluded neonates, so no pediatric reference interval applies at this age and this tool will not tell you that this sodium is inside one.",
            "Diluting capacity is intact from birth — a water-loaded newborn excretes urine at 30 to 50 mOsm/kg — so a low urine osmolality at this age discriminates nothing. What is usable here is the serum osmolality, the sodium trend rather than the single value, the weight, and the recorded fluid and sodium intake. The differential below is shown with those thresholds switched off, which is why its entries read as not assessable."] }
 };
@@ -2247,7 +2281,7 @@ function nextTests(i, diffs, ctx) {
   const add = (t, why, p) => { if (!n.some(x => x.t === t)) n.push({ t: t, why: why, p: p || [] }); };
   if (ctx.tonicityUnknown) {
     add("A measured serum osmolality, drawn at the same time as the sodium",
-        "With a serum glucose at or above 200 mg/dL the measured sodium falls without the plasma becoming hypotonic. The osmolality is what establishes whether this hyponatremia is hypotonic at all, and until it is entered the SIADH and salt-wasting entries are not scored. This tool ships no glucose correction factor: the published factors disagree with one another and none was derived in children.", []);
+        "At a serum glucose of 200 mg/dL or above the measured sodium falls without the plasma becoming hypotonic. The osmolality establishes whether this hyponatremia is hypotonic at all, and until it is entered the SIADH and salt-wasting entries are not scored. This tool ships no glucose correction factor: the published factors disagree and none was derived in children.", []);
   }
   if (i.uosm === null && !i.neoGate) {
     /* ROUND 4 QA, m3. The refused-specific-gravity case used to add a SECOND entry
@@ -2256,22 +2290,22 @@ function nextTests(i, diffs, ctx) {
     add("Urine osmolality, with a urine glucose and urine electrolytes",
         "Polyuria splits on this one measurement: below 150 mOsm/kg a water diuresis, 150 to 300 both mechanisms, above 300 a solute contributes, at or above 800 a solute diuresis dominates."
         + (i.sgScorable
-            ? " The verdict above is standing on a specific gravity instead, at this tool's lower confidence tier — usable, because vasopressin was titrated on specific gravity at r=0.96 in 14 PICU children while serum sodium tracked nothing, and imprecise, at about 0.75 against measured osmolality and worse in pathological urine. This is the test that leaves that tier."
+            ? " The verdict above stands on a specific gravity at this tool's lower confidence tier; this is the test that leaves that tier."
             : i.sgTier
-              ? " A specific gravity is entered and is the only concentration value, and something that raises specific gravity independently of vasopressin is present, so that reading is not being classified in either direction. Every interferent raises it, which is why a raised reading cannot be told from an artifact — a reading below 1.010 could not have been manufactured by one, and that direction would still have been usable."
+              ? " A specific gravity is the only concentration value entered, and something that raises it independently of vasopressin is present, so that reading is not being classified either way. Every interferent raises it, which is why a raised reading cannot be told from an artifact."
               : " A specific gravity does not substitute for it, and the correlation is worst in exactly the pathological urine this tool is for."),
         [34509418, 39148427, 21089176, 9467135, 11354785]);
   }
   if (ctx.branchHypo && i.una === null) {
     add("A spot urine sodium",
-        "The single most useful next test here. Clinical volume assessment identified only 47% of hypovolemic and 48% of normovolemic hyponatremic patients in the one prospective study that measured it, while in that same study spot urine sodium separated them cleanly at 18.4 ± 3.1 against 72 ± 3.7 mmol/L, p<0.001.", [3674097]);
+        "The single most useful next test here. Clinical volume assessment identified only 47% of hypovolemic and 48% of normovolemic hyponatremic patients in the one prospective study that measured it; in that same study spot urine sodium separated them at 18.4 ± 3.1 against 72 ± 3.7 mmol/L, p<0.001.", [3674097]);
   }
   if (i.sosm === null && (ctx.branchPoly || ctx.branchHypo)) {
-    add("A serum osmolality drawn at the same time as the urine", "Concentration is only interpretable against the plasma it is being compared with.", []);
+    add("A serum osmolality drawn with the urine", "Concentration is only interpretable against the plasma.", []);
   }
   if (ctx.branchPoly && !i.ddavp) {
     add("A desmopressin trial with paired pre and post urine osmolality",
-        "The separator between central and nephrogenic diabetes insipidus. Use the relative criterion — a rise of more than 50% — and not the adult >750 mOsm/kg criterion, which a pediatric series could not reach. A water-deprivation test alone will not settle it: post-dehydration osmolality separated every group except complete central from nephrogenic DI.", [39148427, 23426815, 30106630]);
+        "The separator between central and nephrogenic diabetes insipidus. Use the relative criterion, a rise of more than 50%, and not the adult >750 mOsm/kg one, which a pediatric series could not reach. A water-deprivation test alone will not settle it: post-dehydration osmolality separated every group except complete central from nephrogenic DI.", [39148427, 23426815, 30106630]);
   }
   if (ctx.branchPoly && !i.ddavp && i.copeptin === null) {
     add("Baseline plasma copeptin, if a desmopressin trial is unsafe or unavailable",
@@ -2287,11 +2321,11 @@ function nextTests(i, diffs, ctx) {
   }
   if (ctx.branchHypo) {
     add("Cumulative sodium and fluid balance with serial weights over 24 to 48 hours",
-        "Not a laboratory test, and the discriminator the literature says matters. Net negative sodium balance with weight loss argues for salt wasting; net positive water balance with a stable or rising weight argues for SIADH. Nobody has quantified a threshold for either.", [18216309]);
+        "Not a laboratory test, and the discriminator the literature points to. Net negative sodium balance with weight loss argues for salt wasting; net positive water balance with a stable or rising weight argues for SIADH. Nobody has quantified a threshold for either.", [18216309]);
   }
   if (i.neoGate) {
     add("At this age: a serum osmolality, the sodium trend, the weight, and the recorded fluid and sodium intake",
-        "The urine osmolality is not interpretable below about 6 weeks and the tool will not score it. Say the concentration input is uninterpretable at this age rather than reading an adult number off it.", [6310948]);
+        "The urine osmolality is not interpretable below about 6 weeks and the tool will not score it. Call the concentration input uninterpretable at this age rather than reading an adult number off it.", [6310948]);
   }
   return n;
 }
@@ -2367,17 +2401,31 @@ function renderDx() {
   if (cfWrap) {
     const ticked = Array.prototype.filter.call($("dx-checks").querySelectorAll("input[type=checkbox]"), c => c.checked).length;
     const sm = cfWrap.querySelector("summary");
-    /* ROUND 4 QA, m5. An unticked box is an assertion now, so the control that holds
-       the boxes says so on its own face and starts open rather than folded away. */
-    if (sm) sm.textContent = "Nine boxes, " + (ticked ? ticked + " ticked" : "none ticked") + " \u2014 unticked is read as \u201cnot present\u201d";
+    /* ROUND 4 QA, m5. An unticked box is an assertion, so the state has to be readable
+       without opening anything: the summary carries the count and the tier heading above
+       it, which never folds, carries "An unticked box means not present". ROUND 5 closed
+       the block by default on that basis; a ticked box still forces it open. */
+    if (sm) sm.textContent = "Nine boxes, " + (ticked ? ticked + " ticked" : "none ticked");
     if (ticked) cfWrap.open = true;
   }
+  /* ROUND 5. The two optional tiers fold shut so the differential is reachable on a phone.
+     Each one counts what it holds and says so on its own face, and a tier holding a value
+     is forced open — the fold may shorten the page, never hide a number the reader entered.
+     Only ever forced open: closing one is the reader's decision and is left alone. */
+  ["tier2", "tier3"].forEach(id => {
+    const t = $(id); if (!t) return;
+    const fields = Array.prototype.slice.call(t.querySelectorAll("input, select"));
+    const filled = fields.filter(f => String(f.value || "").trim() !== "").length;
+    const cnt = $("cnt-" + id);
+    if (cnt) cnt.textContent = filled ? filled + " of " + fields.length + " entered" : "";
+    if (filled) t.open = true;
+  });
   /* live derived readouts */
   const uopEl = $("dx-uop-out");
   if (i.uop !== null) {
     uopEl.textContent = fmt(i.uop, 2) + " mL/kg/hr";
     let tag = "below the 2 mL/kg/hr possible-polyuria mark";
-    if (i.uop >= T.uopClear) tag = "at or above 3 mL/kg/hr — clear polyuria on the pediatric operational criterion";
+    if (i.uop >= T.uopClear) tag = "at or above 3 mL/kg/hr — clear polyuria, pediatric operational criterion";
     else if (i.uop >= T.uopPossible) tag = "at or above 2 mL/kg/hr — possible polyuria";
     $("dx-uop-note").textContent = fmt(num("dx-uvol"), 0) + " mL ÷ " + fmt(num("dx-uhrs"), 2) + " h ÷ " + fmt(i.wt, 2) + " kg — " + tag;
   } else {
@@ -2392,12 +2440,12 @@ function renderDx() {
   const sgHint = $("h-dx-sg"), sgIn = $("dx-sg");
   const sgRaw = num("dx-sg"), sgG = checkSG(sgRaw);
   if (!sgG.ok) { sgHint.textContent = sgG.msg; sgHint.className = "err"; sgIn.setAttribute("aria-invalid", "true"); }
-  else { sgHint.textContent = "Enter as 1.010, not 1010. Used when no osmolality is available, at its own lower confidence tier, and demoted rather than refused when an interferent is present."; sgHint.className = "hint"; sgIn.removeAttribute("aria-invalid"); }
+  else { sgHint.textContent = "Enter as 1.010, not 1010. Substitutes for osmolality at a lower confidence tier; an interferent demotes it rather than refusing it."; sgHint.className = "hint"; sgIn.removeAttribute("aria-invalid"); }
 
   const uoHint = $("h-dx-uosm");
   const uoW = checkUosm(num("dx-uosm"));
   if (uoW.warn) { uoHint.textContent = uoW.warn; uoHint.className = "warn"; }
-  else { uoHint.textContent = "The measurement. Specific gravity is a proxy for it."; uoHint.className = "hint"; }
+  else { uoHint.textContent = "Specific gravity is a proxy for this."; uoHint.className = "hint"; }
 
   const r = interpretDx(i);
 
@@ -2409,7 +2457,7 @@ function renderDx() {
     const d = document.createElement("div"); d.className = "gate";
     const parts = splitLead(x.b);
     d.innerHTML = "<strong>" + x.t + ".</strong> " + parts[0];
-    if (parts[1]) d.appendChild(moreBox("The rest of this note", b => { b.innerHTML = parts[1]; }));
+    if (parts[1]) d.appendChild(moreBox("Detail", b => { b.innerHTML = parts[1]; }));
     const row = pmidRow(x.p); if (row) d.appendChild(row);
     g.appendChild(d);
   });
@@ -2420,38 +2468,30 @@ function renderDx() {
   box.className = "verdict " + (r.node.cls || "");
   const h = document.createElement("div"); h.className = "vtitle"; h.textContent = r.node.title;
   box.appendChild(h);
-  /* Lead paragraph, then the entered-values lines. What sits between them is the
-     argument for the headline, and it collapses. */
+  /* The headline, the first sentence of its lead paragraph, and the entered values.
+     Everything else the box used to print on screen — the rest of the lead, the
+     argument paragraphs, both equal-ranking notes and the tier explanation — goes
+     into ONE disclosure. Nothing is deleted to shorten this; it is folded, and the
+     ranked differential moves up the screen by the amount that was folded. */
   const sLen = (typeof r.node.staticLen === "number") ? r.node.staticLen : r.node.body.length;
-  const lead = r.node.body.slice(0, 1);
+  const leadParts = splitLead(r.node.body[0] || "");
   const held = r.node.body.slice(1, sLen);
   const dynL = r.node.body.slice(sLen);
-  lead.concat(dynL).forEach(p => { const el2 = document.createElement("p"); el2.innerHTML = p; box.appendChild(el2); });
-  if (held.length) {
-    box.appendChild(moreBox("Why this headline, and what it rests on", b => {
-      held.forEach(p => { const el2 = document.createElement("p"); el2.innerHTML = p; b.appendChild(el2); });
-    }));
-  }
+  const para = (html, parent) => { const el2 = document.createElement("p"); el2.innerHTML = html; parent.appendChild(el2); };
+  para(leadParts[0], box);
+  dynL.forEach(p => para(p, box));
+  const rest = [];
+  if (leadParts[1]) rest.push(leadParts[1]);
+  held.forEach(p => rest.push(p));
   if (r.diEqual) {
-    const p = document.createElement("p");
-    p.innerHTML = "<strong>Central and nephrogenic diabetes insipidus are ranked equally on purpose.</strong> No input entered here separates them, and they will stay level until a desmopressin response is entered.";
-    box.appendChild(p);
+    rest.push("<strong>Central and nephrogenic diabetes insipidus are ranked equally on purpose.</strong> No input entered here separates them, and they stay level until a desmopressin response is entered.");
   }
   if (r.hypoEqual) {
-    const p = document.createElement("p");
-    p.innerHTML = "<strong>SIADH and cerebral salt wasting are ranked equally on purpose.</strong> The list is not allowed to imply a winner the verdict has just said it does not have. They will stay level until cumulative sodium and fluid balance, or a saline trial, is entered — and neither of those is an input this tool has.";
-    box.appendChild(p);
+    rest.push("<strong>SIADH and cerebral salt wasting are ranked equally on purpose.</strong> The list may not imply a winner the verdict has just said it does not have. They stay level until cumulative sodium and fluid balance, or a saline trial, is entered, and neither is an input this tool has.");
   }
-  const tierP = document.createElement("p");
-  tierP.style.color = "var(--ink-quiet)";
-  tierP.style.fontSize = "14px";
-  tierP.style.margin = "0";
-  tierP.textContent = "Reporting at tier " + r.tier + " of 3.";
-  box.appendChild(tierP);
-  box.appendChild(moreBox("What the three tiers are", b => {
-    const p = document.createElement("p");
-    p.textContent = "Tier 1 is a sodium and a timed urine volume; tier 2 adds concentration and a urine sodium; tier 3 adds the targeted tests.";
-    b.appendChild(p);
+  rest.push("Reporting at tier " + r.tier + " of 3. Tier 1 is a sodium and a timed urine volume; tier 2 adds concentration and a urine sodium; tier 3 adds the targeted tests.");
+  box.appendChild(moreBox("The reasoning, and tier " + r.tier + " of 3", b => {
+    rest.forEach(p => para(p, b));
   }));
   v.appendChild(box);
 
@@ -2505,12 +2545,12 @@ function renderDx() {
     const rest = (!isLead && d.note ? 1 : 0) + heldWhy.length + d.against.length +
                  ((d.neutral && d.neutral.length) || 0) + d.missing.length;
     if (rest) {
-      li.appendChild(moreBox(isLead ? "The rest of the reasoning" : "What the entered values say about this", b => {
+      li.appendChild(moreBox(isLead ? "The rest" : "What the values say", b => {
         if (!isLead && d.note) { const p = document.createElement("p"); p.style.fontSize = "15px"; p.style.margin = "0 0 6px"; p.textContent = d.note; b.appendChild(p); }
-        if (heldWhy.length) { sub(b, isLead ? "Also supporting it" : "What the entered values support"); b.appendChild(bulletList("why", heldWhy, true)); }
+        if (heldWhy.length) { sub(b, isLead ? "Also supporting it" : "What supports it"); b.appendChild(bulletList("why", heldWhy, true)); }
         if (d.against.length) { sub(b, "What argues against it"); b.appendChild(bulletList("against", d.against, true)); }
-        if (d.neutral && d.neutral.length) { sub(b, "Entered, and it argues neither way"); b.appendChild(bulletList("missing", d.neutral, true)); }
-        if (d.missing.length) { sub(b, "Not entered, so not counted either way"); b.appendChild(bulletList("missing", d.missing.map(m => ({ t: m })), false)); }
+        if (d.neutral && d.neutral.length) { sub(b, "Entered, argues neither way"); b.appendChild(bulletList("missing", d.neutral, true)); }
+        if (d.missing.length) { sub(b, "Not entered, not counted"); b.appendChild(bulletList("missing", d.missing.map(m => ({ t: m })), false)); }
       }));
     }
     /* Where two adjacent entries carry the same confidence label and the same score,
@@ -2522,7 +2562,7 @@ function renderDx() {
       const lv = document.createElement("div");
       lv.className = "sub";
       lv.style.color = "var(--ink-quiet)";
-      lv.textContent = "Level with the entry " + (levelWith(prev) ? "above" : "below") + ": same score, so the order is not a discrimination.";
+      lv.textContent = "Level with the entry " + (levelWith(prev) ? "above" : "below") + ": same score, order arbitrary.";
       li.appendChild(lv);
     }
     const row = pmidRow(d.pmids); if (row) li.appendChild(row);
@@ -2533,13 +2573,15 @@ function renderDx() {
   const nt = $("dx-next"); clearKids(nt);
   if (r.next.length) {
     const d = document.createElement("div"); d.className = "nexttest";
-    const h2 = document.createElement("div"); h2.className = "vtitle"; h2.textContent = "The tests that would move this on, in order";
+    const h2 = document.createElement("div"); h2.className = "vtitle"; h2.textContent = "Tests that would move this on";
     d.appendChild(h2);
     const item = x => {
       const li = document.createElement("li");
       const b = document.createElement("strong"); b.textContent = x.t; li.appendChild(b);
       const sp = document.createElement("div"); sp.style.color = "var(--ink-muted)"; sp.style.fontSize = "15px"; sp.textContent = x.why; li.appendChild(sp);
-      const row = pmidRow(x.p); if (row) li.appendChild(row);
+      /* No chips here, by request. Every PMID a next-test entry carries is already
+         on a differential entry, a gate, or the evidence table on the other tab, so
+         nothing loses its source; the reader loses a row of pills above the list. */
       return li;
     };
     const ol = document.createElement("ol");
@@ -2582,7 +2624,7 @@ function renderTriphasic(mountId) {
   m.appendChild(p);
   const tbl = document.createElement("table");
   const thead = document.createElement("thead");
-  thead.innerHTML = "<tr><th>Population</th><th>n</th><th>What was found</th><th>Source</th></tr>";
+  thead.innerHTML = "<tr><th>Population</th><th>n</th><th>What was found</th><th class=\"citecol\">Source</th></tr>";
   tbl.appendChild(thead);
   const tb = document.createElement("tbody");
   TRIPHASIC.forEach(r => {
@@ -2590,7 +2632,7 @@ function renderTriphasic(mountId) {
     const c1 = document.createElement("td"); c1.textContent = r.pop;
     const c2 = document.createElement("td"); c2.className = "n"; c2.textContent = r.n;
     const c3 = document.createElement("td"); c3.textContent = r.fig;
-    const c4 = document.createElement("td");
+    const c4 = document.createElement("td"); c4.className = "citecol";
     if (r.pmid) c4.appendChild(citeChip(r.pmid)); else c4.textContent = "none exists";
     tr.appendChild(c1); tr.appendChild(c2); tr.appendChild(c3); tr.appendChild(c4);
     tb.appendChild(tr);
@@ -3187,6 +3229,24 @@ function paintThemeBtn() {
   const b = $("themeToggle");
   b.textContent = dark ? "☼ Light" : "☾ Dark";
   b.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " theme");
+}
+/* Session-only, deliberately. The theme key is the one thing this page is allowed
+   to write to the device, so the source state resets to hidden on every load. */
+function paintCiteBtn() {
+  const on = document.documentElement.getAttribute("data-cites") === "on";
+  const b = $("citeToggle");
+  b.textContent = on ? "Hide sources" : "Sources";
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.setAttribute("aria-label", on ? "Hide source PMIDs" : "Show source PMIDs");
+}
+function initCites() {
+  document.documentElement.setAttribute("data-cites", "off");
+  paintCiteBtn();
+  $("citeToggle").addEventListener("click", function () {
+    const on = document.documentElement.getAttribute("data-cites") === "on";
+    document.documentElement.setAttribute("data-cites", on ? "off" : "on");
+    paintCiteBtn();
+  });
 }
 function initTheme() {
   const stored = safeGet(THEME_KEY);
@@ -4164,6 +4224,125 @@ function runSelfTest() {
        mmR.next.filter(t => /^(A )?[Uu]rine osmolality/.test(t.t)).length === 1,
        "title '" + mmR.node.title + "'; " + mmR.next.filter(t => /^(A )?[Uu]rine osmolality/.test(t.t)).length + " next-test entries lead with a urine osmolality");
 
+  /* ---- ROUND 5. Sources hidden by default; the ranked differential comes first ----
+     These six gates guard the three behaviours this round added. Each was proved
+     falsifiable by reverting the change it guards and watching it fail. */
+
+  /* R5-1. Every chip is still in the DOM, and the CSS resolves every one of them to
+     display:none while the page is in its default state. The computed value is read
+     rather than offsetParent, because a chip inside a closed disclosure or the hidden
+     second tab is unpainted for reasons that have nothing to do with this rule, and a
+     gate that cannot tell the two apart would pass with the rule deleted. */
+  const citeDisplays = () => Array.prototype.map.call(document.querySelectorAll("a.citechip"), c => getComputedStyle(c).display);
+  const citeState = document.documentElement.getAttribute("data-cites");
+  const allChips = document.querySelectorAll("a.citechip");
+  const offDisp = citeDisplays();
+  gate("PMID chips are written into the DOM and hidden by CSS until the Sources control is pressed",
+       allChips.length > 50 && citeState === "off" &&
+       offDisp.length === allChips.length && offDisp.every(d => d === "none"),
+       allChips.length + " chips in the DOM, data-cites=" + citeState + ", " +
+       offDisp.filter(d => d !== "none").length + " of them not display:none");
+
+  /* R5-2. The control reveals them and puts them back, and it reports its own state
+     to a screen reader while it does. Restored to "off" before the gate returns. */
+  const citeBtn = $("citeToggle");
+  citeBtn.click();
+  const onState = document.documentElement.getAttribute("data-cites");
+  const onDisp = citeDisplays();
+  const onPressed = citeBtn.getAttribute("aria-pressed");
+  citeBtn.click();
+  const offAgain = document.documentElement.getAttribute("data-cites");
+  const offDisp2 = citeDisplays();
+  gate("the Sources control reveals the chips, reports aria-pressed, and hides them again",
+       onState === "on" && onDisp.length > 0 && onDisp.every(d => d !== "none") && onPressed === "true" &&
+       offAgain === "off" && offDisp2.every(d => d === "none") && citeBtn.getAttribute("aria-pressed") === "false",
+       "on: state=" + onState + " shown=" + onDisp.filter(d => d !== "none").length + "/" + onDisp.length +
+       " pressed=" + onPressed + "; off: state=" + offAgain +
+       " still shown=" + offDisp2.filter(d => d !== "none").length);
+
+  /* R5-3. The citation column of a reference table hides as a column, heading and
+     all, so the table reflows instead of keeping an empty column. */
+  const citeCells = document.querySelectorAll("th.citecol, td.citecol");
+  const citeHeads = document.querySelectorAll("th.citecol");
+  const citeBodyCells = Array.prototype.slice.call(document.querySelectorAll("td.citecol"));
+  const citeCellsSound = citeBodyCells.every(td => td.querySelector("a.citechip") || /none exists/.test(td.textContent));
+  /* The column hides as a column or not at all: every table that holds a tagged cell
+     holds exactly one tagged heading, and every cell in that column is tagged. A
+     heading left untagged would leave an empty column behind when the chips go. */
+  const citeTables = [];
+  citeBodyCells.forEach(td => { const t = td.closest("table"); if (t && citeTables.indexOf(t) === -1) citeTables.push(t); });
+  const columnsWhole = citeTables.length > 0 && citeTables.every(t => {
+    const heads = Array.prototype.slice.call(t.querySelectorAll("thead th"));
+    const tagged = heads.filter(h => h.classList.contains("citecol"));
+    if (tagged.length !== 1) return false;
+    const ix = heads.indexOf(tagged[0]);
+    return Array.prototype.slice.call(t.querySelectorAll("tbody tr")).every(tr => {
+      const cell = tr.children[ix];
+      return !!cell && cell.classList.contains("citecol");
+    });
+  });
+  const colHidden = Array.prototype.every.call(citeCells, c => getComputedStyle(c).display === "none");
+  gate("the citation column of every reference table hides as a whole column: one tagged heading, every cell in that column tagged",
+       citeHeads.length >= 2 && citeCells.length >= 40 && citeBodyCells.length >= 40 && citeCellsSound && columnsWhole && colHidden,
+       citeTables.length + " tables, " + citeHeads.length + " headings, " + citeBodyCells.length + " body cells, whole=" + columnsWhole + ", sound=" + citeCellsSound + ", hidden=" + colHidden);
+
+  /* R5-4. The next-test list drops its chips altogether, and nothing else does.
+     Rendered against a state that produces several next tests. */
+  const r5prev = { wt: $("dx-wt").value, uvol: $("dx-uvol").value, uhrs: $("dx-uhrs").value, na: $("dx-na").value, sg: $("dx-sg").value };
+  /* The gates below drive the folds, and a self-test that leaves a tier hanging open
+     would hand the reader the very page this round set out to shorten. */
+  const r5folds = { tier2: $("tier2").open, tier3: $("tier3").open };
+  $("dx-wt").value = "14"; $("dx-uvol").value = "392"; $("dx-uhrs").value = "4"; $("dx-na").value = "152"; $("dx-sg").value = "1.003";
+  renderDx();
+  const nextChips = $("dx-next").querySelectorAll("a.citechip").length;
+  const nextItems = $("dx-next").querySelectorAll("li").length;
+  const diffChips = $("dx-diff").querySelectorAll("a.citechip").length;
+  const gateChips = $("dx-gates").querySelectorAll("a.citechip").length;
+  gate("the next-test list renders no PMID chip while the gates and the differential still render theirs",
+       nextItems > 0 && nextChips === 0 && diffChips > 0 && gateChips > 0,
+       nextItems + " next-test items, " + nextChips + " chips there, " + diffChips + " on the differential, " + gateChips + " on the gates");
+
+  /* R5-5. The verdict box is one disclosure, not three, and it is short enough to
+     read before the ranked differential rather than instead of it. */
+  const vBox = $("dx-verdict");
+  const vDetails = vBox.querySelectorAll("details").length;
+  const vWords = vBox.innerText.trim().split(/\s+/).filter(Boolean).length;
+  gate("the verdict box holds exactly one disclosure and stays at or under 75 words collapsed",
+       vDetails === 1 && vWords <= 75 && vWords > 0,
+       vDetails + " disclosures, " + vWords + " words collapsed");
+
+  /* R5-6. Nothing in the round shortened a headline past the point where it still
+     names its own claim, and no headline is long enough to be unreadable at a
+     glance. 143 characters was the longest before this round. */
+  const titleLens = Object.keys(NODES).map(k => NODES[k].title.length);
+  gate("no node headline runs past 90 characters",
+       Math.max.apply(null, titleLens) <= 90 && titleLens.length > 20,
+       titleLens.length + " headlines, longest " + Math.max.apply(null, titleLens));
+  /* R5-7. A tier that holds a value is forced open and says how many it holds, so the
+     fold can shorten the page without hiding a number the reader entered. The state
+     above put a specific gravity in tier 2, which is what makes this falsifiable. */
+  const t2 = $("tier2");
+  gate("a folded tier holding an entered value is forced open and reports the count",
+       t2.open === true && /\d+ of \d+ entered/.test($("cnt-tier2").textContent),
+       "tier2 open=" + t2.open + ", count reads “" + $("cnt-tier2").textContent + "”");
+
+  /* R5-8. With nothing in it, the same tier is left shut and carries no count. Opened
+     by hand first, so a pass means renderDx left it alone rather than never touching it. */
+  const t3 = $("tier3");
+  t3.open = true;
+  const t3fields = Array.prototype.slice.call(t3.querySelectorAll("input, select"));
+  const t3prev = t3fields.map(f => f.value);
+  t3fields.forEach(f => { f.value = ""; });
+  t3.open = false; renderDx();
+  gate("an empty folded tier stays shut and shows no count",
+       t3.open === false && $("cnt-tier3").textContent === "",
+       "tier3 open=" + t3.open + ", count reads “" + $("cnt-tier3").textContent + "”");
+  t3fields.forEach((f, n) => { f.value = t3prev[n]; });
+
+  $("dx-wt").value = r5prev.wt; $("dx-uvol").value = r5prev.uvol; $("dx-uhrs").value = r5prev.uhrs;
+  $("dx-na").value = r5prev.na; $("dx-sg").value = r5prev.sg; renderDx();
+  $("tier2").open = r5folds.tier2; $("tier3").open = r5folds.tier3;
+
   /* ---- report ---- */
   const passed = res.filter(r => r.pass).length;
   if (passed === res.length) return { passed: passed, total: res.length };
@@ -4294,6 +4473,7 @@ function wirePrint() {
 
 document.addEventListener("DOMContentLoaded", function () {
   initTheme();
+  initCites();
   $("tab-interpret").addEventListener("click", () => showTab("interpret"));
   $("tab-titrate").addEventListener("click", () => showTab("titrate"));
   DX_IDS.forEach(id => { const e = $(id); if (e) { e.addEventListener("input", renderDx); e.addEventListener("change", renderDx); } });
