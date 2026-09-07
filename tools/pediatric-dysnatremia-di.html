@@ -1073,12 +1073,12 @@ function evalCriterion(c, i) {
 const C = {}; /* shared criteria, so the same sentence is authored once */
 
 C.polyuriaPossible = {
-  k: "poly2", need: ["uop"], w: 2, hard: true, pivotal: true, gate: "neoGate",
+  k: "poly2", need: ["uop"], w: 2, hard: true, capping: true, gate: "neoGate",
   test: i => i.uop >= T.uopPossible,
   yes: i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is at or above the 2 mL/kg/hr possible-polyuria mark (about 50 mL/kg/24 h, the entry criterion in an adult cohort of 299)",
   no:  i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is below the 2 mL/kg/hr possible-polyuria mark",
-  miss: "urine output — needs a urine volume, the interval it was collected over, and a weight",
-  gateMiss: "urine output against a polyuria threshold — suppressed below about 6 weeks of postnatal age. The 2 mL/kg/hr mark is an entry criterion from an adult outpatient cohort and the 3 mL/kg/hr mark comes from children with acute intracranial disease; neither cohort contained a neonate, and a term newborn's urine output is not comparable to either",
+  miss: "urine output: needs a urine volume, the interval it was collected over, and a weight",
+  gateMiss: "urine output against a polyuria threshold: suppressed below about 6 weeks of postnatal age. The 2 mL/kg/hr mark is an entry criterion from an adult outpatient cohort and the 3 mL/kg/hr mark comes from children with acute intracranial disease; neither cohort contained a neonate, and a term newborn's urine output is not comparable to either",
   pmids: [40294614]
 };
 C.polyuriaClear = {
@@ -1087,7 +1087,7 @@ C.polyuriaClear = {
   yes: i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr also clears the 3 mL/kg/hr mark used operationally in the one pediatric salt-wasting series (n=7 classified)",
   no:  i => "Urine output " + fmt(i.uop, 2) + " mL/kg/hr is below the 3 mL/kg/hr operational mark",
   miss: "urine output at the 3 mL/kg/hr mark",
-  gateMiss: "urine output at the 3 mL/kg/hr mark — suppressed below about 6 weeks of postnatal age, because the series that mark comes from contained no neonates",
+  gateMiss: "urine output at the 3 mL/kg/hr mark: suppressed below about 6 weeks of postnatal age, because the series that mark comes from contained no neonates",
   pmids: [24665304]
 };
 C.uosmDilute = {
@@ -1096,7 +1096,7 @@ C.uosmDilute = {
   yes: i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is at or below 300, which confirms a hypotonic urine" + (i.uosm < T.uosmWater ? ", and below 150, which makes it a pure water diuresis" : ""),
   no:  i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is above 300, so the urine is not hypotonic",
   miss: "urine osmolality",
-  gateMiss: "urine osmolality — suppressed below about 6 weeks of postnatal age, because every osmolality threshold in this tool is adult-derived and a newborn's maximal urine osmolality is only slightly above plasma",
+  gateMiss: "urine osmolality: suppressed below about 6 weeks of postnatal age, because every osmolality threshold in this tool is adult-derived and a newborn's maximal urine osmolality is only slightly above plasma",
   pmids: [39148427, 34509418]
 };
 C.uosmSolute = {
@@ -1110,7 +1110,7 @@ C.uosmSolute = {
   yes: i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is above 300 " + (i.uosm >= T.uosmSoluteDominant ? "and at or above 800, at which a solute diuresis is the dominant mechanism" : "with a positive urine glucose, which names the solute"),
   no:  i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is at or below 300, which argues against a solute diuresis",
   miss: "urine osmolality",
-  gateMiss: "urine osmolality — suppressed below about 6 weeks of postnatal age",
+  gateMiss: "urine osmolality: suppressed below about 6 weeks of postnatal age",
   pmids: [34509418, 39148427]
 };
 /* Newell-Price 2025 PMID 39148427 [A], verbatim: urine osmolalities between 300 and
@@ -1121,14 +1121,14 @@ C.uosmSolute = {
    the population this tool exists for, so a hard fail across that band would argue
    against the diagnosis the tool is most often being asked about. */
 C.uosmDiCompatible = {
-  k: "uosmDI", need: ["uosm"], off: i => i.sgScorable === true, w: 3, hard: true, pivotal: true, gate: "neoGate",
+  k: "uosmDI", need: ["uosm"], off: i => i.sgScorable === true, w: 3, hard: true, capping: true, gate: "neoGate",
   neutral: i => i.uosm > T.uosmHypotonicCeil && i.uosm < T.uosmSoluteDominant,
   mid: i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg falls between 300 and 800. That band can be seen with partial vasopressin deficiency or partial vasopressin resistance, so it is scored neither for nor against this diagnosis — it is the reason further evaluation is needed, not a reason to drop the diagnosis",
   test: i => i.uosm <= T.uosmHypotonicCeil,
   yes: i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is at or below 300, which confirms a hypotonic urine" + (i.uosm < T.uosmWater ? ", and below 150, which makes it a pure water diuresis" : ""),
   no:  i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is at or above 800, at which a solute diuresis is the dominant mechanism and a water diuresis is argued against",
   miss: "urine osmolality",
-  gateMiss: "urine osmolality — suppressed below about 6 weeks of postnatal age, because every osmolality threshold in this tool is adult-derived and a newborn's maximal urine osmolality is only slightly above plasma",
+  gateMiss: "urine osmolality: suppressed below about 6 weeks of postnatal age, because every osmolality threshold in this tool is adult-derived and a newborn's maximal urine osmolality is only slightly above plasma",
   pmids: [39148427, 34509418]
 };
 /* ROUND 4 - THE SPECIFIC-GRAVITY TIER.
@@ -1196,7 +1196,7 @@ C.naHigh = {
   yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is at or above 145, which identified vasopressin deficiency with 100% specificity (95% CI 61–100) in an adult validation cohort",
   no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 145",
   miss: "serum sodium",
-  gateMiss: "serum sodium against the 145 mmol/L mark — suppressed below about 6 weeks of postnatal age. That threshold comes from an adult validation cohort and no neonatal equivalent is established",
+  gateMiss: "serum sodium against the 145 mmol/L mark: suppressed below about 6 weeks of postnatal age. That threshold comes from an adult validation cohort and no neonatal equivalent is established",
   pmids: [40294614]
 };
 /* The same 145 threshold, without the attribution. Atila 2025 measured specificity for
@@ -1209,7 +1209,7 @@ C.naHighNoAttr = {
   yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is at or above 145, which is hypernatremia. The 100% specificity reported at that threshold was for vasopressin deficiency against primary polydipsia as the comparator, so it is not evidence for this entry and is counted here as hypernatremia only",
   no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 145",
   miss: "serum sodium",
-  gateMiss: "serum sodium against the 145 mmol/L mark — suppressed below about 6 weeks of postnatal age",
+  gateMiss: "serum sodium against the 145 mmol/L mark: suppressed below about 6 weeks of postnatal age",
   pmids: [40294614]
 };
 C.naRising = {
@@ -1217,14 +1217,14 @@ C.naRising = {
   test: i => i.naDelta >= 3 && i.naHrs <= 12,
   yes: i => "Serum sodium has risen " + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, a rise of 3 mmol/L or more within 12 h. The sodium trend is what separates diabetes insipidus from an appropriate water diuresis; what the urine is doing is scored separately, on its own line",
   no:  i => "Serum sodium has changed " + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, which is not a rise of 3 mmol/L or more within 12 h",
-  miss: "the sodium trend — needs a previous sodium and the interval between the two"
+  miss: "the sodium trend: needs a previous sodium and the interval between the two"
 };
 C.naNotRising = {
   k: "naNotRise", need: ["naRate"], w: 3, hard: true,
   test: i => !(i.naDelta >= 3 && i.naHrs <= 12),
   yes: i => "Serum sodium has changed " + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, which is not a rise of 3 mmol/L or more in 12 h. The absence of a rising sodium is what separates an appropriate water diuresis from diabetes insipidus",
   no:  i => "Serum sodium has risen " + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h, which argues against calling this an appropriate water diuresis",
-  miss: "the sodium trend — needs a previous sodium and the interval between the two"
+  miss: "the sodium trend: needs a previous sodium and the interval between the two"
 };
 C.uHypoToSerum = {
   k: "uLtS", need: ["uosm", "sosm"], w: 2, gate: "neoGate",
@@ -1232,7 +1232,7 @@ C.uHypoToSerum = {
   yes: i => "Urine osmolality " + fmt(i.uosm, 0) + " is below the serum osmolality " + fmt(i.sosm, 0) + " mOsm/kg on the paired sample, so the urine is hypotonic to plasma",
   no:  i => "Urine osmolality " + fmt(i.uosm, 0) + " is at or above the serum osmolality " + fmt(i.sosm, 0) + " mOsm/kg",
   miss: "a paired serum and urine osmolality drawn at the same time",
-  gateMiss: "a paired serum and urine osmolality — the urine limb is suppressed below about 6 weeks of postnatal age"
+  gateMiss: "a paired serum and urine osmolality: the urine limb is suppressed below about 6 weeks of postnatal age"
 };
 C.uGluNeg = {
   k: "uGluNeg", need: ["uglu"], w: 1,
@@ -1265,7 +1265,7 @@ C.freeWaterRunning = {
   test: i => !!i.cfFreewater,
   yes: () => "Hypotonic maintenance fluid or a high free-water intake is running, which is what produces an appropriate dilute diuresis and is the dominant iatrogenic cause of hyponatremia in hospitalised children",
   no:  () => "No hypotonic maintenance fluid and no high free-water intake was recorded, so nothing has been identified that would drive an appropriate water diuresis",
-  miss: "whether hypotonic fluid or a free-water load is running — check it from the fluid orders",
+  miss: "whether hypotonic fluid or a free-water load is running: check it from the fluid orders",
   pmids: [33028494]
 };
 /* ROUND 4. The running and recently-stopped boxes are merged into one control, so
@@ -1295,7 +1295,7 @@ C.ddavpRise = {
   test: i => i.ddavp === "rise",
   yes: () => "Urine osmolality rose more than 50% after desmopressin. The relative criterion is used here because the adult >750 mOsm/kg criterion could not be reached in a pediatric series",
   no:  () => "Urine osmolality did not rise more than 50% after desmopressin, which argues against vasopressin deficiency",
-  miss: "the desmopressin response — this is the only input on this tab that separates central from nephrogenic DI",
+  miss: "the desmopressin response: this is the only input on this tab that separates central from nephrogenic DI",
   pmids: [39148427, 23426815]
 };
 C.ddavpNoRise = {
@@ -1303,7 +1303,7 @@ C.ddavpNoRise = {
   test: i => i.ddavp === "norise",
   yes: () => "Urine osmolality did not rise more than 50% after desmopressin, which is the pattern of vasopressin resistance",
   no:  () => "Urine osmolality rose more than 50% after desmopressin, which argues against vasopressin resistance",
-  miss: "the desmopressin response — the separator between central and nephrogenic DI",
+  miss: "the desmopressin response: the separator between central and nephrogenic DI",
   pmids: [39148427, 30106630]
 };
 C.copeptinHigh = {
@@ -1333,16 +1333,16 @@ C.naLow = {
   yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 135" + (i.na < T.naSevereHypo ? ", and below the 130 mmol/L severe-hyponatremia mark" : ""),
   no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is not below 135",
   miss: "serum sodium",
-  gateMiss: "serum sodium against the 135 mmol/L mark — suppressed below about 6 weeks of postnatal age. Both the 135 mmol/L mark and the 137 to 143 pediatric reference interval come from cohorts that excluded neonates",
+  gateMiss: "serum sodium against the 135 mmol/L mark: suppressed below about 6 weeks of postnatal age. Both the 135 mmol/L mark and the 137 to 143 pediatric reference interval come from cohorts that excluded neonates",
   pmids: [33028494]
 };
 C.uosmConcentrated = {
-  k: "uosm100", need: ["uosm"], off: i => i.sgScorable === true, w: 2, hard: true, pivotal: true, gate: "neoGate",
+  k: "uosm100", need: ["uosm"], off: i => i.sgScorable === true, w: 2, hard: true, capping: true, gate: "neoGate",
   test: i => i.uosm > T.uosmSiadhFloor,
   yes: i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is above 100, so the urine is inappropriately concentrated for a hyponatremic plasma",
   no:  i => "Urine osmolality " + fmt(i.uosm, 0) + " mOsm/kg is at or below 100, which is an appropriately dilute urine",
   miss: "urine osmolality",
-  gateMiss: "urine osmolality — suppressed below about 6 weeks of postnatal age",
+  gateMiss: "urine osmolality: suppressed below about 6 weeks of postnatal age",
   pmids: [18477658]
 };
 C.unaHigh = {
@@ -1366,7 +1366,7 @@ C.unaLow = {
   test: i => i.una < T.unaHypovolemic,
   yes: i => "Spot urine sodium " + fmt(i.una, 0) + " mmol/L is below 30. In the one prospective study that measured it, hypovolemic hyponatremic patients had a mean urine sodium of 18.4 ± 3.1 against 72 ± 3.7 mmol/L in the normovolemic, p<0.001",
   no:  i => "Spot urine sodium " + fmt(i.una, 0) + " mmol/L is at or above 30, which is the normovolemic pattern in that study",
-  miss: "spot urine sodium — the single most useful next test when the volume assessment is carrying the argument",
+  miss: "spot urine sodium: the single most useful next test when the volume assessment is carrying the argument",
   pmids: [3674097]
 };
 /* CROSS-3, made structural. Chung 1987 measured clinical volume assessment in 58
@@ -1423,7 +1423,7 @@ C.hyperglycemia = {
   test: i => i.sglu >= T.sgluHyper,
   yes: i => "Serum glucose " + fmt(i.sglu, 0) + " mg/dL is at or above 200. Glucose is an effective osmole: at this level water is drawn out of cells and the measured sodium falls without the plasma becoming hypotonic, so the sodium is not yet a statement about tonicity. The 200 mg/dL trigger is this tool's figure and no source names it",
   no:  i => "Serum glucose " + fmt(i.sglu, 0) + " mg/dL is below 200",
-  miss: "serum glucose — entered on this tab and, until now, read by nothing"
+  miss: "serum glucose: entered on this tab and, until now, read by nothing"
 };
 C.feurateHigh = {
   k: "feurate", need: ["feurate"], w: 2,
@@ -1438,7 +1438,7 @@ C.endoNormal = {
   test: i => i.endo === "normal",
   yes: () => "Cortisol and thyroid function are both normal, which is a criterion for SIADH rather than an optional extra",
   no:  () => "Cortisol or thyroid function is abnormal. Adrenal insufficiency mimics SIADH and worsens when treated as SIADH",
-  miss: "cortisol and thyroid function — until these are known, SIADH is capped at possible and cannot be called probable"
+  miss: "cortisol and thyroid function: until these are known, SIADH is capped at possible and cannot be called probable"
 };
 C.noDiuretic = {
   k: "noDiur", chk: "cfDiuretic", w: 2,
@@ -1459,7 +1459,7 @@ C.vasoStopped = {
 const DIAGNOSES = [
   { id: "central-di", label: "Central diabetes insipidus (vasopressin deficiency)", branch: "poly", pop: "thresholds [A]-derived",
     crit: [C.polyuriaPossible, C.uosmDiCompatible, C.sgDiCompatible, C.naHigh, C.naRising, C.uHypoToSerum, C.uGluNeg, C.noFreeWater, C.noVasoRunning, C.ddavpRise, C.copeptinLow],
-    missingKey: ["a desmopressin trial with paired pre and post urine osmolality — the separator from nephrogenic DI", "a paired serum and urine osmolality drawn at the same time", "hourly paired sodium and urine output"],
+    missingKey: ["a desmopressin trial with paired pre and post urine osmolality: the separator from nephrogenic DI", "a paired serum and urine osmolality drawn at the same time", "hourly paired sodium and urine output"],
     pmids: [40294614, 39148427] },
   { id: "nephrogenic-di", label: "Nephrogenic diabetes insipidus (vasopressin resistance)", branch: "poly", pop: "thresholds [A]-derived",
     crit: [C.polyuriaPossible, C.uosmDiCompatible, C.sgDiCompatible, C.naHighNoAttr, C.naRising, C.uHypoToSerum, C.uGluNeg, C.noFreeWater, C.noVasoRunning, C.avprRisk, C.ddavpNoRise, C.copeptinHigh],
@@ -1472,7 +1472,7 @@ const DIAGNOSES = [
     pmids: [34509418] },
   { id: "excess-free-water", label: "Appropriate water diuresis from a free-water load", branch: "poly", pop: "[P] context",
     crit: [C.polyuriaPossible, C.uosmDilute, C.sgDiCompatible, C.naNotRising, C.freeWaterRunning],
-    missingKey: ["the fluid orders — this is checked from the prescription, not inferred from labs", "a sodium trend"],
+    missingKey: ["the fluid orders: this is checked from the prescription, not inferred from labs", "a sodium trend"],
     note: "The absence of a rising sodium is what separates this from diabetes insipidus. Hypotonic maintenance fluid is the dominant iatrogenic cause of hyponatremia in hospitalised children.",
     pmids: [33028494] },
   { id: "vasopressin-withdrawal-di", label: "Diabetes insipidus after vasopressin was stopped", branch: "poly", pop: "[A]-predominant",
@@ -1483,13 +1483,13 @@ const DIAGNOSES = [
   { id: "primary-polydipsia", label: "Primary polydipsia", branch: "poly", pop: "[A] cut-offs",
     crit: [C.polyuriaPossible, C.uosmDilute, C.sgDiCompatible],
     extra: [{ k: "ppNotAvpd", need: ["na"], w: 3, hard: true, gate: "neoGate",
-      gateMiss: "serum sodium against the 145 mmol/L mark — suppressed below about 6 weeks of postnatal age",
+      gateMiss: "serum sodium against the 145 mmol/L mark: suppressed below about 6 weeks of postnatal age",
       test: i => i.na < T.naAvpd,
       yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 145",
       no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is at or above 145, which identified vasopressin deficiency with 100% specificity (95% CI 61–100) in an adult validation cohort and argues against primary polydipsia",
       miss: "serum sodium", pmids: [40294614] },
       { k: "naPP", need: ["na"], w: 3, gate: "neoGate",
-      gateMiss: "serum sodium against the 135 mmol/L mark — suppressed below about 6 weeks of postnatal age",
+      gateMiss: "serum sodium against the 135 mmol/L mark: suppressed below about 6 weeks of postnatal age",
       test: i => i.na < T.naPolydipsia,
       yes: i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is below 135, which identified primary polydipsia with 100% specificity (95% CI 34–100) in an adult validation cohort",
       no:  i => "Serum sodium " + fmt(i.na, 0) + " mmol/L is not below 135",
@@ -1518,12 +1518,12 @@ const DIAGNOSES = [
     pmids: [3674097] },
   { id: "hypervolemic-hyponatremia", label: "Hypervolemic hyponatremia (an oedematous state)", branch: "hypo", pop: "criteria [A]",
     crit: [C.naLow, C.uosmConcentrated, C.sgAntidiuresis, C.volHyper, C.unaLow, C.noDiuretic],
-    missingKey: ["a weight trend and a cumulative fluid balance", "the examination findings that made the call — oedema, anasarca, jugular venous distension, pulmonary oedema", "whichever of an echocardiogram, liver function or urine protein fits the suspected oedematous state"],
+    missingKey: ["a weight trend and a cumulative fluid balance", "the examination findings that made the call: oedema, anasarca, jugular venous distension, pulmonary oedema", "whichever of an echocardiogram, liver function or urine protein fits the suspected oedematous state"],
     note: "Peripheral oedema, anasarca, jugular venous distension and pulmonary oedema are stated to be inconsistent with SIADH, so an oedematous hyponatremic child is a different problem and is displayed as its own entry rather than as a variant of SIADH. The prospective study that found clinical volume assessment to be close to coin-flip enrolled non-oedematous patients only and does not argue against recognising oedema. No pediatric diagnostic-accuracy study exists here either.",
     pmids: [3674097] },
   { id: "diuretic-hyponatremia", label: "Diuretic-induced hyponatremia", branch: "hypo", pop: "[A] series",
     crit: [C.naLow, C.diureticActive, C.uosmConcentrated, C.sgAntidiuresis],
-    missingKey: ["the drug chart — which diuretic, what dose, and when it was started", "serum and urine potassium", "fractional excretion of urate, which is the salvage test while a diuretic is running"],
+    missingKey: ["the drug chart: which diuretic, what dose, and when it was started", "serum and urine potassium", "fractional excretion of urate, which is the salvage test while a diuretic is running"],
     note: "Offered on the drug chart rather than on the urine. While a diuretic is running the urine sodium is a much weaker discriminator — the area under the curve for urine sodium in diagnosing inappropriate antidiuresis falls from 0.96 to 0.85 — so the tests that would normally rank this differential are the ones the diuretic has disabled. Thiazide was the identified cause in 1 of 62 hyponatremic patients in one adult series; no pediatric series quantifies it.",
     pmids: [31904619, 18477658] },
   { id: "hyperglycemic-hyponatremia", label: "Hyperglycemia-associated hyponatremia (the sodium is not yet a tonicity statement)", branch: "hypo", pop: "mechanism",
@@ -1538,7 +1538,7 @@ const DIAGNOSES = [
       test: i => i.endo === "abn",
       yes: () => "Cortisol or thyroid function is abnormal",
       no:  () => "Cortisol and thyroid function are both normal, which satisfies that pair of SIADH criteria and makes this diagnosis unlikely",
-      miss: "cortisol and thyroid function — unmeasured, so this competes with SIADH rather than sitting in a footnote" }],
+      miss: "cortisol and thyroid function: unmeasured, so this competes with SIADH rather than sitting in a footnote" }],
     missingKey: ["a morning cortisol, with an ACTH stimulation test if needed", "TSH and free T4"],
     note: "Displayed as a competing diagnosis, not a footnote, whenever SIADH is in play and these have not been measured. Treating adrenal insufficiency as SIADH makes it worse.",
     pmids: [18477658] }
@@ -1703,7 +1703,7 @@ function scoreDiagnosis(d, i) {
   const crits = (d.crit || []).concat(d.extra || []);
   const why = [], against = [], neutral = [], missing = [], pmids = [];
   let score = 0, hardFail = false, metCount = 0, missCount = 0, notMetCount = 0;
-  let scored = 0, pivotalMissing = false, pivotalNeutral = false, usedSg = false;
+  let scored = 0, cappingMissing = false, cappingNeutral = false, usedSg = false;
   for (let n = 0; n < crits.length; n++) {
     const c = crits[n];
     /* A criterion may declare itself inapplicable to this input state, in which case
@@ -1736,8 +1736,8 @@ function scoreDiagnosis(d, i) {
     scored++;
     if (r.state === "met") { why.push({ t: r.text, p: r.pmids }); score += w; metCount++; (r.pmids||[]).forEach(p => pmids.push(p)); }
     else if (r.state === "notmet") { against.push({ t: r.text, p: r.pmids }); score -= w; notMetCount++; if (c.hard) hardFail = true; }
-    else if (r.state === "neutral") { neutral.push({ t: r.text, p: r.pmids }); if (c.pivotal) pivotalNeutral = true; }
-    else { missing.push(c.miss); missCount++; if (c.pivotal) pivotalMissing = true; }
+    else if (r.state === "neutral") { neutral.push({ t: r.text, p: r.pmids }); if (c.capping) cappingNeutral = true; }
+    else { missing.push(c.miss); missCount++; if (c.capping) cappingMissing = true; }
   }
   (d.missingKey || []).forEach(m => { if (missing.indexOf(m) === -1) missing.push(m); });
   let conf;
@@ -1746,7 +1746,7 @@ function scoreDiagnosis(d, i) {
   const missFrac = scored > 0 ? (missCount / scored) : 0;
   if (metCount === 0 && missCount > 0) conf = "unassessable";
   else if (hardFail || score <= -3 || (score <= 0 && notMetCount >= 3)) conf = "against";
-  else if (score >= 6 && missCount <= 2 && missFrac <= 0.34 && !pivotalMissing) conf = "consistent";
+  else if (score >= 6 && missCount <= 2 && missFrac <= 0.34 && !cappingMissing) conf = "consistent";
   else conf = "possible";
   /* GATE_2: normal cortisol and thyroid function are criteria, not extras.
      Until they are known SIADH is capped at possible and never called probable. */
@@ -1755,7 +1755,7 @@ function scoreDiagnosis(d, i) {
      diabetes insipidus entries. Newell-Price's own conclusion about that band is that
      further evaluation is necessary, so the entry is held at possible rather than
      being called consistent on a measurement that separates nothing. */
-  if (pivotalNeutral && conf === "consistent") conf = "possible";
+  if (cappingNeutral && conf === "consistent") conf = "possible";
   /* ROUND 4. An entry whose concentration limb rests on a specific gravity is capped
      below "consistent" whatever it scores. That cap IS the lower confidence tier the
      specific gravity gets: the signal is usable - Lugo 1997 titrated on it at r=0.96
@@ -1764,7 +1764,7 @@ function scoreDiagnosis(d, i) {
   if (usedSg && conf === "consistent") conf = "possible";
   const out = { id: d.id, label: d.label, pop: d.pop, note: d.note, score: score,
            conf: conf, why: why, against: against, neutral: neutral, missing: missing,
-           pivotalMissing: pivotalMissing, pivotalNeutral: pivotalNeutral,
+           cappingMissing: cappingMissing, cappingNeutral: cappingNeutral,
            sgTier: usedSg, sgDemoted: !!(usedSg && i.sgDemoted), pmids: d.pmids || [] };
   out.confLabel = confLabelFor(out);
   return out;
@@ -2425,9 +2425,9 @@ function renderDx() {
   if (i.uop !== null) {
     uopEl.textContent = fmt(i.uop, 2) + " mL/kg/hr";
     let tag = "below the 2 mL/kg/hr possible-polyuria mark";
-    if (i.uop >= T.uopClear) tag = "at or above 3 mL/kg/hr — clear polyuria, pediatric operational criterion";
-    else if (i.uop >= T.uopPossible) tag = "at or above 2 mL/kg/hr — possible polyuria";
-    $("dx-uop-note").textContent = fmt(num("dx-uvol"), 0) + " mL ÷ " + fmt(num("dx-uhrs"), 2) + " h ÷ " + fmt(i.wt, 2) + " kg — " + tag;
+    if (i.uop >= T.uopClear) tag = "at or above 3 mL/kg/hr, clear polyuria on the pediatric operational criterion";
+    else if (i.uop >= T.uopPossible) tag = "at or above 2 mL/kg/hr, possible polyuria";
+    $("dx-uop-note").textContent = fmt(num("dx-uvol"), 0) + " mL ÷ " + fmt(num("dx-uhrs"), 2) + " h ÷ " + fmt(i.wt, 2) + " kg: " + tag;
   } else {
     uopEl.textContent = "—";
     $("dx-uop-note").textContent = "Needs a urine volume, its interval and a weight.";
@@ -2712,7 +2712,7 @@ function doseFlag(dose) {
   }
   if (dose > T.doseTopAntidiuretic) {
     return { cls: "", title: "Above the published pediatric antidiuretic range, below this unit's caution flag",
-      body: "This is above 2.7 mU/kg/hr, the highest dose reported in any pediatric series for the antidiuretic indication (n=3), and below the 5 mU/kg/hr caution flag, which is this unit's figure and which no source names. There is no published experience to compare a dose in this band against in either direction — the antidiuretic series stop below it and the pressor literature starts far above it. " + RANGE };
+      body: "This is above 2.7 mU/kg/hr, the highest dose reported in any pediatric series for the antidiuretic indication (n=3), and below the 5 mU/kg/hr caution flag, which is this unit's figure and which no source names. There is no published experience to compare a dose in this band against in either direction; the antidiuretic series stop below it and the pressor literature starts far above it. " + RANGE };
   }
   return { cls: "", title: "Within the published pediatric antidiuretic range",
     body: RANGE };
@@ -2725,7 +2725,7 @@ function renderDoseFlag() {
   else {
     const f = doseFlag(d);
     const box = document.createElement("div"); box.className = "verdict " + f.cls;
-    const t = document.createElement("div"); t.className = "vtitle"; t.textContent = fmt(d, 2) + " mU/kg/hr — " + f.title;
+    const t = document.createElement("div"); t.className = "vtitle"; t.textContent = fmt(d, 2) + " mU/kg/hr: " + f.title;
     const p = document.createElement("p"); p.textContent = f.body;
     box.appendChild(t); box.appendChild(p);
     m.appendChild(box);
@@ -2737,7 +2737,7 @@ function renderDoseFlag() {
     const cap = document.createElement("div");
     cap.style.color = "var(--ink-muted)";
     cap.style.fontSize = "14px";
-    cap.textContent = "Sources for the comparator doses only — the 0.08 to 2.7 mU/kg/hr antidiuretic range and the 30 mU/kg/hr bottom of the pressor range. Neither the 5 nor the 10 mU/kg/hr flag is cited, because no source names either figure.";
+    cap.textContent = "Sources for the comparator doses only: the 0.08 to 2.7 mU/kg/hr antidiuretic range and the 30 mU/kg/hr bottom of the pressor range. Neither the 5 nor the 10 mU/kg/hr flag is cited, because no source names either figure.";
     cite.appendChild(cap);
     const row = pmidRow([9467135, 8821902, 7923015, 19608718]); if (row) cite.appendChild(row);
     m.appendChild(cite);
@@ -2746,7 +2746,7 @@ function renderDoseFlag() {
   const note = $("tt-timing-note");
   if (hrs === null) { note.textContent = "A dose change has not had time to act for at least an hour."; note.className = "hint"; }
   else if (hrs < 1) { note.textContent = "Under an hour. Do not stack a second change yet: steady state takes 40 to 80 minutes and the visible antidiuretic effect begins around the third hour."; note.className = "warn"; }
-  else if (hrs < 3) { note.textContent = "Between 1 and 3 hours. Judgeable, but not fully expressed — the effect peaks by about the sixth hour."; note.className = "hint"; }
+  else if (hrs < 3) { note.textContent = "Between 1 and 3 hours. Judgeable, but not fully expressed; the effect peaks by about the sixth hour."; note.className = "hint"; }
   else { note.textContent = "Beyond 3 hours the effect should be fully expressed; onset is reported at 1 to 6 hours and the peak by the sixth hour."; note.className = "hint"; }
 }
 
@@ -2828,7 +2828,7 @@ function renderRateBox() {
   t.textContent = "Fastest logged sodium change: " + (worst.rate >= 0 ? "+" : "") + fmt(worst.rate, 2) + " mmol/L/hr, between t = " + fmt(worst.a.t, 1) + " h and t = " + fmt(worst.b.t, 1) + " h";
   box.appendChild(t);
   const p1 = document.createElement("p");
-  p1.innerHTML = "Across the whole log the sodium has moved " + (total >= 0 ? "+" : "") + fmt(total, 1) + " mmol/L over " + fmt(span, 1) + " h. The largest <strong>rise</strong> inside any 24 hour window in this log is " + (rise24 ? "+" + fmt(rise24.d, 1) + " mmol/L" : "none — the sodium never rose between two logged points") + ", and the largest <strong>fall</strong> is " + (fall24 ? fmt(fall24.d, 1) + " mmol/L" : "none") + ".";
+  p1.innerHTML = "Across the whole log the sodium has moved " + (total >= 0 ? "+" : "") + fmt(total, 1) + " mmol/L over " + fmt(span, 1) + " h. The largest <strong>rise</strong> inside any 24 hour window in this log is " + (rise24 ? "+" + fmt(rise24.d, 1) + " mmol/L" : "none; the sodium never rose between two logged points") + ", and the largest <strong>fall</strong> is " + (fall24 ? fmt(fall24.d, 1) + " mmol/L" : "none") + ".";
   box.appendChild(p1);
   if (breaches.length) {
     const pb = document.createElement("p");
@@ -2876,10 +2876,10 @@ function addTimepoint() {
   const sgRaw = num("lg-sg"), sgG = checkSG(sgRaw);
   const problems = [];
   if (t === null) problems.push("a time in hours");
-  if (t !== null && t < 0) problems.push("a time at or after zero — the log runs forward from the start of the record, and a negative hour produces a rate between two times in the wrong order");
+  if (t !== null && t < 0) problems.push("a time at or after zero; the log runs forward from the start of the record, and a negative hour produces a rate between two times in the wrong order");
   if (!sgG.ok) problems.push(sgG.msg);
   const lgNa = num("lg-na"), lgUosm = num("lg-uosm"), lgDose = num("lg-dose");
-  if (lgNa !== null && (lgNa < 80 || lgNa > 200)) problems.push("a serum sodium inside 80 to 200 mmol/L — the value entered is outside anything a laboratory reports");
+  if (lgNa !== null && (lgNa < 80 || lgNa > 200)) problems.push("a serum sodium inside 80 to 200 mmol/L; the value entered is outside anything a laboratory reports");
   if (lgUosm !== null && (lgUosm <= 0 || lgUosm > 1600)) problems.push("a urine osmolality above zero and at or below 1600 mOsm/kg");
   if (lgDose !== null && lgDose < 0) problems.push("a dose at or above zero");
   const uop = computeUop(num("lg-uvol"), num("lg-uhrs"), wt);
@@ -2958,8 +2958,8 @@ function drawCharts() {
 
   const PL = 66, PRr = 776;
   const PANELS = [
-    { top: 44, bot: 196, label: "Urine output — mL/kg/hr" },
-    { top: 236, bot: 368, label: "Vasopressin — mU/kg/hr (step)" },
+    { top: 44, bot: 196, label: "Urine output, mL/kg/hr" },
+    { top: 236, bot: 368, label: "Vasopressin, mU/kg/hr (step)" },
     { top: 408, bot: 556, label: "Urine concentration" }
   ];
   let t0 = rows[0].t, t1 = rows[rows.length - 1].t;
@@ -3052,11 +3052,11 @@ function drawCharts() {
   const flagsTight = bothFlags && (Y2(T.doseCaution) - Y2(T.doseHard)) < 18;
   if (T.doseCaution <= dMax) {
     s.appendChild(el("path", { d: "M" + PL + " " + Y2(T.doseCaution) + " L" + PRr + " " + Y2(T.doseCaution), style: S.caution + "stroke-dasharray:6 4" }));
-    s.appendChild(svgTxt(PRr - 4, Y2(T.doseCaution) + (flagsTight ? 13 : -5), "5 — this unit's caution figure, no source names it", { style: FT(11) + CAUTION_TXT + HALO, "text-anchor": "end" }));
+    s.appendChild(svgTxt(PRr - 4, Y2(T.doseCaution) + (flagsTight ? 13 : -5), "5: this unit's caution figure, no source names it", { style: FT(11) + CAUTION_TXT + HALO, "text-anchor": "end" }));
   }
   if (T.doseHard <= dMax) {
     s.appendChild(el("path", { d: "M" + PL + " " + Y2(T.doseHard) + " L" + PRr + " " + Y2(T.doseHard), style: S.neg + "stroke-dasharray:6 4" }));
-    s.appendChild(svgTxt(PRr - 4, Y2(T.doseHard) - 5, "10 — this unit's hard flag, no source names it", { style: FT(11) + "fill:var(--neg);" + HALO, "text-anchor": "end" }));
+    s.appendChild(svgTxt(PRr - 4, Y2(T.doseHard) - 5, "10: this unit's hard flag, no source names it", { style: FT(11) + "fill:var(--neg);" + HALO, "text-anchor": "end" }));
   }
   if (doses.length) {
     /* A dose is constant from the moment it is set until it is changed.
@@ -3078,7 +3078,7 @@ function drawCharts() {
   const sgLo = 1.000, sgHi = 1.035;
   const Y3 = v => p3.bot - ((v - sgLo) / (sgHi - sgLo)) * (p3.bot - p3.top);
   s.appendChild(el("rect", { x: PL, y: Y3(T.tgtSgHi), width: (PRr - PL), height: Math.max(1, Y3(T.tgtSgLo) - Y3(T.tgtSgHi)), style: S.pos }));
-  s.appendChild(svgTxt(PL + 6, Y3(T.tgtSgHi) - 4, "specific gravity target 1.010–1.020 (n=14, 1997) — the only pediatric titration target that exists", { style: FT(11) + "fill:var(--pos);" + HALO }));
+  s.appendChild(svgTxt(PL + 6, Y3(T.tgtSgHi) - 4, "specific gravity target 1.010–1.020 (n=14, 1997), the only pediatric titration target that exists", { style: FT(11) + "fill:var(--pos);" + HALO }));
   [1.000, 1.010, 1.020, 1.030].forEach(v => {
     s.appendChild(svgTxt(PL - 8, Y3(v) + 4, v.toFixed(3), { style: FT(11.5) + S.mut, "text-anchor": "end" }));
     s.appendChild(el("path", { d: "M" + PL + " " + Y3(v) + " L" + PRr + " " + Y3(v), style: S.hair }));
@@ -3100,7 +3100,7 @@ function drawCharts() {
     osms.forEach(r => { d += (d ? "L" : "M") + X(r.t) + " " + Y3o(r.uosm); });
     s.appendChild(el("path", { d: d, style: S.caution + "stroke-width:1.4;stroke-dasharray:5 3" }));
     osms.forEach(r => s.appendChild(el("rect", { x: X(r.t) - 3, y: Y3o(r.uosm) - 3, width: 6, height: 6, style: "fill:var(--caution);" })));
-    s.appendChild(svgTxt(PRr - 4, p3.bot - 6, "no osmolality target band is drawn — none is published in children", { style: FT(11) + S.mut + HALO, "text-anchor": "end" }));
+    s.appendChild(svgTxt(PRr - 4, p3.bot - 6, "no osmolality target band is drawn; none is published in children", { style: FT(11) + S.mut + HALO, "text-anchor": "end" }));
   }
 
   cap.textContent = "Solid slate lines and circles are the primary series on each panel; dashed amber lines with squares are the secondary series read against the right-hand axis. Dotted vertical lines mark every timepoint at which the dose was changed (" + changes.length + " in this record; the dose at the first timepoint is the starting dose and is not counted as a change). The vasopressin trace is a step plot on purpose: a dose is constant from the moment it is set until it is changed, so joining two dose points with a slope would draw rates the patient never received. The urine-output and specific-gravity bands are the published targets from a 14-child PICU cohort; the urine osmolality is plotted without a band because no pediatric osmolality target exists.";
@@ -3143,13 +3143,13 @@ function buildSrTable(rows) {
 
 /* ---------- the published dose ladder, a static figure ---------- */
 const DOSE_LADDER = [
-  { lo: 0.08, hi: 0.10, label: "Bryant 1994 — starting, deliberate partial antidiuresis", pop: "[P] n=2", pmid: 7923015 },
-  { lo: 0.1, hi: 0.1, label: "Devaraja 2021 — starting, during hyperhydration", pop: "[P] n=1", pmid: 33597311 },
-  { lo: 0.05, hi: 0.15, label: "Levine 2018 — effective range during hyperhydration", pop: "[A] n=2", pmid: 30984869 },
-  { lo: 0.25, hi: 1.0, label: "Lugo 1997 — starting range, PICU, general DI", pop: "[P] n=14", pmid: 9467135 },
-  { lo: 1.3, hi: 2.7, label: "Lee 1995 — starting range, comatose children", pop: "[P] n=3", pmid: 8821902 },
-  { lo: 1.34, hi: 1.86, label: "Chanson 1987 — effective, postoperative DI (1.6 ± 0.26)", pop: "[MIX] n=12", pmid: 2431834 },
-  { lo: 30, hi: 120, label: "Choong 2009 — PRESSOR dosing for vasodilatory shock", pop: "[P] RCT n=65", pmid: 19608718 }
+  { lo: 0.08, hi: 0.10, label: "Bryant 1994: starting, deliberate partial antidiuresis", pop: "[P] n=2", pmid: 7923015 },
+  { lo: 0.1, hi: 0.1, label: "Devaraja 2021: starting, during hyperhydration", pop: "[P] n=1", pmid: 33597311 },
+  { lo: 0.05, hi: 0.15, label: "Levine 2018: effective range during hyperhydration", pop: "[A] n=2", pmid: 30984869 },
+  { lo: 0.25, hi: 1.0, label: "Lugo 1997: starting range, PICU, general DI", pop: "[P] n=14", pmid: 9467135 },
+  { lo: 1.3, hi: 2.7, label: "Lee 1995: starting range, comatose children", pop: "[P] n=3", pmid: 8821902 },
+  { lo: 1.34, hi: 1.86, label: "Chanson 1987: effective, postoperative DI (1.6 ± 0.26)", pop: "[MIX] n=12", pmid: 2431834 },
+  { lo: 30, hi: 120, label: "Choong 2009: PRESSOR dosing for vasodilatory shock", pop: "[P] RCT n=65", pmid: 19608718 }
 ];
 function drawDoseLadder() {
   const s = $("dosesvg"); clearKids(s);
@@ -3157,7 +3157,7 @@ function drawDoseLadder() {
   ttl.textContent = "A logarithmic dose scale in milliunits per kilogram per hour showing each published series as a bar, the antidiuretic range ending at 2.7, the empty band between 2.7 and 30 in which this unit's caution and hard-flag lines sit, and the pressor range beginning at 30.";
   s.appendChild(ttl);
   /* L and R were 300 and 830. Four labels fell outside the 0-880 viewBox and one
-     of them, "[P] RCT n=65", was clipped to "[P] RCT n=6" — a wrong n on screen.
+     of them, "[P] RCT n=65", was clipped to "[P] RCT n=6", a wrong n on screen.
      Pulling the plot area in on both sides puts every label inside the box. */
   const L = 340, R = 800, lo = Math.log(0.04), hi = Math.log(160);
   const X = v => L + (Math.log(v) - lo) / (hi - lo) * (R - L);
@@ -3199,10 +3199,10 @@ function drawDoseLadder() {
     tb.appendChild(tr);
   });
   const tr2 = document.createElement("tr");
-  ["This unit's caution figure — no source names it", "n/a", "5", "5"].forEach(c => { const td = document.createElement("td"); td.textContent = c; tr2.appendChild(td); });
+  ["This unit's caution figure, no source names it", "n/a", "5", "5"].forEach(c => { const td = document.createElement("td"); td.textContent = c; tr2.appendChild(td); });
   tb.appendChild(tr2);
   const tr3 = document.createElement("tr");
-  ["This unit's hard flag — no source names it", "n/a", "10", "10"].forEach(c => { const td = document.createElement("td"); td.textContent = c; tr3.appendChild(td); });
+  ["This unit's hard flag, no source names it", "n/a", "10", "10"].forEach(c => { const td = document.createElement("td"); td.textContent = c; tr3.appendChild(td); });
   tb.appendChild(tr3);
   t.appendChild(tb);
 }
@@ -3691,8 +3691,8 @@ function runSelfTest() {
 
   /* The gate that names this tool's central invariant. It used to assert
      `requires !== undefined`, which every NODES entry satisfies by construction, so it
-     was a constant true. It now runs the real predicate — presence of every declared
-     input AND every value the node's prose asserts — over every case above. */
+     was a constant true. It now runs the real predicate, presence of every declared
+     input AND every value the node's prose asserts, over every case above. */
   const caseInputs = [
     mkI({ uop: 6.4, uosm: 105, na: 152, naPrev: 146, naHrs: 8, sosm: 312, uglu: "neg" }),
     mkI({ na: 126, uosm: 450, una: 62, vol: "eu", endo: "normal", feurate: 15.2, uop: 0.8 }),
@@ -3721,7 +3721,7 @@ function runSelfTest() {
 
   /* ---- fuzz. The old sweep used 11 keys with one fixed value each, a sodium that was
      always 128, no trend, no checkboxes, no age and no specific gravity, and it read
-     the differential bullets only — never the node prose, which is the layer every
+     the differential bullets only, never the node prose, which is the layer every
      value defect lived in. This one randomises over boundary values on 25 inputs and
      reads the headline as well as the bullets. ---- */
   const FZ = {
@@ -4371,7 +4371,7 @@ function runSelfTest() {
   const sum = document.createElement("summary"); sum.textContent = failed.length + " of " + res.length + " checks failed";
   det.appendChild(sum);
   const ul = document.createElement("ul");
-  failed.forEach(f => { const li = document.createElement("li"); li.textContent = f.name + " — " + f.why; ul.appendChild(li); });
+  failed.forEach(f => { const li = document.createElement("li"); li.textContent = f.name + ": " + f.why; ul.appendChild(li); });
   det.appendChild(ul); banner.appendChild(det); mount.appendChild(banner);
   return { passed: passed, total: res.length, failed: failed };
 }
