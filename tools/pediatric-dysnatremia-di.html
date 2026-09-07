@@ -160,10 +160,6 @@
   .head-btns { display:flex; gap:8px; flex-wrap:wrap; }
   .theme-btn { font-family:var(--sans); font-size:12.5px; font-weight:560; min-height:44px; padding:0 14px; background:transparent; border:1px solid var(--edge); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out); }
   .theme-btn:hover { background:var(--tint); color:var(--ink); }
-  .chips { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--lg); }
-  .chip { background:var(--paper); padding:12px 14px; }
-  .chip .k { font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px; }
-  .chip .v { font-family:var(--sans); font-size:13.5px; font-weight:560; line-height:1.3; }
 
   /* ---------- disclaimer ---------- */
   .disclaimer { background:var(--caution-bg); border:1px solid var(--caution); border-radius:var(--radius); padding:12px 15px; margin:var(--md) 0 0; font-size:14px; color:var(--ink-muted); display:flex; gap:10px; align-items:flex-start; font-family:var(--sans); line-height:1.55; }
@@ -243,6 +239,15 @@
   .verdict .vtitle { font-family:var(--sans); font-size:16px; font-weight:660; margin-bottom:var(--xs); }
   .verdict p { font-size:15px; margin-bottom:var(--sm); }
   .verdict p:last-child { margin-bottom:0; }
+  /* ROUND 6. The reference blocks on the titrate tab fold. Their titles carry the claim
+     that has to survive the fold, so a reader who never opens one still reads that the
+     dose flags are not published limits and that no wean is published. */
+  .foldref > summary.vtitle { cursor:pointer; list-style:none; display:flex; align-items:baseline; gap:10px; margin-bottom:0; }
+  .foldref[open] > summary.vtitle { margin-bottom:var(--xs); }
+  .foldref > summary.vtitle::-webkit-details-marker { display:none; }
+  .foldref > summary.vtitle::after { content:"+"; margin-left:auto; font-family:var(--mono); font-size:15px; color:var(--slate); }
+  .foldref[open] > summary.vtitle::after { content:"\2212"; }
+  .foldref > summary.vtitle:focus-visible { outline:2px solid var(--slate); outline-offset:3px; }
   .dx-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:var(--sm); }
   .dx { border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); padding:var(--sm) var(--md) var(--md); }
   .dx-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
@@ -399,7 +404,6 @@
     .dtl summary { min-height:0; display:block; }
   }
   @media (max-width: 700px) {
-    .chips { grid-template-columns:repeat(2,1fr); }
     .tabs { grid-template-columns:1fr; }
     .shell { padding:0 var(--md) var(--xl); }
   }
@@ -445,18 +449,6 @@
   </div>
   <p class="lede">Work out which pattern the child is in; then run the vasopressin infusion if it is central diabetes insipidus. Where the inputs cannot settle a question, the tool says so and names the test that would.</p>
 
-  <div class="disclaimer" role="note">
-    <div class="bar" aria-hidden="true"></div>
-    <div><strong>Educational tool &mdash; not for clinical decision-making.</strong> Not a diagnostic device, not FDA-cleared, not validated. <strong>The management tab assumes central diabetes insipidus and nothing else.</strong> <strong>Do not enter protected health information.</strong>
-      <details class="more"><summary>Scope, evidence base and storage</summary>
-      <div class="mb"><p>The management tab does not cover nephrogenic diabetes insipidus, and the diagnostic tab keeps nephrogenic DI in view at equal prominence until a desmopressin response is entered, because no input on that tab separates the two. There is no adequately powered pediatric diagnostic-accuracy study for central DI, SIADH or cerebral salt wasting; most thresholds shown here are adult-derived or come from pediatric cohorts of a few tens of patients, and each carries its population tag and its n where it appears. No desmopressin dose appears anywhere in this tool. Defer to clinical judgment, the treating team, your endocrinology and nephrology colleagues, and local protocols. Every value stays in this browser session, is never saved and is never transmitted; nothing but the color-theme preference is written to this device.</p></div></details></div>
-  </div>
-
-  <div class="chips">
-    <div class="chip"><span class="k">Ranking</span><span class="v">A ranked differential, never a premature single verdict</span></div>
-    <div class="chip"><span class="k">Hardest case</span><span class="v">SIADH against CSW: no volume toggle breaks that tie</span></div>
-    <div class="chip"><span class="k">Storage</span><span class="v">Theme preference only. No log, no inputs, no network</span></div>
-  </div>
 </header>
 
 <div class="tabs" role="tablist" aria-label="Tool section">
@@ -658,15 +650,8 @@
 <div class="panel" id="panel-titrate" role="tabpanel" aria-labelledby="tab-titrate" tabindex="0" hidden>
 
   <h2>Run and titrate the infusion</h2>
-  <p><strong>This tab assumes central diabetes insipidus.</strong> It has no logic for nephrogenic DI; that exclusion lives on the Interpret tab and needs a desmopressin response. Doses are in <span class="mono">mU/kg/hr</span> throughout.</p>
+  <p><strong>This tab assumes central diabetes insipidus.</strong> Nephrogenic DI is excluded on the Interpret tab, by a desmopressin response. Doses are <span class="mono">mU/kg/hr</span>.</p>
 
-  <div class="verdict quiet">
-    <div class="vtitle">Titrate on urine specific gravity, then urine output</div>
-    <p>In the only pediatric cohort that measured which parameter tracks the dose (14 PICU children, 1997), specific gravity correlated with the vasopressin dose at r = 0.96, p = 0.009, and urine output at r = 0.93, p = 0.02. <strong>Neither serum sodium nor serum osmolality tracked the dose at all.</strong>
-      <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/9467135/" target="_blank" rel="noopener">PMID 9467135</a></p>
-    <details class="more"><summary>Why specific gravity is the parameter here, and not on the Interpret tab</summary>
-    <div class="mb"><p>On that tab osmolality is the measurement and specific gravity is a proxy that decouples from it. Here, the entire pediatric titration evidence base is built on specific gravity, and <strong>no pediatric source gives a urine osmolality target</strong>. This tool therefore ships no osmolality target and will not draw one. Enter an osmolality if you have it: it is plotted, and it is the right test when the specific gravity is untrustworthy. The target band still belongs to specific gravity alone.</p></div></details>
-  </div>
 
   <!-- ROUND 4. The author asked for the dose itself, not only the flags. One
        published starting range leads; the other two sit behind the disclosure with
@@ -690,32 +675,9 @@
   <!-- ROUND 4. Time to effect as a RANGE with each population welded to its figure.
        Three studies in three different groups; averaging them would invent a number
        none of them reports. -->
-  <div class="verdict">
-    <div class="vtitle">Time to effect, by source</div>
-    <p>Onset is reported at <strong>1 to 6 hours</strong> in one pediatric series and from the <strong>third hour, peaking at the sixth</strong>, in a mixed-age one. These are different studies in different patients and this tool does not average them into a single figure.</p>
-    <div class="tbl-scroll">
-      <table class="cite-table">
-        <thead><tr><th>What</th><th>Figure</th><th class="pop">Population &middot; n</th><th class="citecol">Source</th></tr></thead>
-        <tbody>
-          <tr><td>Plasma half-life</td><td class="mono">10&ndash;20 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
-          <tr><td>Steady state after a rate change</td><td class="mono">40&ndash;80 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
-          <tr><td>Antidiuretic effect, urine flow below 2 mL/kg/hr with a rising specific gravity</td><td class="mono">1&ndash;6 h</td><td class="pop">[P] &middot; 3</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
-          <tr><td>Antidiuretic effect, onset and peak</td><td class="mono">3rd h, peak 6th h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
-          <tr><td>Polyuria returns after the infusion stops</td><td class="mono">3 h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="fig-cap">The half-life and the steady state are pharmacokinetic and adult; the onset figures are the clinical endpoint each series measured. The gap between the two is why a rate change looks like nothing for an hour.</div>
-  </div>
 
   <!-- ROUND 4. Small patients, small syringes, carrier fluid. One concentration is
        published; the rest is marked as practice because no source states it. -->
-  <div class="verdict caution">
-    <div class="vtitle">Small patient, small syringe, and the carrier</div>
-    <p>At 0.5 mU/kg/hr a 4 kg infant is receiving 2 mU/hr. The only concentration any pediatric report states is 2 units made up in 49.9 mL, 0.04 units/mL, so 40 mU/mL (<span class="mono">[P]</span> n=1); at that concentration 2 mU/hr is 0.05 mL/hr. The arithmetic is this page&rsquo;s; the concentration is the paper&rsquo;s.
-      <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33597311/" target="_blank" rel="noopener">PMID 33597311</a></p>
-    <p><strong>Everything that follows is practice, not literature.</strong> No source states a carrier rate, a dead-space volume, a minimum pump rate or a concentration rule for this drug in a small child. At tens of microlitres an hour the line between the pump and the patient is the lag on every rate change, a flush or a line change delivers whatever that volume is holding as a bolus, and a dedicated lumen with a carrier running is what keeps the delivered rate close to the set rate. Pick the concentration so the pump runs at a rate it can hold, and treat the first hour after any change as unmeasured.</p>
-  </div>
 
   <div class="tier">
     <div class="tier-h"><span class="badge">Dose</span><span class="t">Current infusion rate</span><span class="s">Flags fire above 5 and above 10 mU/kg/hr</span></div>
@@ -738,6 +700,39 @@
     </div>
     <div id="tt-doseflag" role="status" aria-live="polite" aria-atomic="true" style="margin-top:var(--md)"></div>
   </div>
+
+  <!-- ROUND 6. The reference blocks moved below the calculator and fold shut. The
+       reader came for the dose; these are what they consult once they have it. -->
+
+  <details class="verdict quiet foldref"><summary class="vtitle">Titrate on urine specific gravity, then urine output</summary>
+    <p>In the only pediatric cohort that measured which parameter tracks the dose (14 PICU children, 1997), specific gravity correlated with the vasopressin dose at r = 0.96, p = 0.009, and urine output at r = 0.93, p = 0.02. <strong>Neither serum sodium nor serum osmolality tracked the dose at all.</strong>
+      <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/9467135/" target="_blank" rel="noopener">PMID 9467135</a></p>
+    <details class="more"><summary>Why specific gravity is the parameter here, and not on the Interpret tab</summary>
+    <div class="mb"><p>On that tab osmolality is the measurement and specific gravity is a proxy that decouples from it. Here, the entire pediatric titration evidence base is built on specific gravity, and <strong>no pediatric source gives a urine osmolality target</strong>. This tool therefore ships no osmolality target and will not draw one. Enter an osmolality if you have it: it is plotted, and it is the right test when the specific gravity is untrustworthy. The target band still belongs to specific gravity alone.</p></div></details>
+  </details>
+
+  <details class="verdict foldref"><summary class="vtitle">Time to effect: a rate change looks like nothing for an hour</summary>
+    <p>Onset is reported at <strong>1 to 6 hours</strong> in one pediatric series and from the <strong>third hour, peaking at the sixth</strong>, in a mixed-age one. These are different studies in different patients and this tool does not average them into a single figure.</p>
+    <div class="tbl-scroll">
+      <table class="cite-table">
+        <thead><tr><th>What</th><th>Figure</th><th class="pop">Population &middot; n</th><th class="citecol">Source</th></tr></thead>
+        <tbody>
+          <tr><td>Plasma half-life</td><td class="mono">10&ndash;20 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
+          <tr><td>Steady state after a rate change</td><td class="mono">40&ndash;80 min</td><td class="pop">[A] &middot; 2</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></td></tr>
+          <tr><td>Antidiuretic effect, urine flow below 2 mL/kg/hr with a rising specific gravity</td><td class="mono">1&ndash;6 h</td><td class="pop">[P] &middot; 3</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a></td></tr>
+          <tr><td>Antidiuretic effect, onset and peak</td><td class="mono">3rd h, peak 6th h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
+          <tr><td>Polyuria returns after the infusion stops</td><td class="mono">3 h</td><td class="pop">[MIX] &middot; 12</td><td class="citecol"><a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="fig-cap">The half-life and the steady state are pharmacokinetic and adult; the onset figures are the clinical endpoint each series measured. The gap between the two is why a rate change looks like nothing for an hour.</div>
+  </details>
+
+  <details class="verdict caution foldref"><summary class="vtitle">Small patient, small syringe, and the carrier</summary>
+    <p>At 0.5 mU/kg/hr a 4 kg infant is receiving 2 mU/hr. The only concentration any pediatric report states is 2 units made up in 49.9 mL, 0.04 units/mL, so 40 mU/mL (<span class="mono">[P]</span> n=1); at that concentration 2 mU/hr is 0.05 mL/hr. The arithmetic is this page&rsquo;s; the concentration is the paper&rsquo;s.
+      <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/33597311/" target="_blank" rel="noopener">PMID 33597311</a></p>
+    <p><strong>Everything that follows is practice, not literature.</strong> No source states a carrier rate, a dead-space volume, a minimum pump rate or a concentration rule for this drug in a small child. At tens of microlitres an hour the line between the pump and the patient is the lag on every rate change, a flush or a line change delivers whatever that volume is holding as a bolus, and a dedicated lumen with a carrier running is what keeps the delivered rate close to the set rate. Pick the concentration so the pump runs at a rate it can hold, and treat the first hour after any change as unmeasured.</p>
+  </details>
 
   <div class="tier">
     <div class="tier-h"><span class="badge">Log</span><span class="t">Add a timepoint</span><span class="s">Held in this browser tab only, lost on reload</span></div>
@@ -801,8 +796,7 @@
 
   <div class="tri" id="tri-2"></div>
 
-  <div class="verdict quiet">
-    <div class="vtitle">Where 5 and 10 mU/kg/hr come from, and where they do not</div>
+  <details class="verdict quiet foldref"><summary class="vtitle">Where 5 and 10 mU/kg/hr come from &mdash; neither is a published limit</summary>
     <p><strong>These are not published limits.</strong> No source states a maximum vasopressin dose for central diabetes insipidus at any age, and neither figure appears in any publication as a threshold, a caution point or a ceiling. They are this unit&rsquo;s figures, and they sit in an empty band: the highest published pediatric antidiuretic starting dose is 2.7 mU/kg/hr (Lee 1995, <span class="mono">[P]</span> n=3), the lowest pediatric pressor dose in a randomised trial is 30 mU/kg/hr (Choong 2009, <span class="mono">[P]</span> n=65), and there is no pediatric literature between them.
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/8821902/" target="_blank" rel="noopener">PMID 8821902</a>
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19608718/" target="_blank" rel="noopener">PMID 19608718</a></p>
@@ -812,10 +806,9 @@
       <p><strong>The ceiling rests on dose separation, not on documented injury.</strong> No pediatric case of end-organ ischaemia attributable to a vasopressin infusion given for DI is reported. In the pediatric pressor-dose trial the adverse-event rate ratio difference was 12.0% (95% CI &minus;2.6 to 26.7, p = 0.15) and mortality was 10 of 33 against 5 of 32 (RR 1.94, 95% CI 0.75&ndash;5.05, p = 0.24) &mdash; the authors called that a concerning trend, and neither figure reached significance. Neither is a demonstrated harm, and neither is a licence.
         <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/19608718/" target="_blank" rel="noopener">PMID 19608718</a></p>
     </div></details>
-  </div>
+  </details>
 
-  <div class="verdict quiet">
-    <div class="vtitle">The published dose ladder, in one scale</div>
+  <details class="verdict quiet foldref"><summary class="vtitle">The published dose ladder, in one scale</summary>
     <div class="fig-scroll">
       <svg id="dosesvg" viewBox="0 0 880 300" role="img" aria-labelledby="dosesvg-title">
         <title id="dosesvg-title">A logarithmic dose scale in milliunits per kilogram per hour showing each published pediatric and mixed-age series as a bar, the antidiuretic range ending at 2.7, the empty band between 2.7 and 30 in which this unit's caution and hard-flag lines sit, and the pressor range beginning at 30.</title>
@@ -823,10 +816,9 @@
     </div>
     <div class="fig-cap">Every bar is a published dose range with its population and its n. The two dashed lines are this unit&rsquo;s figures and carry no citation.</div>
     <div class="visually-hidden"><table id="dosetable"><caption>Published vasopressin dose ranges in milliunits per kilogram per hour</caption><tbody></tbody></table></div>
-  </div>
+  </details>
 
-  <div class="verdict quiet">
-    <div class="vtitle">Fluid alongside the infusion &mdash; two published pediatric strategies that disagree</div>
+  <details class="verdict quiet foldref"><summary class="vtitle">Fluid alongside the infusion &mdash; two pediatric strategies that disagree</summary>
     <p><strong>Restrict, and use an isotonic carrier:</strong> normal saline at two thirds of maintenance, sodium held 130&ndash;150 mEq/L, <span class="mono">[P]</span> n=18.
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/15211159/" target="_blank" rel="noopener">PMID 15211159</a></p>
     <p><strong>Or replace the excess urine with a hypotonic fluid:</strong> 0 to 0.5 normal saline replacing urine output above 3 mL/kg/hr, <span class="mono">[P]</span> PICU n=14.
@@ -839,10 +831,9 @@
         <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/9467135/" target="_blank" rel="noopener">PMID 9467135</a></p>
       <p>Neither has been tested against the other. The first concedes some hypernatremia and removes the free-water reservoir; the second keeps the reservoir and depends on the infusion being titrated correctly. Once antidiuresis is established, every millilitre of free water running is retained, which is the mechanism behind the iatrogenic half of phase 2.</p>
     </div></details>
-  </div>
+  </details>
 
-  <div class="verdict quiet">
-    <div class="vtitle">Correction-rate limits, and which of them are pediatric</div>
+  <details class="verdict quiet foldref"><summary class="vtitle">Correction-rate limits, and which of them are pediatric</summary>
     <p><strong>Hypernatremia:</strong> reduce the sodium by less than 0.5 mmol/L per hour, or less than 10&ndash;12 mmol/L per 24 hours. That is the guideline position quoted by the largest pediatric study, 402 episodes in 358 children <span class="mono">[P]</span>. The failure direction is cerebral oedema.
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36888887/" target="_blank" rel="noopener">PMID 36888887</a></p>
     <p><strong>Hyponatremia:</strong> not more than 8 mmol/L in 24 hours in a non-seizing child, target 6&ndash;8. That is an institutional pediatric guideline, not pediatric outcome data. The failure direction is osmotic demyelination.</p>
@@ -854,10 +845,9 @@
       <p><strong>Everything quantitative about osmotic demyelination is adult.</strong> A meta-analysis of 11 cohort studies and 26,710 hospitalised adults put the overall incidence at 0.23%, 0.73% with rapid correction and 0.10% without, odds ratio 3.16 (95% CI 1.54&ndash;6.49) &mdash; with rapid variably defined across studies as more than 8 to 12 mmol/L in 24 hours, and with some patients developing the syndrome without rapid correction. Pediatric osmotic demyelination appears in the literature only as case reports; no pediatric incidence figure exists.
         <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/39967825/" target="_blank" rel="noopener">PMID 39967825</a></p>
     </div></details>
-  </div>
+  </details>
 
-  <div class="verdict quiet">
-    <div class="vtitle">Stopping, interruption, and the transition off</div>
+  <details class="verdict quiet foldref"><summary class="vtitle">Stopping, interruption, and the transition off &mdash; there is no published wean</summary>
     <p><strong>An interruption shows up late.</strong> Polyuria recurred 3 hours after the infusion stopped (<span class="mono">[MIX]</span> n=12), and the plasma half-life is 10&ndash;20 minutes (<span class="mono">[A]</span> n=2). A pump alarm, a line change or a transport presents as rising urine output and falling specific gravity over the next one to three hours, not immediately.
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/2431834/" target="_blank" rel="noopener">PMID 2431834</a>
       <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/30984869/" target="_blank" rel="noopener">PMID 30984869</a></p>
@@ -871,9 +861,19 @@
       <p><strong>Adipsia is the hidden hazard on transition.</strong> In 178 craniopharyngioma microsurgeries (44 children, 134 adults), a hypothalamo-hypophyseal injury score above 3 on postoperative MRI was a potential predictor of adipsic DI, and predicted severe hypernatremia during the admission (OR 15.487, 95% CI 1.852&ndash;129.539, p = 0.011) and at follow-up (OR 28.637, 95% CI 3.060&ndash;267.981, p = 0.003). A child who cannot feel thirst has lost the safety net that makes an oral regimen work. The cohort pools children and adults, so it is not a pediatric figure.
         <a class="citechip" href="https://pubmed.ncbi.nlm.nih.gov/36120435/" target="_blank" rel="noopener">PMID 36120435</a></p>
     </div></details>
-  </div>
+  </details>
 
 </div><!-- /panel-titrate -->
+
+<!-- ROUND 6. The disclaimer sits above the footer rather than under the header, at the
+     author's request. The scope sentence it carries is repeated on the titrate tab's
+     own first line, so the tab that needs it most still states it before any input. -->
+  <div class="disclaimer" role="note">
+    <div class="bar" aria-hidden="true"></div>
+    <div><strong>Educational tool &mdash; not for clinical decision-making.</strong> Not a diagnostic device, not FDA-cleared, not validated. <strong>The management tab assumes central diabetes insipidus and nothing else.</strong> <strong>Do not enter protected health information.</strong>
+      <details class="more"><summary>Scope, evidence base and storage</summary>
+      <div class="mb"><p>The management tab does not cover nephrogenic diabetes insipidus, and the diagnostic tab keeps nephrogenic DI in view at equal prominence until a desmopressin response is entered, because no input on that tab separates the two. There is no adequately powered pediatric diagnostic-accuracy study for central DI, SIADH or cerebral salt wasting; most thresholds shown here are adult-derived or come from pediatric cohorts of a few tens of patients, and each carries its population tag and its n where it appears. No desmopressin dose appears anywhere in this tool. Defer to clinical judgment, the treating team, your endocrinology and nephrology colleagues, and local protocols. Every value stays in this browser session, is never saved and is never transmitted; nothing but the color-theme preference is written to this device.</p></div></details></div>
+  </div>
 
 <footer>
   <h3 id="refs">Sources</h3>
@@ -2453,14 +2453,30 @@ function renderDx() {
   const g = $("dx-gates"); clearKids(g);
   (i.rangeWarn || []).forEach(w => { const d = document.createElement("div"); d.className = "gate"; d.innerHTML = "<strong>Check this input.</strong> " + w; g.appendChild(d); });
   r.warn.forEach(w => { const d = document.createElement("div"); d.className = "gate"; d.innerHTML = "<strong>Check this input.</strong> " + w; g.appendChild(d); });
-  r.gates.forEach(x => {
-    const d = document.createElement("div"); d.className = "gate";
-    const parts = splitLead(x.b);
-    d.innerHTML = "<strong>" + x.t + ".</strong> " + parts[0];
-    if (parts[1]) d.appendChild(moreBox("Detail", b => { b.innerHTML = parts[1]; }));
-    const row = pmidRow(x.p); if (row) d.appendChild(row);
-    g.appendChild(d);
-  });
+  /* ROUND 6. The notes on what the inputs can carry fold into one disclosure, so the
+     heading above is followed by the verdict rather than by a paragraph of caveat. A
+     range warning is a different thing and stays on screen: it says an entered number
+     looks wrong, which the reader has to see without opening anything. */
+  if (r.gates.length) {
+    const wrap = document.createElement("details");
+    wrap.className = "more gatefold";
+    const sm = document.createElement("summary");
+    sm.textContent = r.gates.length === 1
+      ? "One note on what these inputs can carry"
+      : r.gates.length + " notes on what these inputs can carry";
+    wrap.appendChild(sm);
+    const inner = document.createElement("div"); inner.className = "mb";
+    r.gates.forEach(x => {
+      const d = document.createElement("div"); d.className = "gate";
+      const parts = splitLead(x.b);
+      d.innerHTML = "<strong>" + x.t + ".</strong> " + parts[0];
+      if (parts[1]) d.appendChild(moreBox("Detail", b => { b.innerHTML = parts[1]; }));
+      const row = pmidRow(x.p); if (row) d.appendChild(row);
+      inner.appendChild(d);
+    });
+    wrap.appendChild(inner);
+    g.appendChild(wrap);
+  }
 
   /* headline */
   const v = $("dx-verdict"); clearKids(v);
@@ -2610,8 +2626,7 @@ const TRIPHASIC = [
   { pop: "Craniopharyngioma resection", n: "21 children", fig: "Triphasic response in 6 of 21 (29%). The only predictor was duration of surgery, 8.5 h against 4.6 h, p = 0.03; the authors attribute the absence of other predictors to the sample size.", pmid: 21701131 },
   { pop: "Craniopharyngioma resection", n: "26 children", fig: "17 of 26 (65.4%) had initial DI followed by hyponatremia a few days later; 8 (30.8%) then had isolated, persistent DI.", pmid: 38761265 },
   { pop: "Rathke's cleft cyst resection", n: "12 studies, meta-analysed", fig: "New post-operative DI in 28% (95% CI 18–40%). No triphasic figure. This is the cleanest demonstration that the craniopharyngioma numbers do not generalise even within suprasellar surgery.", pmid: 39738909 },
-  { pop: "Severe traumatic brain injury", n: "180 children with severe TBI", fig: "A completely different disease. Central DI in 18%; at diagnosis median urine output 6.8 mL/kg/hr (IQR 5–11) and median sodium 154 mmol/L (IQR 149–159); mortality 87.5%, with 71.4% declared brain dead after the DI diagnosis; early onset within the first 2 days strongly associated with mortality, p<0.001. No triphasic response after pediatric TBI is reported anywhere.", pmid: 23314181 },
-  { pop: "Hypoxic-ischaemic brain injury", n: "—", fig: "No pediatric incidence figure for central DI exists. The literature was searched twice and returned nothing. Neither the craniopharyngioma nor the TBI numbers may be extended here.", pmid: null }
+  { pop: "Severe traumatic brain injury", n: "180 children with severe TBI", fig: "A completely different disease. Central DI in 18%; at diagnosis median urine output 6.8 mL/kg/hr (IQR 5–11) and median sodium 154 mmol/L (IQR 149–159); mortality 87.5%, with 71.4% declared brain dead after the DI diagnosis; early onset within the first 2 days strongly associated with mortality, p<0.001. No triphasic response after pediatric TBI is reported anywhere.", pmid: 23314181 }
 ];
 function renderTriphasic(mountId) {
   const m = $(mountId); if (!m) return;
@@ -4506,7 +4521,7 @@ document.addEventListener("DOMContentLoaded", function () {
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
 @media (max-width: 768px) {
   /* The five selectors that were authored at 10.5px - .citechip, .conf, .pop,
-     .chip .k and .tier-h .badge - now carry 11px at every width, not only on a
+     and .tier-h .badge - now carry 11px at every width, not only on a
      phone, so the floor is no longer restated here. */
   /* Figure text is never shrunk to fit a phone: the SVG holds its authored
      width and its container scrolls, so no label drops below the floor. */
