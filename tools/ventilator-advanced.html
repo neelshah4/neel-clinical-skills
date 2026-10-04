@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-nt-legacy="ventadv.theme" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,61 +8,31 @@
 <meta property="og:title" content="Ventilator Advanced">
 <meta property="og:description" content="Every mode defends something, and the thing it defends is the thing that stops telling you the truth. Educational use only.">
 <meta property="og:type" content="article">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.2.8/index.css" integrity="sha384-ZTIcl2CmY0wyM9ANOhomBco7rEUIlWztf6lGcLKCocKUrIgGCsfisuZyE+hadW8K" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4@5.3.0/index.css" integrity="sha384-BcqMxSEWy7T7vR491w5jVpKFG0b3TfgKXXPd5v6bFEHwlI6bbjKOM8VQL0FY+jmp" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.8/index.css" integrity="sha384-bNykZ+bGB4FclZiYvLmgUfE8clWCvZlLOJ3v63czgIEgamTe0EhkaLXIbptJkvmW" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 /* ============================================================
-   Theme tokens - warm paper / warm-black ink, one warm-slate accent.
-   Inter (UI) . Source Serif 4 (body) . JetBrains Mono (numbers).
-   Light is the authored default; [data-theme="dark"] is the explicit
-   override the toggle writes, and the media block matches the system
-   for a reader who has never touched the toggle (or has JS off).
-   Identical to ventilator-fundamentals.html, which this tool continues.
-   No shadows. No gradients. Hairlines only.
+   Theme tokens - every name below aliases a neel-theme kit token
+   (--nt-*), so light and dark follow the kit with no per-tool
+   overrides. Green ink is the one accent (the old --slate role).
+   Atkinson Hyperlegible Next (UI) . Literata (body) . Atkinson
+   Hyperlegible Mono (numbers). No shadows. No gradients. Hairlines only.
    ============================================================ */
 :root{
-  --paper:#FAF6EE; --tint:#E7E2D6; --tint-deep:#D5CFBF; --card:#FFFFFF;
-  --ink:#1A1A1A; --ink-muted:#5A5550; --ink-faint:#7C7670;
-  --slate:#4A5468; --slate-deep:#2F3744; --slate-pale:#C5CCD9;
-  --rule:rgba(26,26,26,.16); --hair:rgba(26,26,26,.10);
-  --pos:#2E7D5B; --pos-bg:#E4F0E9;
-  --caution:#B88A2C; --caution-bg:#F5ECD8;
-  --neg:#B23A3A; --neg-bg:#F3E0DE;
-  --focus:#4A5468;            /* focus ring: 7.14:1 on --paper, 7.61:1 on --card */
-  --sans:'Inter Variable',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue','Liberation Sans',sans-serif;
-  --serif:'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif;
-  --mono:'JetBrains Mono Variable','JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --ease-out:cubic-bezier(.23,1,.32,1);
+  --paper:var(--nt-paper); --tint:var(--nt-tint); --tint-deep:var(--nt-tint-deep); --card:var(--nt-plate);
+  --ink:var(--nt-ink); --ink-muted:var(--nt-ink-muted); --ink-faint:var(--nt-ink-quiet);
+  --slate:var(--nt-accent); --slate-deep:var(--nt-accent-deep); --slate-pale:var(--nt-sel);
+  --on-accent:var(--nt-on-accent);
+  --rule:var(--nt-rule-strong); --hair:var(--nt-rule);
+  --pos:var(--nt-pos); --pos-bg:var(--nt-pos-wash);
+  --caution:var(--nt-caution); --caution-bg:var(--nt-caution-wash);
+  --neg:var(--nt-neg); --neg-bg:var(--nt-neg-wash);
+  --focus:var(--nt-focus);
+  --sans:var(--nt-font-display);
+  --serif:var(--nt-font-body);
+  --mono:var(--nt-font-mono);
+  --ease-out:var(--nt-ease);
   --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
-  --radius:8px; --radius-sm:4px;
+  --radius:var(--nt-radius); --radius-sm:var(--nt-radius-sm);
   --maxw:1180px; --col:minmax(0,1fr);
-  color-scheme: light;
-}
-:root[data-theme="dark"]{
-  --paper:#14120F; --tint:#221F1A; --tint-deep:#332F28; --card:#1C1A16;
-  --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-faint:#948C80;
-  --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
-  --rule:rgba(245,240,230,.16); --hair:rgba(245,240,230,.10);
-  --pos:#6FC79B; --pos-bg:#18271F;
-  --caution:#E0B85E; --caution-bg:#2A2415;
-  --neg:#E08A85; --neg-bg:#2C1A19;
-  --focus:#97A4BF;            /* focus ring: 7.46:1 on --paper, 6.93:1 on --card */
-  color-scheme: dark;
-}
-/* Auto match the system if the reader has not toggled (data-theme absent) */
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme]){
-    --paper:#14120F; --tint:#221F1A; --tint-deep:#332F28; --card:#1C1A16;
-    --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-faint:#948C80;
-    --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
-    --rule:rgba(245,240,230,.16); --hair:rgba(245,240,230,.10);
-    --pos:#6FC79B; --pos-bg:#18271F;
-    --caution:#E0B85E; --caution-bg:#2A2415;
-    --neg:#E08A85; --neg-bg:#2C1A19;
-    --focus:#97A4BF;
-    color-scheme: dark;
-  }
 }
 
 *{box-sizing:border-box}
@@ -71,7 +41,7 @@ body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--serif); font-size:17px; line-height:1.55;
   font-optical-sizing:auto; -webkit-font-smoothing:antialiased;
-  font-feature-settings:"tnum" 1,"lnum" 1;   /* tabular figures - non-negotiable for data work */
+  font-feature-settings:"lnum" 1;
 }
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--lg)}
 h1,h2,h3,h4,h5,.ov,.num,button,label,input,select,table,.mono,.cite{font-family:var(--sans)}
@@ -79,10 +49,10 @@ h1{font-size:clamp(34px,5vw,58px); line-height:1.06; font-weight:650; letter-spa
 h2{font-size:clamp(25px,3vw,34px); line-height:1.14; font-weight:640; letter-spacing:-.016em; margin:0 0 var(--sm); text-wrap:balance}
 h3{font-size:20px; line-height:1.25; font-weight:620; letter-spacing:-.008em; margin:var(--lg) 0 var(--sm)}
 h4{font-size:16px; font-weight:640; letter-spacing:-.003em; margin:var(--md) 0 var(--xs)}
-p{margin:0 0 var(--md); max-width:70ch; text-wrap:pretty}
-.lede{font-size:20px; line-height:1.5; color:var(--ink); max-width:62ch}
-.ov{font-size:11.5px; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
-.mono{font-family:var(--mono); font-size:12.5px; letter-spacing:-.01em}
+p{margin:0 0 var(--md); max-width:50ch; text-wrap:pretty}
+.lede{font-size:20px; line-height:1.5; color:var(--ink); max-width:54ch}
+.ov{font-size:14px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
+.mono{font-family:var(--mono); font-size:14px; letter-spacing:-.01em}
 a{color:var(--slate); text-underline-offset:3px; text-decoration-thickness:1px}
 a:hover{color:var(--slate-deep)}
 :focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:2px}
@@ -90,20 +60,24 @@ a:hover{color:var(--slate-deep)}
 hr{border:0; border-top:1px solid var(--rule); margin:var(--xxl) 0}
 b,strong{font-weight:640}
 code,.eqn{font-family:var(--mono)}
-sub,sup{font-size:.72em; line-height:0}
+/* tabular figures stay on every data surface: tables, readouts, controls, axes, equations */
+table,td,th,.num,.mono,.eq,.eqn,.cite,.chip .v,.fact .n,.readout,.cell,.derived,.ctl label .val,.rig-head .s,.st,.flag,input,select,button,svg text,ol.steps li::before,.numeral{font-feature-settings:"tnum" 1,"lnum" 1}
+sub,sup{font-size:max(.72em,11px); line-height:0}
 
 /* ---------- header ---------- */
 header{padding:var(--xl) 0 var(--lg); border-bottom:1px solid var(--rule)}
 .head-row{display:flex; justify-content:space-between; align-items:flex-start; gap:var(--md); flex-wrap:wrap}
 .theme-btn{font-family:var(--sans); font-size:12.5px; font-weight:560; min-height:44px; padding:0 14px; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out)}
 .theme-btn:hover{background:var(--tint); color:var(--ink)}
+/* the kit's floating Light | Dark switch replaces this button (markup and id kept) */
+#themeToggle,.theme-btn{display:none !important}
 .chips{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--lg)}
 .chip{background:var(--paper); padding:12px 14px}
-.chip .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px}
+.chip .k{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px}
 .chip .v{font-family:var(--sans); font-size:14px; font-weight:560; line-height:1.25}
 
 /* ---------- disclaimer ---------- */
-.disclaimer{background:var(--caution-bg); border:1px solid var(--caution); border-radius:var(--radius); padding:10px 14px; margin:var(--md) auto 0; max-width:var(--maxw); font-size:12.5px; color:var(--ink-muted); display:flex; gap:10px; align-items:flex-start; font-family:var(--sans); line-height:1.55}
+.disclaimer{background:var(--caution-bg); border:1px solid var(--caution); border-radius:var(--radius); padding:10px 14px; margin:var(--md) auto 0; max-width:var(--maxw); font-size:14px; color:var(--ink-muted); display:flex; gap:10px; align-items:flex-start; font-family:var(--sans); line-height:1.55}
 .disclaimer strong{color:var(--ink)}
 .disclaimer .bar{width:4px; align-self:stretch; background:var(--caution); border-radius:2px; flex:none}
 
@@ -112,19 +86,19 @@ section{padding:var(--xxl) 0; border-bottom:1px solid var(--hair)}
 section:last-of-type{border-bottom:0}
 .split{display:grid; grid-template-columns:96px var(--col); gap:var(--lg); align-items:start}
 .split>*{min-width:0}
-.numeral{font-family:var(--serif); font-size:76px; line-height:.8; font-weight:400; color:var(--slate-pale); letter-spacing:-.03em; user-select:none}
-.numeral small{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
+.numeral{font-family:var(--serif); font-size:76px; line-height:.8; font-weight:400; color:var(--slate); letter-spacing:-.03em; user-select:none}
+.numeral small{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
 
 /* ---------- content blocks ---------- */
 .callout{background:var(--tint); padding:var(--lg); margin:var(--lg) 0; border-radius:var(--radius)}
 .callout p:last-child{margin-bottom:0}
-.eq{font-family:var(--mono); font-size:15px; background:var(--tint); padding:11px 15px; display:inline-block; margin:var(--sm) 0 var(--md); letter-spacing:-.01em; border-radius:var(--radius-sm)}
+.eq{font-family:var(--mono); font-size:16px; background:var(--tint); padding:11px 15px; display:inline-block; margin:var(--sm) 0 var(--md); letter-spacing:-.01em; border-radius:var(--radius-sm)}
 .eq.big{font-size:17px; display:block; text-align:center; padding:18px}
 .bordered{border:1.5px solid var(--slate); border-radius:var(--radius); padding:var(--lg); margin:var(--lg) 0}
 .bordered h3:first-child{margin-top:0}
 .facts{display:grid; gap:0; border-top:1px solid var(--rule)}
 .fact{display:grid; grid-template-columns:44px var(--col); gap:var(--md); padding:var(--md) 0; border-bottom:1px solid var(--hair); align-items:start}
-.fact .n{font-family:var(--mono); font-size:13px; color:var(--slate); padding-top:3px}
+.fact .n{font-family:var(--mono); font-size:14px; color:var(--slate); padding-top:3px}
 .fact p{margin:0; font-size:16.5px}
 .fact b{font-family:var(--sans); font-size:16px}
 .grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:var(--lg)}
@@ -134,29 +108,29 @@ section:last-of-type{border-bottom:0}
 ol.steps{padding-left:0; list-style:none; counter-reset:s; max-width:74ch}
 ol.steps li{counter-increment:s; padding:12px 0 12px 42px; border-bottom:1px solid var(--hair); position:relative; font-size:16.5px}
 ol.steps li::before{content:counter(s); position:absolute; left:0; top:12px; font-family:var(--mono); font-size:12px; color:var(--slate)}
-.note{border-left:2px solid var(--slate); padding:var(--sm) var(--md); background:var(--tint); font-family:var(--sans); font-size:13.5px; line-height:1.55; margin:var(--md) 0; color:var(--ink-muted); border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.note{border:1px solid var(--rule); padding:var(--sm) var(--md); background:var(--tint); font-family:var(--sans); font-size:14px; line-height:1.55; margin:var(--md) 0; color:var(--ink-muted); border-radius:var(--radius-sm)}
 .note b{color:var(--ink)}
-.banner{border-left:3px solid var(--neg); background:var(--neg-bg); padding:10px 14px; font-family:var(--sans); font-size:13px; color:var(--ink); margin-top:var(--md); line-height:1.5; border-radius:0 var(--radius-sm) var(--radius-sm) 0}
-.cite{font-family:var(--mono); font-size:11px; letter-spacing:-.01em; color:var(--slate); text-decoration:none; border-bottom:1px solid var(--slate-pale); white-space:nowrap}
+.banner{border:1px solid var(--neg); background:var(--neg-bg); padding:10px 14px; font-family:var(--sans); font-size:14px; color:var(--ink); margin-top:var(--md); line-height:1.5; border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.cite{font-family:var(--mono); font-size:14px; letter-spacing:-.01em; color:var(--slate); text-decoration:none; border-bottom:1px solid var(--slate-pale); white-space:nowrap}
 .cite:hover{color:var(--ink); border-bottom-color:var(--slate)}
 .citechip{display:inline-block; font-family:var(--sans); font-size:11px; font-weight:500; padding:2px 7px; margin:2px 4px 2px 0; border:1px solid var(--rule); border-radius:999px; color:var(--slate); text-decoration:none; background:var(--card); transition:background 120ms var(--ease-out); white-space:nowrap}
 .citechip:hover{background:var(--tint); color:var(--ink)}
 .citechip:focus-visible{outline-offset:1px}
-.erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:11px; line-height:1.5; color:var(--caution)}
+.erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:14px; line-height:1.5; color:var(--caution)}
 .erratum b{font-weight:640}
-.tag{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; padding:2px 6px; border-radius:2px; vertical-align:2px}
+.tag{display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.03em; text-transform:uppercase; padding:2px 6px; border-radius:2px; vertical-align:2px}
 .t-model{background:var(--tint-deep); color:var(--ink)}
-.t-derived{background:var(--slate); color:var(--paper)}
+.t-derived{background:var(--slate); color:var(--on-accent)}
 .t-adult{background:var(--tint); color:var(--ink-muted); border:1px solid var(--rule)}
 .t-peds{background:var(--caution-bg); color:var(--ink); border:1px solid var(--caution)}
 .t-bench{background:var(--pos-bg); color:var(--ink); border:1px solid var(--pos)}
 
-table{border-collapse:collapse; width:100%; font-size:14.5px; font-family:var(--sans); margin:var(--md) 0}
+table{border-collapse:collapse; width:100%; font-size:14px; font-family:var(--sans); margin:var(--md) 0}
 caption{text-align:left; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-muted); padding-bottom:8px}
 th,td{text-align:left; padding:9px 12px 9px 0; border-bottom:1px solid var(--hair); vertical-align:top}
-th{font-weight:620; font-size:12.5px; letter-spacing:.02em; border-bottom:1px solid var(--rule)}
-td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding-right:16px}
-.tbl-note{font-size:10.5px; font-family:var(--sans); color:var(--ink-faint); line-height:1.5; margin-top:var(--sm)}
+th{font-weight:620; font-size:14px; letter-spacing:.02em; border-bottom:1px solid var(--rule)}
+td.num,th.num{text-align:right; font-family:var(--mono); font-size:14px; padding-right:16px}
+.tbl-note{font-size:14px; font-family:var(--sans); color:var(--ink-faint); line-height:1.5; margin-top:var(--sm)}
 .scrollx{overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
 .scrollx table{min-width:640px}
 
@@ -164,35 +138,35 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 .links{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; margin:var(--lg) 0}
 .lnk{display:block; background:var(--card); padding:13px var(--md); text-decoration:none; color:var(--ink); transition:background 140ms var(--ease-out)}
 .lnk:hover{background:var(--tint)}
-.lnk .lk{display:block; font-family:var(--mono); font-size:12.5px; color:var(--slate); margin-bottom:4px}
-.lnk .lv{display:block; font-family:var(--serif); font-size:15px; line-height:1.5; color:var(--ink-muted)}
+.lnk .lk{display:block; font-family:var(--mono); font-size:14px; color:var(--slate); margin-bottom:4px}
+.lnk .lv{display:block; font-family:var(--serif); font-size:16px; line-height:1.5; color:var(--ink-muted)}
 
 /* ---------- rig ---------- */
 .rig{border:1px solid var(--rule); background:var(--card); margin:var(--lg) 0; border-radius:var(--radius)}
 .rig-head{padding:14px var(--md); border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:baseline; gap:var(--md); flex-wrap:wrap}
-.rig-head .t{font-family:var(--sans); font-weight:620; font-size:15px}
-.rig-head .s{font-family:var(--mono); font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.07em}
+.rig-head .t{font-family:var(--sans); font-weight:620; font-size:16px}
+.rig-head .s{font-family:var(--mono); font-size:14px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.02em}
 .rig-body{display:grid; grid-template-columns:290px var(--col); gap:0}
 .rig-body>*{min-width:0}
 .rig-ctrl{padding:var(--md); border-right:1px solid var(--rule); background:var(--paper)}
 .rig-view{padding:var(--md); min-width:0}
 .rig-foot{padding:12px var(--md); border-top:1px solid var(--rule); font-size:14px; color:var(--ink-muted); font-family:var(--serif)}
-.rig-foot b{color:var(--ink); font-family:var(--sans); font-size:13.5px; font-weight:600}
+.rig-foot b{color:var(--ink); font-family:var(--sans); font-size:14px; font-weight:600}
 .rig-wide .rig-body{grid-template-columns:var(--col)}
 .rig-wide .rig-ctrl{border-right:0; border-bottom:1px solid var(--rule)}
 
 .grp{margin-bottom:var(--md); padding-bottom:var(--sm); border-bottom:1px solid var(--hair)}
 .grp:last-child{border-bottom:0; margin-bottom:0}
-.grp h5,.colh{font-family:var(--mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 10px; font-weight:500}
+.grp h5,.colh{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 10px; font-weight:500}
 .ctl{margin-bottom:12px}
 .ctl:last-child{margin-bottom:0}
 /* The label is a block, not a flex row, and the value floats. A flex row would
    promote every inline <sub> in the label text to its own flex item and blow the
    chemical subscripts apart, which is exactly what happens to P(mus) and FiO(2). */
-.ctl label{display:block; font-size:13px; font-weight:560; margin-bottom:5px; line-height:1.35}
-.ctl label .val{float:right; margin-left:10px; font-family:var(--mono); font-size:12.5px; color:var(--slate); font-weight:400}
-.ctl .hint{font-size:11.5px; color:var(--ink-faint); font-family:var(--sans); margin-top:2px; display:block; line-height:1.4}
-.derived{font-family:var(--mono); font-size:12.5px; color:var(--ink-muted); display:flex; justify-content:space-between; gap:8px; padding:6px 8px; background:var(--tint); border-radius:var(--radius-sm); margin-bottom:10px}
+.ctl label{display:block; font-size:14px; font-weight:560; margin-bottom:5px; line-height:1.35}
+.ctl label .val{float:right; margin-left:10px; font-family:var(--mono); font-size:14px; color:var(--slate); font-weight:400}
+.ctl .hint{font-size:14px; color:var(--ink-faint); font-family:var(--sans); margin-top:2px; display:block; line-height:1.4}
+.derived{font-family:var(--mono); font-size:14px; color:var(--ink-muted); display:flex; justify-content:space-between; gap:8px; padding:6px 8px; background:var(--tint); border-radius:var(--radius-sm); margin-bottom:10px}
 .derived b{color:var(--ink); font-weight:600}
 input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:26px; background:transparent; cursor:pointer; margin:0; display:block}
 input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--tint-deep); border-radius:2px}
@@ -204,29 +178,29 @@ input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:4
 input[type=number]{width:100%; font-family:var(--mono); font-size:14px; padding:8px 10px; min-height:40px; border:1px solid var(--rule); background:var(--card); color:var(--ink); border-radius:var(--radius-sm)}
 input[type=number]:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
 input[type=number][aria-invalid="true"]{border-color:var(--neg)}
-select{width:100%; font-family:var(--sans); font-size:13px; padding:8px 10px; min-height:40px; border:1px solid var(--rule); background:var(--card); color:var(--ink); border-radius:var(--radius-sm)}
+select{width:100%; font-family:var(--sans); font-size:14px; padding:8px 10px; min-height:40px; border:1px solid var(--rule); background:var(--card); color:var(--ink); border-radius:var(--radius-sm)}
 .seg{display:grid; gap:5px; margin-bottom:10px}
 .seg.c4{grid-template-columns:repeat(4,1fr)}
 .seg.c3{grid-template-columns:repeat(3,1fr)}
 .seg.c2{grid-template-columns:repeat(2,1fr)}
 .tg{font-family:var(--sans); font-size:12px; font-weight:560; padding:8px 6px; min-height:40px; background:var(--card); border:1px solid var(--rule); color:var(--ink); cursor:pointer; transition:background 140ms var(--ease-out),border-color 140ms var(--ease-out); border-radius:var(--radius-sm); line-height:1.2}
 .tg:hover{background:var(--tint)}
-.tg[aria-pressed=true],.tg[aria-checked=true]{background:var(--slate); border-color:var(--slate); color:var(--paper)}
+.tg[aria-pressed=true],.tg[aria-checked=true]{background:var(--slate); border-color:var(--slate); color:var(--on-accent)}
 .tg:disabled{opacity:.42; cursor:not-allowed}
 .btn{width:100%; min-height:40px; font-family:var(--sans); font-size:12px; font-weight:560; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out); padding:8px 6px; line-height:1.2}
 .btn:hover{background:var(--tint); color:var(--ink)}
-.btn[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:var(--paper)}
+.btn[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:var(--on-accent)}
 
 .readout{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius-sm); overflow:hidden; margin-top:var(--md)}
 .readout.c2{grid-template-columns:repeat(2,1fr)}
 .readout.c4{grid-template-columns:repeat(4,1fr)}
 .readout div{background:var(--card); padding:8px 9px}
-.readout .k{font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-muted); display:block}
+.readout .k{font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-muted); display:block}
 .readout .v{font-family:var(--mono); font-size:16px; font-weight:500; color:var(--ink); letter-spacing:-.02em}
-.readout .v small{font-size:10.5px; color:var(--ink-muted); font-weight:400}
+.readout .v small{font-size:11px; color:var(--ink-muted); font-weight:400}
 .readout .pin{background:var(--tint)}
 .flags{margin-top:10px; display:grid; gap:5px}
-.flag{font-family:var(--sans); font-size:11.5px; line-height:1.35; padding:6px 8px; border-radius:var(--radius-sm); border:1px solid var(--rule); color:var(--ink-muted); background:var(--card)}
+.flag{font-family:var(--sans); font-size:14px; line-height:1.35; padding:6px 8px; border-radius:var(--radius-sm); border:1px solid var(--rule); color:var(--ink-muted); background:var(--card)}
 .flag.on{border-color:var(--caution); background:var(--caution-bg); color:var(--ink)}
 .flag.warn{border-color:var(--neg); background:var(--neg-bg); color:var(--ink)}
 .flag[hidden]{display:none}
@@ -234,12 +208,12 @@ select{width:100%; font-family:var(--sans); font-size:13px; padding:8px 10px; mi
 /* small-multiple grid for the six-mode simulator */
 .simgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius-sm); overflow:hidden}
 .simcell{background:var(--card); padding:10px 11px; min-width:0}
-.simcell h6{font-family:var(--sans); font-size:12.5px; font-weight:620; margin:0 0 2px; color:var(--ink)}
-.simcell .sub{font-family:var(--mono); font-size:10px; color:var(--ink-faint); display:block; margin-bottom:6px; letter-spacing:.04em; text-transform:uppercase}
+.simcell h6{font-family:var(--sans); font-size:14px; font-weight:620; margin:0 0 2px; color:var(--ink)}
+.simcell .sub{font-family:var(--mono); font-size:11px; color:var(--ink-faint); display:block; margin-bottom:6px; letter-spacing:.04em; text-transform:uppercase}
 .cells{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:8px; border-radius:2px; overflow:hidden}
 .cell{background:var(--card); padding:6px 7px}
-.cell .k{font-family:var(--mono); font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-muted); display:block}
-.cell .v{font-family:var(--mono); font-size:13px; font-weight:500; letter-spacing:-.02em; color:var(--ink)}
+.cell .k{font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-muted); display:block}
+.cell .v{font-family:var(--mono); font-size:14px; font-weight:500; letter-spacing:-.02em; color:var(--ink)}
 .cell[data-move="up"]{background:var(--caution-bg)}
 .cell[data-move="down"]{background:var(--pos-bg)}
 .cell[data-move="alarm"]{background:var(--neg-bg)}
@@ -250,27 +224,54 @@ select{width:100%; font-family:var(--sans); font-size:13px; padding:8px 10px; mi
 .st-h{font-family:var(--sans); font-size:14px; font-weight:620; margin-bottom:10px}
 .st-h.pass{color:var(--pos)}
 .st-h.fail{color:var(--neg)}
-.st table{font-size:13px; margin:0}
+.st table{font-size:14px; margin:0}
 .st td{padding:7px 10px 7px 0}
-.st .r{font-family:var(--mono); font-size:11.5px; width:56px}
+.st .r{font-family:var(--mono); font-size:12px; width:56px}
 .st .r.p{color:var(--pos)}
 .st .r.f{color:var(--neg)}
-.st .why{font-family:var(--mono); font-size:10.5px; color:var(--ink-muted)}
+.st .why{font-family:var(--mono); font-size:11px; color:var(--ink-muted)}
 
 svg{display:block; width:100%; height:auto; overflow:visible}
 svg text{font-family:var(--mono); font-size:11px}
-svg text.lbl{font-family:var(--sans); font-size:11.5px; font-weight:560}
-svg text.ax{font-size:10px}
-svg text.prov{font-family:var(--sans); font-size:10.5px}
+svg text.lbl{font-family:var(--sans); font-size:12px; font-weight:560}
+svg text.ax{font-size:11px}
+svg text.prov{font-family:var(--sans); font-size:11px}
+
+/* Figure marks that carry information hold 3:1 against what they sit on, in both themes
+   (WCAG 1.4.11). The rig scripts draw colours from var(--rule), var(--hair) and fixed opacities,
+   so this block re-points those variables for figures only and gives washed reference bands an
+   outline; the washes themselves stay faint. The patient-is-triggering greying in rig 8 is
+   deliberate and is left alone. */
+svg{--rule:var(--nt-ink-quiet); --hair:var(--nt-edge)}
+#v1svg path[style*="var(--caution-bg)"]{stroke:var(--caution) !important; stroke-width:1; stroke-linejoin:round}
+#v3svg path[style*="opacity:.55"]{opacity:.8 !important}
+#v3svg circle[style*="fill:var(--caution)"]{fill:none !important; stroke:var(--caution); stroke-width:2}
+#v4svg rect[style*="var(--slate-pale);opacity:0.5"]{opacity:1 !important; fill-opacity:.5; stroke:var(--nt-edge); stroke-width:1}
+#v4svg rect[style*="var(--caution-bg);opacity:.5"]{opacity:1 !important; fill-opacity:.5; stroke:var(--caution); stroke-width:1; stroke-dasharray:4 3}
+#v6svg rect[style*="fill:var(--tint)"]{stroke:var(--nt-edge); stroke-width:1}
+#v6svg rect[style*="var(--neg);opacity:.65"]{opacity:1 !important}
+#v6svg rect[style*="var(--caution);opacity:.75"]{opacity:1 !important; stroke:var(--nt-plate); stroke-width:1.5}
+#v7svg rect[style*="opacity:.10"], #v7svg rect[style*="opacity:.06"]{opacity:1 !important; stroke:var(--pos); stroke-width:1; stroke-dasharray:4 3}
+#v7svg rect[style*="opacity:.10"]{fill-opacity:.10}
+#v7svg rect[style*="opacity:.06"]{fill-opacity:.06}
+#v8svg path[style*=";opacity:0.28;"], #v8svg path[style*=";opacity:0.18;"]{opacity:1 !important; stroke-width:1.2px !important; stroke-linejoin:round}
+#v8svg path[style*=";opacity:0.28;"]{fill-opacity:.28; stroke:var(--slate) !important}
+#v8svg path[style*=";opacity:0.18;"]{fill-opacity:.18; stroke:var(--caution) !important}
+#v10svg rect[style*="var(--slate-pale)"]{stroke:var(--slate); stroke-width:1}
+#v10svg rect[style*="var(--pos-bg)"]{stroke:var(--pos); stroke-width:1}
+#v10svg rect[style*="var(--neg-bg)"]{stroke:var(--neg); stroke-width:1}
 
 /* ---------- footer ---------- */
 footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-muted); font-size:14px}
 footer ol{padding-left:22px; max-width:86ch}
-footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
+footer li{margin-bottom:9px; font-size:14px; line-height:1.45}
 .tool-footer{margin-top:var(--xl); padding-top:var(--md); border-top:1px solid var(--rule); color:var(--ink-muted); font-family:var(--sans); font-size:11.5px; line-height:1.65}
 .tool-footer a{color:var(--slate)}
 .tool-footer a:hover{color:var(--ink)}
-.boot-msg{border:1px solid var(--caution); background:var(--caution-bg); border-radius:var(--radius); padding:12px 14px; font-family:var(--sans); font-size:13px; color:var(--ink-muted); margin:var(--md) 0}
+.boot-msg{border:1px solid var(--caution); background:var(--caution-bg); border-radius:var(--radius); padding:12px 14px; font-family:var(--sans); font-size:14px; color:var(--ink-muted); margin:var(--md) 0}
+/* long text runs sit at the 14px body floor (inline sizes are overridden here, markup untouched) */
+.tool-footer,.tool-footer p{font-size:14px}
+p[style*="font-size:1"],span[style*="font-size:11px"]{font-size:14px !important}
 .srconly{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
 
 @media (max-width:1080px){
@@ -291,6 +292,8 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   .split{grid-template-columns:1fr; gap:var(--sm)}
   .numeral{font-size:50px}
   .numeral small{display:inline; margin-left:12px}
+  .cite{white-space:normal}   /* 14px citations may wrap on a phone */
+  header{padding-top:68px}   /* clear the kit's fixed Light | Dark switch */
   .chips{grid-template-columns:1fr 1fr}
   .simgrid{grid-template-columns:1fr}
   .readout,.readout.c4{grid-template-columns:repeat(2,1fr)}
@@ -310,6 +313,85 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   section,.rig,.st{break-inside:avoid}
 }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 
@@ -1527,7 +1609,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   <div class="tool-footer">
     <p style="font-size:11.5px; max-width:86ch"><b>Educational use only.</b> This page is a teaching tool about patient effort, support scaling and gas exchange during mechanical ventilation. It is not clinical decision support, it gives no patient-specific advice, it is not FDA-cleared, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
     <p style="font-size:11.5px; max-width:86ch">Every identifier in this table was resolved against PubMed E-utilities; the sources carried over from v1.0 on 2026-08-31 and the ten added in v2.0 on 2026-09-01, with first author, year and journal matched for each. <b>Correction screening.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 81 of 81 source PMIDs have been screened by that method, the ten added in v2.0 on 2026-09-01 and the rest on 2026-08-31, and two carry an erratum (PMID 22710796 and PMID 33603211) with no retraction and no expression of concern anywhere. None of the ten new sources returned any erratum, retraction or expression-of-concern linkage. One erratum carries a PubMed record of its own, PMID 34404931, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 81. Both are marked on their row in the table above, and the dead-space values taken from PMID 33603211, which seed the infant preset of rig 8, carry the marker at the point of use as well. What the screen returns is the linkage and not the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Four published models that could not be sourced in full (the Otis least-work formula as implemented in adaptive support ventilation, the internal E<sub>di</sub>-to-pressure scaling in NAVA, the Benatar iso-shunt construction, and the adaptive-pressure-control support curve of the bench series) are described in words, are listed with their reasons in the table above, and are not computed anywhere in the tool. Numbers that no source establishes are labelled derived, consensus, extrapolated or author-chosen in place rather than dropped silently. One non-peer-reviewed source is used and is labelled where it appears: the bedside procedure in section 10 follows the R/I and airway-closure pages of rtmaven.com, a free teaching site and calculator built by the group behind PMID 31577153; its four demonstration videos are hosted on Vimeo and are linked in that section. It is cited for how to run the manoeuvre on a real ventilator, never for what the number means. Session-only; no data leaves this device.</p>
-    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
+    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0</p>
   </div>
  </div>
 </footer>
@@ -1549,7 +1631,7 @@ const $ = function(id){ return document.getElementById(id); };
 const NS = "http://www.w3.org/2000/svg";
 
 const INK="var(--ink)", MUT="var(--ink-muted)", FAINT="var(--ink-faint)",
-      SLATE="var(--slate)", DEEP="var(--slate-deep)", PALE="var(--slate-pale)",
+      SLATE="var(--slate)", DEEP="var(--slate-deep)", PALE="var(--slate-pale)", GHOST="var(--nt-edge)",
       RULE="var(--rule)", HAIR="var(--hair)", TINT="var(--tint)", CARD="var(--card)",
       POS="var(--pos)", CAU="var(--caution)", NEG="var(--neg)",
       CAUBG="var(--caution-bg)", POSBG="var(--pos-bg)", NEGBG="var(--neg-bg)";
@@ -1652,22 +1734,19 @@ if(REDUCED_MOTION){
 
 /* ---------- theme ---------- */
 function initTheme(){
-  var stored=null;
-  try { stored = localStorage.getItem("ventadv.theme"); } catch(e){ stored=null; }
-  if(stored) document.documentElement.setAttribute("data-theme", stored);
-  else if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.setAttribute("data-theme","dark");
-  else document.documentElement.setAttribute("data-theme","light");
+  /* The kit (neel-theme) owns data-theme and the stored choice. This tool's own button is
+     hidden by CSS; it only keeps its label in step and, if ever shown, hands off to the kit.
+     Figures take their colours from CSS variables, so a theme change needs no redraw. */
+  var cur=function(){ return window.NeelTheme ? NeelTheme.get() : (document.documentElement.getAttribute("data-theme")==="dark" ? "dark":"light"); };
   var lbl=function(){
-    var d = document.documentElement.getAttribute("data-theme")==="dark";
+    var d = cur()==="dark";
     $("themeToggle").textContent = d ? "Light theme" : "Dark theme";
     $("themeToggle").setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
   };
   lbl();
+  document.addEventListener("neeltheme", lbl);
   $("themeToggle").addEventListener("click", function(){
-    var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "light":"dark";
-    document.documentElement.setAttribute("data-theme",cur);
-    try { localStorage.setItem("ventadv.theme",cur); } catch(e){ /* private mode: theme is session-only */ }
-    lbl();
+    if(window.NeelTheme) NeelTheme.set(cur()==="dark" ? "light":"dark");
   });
 }
 
@@ -2166,10 +2245,10 @@ function rig4(){
   /* the full curve, drawn faintly, so the peak is visible before it is reached */
   var d="";
   for(var p=0;p<=R4.TOP;p+=0.5){ d+=(d?"L":"M")+fmt(X(p),1)+" "+fmt(Y(r4Cdyn(sp,p,dp,mode)),1); }
-  svg.appendChild(pth(d,stroke(PALE,1.4,"stroke-dasharray:3 4")));
+  svg.appendChild(pth(d,stroke(GHOST,1.4,"stroke-dasharray:3 4")));
   var dOther="";
   for(p=0;p<=R4.TOP;p+=0.5){ dOther+=(dOther?"L":"M")+fmt(X(p),1)+" "+fmt(Y(r4Cdyn(sp,p,dp,mode==="dec"?"inc":"dec")),1); }
-  svg.appendChild(pth(dOther,stroke(HAIR,1.2)));
+  svg.appendChild(pth(dOther,stroke(GHOST,1.2)));
   svg.appendChild(txt(L+6,Y(r4Cdyn(sp,mode==="dec"?6:20,dp,mode==="dec"?"inc":"dec"))-6,mode==="dec"?"the incremental limb, for comparison":"the decremental limb, for comparison",{cls:"ax",style:fill(FAINT)}));
 
   /* measured steps */
@@ -2310,7 +2389,7 @@ function rig5(){
     var d="";
     for(var f=0.21;f<=1.0001;f+=0.01){ d+=(d?"L":"M")+fmt(XA(f),1)+" "+fmt(YA(r5Ca(f,sf)),1); }
     var on=Math.abs(sf-s)<0.026;
-    svg.appendChild(pth(d,stroke(on?NEG:PALE,on?2.4:1.3)));
+    svg.appendChild(pth(d,stroke(on?NEG:GHOST,on?2.4:1.3)));
     sLabs.push({y:YA(r5Ca(1.0,sf)),t:Math.round(sf*100)+"%",c:on?NEG:FAINT});
   });
   for(var si=1;si<sLabs.length;si++){ if(sLabs[si].y-sLabs[si-1].y<13) sLabs[si].y=sLabs[si-1].y+13; }
@@ -2345,7 +2424,7 @@ function rig5(){
     var d="";
     for(var v=0.5;v<=2.5001;v+=0.02){ d+=(d?"L":"M")+fmt(XB(v),1)+" "+fmt(YB(rel(v,vdf)),1); }
     var on=Math.abs(vdf-vd)<0.03;
-    svg.appendChild(pth(d,stroke(on?CAU:PALE,on?2.4:1.3)));
+    svg.appendChild(pth(d,stroke(on?CAU:GHOST,on?2.4:1.3)));
     vLabs.push({y:YB(rel(2.5,vdf)), t:fmt(vdf,2), c:on?CAU:FAINT});
   });
   /* The three curves converge at high minute ventilation, so their end labels
@@ -2897,7 +2976,7 @@ function r9Panel(m,now,base){
     sv.appendChild(pth(dp,st));
     sv.appendChild(pth(dv,st));
   }
-  draw(stroke(PALE,1.4,"stroke-dasharray:3 3"),base,true);
+  draw(stroke(GHOST,1.4,"stroke-dasharray:3 3"),base,true);
   draw(stroke(now.alarm?NEG:SLATE,2),now,false);
   sv.appendChild(ln(L,54,Rr,54,stroke(HAIR,1)));
   return sv;
@@ -3379,6 +3458,53 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
@@ -3390,7 +3516,7 @@ document.addEventListener("DOMContentLoaded",function(){
   .grp h5, .colh { font-size: 11px; }
   .tag { font-size: 11px; }
   sub, sup { font-size: 11px; }
-  .tbl-note { font-size: 11px; }
+  .tbl-note { font-size: 14px; }
   .cell .k { font-size: 11px; }
   .simcell .sub { font-size: 11px; }
   .st .why { font-size: 11px; }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-nt-legacy="asthmacc.theme" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,73 +8,63 @@
 <meta property="og:title" content="Critical Asthma">
 <meta property="og:description" content="Drugs, noninvasive support, and the ventilator in pediatric critical asthma. Educational use only.">
 <meta property="og:type" content="article">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.2.8/index.css" integrity="sha384-ZTIcl2CmY0wyM9ANOhomBco7rEUIlWztf6lGcLKCocKUrIgGCsfisuZyE+hadW8K" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4@5.3.0/index.css" integrity="sha384-BcqMxSEWy7T7vR491w5jVpKFG0b3TfgKXXPd5v6bFEHwlI6bbjKOM8VQL0FY+jmp" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.8/index.css" integrity="sha384-bNykZ+bGB4FclZiYvLmgUfE8clWCvZlLOJ3v63czgIEgamTe0EhkaLXIbptJkvmW" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 /* ============================================================
-   Theme tokens - warm paper / warm-black ink, one warm-slate accent.
-   Inter (UI) . Source Serif 4 (body) . JetBrains Mono (numbers).
-   Light is the authored default; [data-theme="dark"] is the explicit
-   override the toggle writes, and the media block matches the system
-   for a reader who has never touched the toggle (or has JS off).
-   No shadows. No gradients. Hairlines only.
+   Theme tokens - alias layer onto neel-theme (--nt-*). The kit owns light,
+   dark and the Light | Dark switch; every token below follows it.
+   UI chrome (links, pressed states, step numbers, focus) uses --acc, the
+   single green-ink accent. --slate is a DATA role (resistive load in the
+   figures) and maps to the blue chart colour so it stays distinct from the
+   elastic (--pos) and intrinsic-PEEP (--caution) roles.
+   Sans = display, serif = body, mono = mono. No shadows. No gradients.
    SVG fills and strokes are set by CSS class, never by a hardcoded hex,
    so a theme change repaints every figure without redrawing it.
    ============================================================ */
 :root{
-  --paper:#FAF6EE; --tint:#E7E2D6; --tint-deep:#D5CFBF; --card:#FFFFFF;
-  --ink:#1A1A1A; --ink-muted:#5A5550; --ink-faint:#7C7670;
-  --slate:#4A5468; --slate-deep:#2F3744; --slate-pale:#C5CCD9;
-  --rule:rgba(26,26,26,.16); --hair:rgba(26,26,26,.10);
-  --pos:#2E7D5B; --pos-bg:#E4F0E9;
-  --caution:#B88A2C; --caution-bg:#F5ECD8;
-  --neg:#B23A3A; --neg-bg:#F3E0DE;
-  --focus:#4A5468;            /* focus ring: 7.14:1 on --paper, 7.61:1 on --card */
-  /* 10-step categorical ramp for the agent swatches, interpolated between
-     --slate and --caution rather than picked as ten arbitrary hues. The
-     schematic never relies on hue alone: highlighting dims by opacity and
-     every arrow is also labelled. */
-  --ag1:#4A5468; --ag2:#565A61; --ag3:#62605B; --ag4:#6F6654; --ag5:#7B6C4D;
-  --ag6:#877247; --ag7:#937840; --ag8:#A07E39; --ag9:#AC8433; --ag10:#B88A2C;
-  --sans:'Inter Variable',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue','Liberation Sans',sans-serif;
-  --serif:'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif;
-  --mono:'JetBrains Mono Variable','JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --ease-out:cubic-bezier(.23,1,.32,1);
+  --paper:var(--nt-paper); --tint:var(--nt-tint); --tint-deep:var(--nt-tint-deep); --card:var(--nt-plate);
+  --ink:var(--nt-ink); --ink-muted:var(--nt-ink-muted); --ink-faint:var(--nt-ink-quiet);
+  --acc:var(--nt-accent); --acc-deep:var(--nt-accent-deep); --acc-wash:var(--nt-accent-wash); --on-acc:var(--nt-on-accent);
+  --slate:var(--nt-cat-1);
+  --slate-deep:color-mix(in srgb,var(--nt-cat-1) 62%,var(--nt-ink));
+  --slate-pale:color-mix(in srgb,var(--nt-cat-1) 28%,var(--nt-plate));
+  --rule:var(--nt-rule-strong); --hair:var(--nt-rule);
+  --pos:var(--nt-pos); --pos-bg:var(--nt-pos-wash);
+  --caution:var(--nt-caution); --caution-bg:var(--nt-caution-wash);
+  --neg:var(--nt-neg); --neg-bg:var(--nt-neg-wash);
+  --focus:var(--nt-focus);
+  /* 10-step ramp for the agent swatches, interpolated between the accent and
+     the caution colour rather than ten arbitrary hues. The schematic never
+     relies on hue alone: highlighting dims by opacity and every arrow is
+     also labelled. */
+  --ag1:var(--nt-accent);
+  --ag2:color-mix(in srgb,var(--nt-accent) 89%,var(--nt-caution));
+  --ag3:color-mix(in srgb,var(--nt-accent) 78%,var(--nt-caution));
+  --ag4:color-mix(in srgb,var(--nt-accent) 67%,var(--nt-caution));
+  --ag5:color-mix(in srgb,var(--nt-accent) 56%,var(--nt-caution));
+  --ag6:color-mix(in srgb,var(--nt-accent) 44%,var(--nt-caution));
+  --ag7:color-mix(in srgb,var(--nt-accent) 33%,var(--nt-caution));
+  --ag8:color-mix(in srgb,var(--nt-accent) 22%,var(--nt-caution));
+  --ag9:color-mix(in srgb,var(--nt-accent) 11%,var(--nt-caution));
+  --ag10:var(--nt-caution);
+  --sans:var(--nt-font-display);
+  --serif:var(--nt-font-body);
+  --mono:var(--nt-font-mono);
+  --ease-out:var(--nt-ease);
   --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
-  --radius:8px; --radius-sm:4px;
+  --radius:var(--nt-radius); --radius-sm:var(--nt-radius-sm);
   --maxw:1180px; --col:minmax(0,1fr);
-  color-scheme: light;
+  /* Figure data roles. The three loads keep their roles (elastic = pos, resistive =
+     slate blue, intrinsic PEEP = caution) but are set apart in LIGHTNESS as well as hue,
+     so they stay separable in grayscale: resistive darkest, elastic middle, intrinsic
+     PEEP lightest in light mode; the order flips in dark mode so each stays >= 3:1 on
+     its plate. Figure strokes and the legend swatches read these, not the UI tokens. */
+  --fig-resist:#213A6E; --fig-elastic:var(--nt-pos); --fig-peep:#9E7209;
+  --fig-a-resist:26%; --fig-a-elastic:18%; --fig-a-peep:14%;   /* wash density, ordered like the stroke lightness */
 }
-:root[data-theme="dark"]{
-  --paper:#14120F; --tint:#221F1A; --tint-deep:#332F28; --card:#1C1A16;
-  --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-faint:#948C80;
-  --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
-  --rule:rgba(245,240,230,.16); --hair:rgba(245,240,230,.10);
-  --pos:#6FC79B; --pos-bg:#18271F;
-  --caution:#E0B85E; --caution-bg:#2A2415;
-  --neg:#E08A85; --neg-bg:#2C1A19;
-  --focus:#97A4BF;            /* focus ring: 7.46:1 on --paper, 6.93:1 on --card */
-  --ag1:#9AA6BC; --ag2:#A2A8B1; --ag3:#AAAAA7; --ag4:#B1AC9C; --ag5:#B9AE92;
-  --ag6:#C0B087; --ag7:#C8B27D; --ag8:#D0B472; --ag9:#D8B668; --ag10:#E0B85E;
-  color-scheme: dark;
-}
-/* Auto match the system if the reader has not toggled (data-theme absent) */
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme]){
-    --paper:#14120F; --tint:#221F1A; --tint-deep:#332F28; --card:#1C1A16;
-    --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-faint:#948C80;
-    --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
-    --rule:rgba(245,240,230,.16); --hair:rgba(245,240,230,.10);
-    --pos:#6FC79B; --pos-bg:#18271F;
-    --caution:#E0B85E; --caution-bg:#2A2415;
-    --neg:#E08A85; --neg-bg:#2C1A19;
-    --focus:#97A4BF;
-    --ag1:#9AA6BC; --ag2:#A2A8B1; --ag3:#AAAAA7; --ag4:#B1AC9C; --ag5:#B9AE92;
-    --ag6:#C0B087; --ag7:#C8B27D; --ag8:#D0B472; --ag9:#D8B668; --ag10:#E0B85E;
-    color-scheme: dark;
-  }
+  :root:not([data-theme="light"]){ --fig-resist:#92AEE6; --fig-elastic:#BDF3DA; --fig-peep:#F0C868; --fig-a-resist:16%; --fig-a-elastic:21%; --fig-a-peep:19%; }
 }
+:root[data-theme="dark"]{ --fig-resist:#92AEE6; --fig-elastic:#BDF3DA; --fig-peep:#F0C868; --fig-a-resist:16%; --fig-a-elastic:21%; --fig-a-peep:19%; }
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -82,7 +72,7 @@ body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--serif); font-size:17px; line-height:1.55;
   font-optical-sizing:auto; -webkit-font-smoothing:antialiased;
-  font-feature-settings:"tnum" 1,"lnum" 1;   /* tabular figures - non-negotiable for data work */
+  font-feature-settings:"lnum" 1;   /* lining figures; tabular figures are scoped to data elements below (neel-theme) */
 }
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--lg)}
 h1,h2,h3,h4,h5,.ov,.num,button,label,input,select,table,.mono,.cite{font-family:var(--sans)}
@@ -94,8 +84,8 @@ p{margin:0 0 var(--md); max-width:70ch; text-wrap:pretty}
 .lede{font-size:20px; line-height:1.5; color:var(--ink); max-width:62ch}
 .ov{font-size:11.5px; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
 .mono{font-family:var(--mono); font-size:12.5px; letter-spacing:-.01em}
-a{color:var(--slate); text-underline-offset:3px; text-decoration-thickness:1px}
-a:hover{color:var(--slate-deep)}
+a{color:var(--acc); text-underline-offset:3px; text-decoration-thickness:1px}
+a:hover{color:var(--acc-deep)}
 :focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:2px}
 :focus:not(:focus-visible){outline:none}
 hr{border:0; border-top:1px solid var(--rule); margin:var(--xxl) 0}
@@ -106,6 +96,7 @@ code,.eqn{font-family:var(--mono)}
 /* ---------- header ---------- */
 header{padding:var(--xl) 0 var(--lg); border-bottom:1px solid var(--rule)}
 .head-row{display:flex; justify-content:space-between; align-items:flex-start; gap:var(--md); flex-wrap:wrap}
+.theme-btn,#themeToggle{display:none !important}
 .theme-btn{font-family:var(--sans); font-size:12.5px; font-weight:560; min-height:44px; padding:0 14px; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out)}
 .theme-btn:hover{background:var(--tint); color:var(--ink)}
 .chips{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--lg)}
@@ -134,7 +125,7 @@ section:last-of-type{border-bottom:0}
 .partbar h2{font-size:clamp(20px,2.4vw,26px)}
 .split{display:grid; grid-template-columns:96px var(--col); gap:var(--lg); align-items:start}
 .split>*{min-width:0}
-.numeral{font-family:var(--serif); font-size:58px; line-height:.85; font-weight:400; color:var(--slate-pale); letter-spacing:-.03em; user-select:none}
+.numeral{font-family:var(--serif); font-size:58px; line-height:.85; font-weight:400; color:color-mix(in srgb,var(--nt-accent) 72%,var(--nt-paper)); letter-spacing:-.03em; user-select:none}
 .numeral small{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
 
 /* ---------- content blocks ---------- */
@@ -142,30 +133,30 @@ section:last-of-type{border-bottom:0}
 .callout p:last-child{margin-bottom:0}
 .cautionbar{background:var(--caution-bg); border-left:4px solid var(--caution); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:var(--md) var(--lg); margin:var(--lg) 0}
 .cautionbar p:last-child{margin-bottom:0}
-.slatebar{background:var(--tint); border-left:4px solid var(--slate); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:var(--md) var(--lg); margin:var(--lg) 0}
+.slatebar{background:var(--tint); border-left:4px solid var(--acc); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:var(--md) var(--lg); margin:var(--lg) 0}
 .slatebar p:last-child{margin-bottom:0}
-.bordered{border:1.5px solid var(--slate); border-radius:var(--radius); padding:var(--lg); margin:var(--lg) 0}
+.bordered{border:1.5px solid var(--acc); border-radius:var(--radius); padding:var(--lg); margin:var(--lg) 0}
 .bordered h3:first-child,.bordered h4:first-child{margin-top:0}
 .eq{font-family:var(--mono); font-size:15px; background:var(--tint); padding:11px 15px; display:inline-block; margin:var(--sm) 0 var(--md); letter-spacing:-.01em; border-radius:var(--radius-sm)}
 .eq.big{font-size:16.5px; display:block; text-align:center; padding:16px}
 ol.steps{padding-left:0; list-style:none; counter-reset:s; max-width:74ch}
 ol.steps li{counter-increment:s; padding:12px 0 12px 42px; border-bottom:1px solid var(--hair); position:relative; font-size:16.5px}
-ol.steps li::before{content:counter(s); position:absolute; left:0; top:12px; font-family:var(--mono); font-size:12px; color:var(--slate)}
+ol.steps li::before{content:counter(s); position:absolute; left:0; top:12px; font-family:var(--mono); font-size:12px; color:var(--acc)}
 ul.plain{list-style:none; padding:0; margin:0 0 var(--md); max-width:74ch}
 ul.plain li{padding:10px 0; border-bottom:1px solid var(--hair); font-size:16px}
-.cite{font-family:var(--mono); font-size:11px; letter-spacing:-.01em; color:var(--slate); text-decoration:none; border-bottom:1px solid var(--slate-pale); white-space:nowrap}
-.cite:hover{color:var(--ink); border-bottom-color:var(--slate)}
+.cite{font-family:var(--mono); font-size:11px; letter-spacing:-.01em; color:var(--acc); text-decoration:none; border-bottom:1px solid var(--rule); white-space:nowrap}
+.cite:hover{color:var(--ink); border-bottom-color:var(--acc)}
 .tag{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; padding:2px 6px; border-radius:2px; vertical-align:2px; white-space:nowrap}
 .t-model{background:var(--tint-deep); color:var(--ink)}
-.t-derived{background:var(--slate); color:var(--paper)}
+.t-derived{background:var(--acc); color:var(--on-acc)}
 .t-adult{background:var(--tint); color:var(--ink-muted); border:1px solid var(--rule)}
 .t-peds{background:var(--caution-bg); color:var(--ink); border:1px solid var(--caution)}
 .t-unsourced{background:var(--neg-bg); color:var(--ink); border:1px solid var(--neg)}
 
 /* ---------- population pill banner ---------- */
 .pillbar{display:flex; flex-wrap:wrap; gap:8px; margin:var(--md) 0 var(--lg)}
-.popchip{border:1px solid var(--slate-pale); border-radius:999px; padding:6px 13px; font-family:var(--sans); font-size:12.5px; color:var(--ink-muted); line-height:1.35; max-width:44ch}
-.popchip .k{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; color:var(--slate)}
+.popchip{border:1px solid var(--rule); border-radius:var(--radius); padding:6px 13px; font-family:var(--sans); font-size:12.5px; color:var(--ink-muted); line-height:1.35; max-width:44ch}
+.popchip .k{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; color:var(--acc)}
 .popchip b{color:var(--ink); font-weight:600}
 
 /* ---------- tables ---------- */
@@ -176,7 +167,7 @@ th{font-weight:620; font-size:12.5px; letter-spacing:.02em; border-bottom:1px so
 td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding-right:16px}
 .scrollx{overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
 .scrollx table{min-width:640px}
-.tbl-note{font-family:var(--sans); font-size:12.5px; color:var(--ink-muted); border-left:4px solid var(--slate); padding:6px 12px; margin:var(--md) 0 0; background:var(--tint)}
+.tbl-note{font-family:var(--sans); font-size:12.5px; color:var(--ink-muted); border-left:4px solid var(--acc); padding:6px 12px; margin:var(--md) 0 0; background:var(--tint)}
 .tbl-note.warn{border-left-color:var(--caution); background:var(--caution-bg)}
 
 /* ---------- the pharmacology table ---------- */
@@ -195,7 +186,7 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 .flagline{display:block; margin-top:6px; padding:5px 8px; font-family:var(--sans); font-size:11.5px; line-height:1.4; border-radius:var(--radius-sm); background:var(--caution-bg); border:1px solid var(--caution); color:var(--ink)}
 .lvl{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:3px 7px; border-radius:2px; margin-bottom:6px; font-weight:600}
 .lvl-first{background:var(--pos-bg); color:var(--pos); border:1px solid var(--pos)}
-.lvl-ed{background:var(--tint); color:var(--ink); border:1px solid var(--slate-pale)}
+.lvl-ed{background:var(--tint); color:var(--ink); border:1px solid var(--rule)}
 .lvl-disc{background:var(--caution-bg); color:var(--ink); border:1px solid var(--caution)}
 .lvl-null{background:var(--neg-bg); color:var(--ink); border:1px solid var(--neg)}
 .lvl-sub{background:var(--tint-deep); color:var(--ink); border:1px solid var(--rule)}
@@ -217,10 +208,12 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 .matrix th,.matrix td{border:1px solid var(--hair); padding:7px 8px; text-align:center; vertical-align:middle}
 .matrix th.rowh,.matrix td.rowh{text-align:left; font-weight:560; white-space:nowrap}
 .matrix thead th{font-size:11px; line-height:1.25; font-weight:620; vertical-align:bottom; background:var(--tint)}
-.matrix .mk{font-family:var(--mono); font-size:14px; color:var(--slate); font-weight:600}
+.matrix .mk{font-family:var(--mono); font-size:14px; color:var(--acc); font-weight:600}
 .matrix .mk.soft{color:var(--ink-faint); font-weight:400}
-.matrix tbody tr.off{opacity:.42}
-.matrix .cb{width:18px; height:18px; accent-color:var(--slate); cursor:pointer}
+.matrix tbody tr.off{opacity:1}
+.matrix tbody tr.off>*{background:var(--nt-sunken); color:var(--ink-faint)}
+.matrix tbody tr.off .mk{color:var(--ink-faint)}
+.matrix .cb{width:18px; height:18px; accent-color:var(--acc); cursor:pointer}
 .matrix td.cbcell{padding:0}
 .matrix .cbwrap{display:flex; align-items:center; justify-content:center; min-height:44px; cursor:pointer}
 .matrix tfoot td{border-top:2px solid var(--rule); padding-top:10px; vertical-align:bottom}
@@ -229,7 +222,7 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 .bar.c3{background:var(--caution)}
 .bar.c4{background:var(--neg)}
 .barn{font-family:var(--mono); font-size:12px; color:var(--ink)}
-.matnote{font-family:var(--sans); font-size:12px; color:var(--ink-muted); border-left:4px solid var(--slate); padding:8px 12px; background:var(--tint); margin-top:var(--md)}
+.matnote{font-family:var(--sans); font-size:12px; color:var(--ink-muted); border-left:4px solid var(--acc); padding:8px 12px; background:var(--tint); margin-top:var(--md)}
 #toxSummary{font-family:var(--serif); font-size:15px; margin:var(--md) 0 0; color:var(--ink)}
 
 /* ---------- rig ---------- */
@@ -253,7 +246,7 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 .grp h5{font-family:var(--mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 10px; font-weight:500}
 .ctl{margin-bottom:12px}
 .ctl label{display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:560; margin-bottom:5px; gap:8px}
-.ctl label .val{font-family:var(--mono); font-size:12.5px; color:var(--slate); font-weight:400}
+.ctl label .val{font-family:var(--mono); font-size:12.5px; color:var(--acc); font-weight:400}
 .anchor{font-family:var(--sans); font-size:11px; line-height:1.35; color:var(--ink-muted); margin-top:4px; display:block}
 .walkmsg{font-family:var(--sans); font-size:12px; line-height:1.45; color:var(--ink-muted); margin:9px 0 0; padding-left:9px; border-left:2px solid var(--rule)}
 .walkmsg.live{color:var(--ink); border-left-color:var(--caution)}
@@ -263,9 +256,9 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding
 input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:26px; background:transparent; cursor:pointer; margin:0; display:block}
 input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--tint-deep); border-radius:2px}
 input[type=range]::-moz-range-track{height:3px; background:var(--tint-deep); border-radius:2px}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--slate); margin-top:-8.5px; border:2px solid var(--card); transition:background 140ms var(--ease-out)}
-input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--slate); border:2px solid var(--card)}
-input[type=range]:hover::-webkit-slider-thumb{background:var(--slate-deep)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--acc); margin-top:-8.5px; border:2px solid var(--card); transition:background 140ms var(--ease-out)}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--acc); border:2px solid var(--card)}
+input[type=range]:hover::-webkit-slider-thumb{background:var(--acc-deep)}
 input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:4px}
 input[type=range].over::-webkit-slider-runnable-track{background:var(--caution)}
 input[type=range].over::-moz-range-track{background:var(--caution)}
@@ -277,11 +270,11 @@ input[type=number]{font-family:var(--mono); font-size:13px; width:100%; padding:
 .seg.c1{grid-template-columns:1fr}
 .tg{font-family:var(--sans); font-size:12px; font-weight:560; padding:8px 6px; min-height:40px; background:var(--card); border:1px solid var(--rule); color:var(--ink); cursor:pointer; transition:background 140ms var(--ease-out),border-color 140ms var(--ease-out); border-radius:var(--radius-sm); line-height:1.2}
 .tg:hover{background:var(--tint)}
-.tg[aria-pressed=true],.tg[aria-checked=true]{background:var(--slate); border-color:var(--slate); color:var(--paper)}
+.tg[aria-pressed=true],.tg[aria-checked=true]{background:var(--acc); border-color:var(--acc); color:var(--on-acc)}
 .tg:disabled{opacity:.42; cursor:not-allowed}
 .btn{width:100%; min-height:40px; font-family:var(--sans); font-size:12px; font-weight:560; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:var(--radius-sm); transition:background 140ms var(--ease-out); padding:8px 6px; line-height:1.2}
 .btn:hover{background:var(--tint); color:var(--ink)}
-.btn[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:var(--paper)}
+.btn[aria-pressed=true]{background:var(--acc); border-color:var(--acc); color:var(--on-acc)}
 .readout{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius-sm); overflow:hidden}
 .readout>*{min-width:0}
 .readout.c1{grid-template-columns:1fr}
@@ -308,12 +301,12 @@ svg text.lbl{font-family:var(--sans); font-size:11.5px; font-weight:560; fill:va
 svg text.ax{font-size:10px; fill:var(--ink-muted)}
 svg text.tiny{font-size:10px; fill:var(--ink-faint)}
 .s-ink{stroke:var(--ink)} .s-mut{stroke:var(--ink-muted)} .s-faint{stroke:var(--ink-faint)}
-.s-slate{stroke:var(--slate)} .s-deep{stroke:var(--slate-deep)} .s-pale{stroke:var(--slate-pale)}
-.s-rule{stroke:var(--rule)} .s-hair{stroke:var(--hair)}
-.s-pos{stroke:var(--pos)} .s-caution{stroke:var(--caution)} .s-neg{stroke:var(--neg)}
+.s-slate{stroke:var(--fig-resist)} .s-deep{stroke:var(--slate-deep)} .s-pale{stroke:var(--fig-resist)}
+.s-rule{stroke:var(--nt-edge)} .s-hair{stroke:var(--nt-edge)}
+.s-pos{stroke:var(--fig-elastic)} .s-caution{stroke:var(--fig-peep)} .s-neg{stroke:var(--neg)}
 .f-ink{fill:var(--ink)} .f-mut{fill:var(--ink-muted)} .f-faint{fill:var(--ink-faint)}
-.f-slate{fill:var(--slate)} .f-pale{fill:var(--slate-pale)} .f-tint{fill:var(--tint)}
-.f-pos{fill:var(--pos)} .f-caution{fill:var(--caution)} .f-neg{fill:var(--neg)}
+.f-slate{fill:var(--fig-resist)} .f-pale{fill:var(--slate-pale)} .f-tint{fill:var(--tint)}
+.f-pos{fill:var(--fig-elastic)} .f-caution{fill:var(--fig-peep)} .f-neg{fill:var(--neg)}
 .f-card{fill:var(--card)} .f-paper{fill:var(--paper)} .f-none{fill:none}
 .a18{fill-opacity:.18} .a22{fill-opacity:.22} .a14{fill-opacity:.14} .a10{fill-opacity:.10}
 .dim{opacity:.28; transition:opacity 140ms var(--ease-out)}
@@ -335,8 +328,8 @@ svg text.tiny{font-size:10px; fill:var(--ink-faint)}
 .chain{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sm); margin:var(--lg) 0 0; align-items:stretch}
 .chain>*{min-width:0}
 .chain .bx{border:1px dashed var(--rule); border-radius:var(--radius); padding:11px 12px; font-family:var(--sans); font-size:12px; line-height:1.4; background:var(--card); position:relative}
-.chain .bx.primary{border:1.5px solid var(--slate)}
-.chain .pop{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--slate); margin-bottom:5px}
+.chain .bx.primary{border:1.5px solid var(--acc)}
+.chain .pop{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--acc); margin-bottom:5px}
 .chain .arw{position:absolute; right:-13px; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-family:var(--mono); font-size:14px; z-index:1}
 .chainfoot{background:var(--caution-bg); border:1px solid var(--caution); border-radius:var(--radius); padding:10px 14px; font-family:var(--sans); font-size:12.5px; margin-top:var(--sm); color:var(--ink)}
 .chainback{border:1px dashed var(--neg); border-radius:var(--radius); padding:10px 12px; font-family:var(--sans); font-size:12px; margin-top:var(--sm); background:var(--neg-bg); color:var(--ink); max-width:52ch; margin-left:auto}
@@ -346,14 +339,15 @@ svg text.tiny{font-size:10px; fill:var(--ink-faint)}
 .stepstrip>*{min-width:0}
 .stepcard{border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); padding:10px; cursor:pointer; text-align:left; font-family:var(--sans); transition:border-color 140ms var(--ease-out),background 140ms var(--ease-out)}
 .stepcard:hover{background:var(--tint)}
-.stepcard[aria-pressed=true]{border-color:var(--slate); border-width:1.5px; background:var(--tint)}
-.stepcard .n{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--slate); display:block; margin-bottom:6px}
+.stepcard[aria-pressed=true]{border-color:var(--acc); border-width:1.5px; background:var(--tint)}
+.stepcard .n{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--acc); display:block; margin-bottom:6px}
 .stepcard .val{font-family:var(--mono); font-size:15px; color:var(--ink); display:block; margin-top:8px}
 .stepcard .val small{font-size:10.5px; color:var(--ink-muted); display:block; margin-top:2px; line-height:1.35; font-family:var(--sans)}
-.contrast{background:var(--tint); border:1px solid var(--slate-pale); border-radius:var(--radius); padding:12px 14px; font-family:var(--serif); font-size:15px; margin-top:var(--sm)}
+.contrast{background:var(--tint); border:1px solid var(--rule); border-radius:var(--radius); padding:12px 14px; font-family:var(--serif); font-size:15px; margin-top:var(--sm)}
+.contrast[style*="--slate"]{border-color:var(--acc) !important}
 
 /* ---------- attending practice ---------- */
-.practice{background:var(--tint); border:1px solid var(--rule); border-left:4px solid var(--slate); border-radius:0 var(--radius) var(--radius) 0; padding:var(--lg); margin:var(--lg) 0; font-family:var(--serif)}
+.practice{background:var(--tint); border:1px solid var(--rule); border-left:4px solid var(--acc); border-radius:0 var(--radius) var(--radius) 0; padding:var(--lg); margin:var(--lg) 0; font-family:var(--serif)}
 .practice h3{margin-top:0}
 .practice .who{font-family:var(--mono); font-size:11.5px; color:var(--ink-muted); line-height:1.55; margin:0 0 var(--md); max-width:78ch}
 .practice dl{margin:0; display:grid; grid-template-columns:150px var(--col); gap:0}
@@ -361,7 +355,7 @@ svg text.tiny{font-size:10px; fill:var(--ink-faint)}
 .practice dt{font-family:var(--sans); font-size:13.5px; font-weight:620; padding:10px 14px 10px 0; border-top:1px solid var(--hair)}
 .practice dd{margin:0; padding:10px 0; border-top:1px solid var(--hair); font-size:16px; line-height:1.5}
 .practice .close{margin:var(--md) 0 0; font-size:14.5px; color:var(--ink-muted); font-style:italic}
-.practice dd.ednote{grid-column:2; font-family:var(--mono); font-size:11.5px; line-height:1.55; color:var(--ink-muted); background:var(--tint-deep); border-left:3px solid var(--caution); border-top:0; border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:8px 12px; margin:0 0 10px}
+.practice dd.ednote{grid-column:2; font-family:var(--mono); font-size:11.5px; line-height:1.55; color:var(--ink-muted); background:var(--card); border-left:3px solid var(--caution); border-top:0; border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:8px 12px; margin:0 0 10px}
 .practice dd.ednote b{font-family:var(--sans); color:var(--caution); font-weight:640; letter-spacing:.02em}
 .erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:11px; line-height:1.5; color:var(--caution)}
 .erratum b{font-weight:640}
@@ -375,7 +369,7 @@ footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-m
 footer ol{padding-left:22px; max-width:88ch}
 footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 .tool-footer{margin-top:var(--xl); padding-top:var(--md); border-top:1px solid var(--rule); color:var(--ink-muted); font-family:var(--sans); font-size:11.5px; line-height:1.65}
-.tool-footer a{color:var(--slate)}
+.tool-footer a{color:var(--acc)}
 .tool-footer a:hover{color:var(--ink)}
 .boot-msg{border:1px solid var(--caution); background:var(--caution-bg); border-radius:var(--radius); padding:12px 14px; font-family:var(--sans); font-size:13px; color:var(--ink-muted); margin:var(--md) 0}
 
@@ -386,7 +380,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 .stwrap>summary::before{content:"\25B8 "; display:inline-block; transition:transform .15s}
 .stwrap[open]>summary::before{content:"\25BE "}
 .stwrap>summary:hover{color:var(--ink)}
-.stwrap>summary:focus-visible{outline:2px solid var(--slate); outline-offset:3px; border-radius:3px}
+.stwrap>summary:focus-visible{outline:2px solid var(--focus); outline-offset:3px; border-radius:3px}
 .stwrap .st{border:0; padding:0; background:none}
 .st{border:1px solid var(--rule); border-radius:var(--radius); background:var(--card); padding:var(--md); margin:var(--md) 0}
 .st-h{font-family:var(--sans); font-size:14px; font-weight:620; margin-bottom:10px}
@@ -455,7 +449,172 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   .printonly{display:block !important; font-size:9.5pt; font-style:italic; margin-top:4pt}
 }
 .printonly{display:none}
+/* ============================================================
+   QA floor pass (2026-10-03). CSS only: no markup, geometry or data change.
+   (a) figure marks that carry meaning reach 3:1 in both themes;
+   (b) figure labels stay >= 11px rendered: scroll rather than shrink on narrow
+       screens, and a calibrated label size where the desktop column shrinks the viewBox;
+   (c) running text that sat below 14px, and labels below 11px, are lifted to the floor.
+   ============================================================ */
+
+/* (a) washes that encode an area get a same-hue outline (>= 3:1); hairlines and rules
+   used as frames or gridlines read as edges, not as ghosts */
+svg :is(.f-pos,.f-slate,.f-caution,.f-neg):is(.a10,.a14,.a18,.a22):not([class*="s-"]):not([stroke-width]){stroke-width:1}
+svg .f-pos:is(.a10,.a14,.a18,.a22):not([class*="s-"]){stroke:var(--fig-elastic)}
+svg .f-slate:is(.a10,.a14,.a18,.a22):not([class*="s-"]){stroke:var(--fig-resist)}
+svg .f-caution:is(.a10,.a14,.a18,.a22):not([class*="s-"]){stroke:var(--fig-peep)}
+svg .f-neg:is(.a10,.a14,.a18,.a22):not([class*="s-"]){stroke:var(--neg)}
+svg g.s-neg{opacity:.85}
+svg .f-slate:is(.a14,.a18,.a22){fill-opacity:var(--fig-a-resist)}
+svg .f-pos:is(.a14,.a18,.a22){fill-opacity:var(--fig-a-elastic)}
+svg .f-caution:is(.a14,.a18,.a22){fill-opacity:var(--fig-a-peep)}
+#g2svg .s-rule{stroke:var(--ink-faint)}
+.legend i{opacity:1 !important}
+.legend i[style*="var(--pos)"]{background:color-mix(in srgb,var(--fig-elastic) var(--fig-a-elastic),var(--card)) !important; border-color:var(--fig-elastic)}
+.legend i[style*="var(--slate)"]{background:color-mix(in srgb,var(--fig-resist) var(--fig-a-resist),var(--card)) !important; border-color:var(--fig-resist)}
+.legend i[style*="var(--caution)"]{background:color-mix(in srgb,var(--fig-peep) var(--fig-a-peep),var(--card)) !important; border-color:var(--fig-peep)}
+.legend i[style*="var(--neg)"]{background:color-mix(in srgb,var(--neg) 18%,var(--card)) !important; border-color:var(--neg)}
+
+/* (b) figure text. Desktop (>= 1181px): the wrap is a fixed 1180px, so each figure's scale
+   is fixed. Four figures sat in a 466px column (viewBox shrunk to 0.75-0.83) and one in 682px
+   (0.86); raising their label size broke long annotations, so they get the width instead:
+   the readout column drops under the figure (the layout the page already uses from 901 to
+   1180px) and the Expiratory-flow panel stacks its controls above the trace. The figures then
+   render at scale 1.11-1.24, so the labels are 11px or more with no change to any size. */
+@media (min-width:1181px){
+  .rig-body.wide3{grid-template-columns:290px var(--col)}
+  .rig-body.wide3 .rig-read{border-left:0; border-top:1px solid var(--rule); grid-column:1 / -1}
+  .rig-body.wide3 .rig-read .readout{grid-template-columns:repeat(4,1fr)}
+  #rig12 .rig-body{grid-template-columns:1fr}
+  #rig12 .rig-ctrl{border-right:0; border-bottom:1px solid var(--rule)}
+  svg#d1 text.ax, svg#d1 text.tiny{font-size:10.3px}
+  svg#g2svg text.ax, svg#g2svg text.tiny{font-size:10.6px}
+  svg#c3svg text.ax, svg#c3svg text.tiny{font-size:10.3px}
+}
+/* Narrower: the figure keeps scale 1 and the panel scrolls sideways instead of shrinking it. */
+@media (max-width:1180px){
+  .rig-view{overflow-x:auto; overscroll-behavior-x:contain}
+  svg[aria-labelledby="d1title"]{min-width:900px}
+  svg[aria-labelledby="g1title"]{min-width:560px}
+  svg[aria-labelledby="g2title"]{min-width:640px}
+  svg[aria-labelledby="g3title"]{min-width:600px}
+  svg[aria-labelledby="b5title"]{min-width:640px}
+  svg[aria-labelledby="b9title"]{min-width:560px}
+  svg[aria-labelledby="c3title"]{min-width:620px}
+  svg[aria-labelledby="c4title"]{min-width:640px}
+  svg[aria-labelledby="c5title"]{min-width:620px}
+  svg[aria-labelledby="c8title"]{min-width:620px}
+  svg[aria-labelledby="c12title"]{min-width:790px}
+  .stepcard svg{min-width:0}
+  svg text.ax, svg text.tiny{font-size:11px}
+}
+
+/* (c) type floor on desktop. Labels (short) 11px, running text 14px. */
+sub,sup{font-size:max(11px,.75em); line-height:0}
+.cite{display:inline-block; font-size:11px}
+.tag,.lvl{font-size:11px}
+.lvl.lvl-ed,.lvl.lvl-sub{font-size:14px; letter-spacing:.03em; font-weight:600; font-family:var(--sans)}
+.numeral small{font-size:11px; margin-top:18px}
+.chip .k,.dcard .k,.grp h5,.readout .k,.readout .v small,.toc .qual,.chain .pop{font-size:11px}
+.popchip span.k{font-family:var(--sans); font-size:14px; font-weight:620; letter-spacing:.03em; margin-bottom:2px}
+.popchip{font-size:14px}
+.anchor,div.refband,.flag,.flagline,.rig-cap,.matnote,.walkmsg,.tbl-note,.practice .who,.practice dd.ednote,.erratum,.dcard .r,.disclaimer,.chainfoot,.chainback,.chain .bx,.cmp .hd,.cmp .rl,.cmp .cl{font-size:14px}
+div.refband{font-family:var(--sans); line-height:1.5}
+.dose,.dose .adult{font-size:14px}
+#pharm,.rig-foot b{font-size:14px}
+button.stepcard .val small{font-size:14px}
+/* two citation strings run past 40 characters, so the type-floor rule counts them as running text */
+a.cite[href$="/15730605/"],a.cite[href$="/9196108/"]{font-size:14px; white-space:normal}
+
+
+/* neel-theme tell cleanup: hairline callouts instead of coloured left stripes; prose measure; tnum scoped to data */
+.cautionbar{border:1px solid var(--caution); border-radius:var(--radius-sm)}
+.slatebar,.tbl-note,.matnote{border:1px solid var(--rule-strong); border-radius:var(--radius-sm)}
+.practice{border:1px solid var(--rule-strong); border-radius:var(--radius)}
+.practice dd.ednote{border:1px solid var(--caution)}
+main p, section p, article p, p{max-width:48ch}
+.lede{max-width:46ch}
+td,th,input,output,select,code,kbd,svg text,.num,[class*="read"],[class*="val"],[class*="stat"],[class*="out"]{font-feature-settings:"tnum" 1,"lnum" 1}
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 
@@ -2217,7 +2376,7 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   </ol>
 
   <div class="tool-footer">
-    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.1 &middot; Updated 2026-09-01 &middot;
+    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-10-03 &middot;
     Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
     Every PMID and DOI printed here was resolved against PubMed E-utilities on 2026-08-31 and re-resolved on 2026-09-01 (76 of 76 unique source PMIDs resolved, 32 of 32 printed DOIs matched the record PubMed holds), with journal, year and, where the source names one, first author matched; no identifier is printed that was not in that verified set, and where an author could not be attributed the source is cited by journal and year. <b>The v2.0 round added six PMIDs</b> (23235591, 15846615, 1277710, 879596, 3826954 and 33280709) each resolved and erratum-screened the same way, with no erratum, retraction or expression of concern on any of them; <b>and four non-PubMed primary documents</b>, the GINA 2026 Strategy Report, SIGN 158, the NAEPP EPR-3 chapter and the FDA theophylline label, each downloaded and the quoted passages read directly rather than taken from a secondary restatement. Dosing figures are quoted from the cited sources rather than harmonized; where sources publish different ranges for the same agent, all published ranges are shown with their attributions. Two agents in the pharmacology table (heliox and epinephrine) do not appear in the pediatric critical-asthma primary source and are labelled in-row. Values no source establishes are labelled unsourced, derived or model choice and kept with their provenance rather than dropped silently; values computed from a published equation rather than measured are labelled modelled. Every area in the Campbell diagram and both ventilator schematics is a model output, not a measurement. No published figure is reproduced, traced or embedded anywhere. <b>Correction screening, re-run 2026-09-01.</b> An <em>erratum-linkage</em> screen parsed the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities, for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn; the same screen ran over all four tools in this set. On this page 76 of 76 original source PMIDs were screened, and three carry an erratum (PMID 15215002, 17983880 and 26303207) with no retraction and no expression of concern anywhere. All three are marked on their reference entry and at the point of use. One erratum carries a PubMed record of its own, PMID 26377055, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 76. The screen returns the linkage rather than the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Session-only; nothing is saved or transmitted, and no data leaves this device.
   </div>
@@ -2246,22 +2405,17 @@ var RM = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)
 
 /* ---------- theme ---------- */
 function initTheme(){
-  var stored=null;
-  try { stored = localStorage.getItem("asthmacc.theme"); } catch(e){ stored=null; }
-  if(stored) document.documentElement.setAttribute("data-theme", stored);
-  else if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.setAttribute("data-theme","dark");
-  else document.documentElement.setAttribute("data-theme","light");
+  /* The neel-theme kit owns data-theme, the Light | Dark switch and the storage key.
+     The old button is hidden by CSS; this only keeps its label and aria text in step. */
   var lbl=function(){
-    var d = document.documentElement.getAttribute("data-theme")==="dark";
+    var d = window.NeelTheme ? NeelTheme.get()==="dark" : document.documentElement.getAttribute("data-theme")==="dark";
     $("themeToggle").textContent = d ? "Light theme" : "Dark theme";
     $("themeToggle").setAttribute("aria-label","Switch to "+(d?"light":"dark")+" theme");
   };
   lbl();
+  document.addEventListener("neeltheme", lbl);
   $("themeToggle").addEventListener("click", function(){
-    var cur = document.documentElement.getAttribute("data-theme")==="dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", cur);
-    try { localStorage.setItem("asthmacc.theme", cur); } catch(e){ /* private mode: theme is session-only */ }
-    lbl();
+    if(window.NeelTheme) NeelTheme.set(NeelTheme.get()==="dark" ? "light" : "dark");
   });
 }
 
@@ -3711,6 +3865,53 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */

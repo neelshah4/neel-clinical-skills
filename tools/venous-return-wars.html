@@ -4,19 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Venous Return Wars, worked from the ground up</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.2.8/index.css" integrity="sha384-ZTIcl2CmY0wyM9ANOhomBco7rEUIlWztf6lGcLKCocKUrIgGCsfisuZyE+hadW8K" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4@5.3.0/index.css" integrity="sha384-BcqMxSEWy7T7vR491w5jVpKFG0b3TfgKXXPd5v6bFEHwlI6bbjKOM8VQL0FY+jmp" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.8/index.css" integrity="sha384-bNykZ+bGB4FclZiYvLmgUfE8clWCvZlLOJ3v63czgIEgamTe0EhkaLXIbptJkvmW" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 :root{
-  --paper:#FAF6EE; --tint:#E7E2D6; --tint-deep:#D5CFBF;
-  --ink:#1A1A1A; --ink-muted:#5A5550; --ink-faint:#6E6862;
-  --slate:#4A5468; --slate-deep:#2F3744; --slate-pale:#C5CCD9;
-  --rule:rgba(26,26,26,.16); --hair:rgba(26,26,26,.10);
-  --pos:#2E7D5B; --caution:#B88A2C; --neg:#B23A3A;
-  --sans:'Inter Variable',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue','Liberation Sans',sans-serif;
-  --serif:'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif;
-  --mono:'JetBrains Mono Variable','JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --paper:var(--nt-paper); --tint:var(--nt-tint); --tint-deep:var(--nt-tint-deep);
+  --ink:var(--nt-ink); --ink-muted:var(--nt-ink-quiet); --ink-faint:var(--nt-ink-quiet);
+  --slate:var(--nt-accent); --slate-deep:var(--nt-accent-deep); --slate-pale:var(--nt-edge);
+  --rule:var(--nt-rule-strong); --hair:var(--nt-rule);
+  --pos:var(--nt-pos); --caution:var(--nt-caution); --neg:var(--nt-neg);
+  --pos-wash:var(--nt-pos-wash);
+  --on-accent:var(--nt-on-accent); --plate:var(--nt-plate);
+  --sans:var(--nt-font-display);
+  --serif:var(--nt-font-body);
+  --mono:var(--nt-font-mono);
   --ease-out:cubic-bezier(.23,1,.32,1);
   --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
   --maxw:1140px; --col:minmax(0,1fr);
@@ -27,8 +26,9 @@ body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--serif); font-size:17px; line-height:1.55;
   font-optical-sizing:auto; -webkit-font-smoothing:antialiased;
-  font-feature-settings:"tnum" 1,"lnum" 1;
+  font-feature-settings:"lnum" 1;
 }
+table,.readout,.mono,.num,.chip .v,.fact .n,.case-n,.eq,.ctl label .val,svg text{font-feature-settings:"tnum" 1,"lnum" 1}
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--lg)}
 h1,h2,h3,h4,.ov,.num,button,label,input,table,.mono{font-family:var(--sans)}
 h1{font-size:clamp(38px,5.4vw,62px); line-height:1.06; font-weight:650; letter-spacing:-.022em; margin:0 0 var(--md); text-wrap:balance; max-width:22ch}
@@ -37,18 +37,19 @@ h3{font-size:21px; line-height:1.25; font-weight:620; letter-spacing:-.008em; ma
 h4{font-size:16px; font-weight:640; letter-spacing:-.003em; margin:0 0 var(--xs)}
 p{margin:0 0 var(--md); max-width:70ch; text-wrap:pretty}
 .lede{font-size:20px; line-height:1.5; color:var(--ink); max-width:62ch}
-.ov{font-size:11.5px; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
-.mono{font-family:var(--mono); font-size:12.5px; letter-spacing:-.01em}
+.ov{font-size:11px; font-weight:600; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-muted); margin:0 0 var(--xs)}
+.mono{font-family:var(--mono); font-size:13px; letter-spacing:-.01em}
+header p.ov{font-size:14px}
 a{color:var(--slate); text-underline-offset:3px; text-decoration-thickness:1px}
 a:hover{color:var(--slate-deep)}
-:focus-visible{outline:2px solid var(--slate); outline-offset:2px; border-radius:2px}
+:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px; border-radius:2px}
 hr{border:0; border-top:1px solid var(--rule); margin:var(--xxl) 0}
 
 /* ---------- header, top-left lead ---------- */
 header{padding:var(--xxl) 0 var(--xl); border-bottom:1px solid var(--rule)}
 .chips{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-top:var(--xl)}
 .chip{background:var(--paper); padding:12px 14px}
-.chip .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px}
+.chip .k{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block; margin-bottom:3px}
 .chip .v{font-family:var(--sans); font-size:14px; font-weight:560; line-height:1.25}
 
 /* ---------- sections ---------- */
@@ -56,7 +57,7 @@ section{padding:var(--xxl) 0; border-bottom:1px solid var(--hair)}
 section:last-of-type{border-bottom:0}
 .split{display:grid; grid-template-columns:96px var(--col); gap:var(--lg); align-items:start}
 .numeral{font-family:var(--serif); font-size:82px; line-height:.8; font-weight:400; color:var(--slate-pale); letter-spacing:-.03em; font-variant-numeric:normal; user-select:none}
-.numeral small{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
+.numeral small{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink-muted); margin-top:10px; text-transform:uppercase}
 
 /* ---------- cards ---------- */
 .grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:var(--md)}
@@ -72,7 +73,7 @@ section:last-of-type{border-bottom:0}
 
 blockquote{margin:var(--xl) 0; padding:0 0 0 var(--lg); border-left:2px solid var(--slate); max-width:60ch}
 blockquote p{font-size:21px; line-height:1.38; font-style:italic; margin-bottom:var(--sm)}
-blockquote cite{font-family:var(--sans); font-style:normal; font-size:13px; color:var(--ink-muted)}
+blockquote cite{font-family:var(--sans); font-style:normal; font-size:14px; color:var(--ink-muted)}
 
 .callout{background:var(--tint); padding:var(--lg); margin:var(--lg) 0}
 .callout p:last-child{margin-bottom:0}
@@ -80,49 +81,49 @@ blockquote cite{font-family:var(--sans); font-style:normal; font-size:13px; colo
 .eq.big{font-size:19px; display:block; text-align:center; padding:18px}
 
 /* ---------- rig ---------- */
-.rig{border:1px solid var(--rule); background:#fff; margin:var(--lg) 0}
+.rig{border:1px solid var(--rule); background:var(--plate); margin:var(--lg) 0}
 .rig-head{padding:14px var(--md); border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:baseline; gap:var(--md); flex-wrap:wrap}
 .rig-head .t{font-family:var(--sans); font-weight:620; font-size:15px}
-.rig-head .s{font-family:var(--mono); font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.07em}
+.rig-head .s{font-family:var(--mono); font-size:14px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.04em}
 .rig-body{display:grid; grid-template-columns:290px var(--col); gap:0}
 .rig-ctrl{padding:var(--md); border-right:1px solid var(--rule); background:var(--paper)}
 .rig-view{padding:var(--md); min-width:0}
 .rig-foot{padding:12px var(--md); border-top:1px solid var(--rule); font-size:14px; color:var(--ink-muted); font-family:var(--serif)}
-.rig-foot b{color:var(--ink); font-family:var(--sans); font-size:13.5px; font-weight:600}
+.rig-foot b{color:var(--ink); font-family:var(--sans); font-size:14px; font-weight:600}
 
 .ctl{margin-bottom:var(--md)}
 .ctl label{display:flex; justify-content:space-between; align-items:baseline; font-size:13px; font-weight:560; margin-bottom:6px; gap:8px}
-.ctl label .val{font-family:var(--mono); font-size:12.5px; color:var(--slate); font-weight:400}
+.ctl label .val{font-family:var(--mono); font-size:13px; color:var(--slate); font-weight:400}
 input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:28px; background:transparent; cursor:pointer; margin:0; display:block}
 input[type=range]::-webkit-slider-runnable-track{height:3px; background:var(--tint-deep); border-radius:2px}
 input[type=range]::-moz-range-track{height:3px; background:var(--tint-deep); border-radius:2px}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--slate); margin-top:-9.5px; border:2px solid #fff; transition:background 140ms var(--ease-out)}
-input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--slate); border:2px solid #fff}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--slate); margin-top:-9.5px; border:2px solid var(--paper); transition:background 140ms var(--ease-out)}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--slate); border:2px solid var(--paper)}
 input[type=range]:hover::-webkit-slider-thumb{background:var(--slate-deep)}
 input[type=range]:active::-webkit-slider-thumb{background:var(--slate-deep)}
 input[type=range]:disabled{cursor:not-allowed; opacity:.45}
 input[type=range]:disabled::-webkit-slider-thumb{background:var(--ink-faint)}
 
 .toggles{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:var(--md)}
-.tg{font-family:var(--sans); font-size:12.5px; font-weight:560; padding:9px 8px; min-height:44px; background:var(--paper); border:1px solid var(--rule); color:var(--ink); cursor:pointer; transition:background 140ms var(--ease-out), border-color 140ms var(--ease-out); border-radius:2px; line-height:1.2}
+.tg{font-family:var(--sans); font-size:13px; font-weight:560; padding:9px 8px; min-height:44px; background:var(--paper); border:1px solid var(--rule); color:var(--ink); cursor:pointer; transition:background 140ms var(--ease-out), border-color 140ms var(--ease-out); border-radius:2px; line-height:1.2}
 .tg:hover{background:var(--tint)}
 .tg:active{background:var(--tint-deep)}
-.tg[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:#F5F0E6}
+.tg[aria-pressed=true]{background:var(--slate); border-color:var(--slate); color:var(--on-accent)}
 .tg:disabled{opacity:.45; cursor:not-allowed}
-.reset{width:100%; min-height:44px; font-family:var(--sans); font-size:12.5px; font-weight:560; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:2px; transition:background 140ms var(--ease-out)}
+.reset{width:100%; min-height:44px; font-family:var(--sans); font-size:13px; font-weight:560; background:transparent; border:1px solid var(--rule); color:var(--ink-muted); cursor:pointer; border-radius:2px; transition:background 140ms var(--ease-out)}
 .reset:hover{background:var(--tint); color:var(--ink)}
 
 .readout{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:var(--md)}
 .readout div{background:var(--paper); padding:9px 10px}
-.readout .k{font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block}
+.readout .k{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:block}
 .readout .v{font-family:var(--mono); font-size:17px; font-weight:500; color:var(--ink); letter-spacing:-.02em}
-.readout .v small{font-size:10.5px; color:var(--ink-muted); font-weight:400}
+.readout .v small{font-size:11px; color:var(--ink-muted); font-weight:400}
 .pin{background:var(--tint) !important}
 
 svg{display:block; width:100%; height:auto; overflow:visible}
 svg text{font-family:var(--mono); font-size:11px; fill:var(--ink-muted)}
 svg text.lbl{font-family:var(--sans); font-size:11.5px; fill:var(--ink); font-weight:560}
-svg text.hal{paint-order:stroke; stroke:#fff; stroke-width:3.5px; stroke-linejoin:round}
+svg text.hal{paint-order:stroke; stroke:var(--plate); stroke-width:3.5px; stroke-linejoin:round}
 
 /* ---------- cases ---------- */
 .case{border-top:1px solid var(--rule)}
@@ -138,15 +139,15 @@ svg text.hal{paint-order:stroke; stroke:#fff; stroke-width:3.5px; stroke-linejoi
 .case-body h4{margin-top:var(--md)}
 .case-body h4:first-child{margin-top:0}
 .case-body p{font-size:16px}
-.tagline{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase; padding:3px 7px; margin-bottom:6px}
+.tagline{display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase; padding:3px 7px; margin-bottom:6px}
 .t-reflex{background:var(--tint-deep); color:var(--ink)}
-.t-real{background:var(--slate); color:#F5F0E6}
-.t-do{background:#DDE9E2; color:#215A41}
+.t-real{background:var(--slate); color:var(--on-accent)}
+.t-do{background:var(--pos-wash); color:var(--pos)}
 
-table{border-collapse:collapse; width:100%; font-size:14.5px; font-family:var(--sans); margin:var(--md) 0}
+table{border-collapse:collapse; width:100%; font-size:14px; font-family:var(--sans); margin:var(--md) 0}
 caption{text-align:left; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-muted); padding-bottom:8px}
 th,td{text-align:left; padding:10px 12px 10px 0; border-bottom:1px solid var(--hair); vertical-align:top}
-th{font-weight:620; font-size:12.5px; letter-spacing:.02em; border-bottom:1px solid var(--rule)}
+th{font-weight:620; font-size:13px; letter-spacing:.02em; border-bottom:1px solid var(--rule)}
 td.num,th.num{text-align:right; font-family:var(--mono); font-size:13px; padding-right:18px}
 
 ol.steps{padding-left:0; list-style:none; counter-reset:s; max-width:74ch}
@@ -158,7 +159,7 @@ footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-m
 footer ol,footer ul{padding-left:20px; max-width:82ch}
 footer li{margin-bottom:10px; font-size:14px; line-height:1.45}
 footer .mono{color:var(--ink-faint)}
-.erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:11px; line-height:1.5; color:var(--caution)}
+.erratum{display:block; margin-top:4px; font-family:var(--mono); font-size:14px; line-height:1.5; color:var(--caution)}
 .erratum b{font-weight:640}
 
 @media (max-width:900px){
@@ -171,6 +172,7 @@ footer .mono{color:var(--ink-faint)}
 }
 @media (max-width:768px){
   body{font-size:16px}
+  header{padding-top:76px}
   .wrap{padding:0 var(--md)}
   .split{grid-template-columns:1fr; gap:var(--sm)}
   .numeral{font-size:54px}
@@ -190,6 +192,85 @@ footer .mono{color:var(--ink-faint)}
 }
 @media print{ .rig-ctrl{display:none} body{font-size:11pt} }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 
@@ -881,7 +962,7 @@ footer .mono{color:var(--ink-faint)}
 
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">Educational use only.</b> This page is a teaching tool about a disputed area of cardiovascular physiology. It is not clinical decision support, it gives no patient-specific advice, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators, and every case is a teaching vignette rather than a protocol. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
 
-  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0</p>
+  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.4 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0</p>
  </div>
 </footer>
 
@@ -889,7 +970,14 @@ footer .mono{color:var(--ink-faint)}
 "use strict";
 const $ = id => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
-const INK="#1A1A1A", MUT="#5A5550", SLATE="#4A5468", PALE="#C5CCD9", RULE="rgba(26,26,26,.16)", HAIR="rgba(26,26,26,.10)", TINT="#E7E2D6", CLAY="#B88A2C";
+let INK, MUT, SLATE, PALE, REF, RULE, HAIR, TINT, CLAY, NEG, POS, PLATE, ONACC;
+function readThemeColors(){
+  const cs=getComputedStyle(document.documentElement), g=n=>cs.getPropertyValue(n).trim();
+  INK=g("--nt-ink"); MUT=g("--nt-ink-quiet"); SLATE=g("--nt-accent"); PALE=g("--nt-tint-deep"); REF=g("--nt-edge");
+  RULE=g("--nt-edge"); HAIR=g("--nt-edge"); TINT=g("--nt-tint"); CLAY=g("--nt-caution");
+  NEG=g("--nt-neg"); POS=g("--nt-pos"); PLATE=g("--nt-plate"); ONACC=g("--nt-on-accent");
+}
+readThemeColors();
 const el=(n,a={})=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
 const txt=(x,y,s,a={})=>{const t=el("text",Object.assign({x,y},a));t.textContent=s;return t;};
 const fmt=(v,d=1)=>v.toFixed(d);
@@ -918,16 +1006,16 @@ function rig1(){
   tanks.forEach(t=>{
     s.appendChild(el("rect",{x:t.x,y:top,width:t.w,height:base-top,fill:"none",stroke:RULE,"stroke-width":1}));
     const yy=y(Math.max(t.P,0));
-    s.appendChild(el("rect",{x:t.x,y:yy,width:t.w,height:base-yy,fill:SLATE,opacity:.24}));
+    s.appendChild(el("rect",{x:t.x,y:yy,width:t.w,height:base-yy,fill:SLATE,opacity:.24,"data-decor":1}));
     s.appendChild(el("line",{x1:t.x,y1:yy,x2:t.x+t.w,y2:yy,stroke:SLATE,"stroke-width":2}));
     s.appendChild(txt(t.x+t.w/2,base+18,t.lab,{class:"lbl","text-anchor":"middle"}));
     s.appendChild(txt(t.x+t.w/2,base+31,t.sub,{"text-anchor":"middle"}));
     s.appendChild(txt(t.x+t.w/2,Math.max(yy-8,top-6),fmt(t.P,1)+" mmHg",{"text-anchor":"middle",fill:SLATE,class:"hal"}));
   });
   if(Pv<=0){
-    s.appendChild(el("rect",{x:190,y:base-4,width:250,height:4,fill:"#B23A3A"}));
+    s.appendChild(el("rect",{x:190,y:base-4,width:250,height:4,fill:NEG}));
     // sits well above the level readout, which parks at base-8 when the tank is empty
-    s.appendChild(txt(315,base-30,"floppy tank empty: flow cannot be sustained",{"text-anchor":"middle",fill:"#B23A3A","font-size":10}));
+    s.appendChild(txt(315,base-30,"floppy tank empty: flow cannot be sustained",{"text-anchor":"middle",fill:NEG,"font-size":10}));
   }
   // Pms reference line
   const ym=y(Pms);
@@ -939,9 +1027,9 @@ function rig1(){
   const bx=24,bw=512,byy=294,bh=13;
   const aF=Math.max(0,Math.min(Ca*Math.max(Pa,0)/Vd,1)), vF=1-aF;
   s.appendChild(el("rect",{x:bx,y:byy,width:bw,height:bh,fill:"none",stroke:RULE}));
-  s.appendChild(el("rect",{x:bx,y:byy,width:bw*aF,height:bh,fill:SLATE,opacity:.55}));
-  s.appendChild(el("rect",{x:bx+bw*aF,y:byy,width:bw*vF,height:bh,fill:PALE}));
-  if(bw*aF>52) s.appendChild(txt(bx+bw*aF/2,byy+10,"arterial",{"text-anchor":"middle",fill:"#F5F0E6","font-size":10}));
+  s.appendChild(el("rect",{x:bx,y:byy,width:bw*aF,height:bh,fill:SLATE,opacity:1}));
+  s.appendChild(el("rect",{x:bx+bw*aF,y:byy,width:bw*vF,height:bh,fill:PALE,"data-decor":1}));
+  if(bw*aF>52) s.appendChild(txt(bx+bw*aF/2,byy+10,"arterial",{"text-anchor":"middle",fill:ONACC,style:"fill:"+ONACC,"font-size":10}));
   if(bw*vF>46) s.appendChild(txt(bx+bw*(aF+vF/2),byy+10,"venous",{"text-anchor":"middle",fill:INK,"font-size":10}));
 }
 
@@ -985,7 +1073,7 @@ function rig2(){
   s.appendChild(el("line",{x1:L,y1:B,x2:Rr,y2:B,stroke:INK,"stroke-width":1}));
   s.appendChild(el("line",{x1:L,y1:T,x2:L,y2:B,stroke:INK,"stroke-width":1}));
   const ystep = ymax>12 ? 4 : 2, xstep = xmax>28 ? 8 : 4;
-  for(let f=ystep;f<=ymax-0.5;f+=ystep){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
+  for(let f=ystep;f<=ymax-0.5;f+=ystep){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5,"data-decor":1})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
   for(let p=0;p<=xmax-2;p+=xstep){const xx=X(p); s.appendChild(el("line",{x1:xx,y1:B,x2:xx,y2:B+4,stroke:INK,"stroke-width":.5})); s.appendChild(txt(xx,B+16,p,{"text-anchor":"middle"}));}
   s.appendChild(txt((L+Rr)/2,B+34,"Right atrial pressure (mmHg)",{class:"lbl","text-anchor":"middle"}));
   const yl=txt(0,0,"Flow (L/min)",{class:"lbl","text-anchor":"middle"}); yl.setAttribute("transform","translate(16,"+((T+B)/2)+") rotate(-90)"); s.appendChild(yl);
@@ -1003,7 +1091,7 @@ function rig2(){
   s.appendChild(el("line",{x1:X(Pra),y1:Y(CO),x2:X(Pra),y2:B,stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
   s.appendChild(el("line",{x1:L,y1:Y(CO),x2:X(Pra),y2:Y(CO),stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
   s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:SLATE}));
-  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:"none",stroke:"#fff","stroke-width":1.4}));
+  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:"none",stroke:PLATE,"stroke-width":1.4}));
   // direct labels, no legend. Each is parked in its own band so they cannot collide
   // with one another or with the axis furniture at any slider position.
   const fv=ymax*0.45, pv=Pms-fv/slope;
@@ -1084,14 +1172,14 @@ function rig3(){
   let warn=$("r3warn");
   if(belowRest){
     if(!warn){ warn=document.createElement("p"); warn.id="r3warn";
-      warn.style.cssText="margin:0 0 8px;color:#B23A3A;font-family:var(--sans);font-size:13.5px;font-weight:560";
+      warn.style.cssText="margin:0 0 8px;color:"+NEG+";font-family:var(--sans);font-size:14px;font-weight:560";
       note.prepend(warn); }
     warn.textContent="Total volume is now at or below the container's rest volume. There is nothing left to distend it, so no flow could be sustained. The plot is held at a floor.";
   } else if(warn){ warn.remove(); }
 
   const CV_REF=233, pct=grp.CV/CV_REF*100;
   const m=$("r3marg");
-  const col = pct<=0 ? "#B23A3A" : pct<25 ? "#B88A2C" : INK;
+  const col = pct<=0 ? NEG : pct<25 ? CLAY : INK;
   const tag = pct<=0 ? " below rest" : pct<25 ? " marginal" : "";
   m.innerHTML = '<span style="color:'+col+'">'+fmt(pct,0)+'<small>% of reference'+tag+'</small></span>';
 
@@ -1106,8 +1194,8 @@ function rig3(){
       break;
     }
   }
-  $("r3piv").innerHTML = (F<=0.05) ? '<span style="color:#5A5550" >all at Pms</span>'
-      : piv ? fmt(piv.x/SUMC*100,1)+'<small>% of compliance</small>' : '<span style="color:#5A5550">outside range</span>';
+  $("r3piv").innerHTML = (F<=0.05) ? '<span style="color:'+MUT+'">all at Pms</span>'
+      : piv ? fmt(piv.x/SUMC*100,1)+'<small>% of compliance</small>' : '<span style="color:'+MUT+'">outside range</span>';
   const PW = showC ? 400 : 596;
   const drawPanel=(y0,y1,i0,i1,pmax,label)=>{
     const L=48,Rr=PW;
@@ -1116,7 +1204,7 @@ function rig3(){
     s.appendChild(el("line",{x1:L,y1:y1,x2:Rr,y2:y1,stroke:INK,"stroke-width":1}));
     s.appendChild(el("line",{x1:L,y1:y0,x2:L,y2:y1,stroke:INK,"stroke-width":1}));
     const step = pmax>50 ? Math.ceil(pmax/4/20)*20 : Math.max(1,Math.ceil(pmax/4));
-    for(let t=0;t<=pmax-step*0.4;t+=step){const yy=Y(t); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.18,"stroke-width":.5})); s.appendChild(txt(L-6,yy+3.5,t,{"text-anchor":"end"}));}
+    for(let t=0;t<=pmax-step*0.4;t+=step){const yy=Y(t); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.18,"stroke-width":.5,"data-decor":1})); s.appendChild(txt(L-6,yy+3.5,t,{"text-anchor":"end"}));}
     // Pms reference
     if(Pms<=pmax){const ym=Y(Pms); s.appendChild(el("line",{x1:L,y1:ym,x2:Rr,y2:ym,stroke:CLAY,"stroke-width":1.2,"stroke-dasharray":"5 4"}));
       s.appendChild(txt(Rr-2,ym-5,"Pms "+fmt(Pms,2),{"text-anchor":"end",fill:CLAY,class:"hal"}));}
@@ -1124,15 +1212,15 @@ function rig3(){
     let path="";
     for(let i=i0;i<=i1;i++){
       const xa=X(cum[i]), xb=X(cum[i+1]), yy=Y(st.Pd[i]);
-      s.appendChild(el("rect",{x:xa,y:Math.min(yy,y1),width:Math.max(xb-xa,0.6),height:Math.abs(y1-yy),fill:SLATE,opacity:.22}));
-      s.appendChild(el("line",{x1:xa,y1:y1,x2:xa,y2:yy,stroke:"#fff","stroke-width":.6}));
+      s.appendChild(el("rect",{x:xa,y:Math.min(yy,y1),width:Math.max(xb-xa,0.6),height:Math.abs(y1-yy),fill:SLATE,opacity:.22,"data-decor":1}));
+      s.appendChild(el("line",{x1:xa,y1:y1,x2:xa,y2:yy,stroke:PLATE,"stroke-width":.6,"data-decor":1}));
       path+=(path?"L":"M")+xa+" "+yy+"L"+xb+" "+yy;
     }
     s.appendChild(el("path",{d:path,fill:"none",stroke:SLATE,"stroke-width":2}));
     if(piv && piv.x>=xs && piv.x<=xe && Pms<=pmax && F>0.05){
       const px=X(piv.x), py=Y(Pms);
       s.appendChild(el("line",{x1:px,y1:py-11,x2:px,y2:py+11,stroke:CLAY,"stroke-width":2}));
-      s.appendChild(el("circle",{cx:px,cy:py,r:4,fill:CLAY,stroke:"#fff","stroke-width":1.2}));
+      s.appendChild(el("circle",{cx:px,cy:py,r:4,fill:CLAY,stroke:INK,"stroke-width":1.2}));
       // below the marker normally; above it when the marker sits on the panel floor,
       // where the label would otherwise land on the axis caption underneath
       // nudged clear of the y-axis tick column when the crossing sits hard against the left edge
@@ -1157,13 +1245,13 @@ function rig3(){
   // compartment driven negative by the model cannot blow the bar past its frame.
   const bx=48,bw=PW-48,byy=418,bh=15, tot=target;
   s.appendChild(txt(bx,412,"DISTENDING VOLUME  (total pinned at "+fmt(tot,0)+" mL)",{fill:MUT,"font-size":10}));
-  const parts=[["A",grp.A,SLATE,.62],["PV",grp.PV,SLATE,.30],["CV",grp.CV,PALE,1]];
+  const parts=[["A",grp.A,SLATE,1],["PV",grp.PV,SLATE,.62],["CV",grp.CV,PALE,1]];
   const den=Math.max(1,parts.reduce((a,p)=>a+Math.max(0,p[1]),0));
   let acc=0;
-  parts.forEach(([n,v,c,o])=>{
+  parts.forEach(([n,v,c,o])=>{   // A and PV carry the segment boundaries (>= 3:1); CV is the remainder of the framed bar
     const w=bw*Math.max(0,v)/den;
-    s.appendChild(el("rect",{x:bx+acc,y:byy,width:w,height:bh,fill:c,opacity:o}));
-    if(w>34) s.appendChild(txt(bx+acc+w/2,byy+11,n+" "+fmt(v,0),{"text-anchor":"middle",fill:(n==="A"?"#F5F0E6":INK),"font-size":10}));
+    s.appendChild(el("rect",Object.assign({x:bx+acc,y:byy,width:w,height:bh,fill:c,opacity:o},n==="CV"?{"data-decor":1}:{})));
+    if(w>34) s.appendChild(txt(bx+acc+w/2,byy+11,n+" "+fmt(v,0),Object.assign({"text-anchor":"middle",fill:(n==="A"?ONACC:INK),"font-size":10},n==="A"?{style:"fill:"+ONACC}:{},n==="PV"?{class:"hal"}:{})));
     acc+=w;
   });
   s.appendChild(el("rect",{x:bx,y:byy,width:bw,height:bh,fill:"none",stroke:RULE}));
@@ -1183,7 +1271,7 @@ function rig3(){
     s.appendChild(el("circle",{cx:X(Pms),cy:Y(0),r:3.2,fill:CLAY}));
     s.appendChild(txt(X(Pms),B+13,"Pms",{"text-anchor":"middle",fill:CLAY,class:"hal"}));
     s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:SLATE}));
-    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:"none",stroke:"#fff","stroke-width":1.3}));
+    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:"none",stroke:PLATE,"stroke-width":1.3}));
     s.appendChild(txt(Rr,B+26,"right atrial P (cmH\u2082O)",{"text-anchor":"end",fill:MUT,"font-size":10}));
   }
 }
@@ -1237,13 +1325,13 @@ function rig4(){
   $("r4dra").innerHTML=sgn(dRA)+fmt(dRA)+"<small> mmHg</small>";
 
   let verdict, vcol=INK, ratioTxt="&ndash;<small> mL/min</small>";
-  if(now.CO<=0.01){ verdict="no flow"; vcol="#B23A3A"; }
+  if(now.CO<=0.01){ verdict="no flow"; vcol=NEG; }
   else if(Math.abs(dRA)<0.05 && Math.abs(dCO)<0.005){ verdict="reference"; vcol=MUT; }
-  else if(Math.abs(dRA)<0.05){ verdict="flow"; vcol="#2E7D5B"; }
+  else if(Math.abs(dRA)<0.05){ verdict="flow"; vcol=POS; }
   else{
     const ratio=dCO*1000/dRA;
     verdict = ratio>=240 ? "flow" : ratio>=130 ? "mixed" : "pressure";
-    vcol = ratio>=240 ? "#2E7D5B" : ratio>=130 ? INK : CLAY;
+    vcol = ratio>=240 ? POS : ratio>=130 ? INK : CLAY;
     ratioTxt = fmt(ratio,0)+"<small> mL/min</small>";
   }
   $("r4verd").innerHTML='<span style="color:'+vcol+'">'+verdict+"</span>";
@@ -1259,8 +1347,8 @@ function rig4(){
   const rows=[{y:24,h:15,st:ref,lab:"reference",op:.26,dim:true},{y:52,h:20,st:now,lab:"now",op:.60,dim:false}];
   rows.forEach(r=>{
     const xr=XV(r.st.Vrest), xt=XV(r.st.VT);
-    s.appendChild(el("rect",{x:LX,y:r.y,width:xr-LX,height:r.h,fill:PALE,opacity:r.dim?.55:1}));
-    s.appendChild(el("rect",{x:xr,y:r.y,width:Math.max(xt-xr,0),height:r.h,fill:SLATE,opacity:r.op}));
+    s.appendChild(el("rect",{x:LX,y:r.y,width:xr-LX,height:r.h,fill:PALE,opacity:r.dim?.55:1,"data-decor":1}));
+    s.appendChild(el("rect",{x:xr,y:r.y,width:Math.max(xt-xr,0),height:r.h,fill:SLATE,opacity:r.op,"data-decor":1}));
     s.appendChild(el("rect",{x:LX,y:r.y,width:xt-LX,height:r.h,fill:"none",stroke:RULE}));
     s.appendChild(el("line",{x1:xr,y1:r.y,x2:xr,y2:r.y+r.h,stroke:INK,"stroke-width":1.4}));
     s.appendChild(txt(LX-8,r.y+r.h/2+4,r.lab,{class:"lbl","text-anchor":"end"}));
@@ -1276,13 +1364,13 @@ function rig4(){
   const X=p=>L+(p-xlo)/(xhi-xlo)*(Rr-L), Y=f=>B-Math.max(0,Math.min(f,ymax))/ymax*(B-T);
   s.appendChild(el("line",{x1:L,y1:B,x2:Rr,y2:B,stroke:INK,"stroke-width":1}));
   s.appendChild(el("line",{x1:L,y1:T,x2:L,y2:B,stroke:INK,"stroke-width":1}));
-  for(let f=2;f<=8;f+=2){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
+  for(let f=2;f<=8;f+=2){const yy=Y(f); s.appendChild(el("line",{x1:L,y1:yy,x2:Rr,y2:yy,stroke:INK,opacity:.2,"stroke-width":.5,"data-decor":1})); s.appendChild(txt(L-8,yy+3.5,f,{"text-anchor":"end"}));}
   for(let p=0;p<=30;p+=5){const xx=X(p); s.appendChild(el("line",{x1:xx,y1:B,x2:xx,y2:B+4,stroke:INK,"stroke-width":.5})); s.appendChild(txt(xx,B+16,p,{"text-anchor":"middle"}));}
   s.appendChild(txt((L+Rr)/2,B+52,"Right atrial pressure (mmHg)",{class:"lbl","text-anchor":"middle"}));
   const yl4=txt(0,0,"Flow (L/min)",{class:"lbl","text-anchor":"middle"}); yl4.setAttribute("transform","translate(16,"+((T+B)/2)+") rotate(-90)"); s.appendChild(yl4);
 
   const lineFor=st=>{let d=""; for(let p=xlo;p<=xhi;p+=.2){const f=Math.max(0,(st.Pms-p)*st.slope); if(f<=ymax+.2) d+=(d?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));} return d;};
-  s.appendChild(el("path",{d:lineFor(ref),fill:"none",stroke:PALE,"stroke-width":2,"stroke-dasharray":"4 4"}));
+  s.appendChild(el("path",{d:lineFor(ref),fill:"none",stroke:REF,"stroke-width":2,"stroke-dasharray":"4 4"}));
   s.appendChild(el("path",{d:lineFor(now),fill:"none",stroke:SLATE,"stroke-width":2.2}));
   let dc=""; for(let p=xlo;p<=xhi;p+=.2){const f=r4card(p,a); if(f<=ymax+.2) dc+=(dc?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));}
   s.appendChild(el("path",{d:dc,fill:"none",stroke:INK,"stroke-width":2.2,"stroke-dasharray":"7 4"}));
@@ -1295,14 +1383,14 @@ function rig4(){
   if(showStep){
     const x0=X(ref.Pra), y0=Y(ref.CO), x1=X(now.Pra), y1=Y(now.CO);
     s.appendChild(el("line",{x1:x0,y1:y0,x2:x1,y2:y0,stroke:CLAY,"stroke-width":2.4}));
-    s.appendChild(el("line",{x1:x1,y1:y0,x2:x1,y2:y1,stroke:"#2E7D5B","stroke-width":2.4}));
+    s.appendChild(el("line",{x1:x1,y1:y0,x2:x1,y2:y1,stroke:POS,"stroke-width":2.4}));
     const mx=(x0+x1)/2, my=(y0+y1)/2;
     if(Math.abs(x1-x0)>=62) s.appendChild(txt(mx,y0+(y1<y0?17:-9),"pressure "+sgn(dRA)+fmt(dRA)+" mmHg",{"text-anchor":"middle",fill:CLAY,class:"lbl hal"}));
-    if(Math.abs(y1-y0)>=24) s.appendChild(txt(x1+(x1>Rr-120?-8:8),my+4,"flow "+sgn(dCO)+fmt(dCO,2)+" L/min",{"text-anchor":(x1>Rr-120?"end":"start"),fill:"#2E7D5B",class:"lbl hal"}));
+    if(Math.abs(y1-y0)>=24) s.appendChild(txt(x1+(x1>Rr-120?-8:8),my+4,"flow "+sgn(dCO)+fmt(dCO,2)+" L/min",{"text-anchor":(x1>Rr-120?"end":"start"),fill:POS,class:"lbl hal"}));
   }
-  s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:"#fff",stroke:SLATE,"stroke-width":1.8}));
+  s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:PLATE,stroke:SLATE,"stroke-width":1.8}));
   s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:SLATE}));
-  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:"none",stroke:"#fff","stroke-width":1.4}));
+  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:"none",stroke:PLATE,"stroke-width":1.4}));
 
   let lp=now.Pms-7.4/now.slope, lx, lf, la="start";
   if(lp<xlo+0.4){ lx=X(Math.min(now.Pms,xhi-1))-8; lf=0; la="end"; }            // line leaves the left edge low: label its zero-flow end
@@ -1331,17 +1419,65 @@ const ACCBTN={r4ag:"good",r4ar:"red",r4ap:"poor"};
 function setAcc(a){ r4acc=a; for(const id in ACCBTN) $(id).setAttribute("aria-pressed", ACCBTN[id]===a?"true":"false"); rig4(); }
 Object.keys(ACCBTN).forEach(id=>$(id).addEventListener("click",()=>setAcc(ACCBTN[id])));
 window.addEventListener("resize",()=>{rig1();rig2();rig3();rig4();},{passive:true});
+document.addEventListener("neeltheme",()=>{readThemeColors();rig1();rig2();rig3();rig4();});
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
 @media (max-width: 768px) {
-  .chip .k { font-size: 11px; }
-  .numeral small { font-size: 11px; }
-  .readout .k { font-size: 11px; }
-  .readout .v small { font-size: 11px; }
-  .tagline { font-size: 11px; }
+  .chip .k { font-size: 12px; }
+  .numeral small { font-size: 12px; }
+  .readout .k { font-size: 12px; }
+  .readout .v small { font-size: 12px; }
+  .tagline { font-size: 12px; }
 }
 </style>
 </body>

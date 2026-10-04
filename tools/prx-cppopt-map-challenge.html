@@ -9,83 +9,169 @@
 <meta property="og:description" content="Interactive teaching tool. Animated autoregulation waveforms, CPPopt U-curve, NE challenge simulator, SIBICC protocol walkthrough.">
 <meta property="og:type" content="website">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #FAFAF7; --card: #FFFFFF; --accent: #0F766E; --accentDim: #0A5A54;
-    --danger: #B04A3A; --dangerBg: rgba(176,74,58,0.07); --dangerBorder: rgba(176,74,58,0.25);
-    --success: #3D7A4F; --successBg: rgba(61,122,79,0.07); --successBorder: rgba(61,122,79,0.25);
-    --warn: #8A6410; --warnBg: rgba(138,100,16,0.08);
-    --text: #2D3748; --textDim: #4A5568; --textMuted: #5A6577;
-    --border: #E2E8F0; --borderStrong: #CBD5E0; --heading: #1A202C;
-    --chartGrid: #EDF2F7;
-    --cardShadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --sans: var(--nt-font-display); --serif: var(--nt-font-body); --mono: var(--nt-font-mono);
+    --bg: var(--nt-paper); --card: var(--nt-plate); --accent: var(--nt-accent); --accentDim: var(--nt-accent-deep);
+    --accentWash: var(--nt-accent-wash); --onAccent: var(--nt-on-accent);
+    --danger: var(--nt-neg); --dangerBg: var(--nt-neg-wash); --dangerBorder: var(--nt-neg);
+    --success: var(--nt-pos); --successBg: var(--nt-pos-wash); --successBorder: var(--nt-pos);
+    --warn: var(--nt-caution); --warnBg: var(--nt-caution-wash);
+    --text: var(--nt-ink); --textDim: var(--nt-ink-muted); --textMuted: var(--nt-ink-quiet);
+    --border: var(--nt-rule); --borderStrong: var(--nt-rule-strong); --heading: var(--nt-ink);
+    --chartGrid: var(--nt-tint);
   }
-  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', Georgia, system-ui, sans-serif; padding: 24px 20px; max-width: 960px; margin: 0 auto; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-  h1 { font-size: 24px; font-weight: 800; color: var(--heading); text-align: center; letter-spacing: -0.5px; font-family: 'Source Serif 4', Georgia, serif; }
-  .subtitle { font-size: 13px; color: var(--textMuted); text-align: center; margin: 6px 0 18px; letter-spacing: 0.3px; }
-  .disclaimer { display: flex; gap: 10px; align-items: flex-start; background: var(--warnBg); border: 1px solid rgba(138,100,16,0.30); border-radius: 12px; padding: 11px 14px; margin: 0 0 24px; font-size: 12.5px; line-height: 1.65; color: var(--textDim); }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 24px 20px; max-width: 960px; margin: 0 auto; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  h1 { font-size: 28px; font-weight: 800; color: var(--heading); text-align: center; letter-spacing: -0.5px; font-family: var(--serif); }
+  .subtitle { font-size: 14px; color: var(--textMuted); text-align: center; margin: 6px 0 18px; letter-spacing: 0.3px; }
+  .disclaimer { display: flex; gap: 10px; align-items: flex-start; background: var(--warnBg); border: 1px solid var(--warn); border-radius: var(--nt-radius); padding: 11px 14px; margin: 0 0 24px; font-size: 14px; line-height: 1.65; color: var(--textDim); }
   .disclaimer .bar { width: 4px; align-self: stretch; background: var(--warn); border-radius: 2px; flex: none; }
   .disclaimer strong { color: var(--heading); }
-  .tabs { display: flex; gap: 4px; background: var(--card); border-radius: 12px; padding: 4px; border: 1px solid var(--border); margin-bottom: 28px; box-shadow: var(--cardShadow); }
-  .tab-btn { flex: 1; padding: 10px 8px; border-radius: 10px; border: none; background: transparent; color: var(--textMuted); font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-  .tab-btn.active { background: var(--accent); color: #FFFFFF; font-weight: 700; }
+  .tabs { display: flex; gap: 4px; background: var(--card); border-radius: var(--nt-radius); padding: 4px; border: 1px solid var(--border); margin-bottom: 28px; }
+  .tab-btn { flex: 1; padding: 10px 8px; border-radius: var(--nt-radius); border: none; background: transparent; color: var(--textMuted); font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .tab-btn.active { background: var(--accent); color: var(--onAccent); font-weight: 700; }
   .tab-btn:hover:not(.active) { background: var(--chartGrid); color: var(--textDim); }
   .tab-content { display: none; } .tab-content.active { display: block; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; box-shadow: var(--cardShadow); }
-  .card-accent { border-left: 4px solid var(--accent); }
-  .card-success { border-left: 4px solid var(--success); }
-  .card-danger { border-left: 4px solid var(--danger); }
-  .card-warn { border-left: 4px solid var(--warn); }
-  .card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; font-family: 'Source Serif 4', Georgia, serif; }
-  .card-body { font-size: 13px; line-height: 1.7; color: var(--text); }
-  .note { font-size: 12px; line-height: 1.65; color: var(--textMuted); margin-top: 8px; }
-  .pmid { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--textMuted);
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--nt-radius); padding: 18px 22px; margin-bottom: 16px; }
+  .card-accent { border-color: var(--accent); }
+  .card-success { border-color: var(--success); }
+  .card-danger { border-color: var(--danger); }
+  .card-warn { border-color: var(--warn); }
+  .card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; font-family: var(--serif); }
+  .card-body { font-size: 14px; line-height: 1.7; color: var(--text); }
+  .note { font-size: 14px; line-height: 1.65; color: var(--textMuted); margin-top: 8px; }
+  .pmid { font-family: var(--mono); font-size: 14px; color: var(--textMuted);
           white-space: normal; overflow-wrap: normal; word-break: normal; }
   /* An identifier must never break mid-number; the middot between identifiers may wrap.
      Binding is done with &nbsp; in the markup, so this rule only has to stop word-break. */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
   @media (max-width: 640px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-  .pill { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--textDim); font-weight: 500; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .pill { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--textDim); font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
   .pill:hover { background: var(--chartGrid); }
-  .pill.active { border: 2px solid var(--accent); background: rgba(15,118,110,0.08); color: var(--accent); font-weight: 700; }
+  .pill.active { border: 2px solid var(--accent); background: var(--accentWash); color: var(--accent); font-weight: 700; }
   .pill.active-success { border: 2px solid var(--success); background: var(--successBg); color: var(--success); font-weight: 700; }
   .pill.active-danger { border: 2px solid var(--danger); background: var(--dangerBg); color: var(--danger); font-weight: 700; }
   .metric { text-align: center; padding: 10px 16px; }
-  .metric-value { font-size: 28px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; }
-  .metric-unit { font-size: 13px; font-weight: 500; color: var(--textDim); margin-left: 3px; }
+  .metric-value { font-size: 28px; font-weight: 800; font-family: var(--mono); }
+  .metric-unit { font-size: 14px; font-weight: 500; color: var(--textDim); margin-left: 3px; }
   .metric-label { font-size: 11px; color: var(--textMuted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.8px; }
-  .chart-container { background: var(--card); border-radius: 12px; padding: 18px; border: 1px solid var(--border); margin-bottom: 16px; box-shadow: var(--cardShadow); }
-  .chart-label { font-size: 12px; color: var(--textMuted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .chart-container { background: var(--card); border-radius: var(--nt-radius); padding: 18px; border: 1px solid var(--border); margin-bottom: 16px; }
+  .chart-label { font-size: 14px; color: var(--textMuted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
   canvas { width: 100% !important; }
-  .step { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; border-left: 4px solid var(--border); cursor: pointer; transition: all 0.3s; box-shadow: var(--cardShadow); }
-  .step.revealed { border-left-color: var(--accent); opacity: 1; }
+  .step { background: var(--card); border: 1px solid var(--border); border-radius: var(--nt-radius); padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
+  .step.revealed { border-color: var(--accent); opacity: 1; }
   .step.hidden { opacity: 0.45; }
   .step-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
-  .step-desc { font-size: 13px; color: var(--text); line-height: 1.6; padding-left: 30px; margin-top: 6px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .step-desc { font-size: 14px; color: var(--text); line-height: 1.6; padding-left: 30px; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { padding: 10px 10px; text-align: center; color: var(--textMuted); font-weight: 600; font-size: 11px; border-bottom: 2px solid var(--borderStrong); text-transform: uppercase; letter-spacing: 0.5px; }
   td { padding: 9px 10px; text-align: center; color: var(--text); border-bottom: 1px solid var(--border); }
   tr:hover td { background: var(--chartGrid); }
   .pipeline { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .pipeline-box { background: var(--bg); border: 1px solid rgba(15,118,110,0.25); border-radius: 8px; padding: 8px 14px; font-size: 12px; color: var(--text); text-align: center; white-space: pre-line; line-height: 1.4; font-family: 'IBM Plex Mono', monospace; min-width: 90px; }
+  .pipeline-box { background: var(--bg); border: 1px solid var(--borderStrong); border-radius: var(--nt-radius-sm); padding: 8px 14px; font-size: 14px; color: var(--text); text-align: center; white-space: pre-line; line-height: 1.4; font-family: var(--mono); min-width: 90px; }
   .pipeline-arrow { color: var(--accent); font-size: 20px; font-weight: 700; }
-  .btn { padding: 8px 20px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-  .btn-primary { border: none; background: var(--accent); color: #FFFFFF; font-weight: 700; }
+  .btn { padding: 8px 20px; border-radius: var(--nt-radius-sm); font-size: 14px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+  .btn-primary { border: none; background: var(--accent); color: var(--onAccent); font-weight: 700; }
   .btn-primary:hover { background: var(--accentDim); }
   .btn-secondary { border: 1px solid var(--border); background: var(--card); color: var(--text); }
   .btn-secondary:hover { background: var(--chartGrid); }
-  .prx-display { display: flex; justify-content: center; align-items: center; gap: 30px; border-radius: 12px; padding: 16px 24px; margin-bottom: 20px; }
+  .prx-display { display: flex; justify-content: center; align-items: center; gap: 30px; border-radius: var(--nt-radius); padding: 16px 24px; margin-bottom: 20px; }
   input[type=range] { width: 100%; accent-color: var(--accent); height: 6px; }
-  .footer { margin-top: 36px; padding: 14px 16px; border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--textMuted); line-height: 1.7; }
+  .footer { margin-top: 36px; padding: 14px 16px; border-top: 1px solid var(--border); text-align: center; font-size: 14px; color: var(--textMuted); line-height: 1.7; }
   .step-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-  .step-btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; }
-  .tab-btn:focus-visible, .pill:focus-visible, .btn:focus-visible, .step:focus-visible, .step-btn:focus-visible, input[type=range]:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .step-btn { padding: 6px 14px; border-radius: var(--nt-radius-sm); font-size: 14px; cursor: pointer; font-family: inherit; }
+  .tab-btn:focus-visible, .pill:focus-visible, .btn:focus-visible, .step:focus-visible, .step-btn:focus-visible, input[type=range]:focus-visible, a:focus-visible { outline: 3px solid var(--nt-focus); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
   }
+  /* neel-theme: kit switch replaces any toggle; inline serif/hairline in markup follows kit tokens */
+  [style*="Source Serif 4"] { font-family: var(--serif) !important; }
+  .card[style*="border-left"] { border-left-width: 1px !important; }
+  #prx-display { border-color: var(--border) !important; }
+  #prx-explanation { font-size: 14px !important; }
+  .prx-display .metric-label { color: var(--textDim); }
+  @media (max-width: 1000px) { body { padding-top: 64px; } }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 <h1>Neurocritical Care: PRx, CPPopt & MAP Challenge</h1>
@@ -194,12 +280,16 @@
 </div>
 <div class="footer">
 <strong>Educational use only.</strong> Teaching aid, not a clinical decision-making tool; defer to clinical judgment and local protocols.<br>
-Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.4 &middot; Updated 2026-09-01 &middot; CC BY-NC 4.0<br>
+Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.5 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0<br>
 Identifiers shown inline were verified against PubMed and ClinicalTrials.gov. Key sources: Czosnyka 1997, Steiner 2002, Sorrentino 2012, Aries 2012, Depreitere 2014, SIBICC 2019, COGiTATE 2021, Beqiri 2023, STARSHIP 2025, Bögli 2025, COGiTATE-II (NCT07287358).
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-const TH={accent:'#0F766E',accentDim:'#0A5A54',danger:'#B04A3A',success:'#3D7A4F',warn:'#8A6410',text:'#2D3748',textDim:'#4A5568',textMuted:'#5A6577',border:'#E2E8F0',grid:'#EDF2F7',heading:'#1A202C',card:'#FFFFFF',bg:'#FAFAF7',successBg:'rgba(61,122,79,0.07)',successBorder:'rgba(61,122,79,0.25)',dangerBg:'rgba(176,74,58,0.07)',dangerBorder:'rgba(176,74,58,0.25)',chartABP:'#B74B3E',chartICP:'#0F766E',chartU:'#0F766E',chartLassen:'#3D7A4F'};
+let TH={};
+/* Theme colours: canvas needs resolved values, so read the kit tokens at draw time (and again on 'neeltheme'). DOM strings use var() (V) so they follow the theme on their own. */
+function readTheme(){const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();TH={accent:g('--nt-accent'),accentDim:g('--nt-accent-deep'),danger:g('--nt-neg'),success:g('--nt-pos'),warn:g('--nt-caution'),text:g('--nt-ink'),textDim:g('--nt-ink-muted'),textMuted:g('--nt-ink-quiet'),border:g('--nt-rule'),grid:g('--nt-grid'),heading:g('--nt-ink'),card:g('--nt-plate'),bg:g('--nt-paper'),chartABP:g('--nt-cat-2'),chartICP:g('--nt-cat-1'),chartU:g('--nt-accent'),chartLassen:g('--nt-pos'),font:g('--nt-font-display')};if(window.Chart){Chart.defaults.font.family=TH.font;}}
+const V={accent:'var(--accent)',accentWash:'var(--accentWash)',border:'var(--border)',card:'var(--card)',textDim:'var(--textDim)',success:'var(--success)',danger:'var(--danger)',warn:'var(--warn)',heading:'var(--heading)',successBg:'var(--successBg)',dangerBg:'var(--dangerBg)',successBorder:'var(--border)',dangerBorder:'var(--border)'};
+readTheme();
 let currentTab='prx',autoregState='intact',currentProtocolStep=0,challengeMode='bedside',cppoptValue=68,simData=[],simCppopt=72,simStep=0,waveChart,uCurveChart,lassenChart,simChart,animFrame,animTimer;
 
 /* Motion guard: the CSS block below cannot stop a requestAnimationFrame loop, so the loop
@@ -210,21 +300,21 @@ function stopWaveAnimation(){if(animFrame){cancelAnimationFrame(animFrame);animF
 
 function switchTab(tab){currentTab=tab;document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(el=>el.classList.toggle('active',el.dataset.tab===tab));document.getElementById('tab-'+tab).classList.add('active');if(tab==='prx'){initWaveChart();}else{stopWaveAnimation();}if(tab==='cppopt'){initUCurveChart();initLassenChart();}}
 
-function setAutoregState(state){autoregState=state;document.getElementById('pill-intact').className=state==='intact'?'pill active-success':'pill';document.getElementById('pill-impaired').className=state==='impaired'?'pill active-danger':'pill';const prxVal=state==='intact'?-0.18:0.42;const color=prxVal<0?'var(--success)':'var(--danger)';document.getElementById('prx-value').textContent=prxVal.toFixed(2);document.getElementById('prx-value').style.color=color;const d=document.getElementById('prx-display');d.style.background=state==='intact'?TH.successBg:TH.dangerBg;d.style.border='1px solid '+(state==='intact'?TH.successBorder:TH.dangerBorder);document.getElementById('prx-explanation').innerHTML=state==='intact'?'<strong style="color:var(--success)">Negative PRx:</strong> ABP↑ triggers vasoconstriction → CBV↓ → ICP↓. ABP and ICP move in <strong>opposite</strong> directions. Vessels are reactive.':'<strong style="color:var(--danger)">Positive PRx (>0.3):</strong> ABP↑ → passive transmission → CBV↑ → ICP↑. ABP and ICP move in the <strong>same</strong> direction. Vessels are pressure-passive.';document.getElementById('wave-subtitle').textContent=state==='intact'?'Watch how they move inversely':'Watch how they move together';initWaveChart();}
+function setAutoregState(state){autoregState=state;document.getElementById('pill-intact').className=state==='intact'?'pill active-success':'pill';document.getElementById('pill-impaired').className=state==='impaired'?'pill active-danger':'pill';const prxVal=state==='intact'?-0.18:0.42;const color=prxVal<0?'var(--success)':'var(--danger)';document.getElementById('prx-value').textContent=prxVal.toFixed(2);document.getElementById('prx-value').style.color=color;const d=document.getElementById('prx-display');d.style.background=state==='intact'?V.successBg:V.dangerBg;d.style.border='1px solid '+(state==='intact'?V.successBorder:V.dangerBorder);document.getElementById('prx-explanation').innerHTML=state==='intact'?'<strong style="color:var(--success)">Negative PRx:</strong> ABP↑ triggers vasoconstriction → CBV↓ → ICP↓. ABP and ICP move in <strong>opposite</strong> directions. Vessels are reactive.':'<strong style="color:var(--danger)">Positive PRx (>0.3):</strong> ABP↑ → passive transmission → CBV↑ → ICP↑. ABP and ICP move in the <strong>same</strong> direction. Vessels are pressure-passive.';document.getElementById('wave-subtitle').textContent=state==='intact'?'Watch how they move inversely':'Watch how they move together';initWaveChart();}
 
-function initWaveChart(){if(waveChart)waveChart.destroy();stopWaveAnimation();const ctx=document.getElementById('waveChart').getContext('2d');let phase=0;function gen(){const a=[],b=[],l=[];for(let i=0;i<60;i++){const s=Math.sin(i*0.15+phase*0.06)*12;a.push(85+s+Math.sin(i*1.2)*4);b.push(autoregState==='intact'?12-s*0.15+Math.sin(i*1.2+1)*1.5:18+s*0.7+Math.sin(i*1.2)*2);l.push(i);}return{a,b,l};}const{a,b,l}=gen();waveChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'ABP (mmHg, solid)',data:a,borderColor:TH.chartABP,borderWidth:2.5,pointRadius:0,tension:0.4,yAxisID:'y'},{label:'ICP (mmHg, dashed)',data:b,borderColor:TH.chartICP,borderWidth:2.5,borderDash:[7,4],pointRadius:0,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,animation:false,scales:{x:{display:false},y:{min:60,max:110,position:'left',ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y1:{min:5,max:30,position:'right',ticks:{color:TH.textMuted,font:{size:10}},grid:{drawOnChartArea:false}}},plugins:{legend:{labels:{color:TH.textDim,font:{size:11}}}}},plugins:[{id:'waveDirectLabels',afterDatasetsDraw(ch){const c=ch.ctx;c.save();c.font='700 11px "IBM Plex Sans", Georgia, sans-serif';c.textAlign='right';ch.data.datasets.forEach((ds,di)=>{const pts=ch.getDatasetMeta(di).data;if(!pts.length)return;const p=pts[pts.length-1];c.fillStyle=ds.borderColor;c.textBaseline=di===0?'bottom':'top';c.fillText(di===0?'ABP (solid)':'ICP (dashed)',p.x-6,di===0?p.y-9:p.y+9);});c.restore();}}]});function anim(){if(!motionAllowed()){stopWaveAnimation();return;}phase++;const{a,b}=gen();waveChart.data.datasets[0].data=a;waveChart.data.datasets[1].data=b;waveChart.update('none');animFrame=requestAnimationFrame(()=>{animTimer=setTimeout(anim,80);});}if(motionAllowed())anim();}
+function initWaveChart(){if(waveChart)waveChart.destroy();stopWaveAnimation();const ctx=document.getElementById('waveChart').getContext('2d');let phase=0;function gen(){const a=[],b=[],l=[];for(let i=0;i<60;i++){const s=Math.sin(i*0.15+phase*0.06)*12;a.push(85+s+Math.sin(i*1.2)*4);b.push(autoregState==='intact'?12-s*0.15+Math.sin(i*1.2+1)*1.5:18+s*0.7+Math.sin(i*1.2)*2);l.push(i);}return{a,b,l};}const{a,b,l}=gen();waveChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'ABP (mmHg, solid)',data:a,borderColor:TH.chartABP,borderWidth:2.5,pointRadius:0,tension:0.4,yAxisID:'y'},{label:'ICP (mmHg, dashed)',data:b,borderColor:TH.chartICP,borderWidth:2.5,borderDash:[7,4],pointRadius:0,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,animation:false,scales:{x:{display:false},y:{min:60,max:110,position:'left',ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y1:{min:5,max:30,position:'right',ticks:{color:TH.textMuted,font:{size:10}},grid:{drawOnChartArea:false,color:TH.grid}}},plugins:{legend:{labels:{color:TH.textDim,font:{size:11}}}}},plugins:[{id:'waveDirectLabels',afterDatasetsDraw(ch){const c=ch.ctx;c.save();c.font='700 11px '+TH.font;c.textAlign='right';ch.data.datasets.forEach((ds,di)=>{const pts=ch.getDatasetMeta(di).data;if(!pts.length)return;const p=pts[pts.length-1];c.fillStyle=ds.borderColor;c.textBaseline=di===0?'bottom':'top';c.fillText(di===0?'ABP (solid)':'ICP (dashed)',p.x-6,di===0?p.y-9:p.y+9);});c.restore();}}]});function anim(){if(!motionAllowed()){stopWaveAnimation();return;}phase++;const{a,b}=gen();waveChart.data.datasets[0].data=a;waveChart.data.datasets[1].data=b;waveChart.update('none');animFrame=requestAnimationFrame(()=>{animTimer=setTimeout(anim,80);});}if(motionAllowed())anim();}
 
 REDUCED_MOTION_MQ.addEventListener('change',()=>{stopWaveAnimation();if(currentTab==='prx')initWaveChart();});
 
 function updateCPPopt(v){cppoptValue=parseInt(v,10);document.getElementById('cppopt-display').textContent=v;initUCurveChart();initLassenChart();}
 
-function initUCurveChart(){if(uCurveChart)uCurveChart.destroy();const ctx=document.getElementById('uCurveChart').getContext('2d');const d=[];for(let c=40;c<=110;c++){const x=(c-cppoptValue)/20;d.push({x:c,y:Math.min(1,Math.max(-1,-0.28+0.15*x*x+(Math.random()-0.5)*0.06))});}uCurveChart=new Chart(ctx,{type:'scatter',data:{datasets:[{data:d,borderColor:TH.chartU,backgroundColor:TH.chartU+'44',pointRadius:2.5,showLine:true,borderWidth:2.5,tension:0.3}]},options:{responsive:true,scales:{x:{min:40,max:110,title:{display:true,text:'CPP (mmHg)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y:{min:-0.6,max:0.8,title:{display:true,text:'PRx',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;const xP=x.getPixelForValue(cppoptValue);ctx.save();ctx.strokeStyle=TH.accent;ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(xP,y.top);ctx.lineTo(xP,y.bottom);ctx.stroke();ctx.fillStyle=TH.accent;ctx.font='bold 11px IBM Plex Sans';ctx.textAlign='center';ctx.fillText('CPPopt = '+cppoptValue,xP,y.top+14);ctx.setLineDash([]);const yP=y.getPixelForValue(0.3);ctx.strokeStyle=TH.danger;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x.left,yP);ctx.lineTo(x.right,yP);ctx.stroke();ctx.fillStyle=TH.danger;ctx.font='10px IBM Plex Sans';ctx.textAlign='right';ctx.fillText('PRx = 0.30 (insult threshold)',x.right,yP-4);const y0=y.getPixelForValue(0);ctx.strokeStyle=TH.textMuted;ctx.beginPath();ctx.moveTo(x.left,y0);ctx.lineTo(x.right,y0);ctx.stroke();ctx.fillStyle=TH.textMuted;ctx.fillText('PRx = 0 (outcome threshold)',x.right,y0-4);ctx.restore();}}]});}
+function initUCurveChart(){if(uCurveChart)uCurveChart.destroy();const ctx=document.getElementById('uCurveChart').getContext('2d');const d=[];for(let c=40;c<=110;c++){const x=(c-cppoptValue)/20;d.push({x:c,y:Math.min(1,Math.max(-1,-0.28+0.15*x*x+(Math.random()-0.5)*0.06))});}uCurveChart=new Chart(ctx,{type:'scatter',data:{datasets:[{data:d,borderColor:TH.chartU,backgroundColor:TH.chartU+'44',pointRadius:2.5,showLine:true,borderWidth:2.5,tension:0.3}]},options:{responsive:true,scales:{x:{min:40,max:110,title:{display:true,text:'CPP (mmHg)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y:{min:-0.6,max:0.8,title:{display:true,text:'PRx',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;const xP=x.getPixelForValue(cppoptValue);ctx.save();ctx.strokeStyle=TH.accent;ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(xP,y.top);ctx.lineTo(xP,y.bottom);ctx.stroke();ctx.fillStyle=TH.accent;ctx.font='bold 11px '+TH.font;ctx.textAlign='center';ctx.fillText('CPPopt = '+cppoptValue,xP,y.top+14);ctx.setLineDash([]);const yP=y.getPixelForValue(0.3);ctx.strokeStyle=TH.danger;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x.left,yP);ctx.lineTo(x.right,yP);ctx.stroke();ctx.fillStyle=TH.danger;ctx.font='10px '+TH.font;ctx.textAlign='right';ctx.fillText('PRx = 0.30 (insult threshold)',x.right,yP-4);const y0=y.getPixelForValue(0);ctx.strokeStyle=TH.textMuted;ctx.beginPath();ctx.moveTo(x.left,y0);ctx.lineTo(x.right,y0);ctx.stroke();ctx.fillStyle=TH.textMuted;ctx.fillText('PRx = 0 (outcome threshold)',x.right,y0-4);ctx.restore();}}]});}
 
-function initLassenChart(){if(lassenChart)lassenChart.destroy();const ctx=document.getElementById('lassenChart').getContext('2d');const s=cppoptValue-70,lla=50+s,ula=150+s,d=[],l=[];for(let c=20;c<=180;c+=2){l.push(c);let f;if(c<lla)f=50*Math.pow(c/lla,1.5);else if(c>ula)f=50+(c-ula)*0.8;else f=50+Math.sin(((c-lla)/(ula-lla))*Math.PI*0.05)*3;d.push(Math.max(0,f));}lassenChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'CBF',data:d,borderColor:TH.chartLassen,backgroundColor:TH.chartLassen+'18',fill:true,borderWidth:2.5,pointRadius:0,tension:0.3}]},options:{responsive:true,scales:{x:{title:{display:true,text:'CPP (mmHg)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y:{min:0,max:100,title:{display:true,text:'CBF (mL/100g/min)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;ctx.save();ctx.strokeStyle=TH.warn;ctx.lineWidth=2;ctx.setLineDash([]);const lx=x.getPixelForValue(lla);ctx.beginPath();ctx.moveTo(lx,y.top);ctx.lineTo(lx,y.bottom);ctx.stroke();ctx.fillStyle=TH.warn;ctx.font='10px IBM Plex Sans';ctx.textAlign='left';ctx.fillText('LLA (illustrative) ≈'+lla,lx+4,y.top+14);const ux=x.getPixelForValue(ula);ctx.beginPath();ctx.moveTo(ux,y.top);ctx.lineTo(ux,y.bottom);ctx.stroke();ctx.textAlign='right';ctx.fillText('ULA (illustrative) ≈'+ula,ux-4,y.top+14);ctx.restore();}}]});}
+function initLassenChart(){if(lassenChart)lassenChart.destroy();const ctx=document.getElementById('lassenChart').getContext('2d');const s=cppoptValue-70,lla=50+s,ula=150+s,d=[],l=[];for(let c=20;c<=180;c+=2){l.push(c);let f;if(c<lla)f=50*Math.pow(c/lla,1.5);else if(c>ula)f=50+(c-ula)*0.8;else f=50+Math.sin(((c-lla)/(ula-lla))*Math.PI*0.05)*3;d.push(Math.max(0,f));}lassenChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'CBF',data:d,borderColor:TH.chartLassen,backgroundColor:TH.chartLassen+'18',fill:true,borderWidth:2.5,pointRadius:0,tension:0.3}]},options:{responsive:true,scales:{x:{title:{display:true,text:'CPP (mmHg)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y:{min:0,max:100,title:{display:true,text:'CBF (mL/100g/min)',color:TH.textDim,font:{size:11}},ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;ctx.save();ctx.strokeStyle=TH.warn;ctx.lineWidth=2;ctx.setLineDash([]);const lx=x.getPixelForValue(lla);ctx.beginPath();ctx.moveTo(lx,y.top);ctx.lineTo(lx,y.bottom);ctx.stroke();ctx.fillStyle=TH.warn;ctx.font='10px '+TH.font;ctx.textAlign='left';ctx.fillText('LLA (illustrative) ≈'+lla,lx+4,y.top+14);const ux=x.getPixelForValue(ula);ctx.beginPath();ctx.moveTo(ux,y.top);ctx.lineTo(ux,y.bottom);ctx.stroke();ctx.textAlign='right';ctx.fillText('ULA (illustrative) ≈'+ula,ux-4,y.top+14);ctx.restore();}}]});}
 
 const protocolSteps=[{title:"1. Pre-Assessment",desc:"Ensure stable conditions. No concurrent changes in sedation, analgesia, EVD drainage, or ventilator settings. Patient should have arterial line + ICP monitor in place.",icon:"📋"},{title:"2. Record Baseline",desc:"Document: MAP, ICP, CPP (= MAP − ICP), PRx (if available via ICM+), PbtO₂, and current NE dose. Ensure at least 5 min of stable readings.",icon:"📊"},{title:"3. Increase MAP by 10 mmHg",desc:"Titrate norepinephrine to increase MAP by 10 mmHg. Maintain for up to 20 minutes. A practitioner capable of interpreting the results and halting the study must be at the bedside.",icon:"💉"},{title:"4. Observe ICP Response",desc:"If INTACT autoregulation (positive MAP challenge): MAP↑ → cerebral vasoconstriction → CBV↓ → ICP falls. A flat ICP is indeterminate, not a positive result. If IMPAIRED: MAP↑ → passive transmission → CBV↑ → ICP↑.",icon:"👁️"},{title:"5. Record & Interpret",desc:"Record post-challenge values. If ICP decreased: sPAR intact → may benefit from higher CPP target. If ICP increased: sPAR disrupted → raising MAP may be harmful. An unchanged ICP is indeterminate, not a positive test.",icon:"🔍"},{title:"6. Return the MAP Target",desc:"SIBICC's terminal step, and the one most often dropped: adjust the target MAP back to baseline if sPAR is disrupted, or to the chosen new, elevated target if sPAR is intact. Do not leave norepinephrine running at challenge dose in a patient whose ICP rose in response to it. A disrupted result also permits letting CPP fall back toward the 60 mmHg minimum SIBICC adopts from the BTF guidelines, rather than defending a higher number with pressors. SIBICC specifies no numeric ICP stopping threshold; halt on clinical judgment.",icon:"↩️"}];
 
-function renderProtocolSteps(){document.getElementById('protocol-steps').innerHTML=protocolSteps.map((s,i)=>`<div class="step ${i<=currentProtocolStep?'revealed':'hidden'}" data-step-index="${i}" role="button" tabindex="0" aria-expanded="${i<=currentProtocolStep}"><div class="step-title"><span style="font-size:20px">${s.icon}</span><span style="color:${i<=currentProtocolStep?TH.accent:TH.textDim}">${s.title}</span></div>${i<=currentProtocolStep?`<div class="step-desc">${s.desc}</div>`:''}</div>`).join('');}
+function renderProtocolSteps(){document.getElementById('protocol-steps').innerHTML=protocolSteps.map((s,i)=>`<div class="step ${i<=currentProtocolStep?'revealed':'hidden'}" data-step-index="${i}" role="button" tabindex="0" aria-expanded="${i<=currentProtocolStep}"><div class="step-title"><span style="font-size:20px">${s.icon}</span><span style="color:${i<=currentProtocolStep?V.accent:V.textDim}">${s.title}</span></div>${i<=currentProtocolStep?`<div class="step-desc">${s.desc}</div>`:''}</div>`).join('');}
 function changeProtocolStep(d){currentProtocolStep=Math.max(0,Math.min(protocolSteps.length-1,currentProtocolStep+d));renderProtocolSteps();}
 function setChallengeMode(m){challengeMode=m;['bedside','continuous','simulator'].forEach(x=>{document.getElementById('mode-'+x).className=x===m?'pill active':'pill';document.getElementById('mode-'+x+'-content').style.display=x===m?'block':'none';});}
 
@@ -235,7 +325,7 @@ function generateSimData(opt){const s=[];simHalted=false;for(let i=0;i<8;i++){co
 function newSimPatient(){simCppopt=55+Math.floor(Math.random()*31);simData=generateSimData(simCppopt);simStep=0;document.getElementById('sim-result').textContent='';renderSim();}
 function advanceSim(s){simStep=s;if(s===simData.length){const b=simData.reduce((a,c)=>c.prx<a.prx?c:a,simData[0]);document.getElementById('sim-result').textContent=`True CPPopt: ${simCppopt} mmHg | Best observed: CPP ${b.cpp} (PRx ${b.prx})`;}renderSim();}
 
-function renderSim(){const hb=document.getElementById('sim-halt');if(hb)hb.style.display=(simHalted&&simStep===simData.length&&simData.length>0)?'block':'none';const bc=document.getElementById('sim-step-btns');bc.innerHTML=simData.map((d,i)=>`<button class="step-btn" data-sim-step="${i+1}" style="border:${i<simStep?'2px solid '+TH.accent:'1px solid '+TH.border};background:${i<simStep?'rgba(15,118,110,0.08)':TH.card};color:${i<simStep?TH.accent:TH.textDim};font-weight:${i<simStep?700:400};">Step ${i+1}: NE ${d.ne}</button>`).join('');const vis=simData.slice(0,simStep),tc=document.getElementById('sim-table-container'),cc=document.getElementById('sim-chart-container');if(vis.length>0){tc.style.display='block';const best=simData.reduce((a,c)=>c.prx<a.prx?c:a,simData[0]);document.getElementById('sim-table-body').innerHTML=vis.map(d=>{const pc=d.prx<0?TH.success:d.prx>0.3?TH.danger:TH.warn;const ib=d.step===best.step&&simStep===simData.length;return`<tr style="background:${ib?TH.successBg:'transparent'}"><td>${d.step}</td><td style="color:${TH.accent};font-family:'IBM Plex Mono',monospace">${d.ne}</td><td>${d.map}</td><td>${d.icp}</td><td style="color:${TH.heading};font-weight:700">${d.cpp}</td><td style="color:${pc};font-weight:700;font-family:'IBM Plex Mono',monospace">${d.prx.toFixed(2)} ${ib?'⭐':''}</td></tr>`;}).join('');}else{tc.style.display='none';}if(vis.length>1){cc.style.display='block';if(simChart)simChart.destroy();const ctx=document.getElementById('simChart').getContext('2d');const best=simData.reduce((a,c)=>c.prx<a.prx?c:a,simData[0]);simChart=new Chart(ctx,{type:'scatter',data:{datasets:[{data:vis.map(d=>({x:d.cpp,y:d.prx})),borderColor:TH.chartU,backgroundColor:TH.chartU+'66',pointRadius:5,showLine:true,borderWidth:2.5,tension:0.3}]},options:{responsive:true,scales:{x:{title:{display:true,text:'CPP (mmHg)',color:TH.textDim},ticks:{color:TH.textMuted},grid:{color:TH.grid}},y:{min:-0.6,max:0.8,title:{display:true,text:'PRx',color:TH.textDim},ticks:{color:TH.textMuted},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;ctx.save();const yP=y.getPixelForValue(0.3);ctx.strokeStyle=TH.danger;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x.left,yP);ctx.lineTo(x.right,yP);ctx.stroke();const y0=y.getPixelForValue(0);ctx.strokeStyle=TH.textMuted;ctx.beginPath();ctx.moveTo(x.left,y0);ctx.lineTo(x.right,y0);ctx.stroke();if(simStep===simData.length){const bx=x.getPixelForValue(best.cpp);ctx.strokeStyle=TH.success;ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(bx,y.top);ctx.lineTo(bx,y.bottom);ctx.stroke();ctx.fillStyle=TH.success;ctx.font='bold 11px IBM Plex Sans';ctx.textAlign='center';ctx.fillText('CPPopt ≈'+best.cpp,bx,y.top+14);}ctx.restore();}}]});}else{cc.style.display='none';}}
+function renderSim(){const hb=document.getElementById('sim-halt');if(hb)hb.style.display=(simHalted&&simStep===simData.length&&simData.length>0)?'block':'none';const bc=document.getElementById('sim-step-btns');bc.innerHTML=simData.map((d,i)=>`<button class="step-btn" data-sim-step="${i+1}" style="border:${i<simStep?'2px solid '+V.accent:'1px solid '+V.border};background:${i<simStep?V.accentWash:V.card};color:${i<simStep?V.accent:V.textDim};font-weight:${i<simStep?700:400};">Step ${i+1}: NE ${d.ne}</button>`).join('');const vis=simData.slice(0,simStep),tc=document.getElementById('sim-table-container'),cc=document.getElementById('sim-chart-container');if(vis.length>0){tc.style.display='block';const best=simData.reduce((a,c)=>c.prx<a.prx?c:a,simData[0]);document.getElementById('sim-table-body').innerHTML=vis.map(d=>{const pc=d.prx<0?V.success:d.prx>0.3?V.danger:V.warn;const ib=d.step===best.step&&simStep===simData.length;return`<tr style="background:${ib?V.successBg:'transparent'}"><td>${d.step}</td><td style="color:${V.accent};font-family:var(--mono)">${d.ne}</td><td>${d.map}</td><td>${d.icp}</td><td style="color:${V.heading};font-weight:700">${d.cpp}</td><td style="color:${pc};font-weight:700;font-family:var(--mono)">${d.prx.toFixed(2)} ${ib?'⭐':''}</td></tr>`;}).join('');}else{tc.style.display='none';}if(vis.length>1){cc.style.display='block';if(simChart)simChart.destroy();const ctx=document.getElementById('simChart').getContext('2d');const best=simData.reduce((a,c)=>c.prx<a.prx?c:a,simData[0]);simChart=new Chart(ctx,{type:'scatter',data:{datasets:[{data:vis.map(d=>({x:d.cpp,y:d.prx})),borderColor:TH.chartU,backgroundColor:TH.chartU+'66',pointRadius:5,showLine:true,borderWidth:2.5,tension:0.3}]},options:{responsive:true,scales:{x:{title:{display:true,text:'CPP (mmHg)',color:TH.textDim},ticks:{color:TH.textMuted},grid:{color:TH.grid}},y:{min:-0.6,max:0.8,title:{display:true,text:'PRx',color:TH.textDim},ticks:{color:TH.textMuted},grid:{color:TH.grid}}},plugins:{legend:{display:false}}},plugins:[{afterDraw(ch){const{ctx,scales:{x,y}}=ch;ctx.save();const yP=y.getPixelForValue(0.3);ctx.strokeStyle=TH.danger;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x.left,yP);ctx.lineTo(x.right,yP);ctx.stroke();const y0=y.getPixelForValue(0);ctx.strokeStyle=TH.textMuted;ctx.beginPath();ctx.moveTo(x.left,y0);ctx.lineTo(x.right,y0);ctx.stroke();if(simStep===simData.length){const bx=x.getPixelForValue(best.cpp);ctx.strokeStyle=TH.success;ctx.lineWidth=2;ctx.setLineDash([8,4]);ctx.beginPath();ctx.moveTo(bx,y.top);ctx.lineTo(bx,y.bottom);ctx.stroke();ctx.fillStyle=TH.success;ctx.font='bold 11px '+TH.font;ctx.textAlign='center';ctx.fillText('CPPopt ≈'+best.cpp,bx,y.top+14);}ctx.restore();}}]});}else{cc.style.display='none';}}
 
 /* Event wiring: no inline handlers anywhere in this document. */
 document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
@@ -249,13 +339,64 @@ document.getElementById('protocol-steps').addEventListener('keydown',e=>{if(e.ke
 document.getElementById('sim-step-btns').addEventListener('click',e=>{const el=e.target.closest('[data-sim-step]');if(el)advanceSim(parseInt(el.dataset.simStep,10));});
 
 renderProtocolSteps();newSimPatient();setTimeout(initWaveChart,100);
+
+/* Theme switch: refresh colour reads and recolour live charts in place (no data, scale or label change). */
+function recolorCharts(){readTheme();[waveChart,uCurveChart,lassenChart,simChart].forEach(ch=>{if(!ch)return;Object.keys(ch.options.scales).forEach(k=>{const sc=ch.options.scales[k];sc.ticks.color=TH.textMuted;if(sc.grid)sc.grid.color=TH.grid;if(sc.title)sc.title.color=TH.textDim;});const ds=ch.data.datasets;if(ch===waveChart){ds[0].borderColor=TH.chartABP;ds[1].borderColor=TH.chartICP;ch.options.plugins.legend.labels.color=TH.textDim;}else if(ch===lassenChart){ds[0].borderColor=TH.chartLassen;ds[0].backgroundColor=TH.chartLassen+'18';}else{ds[0].borderColor=TH.chartU;ds[0].backgroundColor=TH.chartU+(ch===simChart?'66':'44');}ch.update('none');});}
+document.addEventListener('neeltheme',recolorCharts);
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
 @media (max-width: 768px) {
-  .pmid { font-size: 11px; }
+  .pmid { font-size: 14px; }
 }
 </style>
 </body>

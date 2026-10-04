@@ -6,110 +6,125 @@
 <title>Albuterol Aerosol Delivery During HFNC</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
 <style>
+  :root {
+    --paper: var(--nt-paper); --plate: var(--nt-plate); --plate-focal: var(--nt-plate-focal);
+    --ink: var(--nt-ink); --ink-muted: var(--nt-ink-muted); --ink-quiet: var(--nt-ink-quiet);
+    --rule: var(--nt-rule); --rule-strong: var(--nt-rule-strong); --tint: var(--nt-tint);
+    --accent: var(--nt-accent); --accent-deep: var(--nt-accent-deep); --accent-wash: var(--nt-accent-wash);
+    --on-accent: var(--nt-on-accent);
+    --series-a: var(--nt-cat-1); --series-b: var(--nt-cat-2); --series-ok: var(--nt-pos);
+    --sans: var(--nt-font-display);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: #1a1a1a; background: #fff; padding: 28px;
+    font-family: var(--sans);
+    color: var(--ink); background: var(--paper); padding: 28px;
     max-width: 920px; margin: 0 auto; -webkit-font-smoothing: antialiased;
   }
-  h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-  .subtitle { font-size: 12px; color: #6b7280; margin-top: 2px; margin-bottom: 14px; }
-  .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 2px; }
+  .subtitle { font-size: 14px; color: var(--ink-quiet); margin-top: 2px; margin-bottom: 14px; }
+  .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--rule); }
   .tab-btn {
-    padding: 8px 16px; font-size: 13px; background: none; border: none;
+    padding: 8px 16px; font-size: 14px; background: none; border: none;
     border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -2px;
-    font-family: inherit; color: #6b7280; font-weight: 400;
+    font-family: inherit; color: var(--ink-quiet); font-weight: 400;
   }
-  .tab-btn.active { color: #2980B9; font-weight: 600; border-bottom-color: #2980B9; }
+  .tab-btn.active { color: var(--accent); font-weight: 600; border-bottom-color: currentColor; }
   .chart-wrap {
-    background: #f9fafb; border-radius: 8px; padding: 16px;
-    border: 1px solid #e5e7eb;
+    background: var(--plate); border-radius: 8px; padding: 16px;
+    border: 1px solid var(--rule);
   }
   .chart-container { position: relative; height: 340px; }
-  .caption { font-size: 11px; color: #6b7280; margin-top: 8px; font-style: italic; }
+  .caption { font-size: 13px; color: var(--ink-quiet); margin-top: 8px; font-style: italic; }
   .panel { display: none; }
   .panel.active { display: block; }
-  h2 { font-size: 15px; font-weight: 600; margin-top: 28px; margin-bottom: 10px; }
-  .table-wrap { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead tr { background: #f0f4f8; }
-  th { padding: 8px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #d1d5db; white-space: nowrap; }
-  td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
-  tbody tr:nth-child(even) { background: #f9fafb; }
+  h2 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 10px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--tint); }
+  th { padding: 8px 10px; text-align: left; font-weight: 600; font-size: 14px; border-bottom: 2px solid var(--rule-strong); }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tbody tr:nth-child(even) { background: var(--plate); }
   .td-flow { font-weight: 600; white-space: nowrap; }
-  .td-mesh { color: #2980B9; font-weight: 500; }
-  .td-jet { color: #E8735A; font-weight: 500; }
-  .td-pif { font-style: italic; color: #4b5563; }
-  .td-none { color: #9ca3af; font-style: italic; font-weight: 400; }
+  .td-mesh { color: var(--series-a); font-weight: 500; }
+  .td-jet { color: var(--series-b); font-weight: 500; }
+  .td-pif { font-style: italic; color: var(--ink-muted); }
+  .td-none { color: var(--ink-quiet); font-style: italic; font-weight: 400; }
+  /* inline sub-labels in the mesh/jet cells carry a hard-coded grey in the markup */
+  td span[style*="color:#6b7280"] { color: var(--ink-quiet) !important; }
   .key-box {
-    margin-top: 20px; padding: 14px; background: #f0f7ff;
-    border-radius: 8px; border: 1px solid #bfdbfe;
+    margin-top: 20px; padding: 14px; background: var(--plate);
+    border-radius: 8px; border: 1px solid var(--rule);
   }
-  .key-box h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #1e40af; }
-  .key-box .content { font-size: 12px; line-height: 1.7; color: #1e3a5f; }
+  .key-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--accent-deep); }
+  .key-box .content { font-size: 14px; line-height: 1.7; color: var(--ink-muted); }
   .key-box p { margin: 0 0 8px; }
   .key-box ul { margin: 4px 0 0 18px; }
   .key-box li { margin-bottom: 3px; }
-  .footnote { font-size: 10px; color: #9ca3af; margin-top: 14px; line-height: 1.6; }
-  .cell-sub { font-weight: 400; font-size: 10px; color: #6b7280; }
+  .footnote { font-size: 14px; color: var(--ink-quiet); margin-top: 14px; line-height: 1.6; }
+  .cell-sub { font-weight: 400; font-size: 14px; color: var(--ink-quiet); }
   .legend-row { display: flex; justify-content: center; gap: 20px; margin-top: 8px; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4b5563; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-muted); }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  /* legend dots carry hard-coded inline colours in the markup; map them to the chart tokens */
+  .legend-item:nth-child(1) .legend-dot { background: var(--series-ok) !important; }
+  .legend-item:nth-child(2) .legend-dot { background: var(--series-a) !important; }
+  .legend-item:nth-child(3) .legend-dot { background: var(--series-b) !important; }
   /* Provenance + disclosure */
   .derived-tag {
-    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
-    padding: 1px 5px; border-radius: 3px; background: #fef3c7; color: #92400e;
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: var(--nt-caution-wash); color: var(--ink); border: 1px solid var(--nt-caution);
     vertical-align: middle;
   }
   .unsourced-tag {
-    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
-    padding: 1px 5px; border-radius: 3px; background: #fee2e2; color: #991b1b;
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: var(--nt-neg-wash); color: var(--nt-neg);
     vertical-align: middle;
   }
   .scope-tag {
-    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
-    padding: 1px 5px; border-radius: 3px; background: #e0e7ff; color: #3730a3;
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: var(--tint); color: var(--ink-muted);
     vertical-align: middle;
   }
   .col-warn {
-    margin: 0 0 10px; padding: 9px 12px; background: #fffbeb; border: 1px solid #fde68a;
-    border-radius: 6px; font-size: 11.5px; line-height: 1.6; color: #78350f;
+    margin: 0 0 10px; padding: 9px 12px; background: var(--nt-caution-wash); border: 1px solid var(--nt-caution);
+    border-radius: 6px; font-size: 14px; line-height: 1.6; color: var(--ink);
   }
   .disclaimer {
     display: flex; gap: 10px; align-items: flex-start;
-    background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
-    padding: 10px 14px; margin-bottom: 20px; font-size: 11.5px; line-height: 1.6; color: #78350f;
+    background: var(--nt-caution-wash); border: 1px solid var(--nt-caution); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; color: var(--ink);
   }
-  .disclaimer .bar { width: 4px; align-self: stretch; background: #d97706; border-radius: 2px; flex: none; }
-  .disclaimer strong { color: #451a03; }
+  .disclaimer .bar { width: 4px; align-self: stretch; background: var(--nt-caution); border-radius: 2px; flex: none; }
+  .disclaimer strong { color: var(--ink); }
   .corr {
-    margin-top: 20px; padding: 12px 14px; background: #fef2f2;
-    border: 1px solid #fecaca; border-radius: 8px; font-size: 11.5px;
-    line-height: 1.65; color: #7f1d1d;
+    margin-top: 20px; padding: 12px 14px; background: var(--nt-neg-wash);
+    border: 1px solid var(--nt-neg); border-radius: 8px; font-size: 14px;
+    line-height: 1.65; color: var(--ink);
   }
-  .corr h3 { font-size: 12px; font-weight: 600; margin-bottom: 6px; color: #991b1b; }
-  .refs { font-size: 11px; color: #4b5563; line-height: 1.65; margin: 0 0 0 20px; }
+  .corr h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--nt-neg); }
+  .refs { font-size: 14px; color: var(--ink-muted); line-height: 1.65; margin: 0 0 0 20px; }
   .refs li { margin-bottom: 4px; }
   .tool-footer {
-    border-top: 1px solid #e5e7eb; margin-top: 30px; padding-top: 12px;
-    font-size: 11px; color: #9ca3af; line-height: 1.6;
+    border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 12px;
+    font-size: 12px; color: var(--ink-quiet); line-height: 1.6;
   }
   /* Device section */
   .dev-note {
-    font-size: 12px; color: #4b5563; line-height: 1.7; margin: 0 0 12px;
+    font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin: 0 0 12px;
   }
   .td-dev { font-weight: 600; white-space: nowrap; }
   /* .td-dev sets white-space:nowrap to keep the platform name on one line; the
      sub-label would inherit it and force the whole table to one enormous column. */
-  .dev-sub { display: block; white-space: normal; font-weight: 400; font-size: 10.5px; color: #6b7280; margin-top: 2px; min-width: 190px; }
+  .dev-sub { display: block; white-space: normal; font-weight: 400; font-size: 14px; color: var(--ink-quiet); margin-top: 2px; min-width: 190px; }
   .mfr-tag {
-    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
-    padding: 1px 5px; border-radius: 3px; background: #dcfce7; color: #166534;
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: var(--nt-pos-wash); color: var(--nt-pos);
     vertical-align: middle;
   }
   .measured-tag {
-    display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .04em;
-    padding: 1px 5px; border-radius: 3px; background: #dbeafe; color: #1e40af;
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 3px; background: var(--accent-wash); color: var(--accent-deep);
     vertical-align: middle;
   }
   /* PIF case toggles */
@@ -117,47 +132,132 @@
     display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px;
   }
   .case-btn {
-    padding: 6px 11px; font-size: 11.5px; font-family: inherit; cursor: pointer;
-    background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb;
+    padding: 6px 11px; font-size: 14px; font-family: inherit; cursor: pointer;
+    background: var(--plate); color: var(--ink-muted); border: 1px solid var(--rule-strong);
     border-radius: 999px; line-height: 1.3; font-weight: 500;
   }
-  .case-btn:hover { background: #e9eef4; color: #1f2937; }
-  .case-btn.active { background: #2980B9; border-color: #2980B9; color: #fff; font-weight: 600; }
-  .case-btn:focus-visible { outline: 2px solid #1e40af; outline-offset: 2px; }
+  .case-btn:hover { background: var(--tint); color: var(--ink); }
+  .case-btn.active { background: var(--accent); border-color: transparent; color: var(--on-accent); font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--nt-focus); outline-offset: 2px; }
   .case-card {
-    border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 16px; background: #f9fafb;
+    border: 1px solid var(--rule); border-radius: 8px; padding: 15px 16px; background: var(--plate);
   }
-  .case-card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 3px; color: #1f2937; }
-  .case-card .case-sub { font-size: 11px; color: #6b7280; margin: 0 0 11px; }
+  .case-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 3px; color: var(--ink); }
+  .case-card .case-sub { font-size: 14px; color: var(--ink-quiet); margin: 0 0 11px; }
   .case-pif {
-    background: #fff; border: 1px solid #e5e7eb; border-radius: 6px;
+    background: var(--plate-focal); border: 1px solid var(--rule); border-radius: 6px;
     padding: 10px 12px; margin-bottom: 11px;
   }
-  .case-pif .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: #6b7280; }
-  .case-pif .v { font-size: 15px; font-weight: 700; color: #1f2937; margin: 2px 0 5px; }
-  .case-pif .src { font-size: 11.5px; color: #4b5563; line-height: 1.65; margin: 0; }
-  .ratio-table { width: 100%; border-collapse: collapse; font-size: 11.5px; background: #fff; }
+  .case-pif .k { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-quiet); }
+  .case-pif .v { font-size: 16px; font-weight: 700; color: var(--ink); margin: 2px 0 5px; }
+  .case-pif .src { font-size: 14px; color: var(--ink-muted); line-height: 1.65; margin: 0; }
+  .ratio-table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--plate-focal); }
   .ratio-table th {
-    padding: 6px 9px; text-align: left; font-weight: 600; font-size: 11px;
-    background: #f0f4f8; border-bottom: 2px solid #d1d5db; white-space: nowrap;
+    padding: 6px 9px; text-align: left; font-weight: 600; font-size: 12px;
+    background: var(--tint); border-bottom: 2px solid var(--rule-strong); white-space: nowrap;
   }
-  .ratio-table td { padding: 6px 9px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+  .ratio-table td { padding: 6px 9px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
   .ratio-table tr:last-child td { border-bottom: none; }
   .rchip {
     display: inline-block; padding: 1px 7px; border-radius: 999px;
-    font-size: 11px; font-weight: 700; color: #fff; min-width: 42px; text-align: center;
+    font-size: 11px; font-weight: 700; color: var(--on-accent); min-width: 42px; text-align: center;
   }
-  .rchip.lo { background: #5B9A6E; }
-  .rchip.mid { background: #2EBFA5; }
-  .rchip.hi { background: #E8735A; }
-  .rchip.na { background: #9ca3af; }
-  .case-note { font-size: 11.5px; color: #4b5563; line-height: 1.7; margin: 11px 0 0; }
-  .case-note strong { color: #1f2937; }
+  .rchip.lo { background: var(--series-ok); }
+  .rchip.mid { background: var(--series-a); }
+  .rchip.hi { background: var(--series-b); }
+  .rchip.na { background: var(--ink-quiet); }
+  .case-note { font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin: 11px 0 0; }
+  .case-note strong { color: var(--ink); }
   .case-gap {
-    margin-top: 11px; padding: 9px 12px; background: #fffbeb; border: 1px solid #fde68a;
-    border-radius: 6px; font-size: 11.5px; line-height: 1.65; color: #78350f;
+    margin-top: 11px; padding: 9px 12px; background: var(--nt-caution-wash); border: 1px solid var(--nt-caution);
+    border-radius: 6px; font-size: 14px; line-height: 1.65; color: var(--ink);
   }
+  sub, sup { font-size: 11px; }
+  /* keep running prose to a readable line length */
+  .subtitle, .caption, .footnote, .dev-note, .key-box .content p, .key-box li, .corr p, .col-warn,
+  .disclaimer > div, .case-card .case-sub, .case-pif .src, .case-note, .case-gap, .refs li { max-width: 52ch; }
+  /* the kit's fixed Light | Dark switch sits top-right: clear it on narrow screens */
+  @media (max-width: 768px) { body { padding-top: 64px; } }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 
@@ -421,7 +521,7 @@
 <p class="footnote">Exact delivery varies with cannula size and cannula-to-nares ratio, interface fit, breathing pattern and effort, circuit humidity and condensation, nebulizer position, and nebulizer brand. Values above are the numbers the cited studies report; they are not estimates of what an individual patient receives. Most are bench models or healthy-volunteer studies. Where a figure could not be traced to a source it has been removed rather than approximated, and the one derived quantity in this tool is labelled <span class="derived-tag">DERIVED</span> in place.</p>
 
 <footer class="tool-footer">
-  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v3.1 &middot; Updated 2026-09-01 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> 37 PMIDs are cited here. On 2026-09-01, twelve of them (21438178, 23628834, 28463044, 28669609, 30920155, 31083346, 31313534, 33333115, 34683948, 34789564, 37553215 and 38981652, the sources behind the device section, the inspiratory-flow cases and both figures) were re-resolved against PubMed with title, journal, first author, volume, issue and page range matched to the record, which is how the DiBlasi 2024 page range in this tool was found to be wrong and corrected. The remaining twenty-five carry the 2026-08-31 check: they resolve in PubMed and match the title, journal and first author shown. The four manufacturer documents listed above have no PMID and were retrieved from the manufacturers&rsquo; own sites on 2026-09-01; every device claim tagged MANUFACTURER is a quotation from one of them. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text, but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
+  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v3.2 &middot; Updated 2026-10-03 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> 37 PMIDs are cited here. On 2026-09-01, twelve of them (21438178, 23628834, 28463044, 28669609, 30920155, 31083346, 31313534, 33333115, 34683948, 34789564, 37553215 and 38981652, the sources behind the device section, the inspiratory-flow cases and both figures) were re-resolved against PubMed with title, journal, first author, volume, issue and page range matched to the record, which is how the DiBlasi 2024 page range in this tool was found to be wrong and corrected. The remaining twenty-five carry the 2026-08-31 check: they resolve in PubMed and match the title, journal and first author shown. The four manufacturer documents listed above have no PMID and were retrieved from the manufacturers&rsquo; own sites on 2026-09-01; every device claim tagged MANUFACTURER is a quotation from one of them. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text, but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
 </footer>
 
 <script>
@@ -441,6 +541,27 @@ function showTab(tab) {
 document.querySelectorAll('.tab-btn').forEach(function(btn) {
   btn.addEventListener('click', function() { showTab(btn.getAttribute('data-tab')); });
 });
+
+// --- Theme: chart colours and fonts come from the kit's CSS variables at draw time ---
+function ntColors() {
+  var cs = getComputedStyle(document.documentElement);
+  function g(n) { return cs.getPropertyValue(n).trim(); }
+  return {
+    ink: g('--nt-ink'), muted: g('--nt-ink-muted'), quiet: g('--nt-ink-quiet'),
+    grid: g('--nt-grid'), rule: g('--nt-rule-strong'), plate: g('--nt-plate'), focal: g('--nt-plate-focal'),
+    c1: g('--nt-cat-1'), c2: g('--nt-cat-2'), ok: g('--nt-pos'), font: g('--nt-font-display')
+  };
+}
+function ntAlpha(hex, a) {
+  if (/^#[0-9a-f]{6}$/i.test(hex)) {
+    var n = parseInt(hex.slice(1), 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  return hex;
+}
+var NC = ntColors();
+Chart.defaults.font.family = NC.font;
+Chart.defaults.color = NC.quiet;
 
 // --- Chart A: measured, study-attributed values vs HFNC flow ---
 // Every point below is a value reported by the named study at the stated gas flow.
@@ -478,32 +599,32 @@ var jetPts = [
   { x: 30, y: 1.0,   s: 'Dugernier 2017 · healthy adults, SPECT-CT (1.0%, IQR 0.7–2.0), the only flow-paired jet value located' }
 ];
 
-new Chart(document.getElementById('chartFlow'), {
+var chartFlow = new Chart(document.getElementById('chartFlow'), {
   type: 'scatter',
   data: {
     datasets: [
       {
         label: 'Mesh (infant / pediatric bench models)',
         data: pedBench,
-        borderColor: '#2980B9', backgroundColor: '#2980B9',
+        borderColor: NC.c1, backgroundColor: NC.c1,
         pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 8
       },
       {
         label: 'Mesh (adult bench models)',
         data: adultBench,
-        borderColor: '#2980B9', backgroundColor: 'rgba(41,128,185,0.25)',
+        borderColor: NC.c1, backgroundColor: ntAlpha(NC.c1, 0.25),
         borderWidth: 2, pointStyle: 'triangle', pointRadius: 7, pointHoverRadius: 10
       },
       {
         label: 'Mesh, in vivo (adults, scintigraphy / SPECT-CT)',
         data: inVivo,
-        borderColor: '#5B9A6E', backgroundColor: '#5B9A6E',
+        borderColor: NC.ok, backgroundColor: NC.ok,
         pointStyle: 'rectRot', pointRadius: 6, pointHoverRadius: 9
       },
       {
         label: 'Jet, in vivo (adults, SPECT-CT)',
         data: jetPts,
-        borderColor: '#E8735A', backgroundColor: '#E8735A',
+        borderColor: NC.c2, backgroundColor: NC.c2,
         pointStyle: 'rect', pointRadius: 6, pointHoverRadius: 9
       }
     ]
@@ -520,24 +641,24 @@ new Chart(document.getElementById('chartFlow'), {
     scales: {
       x: {
         type: 'linear', min: -1.5, max: 61.5,
-        title: { display: true, text: 'HFNC Flow Rate (LPM)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, stepSize: 10, includeBounds: false },
+        title: { display: true, text: 'HFNC Flow Rate (LPM)', font: { size: 12 }, color: NC.quiet },
+        ticks: { font: { size: 11 }, color: NC.quiet, stepSize: 10, includeBounds: false },
         afterBuildTicks: function(axis) { axis.ticks = [0, 10, 20, 30, 40, 50, 60].map(function(v) { return { value: v }; }); },
-        grid: { color: '#e5e7eb' }
+        grid: { color: NC.grid }
       },
       y: {
         type: 'linear', min: -1.6, max: 30,
-        title: { display: true, text: 'Reported inhaled / lung dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, includeBounds: false },
+        title: { display: true, text: 'Reported inhaled / lung dose (% of nominal)', font: { size: 12 }, color: NC.quiet },
+        ticks: { font: { size: 11 }, color: NC.quiet, includeBounds: false },
         afterBuildTicks: function(axis) { axis.ticks = [0, 5, 10, 15, 20, 25, 30].map(function(v) { return { value: v }; }); },
-        grid: { color: '#e5e7eb' }
+        grid: { color: NC.grid }
       }
     },
     plugins: {
-      legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, boxWidth: 10 } },
+      legend: { position: 'top', labels: { font: { size: 11 }, color: NC.muted, usePointStyle: true, boxWidth: 10 } },
       tooltip: {
-        backgroundColor: '#fff', titleColor: '#1a1a1a', bodyColor: '#1a1a1a',
-        borderColor: '#d1d5db', borderWidth: 1, cornerRadius: 6, padding: 10,
+        backgroundColor: NC.focal, titleColor: NC.ink, bodyColor: NC.ink,
+        borderColor: NC.rule, borderWidth: 1, cornerRadius: 6, padding: 10,
         titleFont: { weight: '600', size: 12 }, bodyFont: { size: 11 },
         displayColors: false,
         callbacks: {
@@ -563,22 +684,22 @@ var bandPts = [
   { x: 0.75, y: 18.3, s: 'GF:IF 0.51–1.0 · measured mean 18.3 ± 2.2% · plotted at the midpoint of the stated band' }
 ];
 
-new Chart(document.getElementById('chartRatio'), {
+var chartRatio = new Chart(document.getElementById('chartRatio'), {
   type: 'line',
   data: {
     datasets: [
       {
         label: 'Li 2019 reported regression (24.99 − 6.20 × GF:IF)',
         data: fitPts,
-        borderColor: '#2980B9', backgroundColor: '#2980B9',
+        borderColor: NC.c1, backgroundColor: NC.c1,
         borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 0, tension: 0, fill: false
       },
       {
         label: 'Measured group means',
         data: bandPts,
         showLine: false,
-        pointBackgroundColor: ['#5B9A6E', '#2EBFA5'],
-        pointBorderColor: '#fff', pointBorderWidth: 1.5,
+        pointBackgroundColor: [NC.ok, NC.c1],
+        pointBorderColor: NC.plate, pointBorderWidth: 1.5,
         pointRadius: 8, pointHoverRadius: 10
       }
     ]
@@ -593,24 +714,24 @@ new Chart(document.getElementById('chartRatio'), {
     scales: {
       x: {
         type: 'linear', min: -0.12, max: 4.62,
-        title: { display: true, text: 'Cannula gas flow : peak inspiratory flow (GF:IF)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, stepSize: 0.5, includeBounds: false },
+        title: { display: true, text: 'Cannula gas flow : peak inspiratory flow (GF:IF)', font: { size: 12 }, color: NC.quiet },
+        ticks: { font: { size: 11 }, color: NC.quiet, stepSize: 0.5, includeBounds: false },
         afterBuildTicks: function(axis) { axis.ticks = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5].map(function(v) { return { value: v }; }); },
-        grid: { color: '#e5e7eb' }
+        grid: { color: NC.grid }
       },
       y: {
         type: 'linear', min: -1.6, max: 30,
-        title: { display: true, text: 'Inhaled dose (% of nominal)', font: { size: 12 }, color: '#4b5563' },
-        ticks: { font: { size: 11 }, includeBounds: false },
+        title: { display: true, text: 'Inhaled dose (% of nominal)', font: { size: 12 }, color: NC.quiet },
+        ticks: { font: { size: 11 }, color: NC.quiet, includeBounds: false },
         afterBuildTicks: function(axis) { axis.ticks = [0, 5, 10, 15, 20, 25, 30].map(function(v) { return { value: v }; }); },
-        grid: { color: '#e5e7eb' }
+        grid: { color: NC.grid }
       }
     },
     plugins: {
-      legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, boxWidth: 10 } },
+      legend: { position: 'top', labels: { font: { size: 11 }, color: NC.muted, usePointStyle: true, boxWidth: 10 } },
       tooltip: {
-        backgroundColor: '#fff', titleColor: '#1a1a1a', bodyColor: '#1a1a1a',
-        borderColor: '#d1d5db', borderWidth: 1, cornerRadius: 6, padding: 10,
+        backgroundColor: NC.focal, titleColor: NC.ink, bodyColor: NC.ink,
+        borderColor: NC.rule, borderWidth: 1, cornerRadius: 6, padding: 10,
         titleFont: { weight: '600', size: 12 }, bodyFont: { size: 11 },
         displayColors: false,
         callbacks: {
@@ -637,11 +758,11 @@ new Chart(document.getElementById('chartRatio'), {
       var yScale = chart.scales.y;
       var ctx = chart.ctx;
       var guides = [
-        { v: 0.5, color: '#5B9A6E', text: 'plateau ≤ 0.5', row: 0 },
-        { v: 1.0, color: '#E8735A', text: 'GF = IF', row: 1 }
+        { v: 0.5, color: ntColors().ok, text: 'plateau ≤ 0.5', row: 0 },
+        { v: 1.0, color: ntColors().c2, text: 'GF = IF', row: 1 }
       ];
       ctx.save();
-      ctx.font = '600 11px system-ui, sans-serif';
+      ctx.font = '600 11px ' + ntColors().font;
       guides.forEach(function(g) {
         var x = xScale.getPixelForValue(g.v);
         ctx.beginPath();
@@ -667,6 +788,37 @@ new Chart(document.getElementById('chartRatio'), {
     }
   }]
 });
+
+// Repaint on theme change: colour and font values only, no data, scales or labels.
+function paintCharts() {
+  var C = ntColors();
+  NC = C;
+  Chart.defaults.font.family = C.font;
+  Chart.defaults.color = C.quiet;
+  [chartFlow, chartRatio].forEach(function(ch) {
+    var o = ch.options;
+    ['x', 'y'].forEach(function(a) {
+      o.scales[a].title.color = C.quiet;
+      o.scales[a].ticks.color = C.quiet;
+      o.scales[a].grid.color = C.grid;
+    });
+    o.plugins.legend.labels.color = C.muted;
+    var t = o.plugins.tooltip;
+    t.backgroundColor = C.focal; t.titleColor = C.ink; t.bodyColor = C.ink; t.borderColor = C.rule;
+  });
+  var d = chartFlow.data.datasets;
+  d[0].borderColor = C.c1; d[0].backgroundColor = C.c1;
+  d[1].borderColor = C.c1; d[1].backgroundColor = ntAlpha(C.c1, 0.25);
+  d[2].borderColor = C.ok; d[2].backgroundColor = C.ok;
+  d[3].borderColor = C.c2; d[3].backgroundColor = C.c2;
+  var r = chartRatio.data.datasets;
+  r[0].borderColor = C.c1; r[0].backgroundColor = C.c1;
+  r[1].pointBackgroundColor = [C.ok, C.c1]; r[1].pointBorderColor = C.plate;
+  chartFlow.update('none');
+  chartRatio.update('none');
+}
+document.addEventListener('neeltheme', paintCharts);
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(paintCharts); }
 
 // --- Peak inspiratory flow worked cases ---
 // Every GF:IF figure rendered below is COMPUTED from the inspiratory flow held in
@@ -890,19 +1042,66 @@ var pifCases = [
 })();
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
 @media (max-width: 768px) {
-  .footnote { font-size: 11px; }
+  .footnote { font-size: 14px; }
   .scope-tag { font-size: 11px; }
   .unsourced-tag { font-size: 11px; }
   /* Provenance + disclosure */ .derived-tag { font-size: 11px; }
   .mfr-tag { font-size: 11px; }
   .measured-tag { font-size: 11px; }
-  .dev-sub { font-size: 11px; }
+  .dev-sub { font-size: 14px; }
   .case-pif .k { font-size: 11px; }
-  .cell-sub { font-size: 11px; }
+  .cell-sub { font-size: 14px; }
   sub, sup { font-size: 11px; }
 }
 </style>

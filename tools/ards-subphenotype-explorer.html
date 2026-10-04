@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html data-nt-legacy="ardssub.theme" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,82 +8,47 @@
 <meta property="og:title" content="ARDS Inflammatory Subphenotypes">
 <meta property="og:description" content="What the models can and cannot tell you. Educational use only.">
 <meta property="og:type" content="article">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.2.8/index.css" integrity="sha384-ZTIcl2CmY0wyM9ANOhomBco7rEUIlWztf6lGcLKCocKUrIgGCsfisuZyE+hadW8K" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4@5.3.0/index.css" integrity="sha384-BcqMxSEWy7T7vR491w5jVpKFG0b3TfgKXXPd5v6bFEHwlI6bbjKOM8VQL0FY+jmp" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.8/index.css" integrity="sha384-bNykZ+bGB4FclZiYvLmgUfE8clWCvZlLOJ3v63czgIEgamTe0EhkaLXIbptJkvmW" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
   /* ============================================================
-     Theme tokens - warm paper / warm-black ink, one warm-slate accent,
-     three semantic colors. Inter (UI) - Source Serif 4 (body) -
-     JetBrains Mono (numbers). No shadows. No gradients. Hairlines only.
+     Theme tokens - every token below aliases the shared neel-theme kit
+     (--nt-*), which switches light and dark. Cool vellum ground, one
+     green-ink accent (kept under the old --slate name), three semantic
+     colours. Atkinson Hyperlegible (UI) - Literata (body) - Atkinson
+     Hyperlegible Mono (numbers). No shadows. No gradients. Hairlines only.
      ============================================================ */
   :root {
-    --paper:      #FAF6EE;
-    --paper-2:    #F3EEE2;
-    --card:       #FFFFFF;
-    --tint:       #E7E2D6;
-    --ink:        #1A1A1A;
-    --ink-muted:  #5A5550;
-    --ink-quiet:  #7C7670;
-    --slate:      #4A5468;
-    --slate-deep: #2F3744;
-    --slate-pale: #C5CCD9;
-    --rule:       #D5CFBF;
-    --hair:       rgba(26,26,26,0.12);
-    --pos:        #2E7D5B;
-    --pos-bg:     #E4F0E9;
-    --caution:    #B88A2C;
-    --caution-bg: #F5ECD8;
-    --neg:        #B23A3A;
-    --neg-bg:     #F3E0DE;
-    --focus:      #4A5468;   /* focus ring: 7.14:1 on --paper, 7.61:1 on --card */
+    --paper:      var(--nt-paper);
+    --paper-2:    var(--nt-sunken);
+    --card:       var(--nt-plate);
+    --tint:       var(--nt-tint);
+    --ink:        var(--nt-ink);
+    --ink-muted:  var(--nt-ink-muted);
+    --ink-quiet:  var(--nt-ink-quiet);
+    --slate:      var(--nt-accent);
+    --slate-deep: var(--nt-accent-deep);
+    --slate-pale: var(--nt-tint-deep);
+    --rule:       var(--nt-rule);
+    --hair:       var(--nt-rule);
+    --pos:        var(--nt-pos);
+    --pos-bg:     var(--nt-pos-wash);
+    --caution:    var(--nt-caution);
+    --caution-bg: var(--nt-caution-wash);
+    --neg:        var(--nt-neg);
+    --neg-bg:     var(--nt-neg-wash);
+    --focus:      var(--nt-focus);
 
-    --sans:  'Inter Variable',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',sans-serif;
-    --serif: 'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif;
-    --mono:  'JetBrains Mono Variable','JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:  var(--nt-font-display);
+    --serif: var(--nt-font-body);
+    --mono:  var(--nt-font-mono);
 
     --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:36px; --xxl:48px;
-    --radius:8px; --radius-sm:4px;
+    --radius:var(--nt-radius); --radius-sm:var(--nt-radius-sm);
     --maxw:1180px;
-    --ease-out:cubic-bezier(.23,1,.32,1);
-    color-scheme: light;
+    --ease-out:var(--nt-ease);
   }
-  html[data-theme="dark"] {
-    --paper:      #14120F;
-    --paper-2:    #1D1A16;
-    --card:       #1C1A16;
-    --tint:       #221F1A;
-    --ink:        #F5F0E6;
-    --ink-muted:  #B5AEA2;
-    --ink-quiet:  #948C80;
-    --slate:      #9AA6BC;
-    --slate-deep: #C5CCD9;
-    --slate-pale: #3A4354;
-    --rule:       #332F28;
-    --hair:       rgba(245,240,230,0.14);
-    --pos:        #6FC79B;
-    --pos-bg:     #18271F;
-    --caution:    #E0B85E;
-    --caution-bg: #2A2415;
-    --neg:        #E08A85;
-    --neg-bg:     #2C1A19;
-    --focus:      #97A4BF;   /* focus ring: 7.46:1 on --paper, 6.93:1 on --card */
-    color-scheme: dark;
-  }
-  /* Match the system if the reader has not toggled (data-theme absent). */
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme]) {
-      --paper:#14120F; --paper-2:#1D1A16; --card:#1C1A16; --tint:#221F1A;
-      --ink:#F5F0E6; --ink-muted:#B5AEA2; --ink-quiet:#948C80;
-      --slate:#9AA6BC; --slate-deep:#C5CCD9; --slate-pale:#3A4354;
-      --rule:#332F28; --hair:rgba(245,240,230,0.14);
-      --pos:#6FC79B; --pos-bg:#18271F;
-      --caution:#E0B85E; --caution-bg:#2A2415;
-      --neg:#E08A85; --neg-bg:#2C1A19;
-      --focus:#97A4BF;
-      color-scheme: dark;
-    }
-  }
+  /* The kit's floating Light | Dark switch replaces the in-page theme button
+     (markup and id kept; its script still answers to it). */
+  #themeToggle { display: none !important; }
 
   * { box-sizing: border-box; }
   html, body {
@@ -91,11 +56,10 @@
     background: var(--paper);
     color: var(--ink);
     font-family: var(--serif);
-    font-size: 15px;
-    line-height: 1.55;
+    font-size: 14px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     font-optical-sizing: auto;
-    font-feature-settings: "tnum" 1, "lnum" 1;   /* tabular figures - non-negotiable for data work */
   }
   body { overflow-x: hidden; }
   h1, h2, h3, h4, button, label, input, select, th, .sans, .mono { font-family: var(--sans); }
@@ -137,7 +101,7 @@
   }
   .hero .sub {
     font-family: var(--serif);
-    font-size: 17px; line-height: 1.45; color: var(--ink-muted);
+    font-size: 14px; line-height: 1.5; color: var(--ink-muted);
     margin: 0; max-width: 64ch;
   }
   .hero-controls { display: flex; gap: var(--sm); align-items: center; }
@@ -153,7 +117,7 @@
   /* the theme control is the one control on every tool in this set, so it
      carries the same class, weight and 44px target as its siblings */
   .theme-btn {
-    font-family: var(--sans); font-size: 12.5px; font-weight: 560;
+    font-family: var(--sans); font-size: 12px; font-weight: 560;
     min-height: 44px; padding: 0 14px; background: transparent;
     border: 1px solid var(--rule); border-radius: var(--radius-sm);
     color: var(--ink-muted); cursor: pointer;
@@ -168,7 +132,7 @@
     border: 1px solid var(--caution);
     border-radius: var(--radius);
     padding: 10px 14px; margin: 0 0 var(--md);
-    font-size: 12.5px; line-height: 1.6; color: var(--ink-muted);
+    font-size: 12px; line-height: 1.6; color: var(--ink-muted);
   }
   .disclaimer strong { color: var(--ink); font-family: var(--sans); font-weight: 600; }
   .disclaimer .bar { width: 4px; align-self: stretch; background: var(--caution); border-radius: 2px; flex: none; }
@@ -184,7 +148,7 @@
     margin: 0 0 var(--sm);
   }
   .toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--xl); }
-  .toc li { font-size: 13px; margin-bottom: 5px; break-inside: avoid; }
+  .toc li { font-size: 12px; margin-bottom: 5px; break-inside: avoid; }
   .toc .n { font-family: var(--mono); font-size: 11px; color: var(--ink-quiet); margin-right: 7px; }
 
   /* ---- section type ---- */
@@ -194,10 +158,10 @@
     margin: 0 0 var(--sm); line-height: 1.2; padding-top: var(--sm);
     border-top: 1px solid var(--rule);
   }
-  h2.sec-h .n { font-family: var(--mono); font-size: 13px; color: var(--slate); margin-right: 10px; font-weight: 500; }
-  h3 { font-size: 15px; font-weight: 620; margin: var(--lg) 0 var(--sm); letter-spacing: -0.003em; }
-  h4 { font-size: 13px; font-weight: 620; margin: 0 0 var(--xs); }
-  .lede { font-size: 16px; line-height: 1.5; color: var(--ink); max-width: 68ch; }
+  h2.sec-h .n { font-family: var(--mono); font-size: 12px; color: var(--slate); margin-right: 10px; font-weight: 500; }
+  h3 { font-size: 14px; font-weight: 620; margin: var(--lg) 0 var(--sm); letter-spacing: -0.003em; }
+  h4 { font-size: 12px; font-weight: 620; margin: 0 0 var(--xs); }
+  .lede { font-size: 14px; line-height: 1.55; color: var(--ink); max-width: 68ch; }
   ol.numbered { padding-left: 20px; margin: 0 0 var(--md); }
   ol.numbered li, ul.tight li { margin-bottom: var(--sm); max-width: 74ch; }
   ul.tight { padding-left: 18px; margin: 0 0 var(--md); }
@@ -210,7 +174,7 @@
   }
   .callout > :last-child { margin-bottom: 0; }
   .callout h4 {
-    font-family: var(--sans); font-size: 11.5px; font-weight: 600;
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate);
     margin: 0 0 var(--sm);
   }
@@ -224,7 +188,7 @@
 
   /* ---- tables ---- */
   .tablewrap { overflow-x: auto; margin: var(--md) 0; -webkit-overflow-scrolling: touch; }
-  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
   th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--hair); vertical-align: top; }
   th {
     font-family: var(--sans); font-size: 10.5px; font-weight: 500;
@@ -232,7 +196,7 @@
     border-bottom: 1px solid var(--rule); white-space: nowrap;
   }
   td.num, td.coefv { font-family: var(--mono); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
-  .coef-table { font-size: 12.5px; }
+  .coef-table { font-size: 12px; }
   .status-chip {
     font-family: var(--mono); font-size: 10.5px; font-weight: 500;
     letter-spacing: 0.08em; text-transform: uppercase;
@@ -263,15 +227,15 @@
 
   /* ---- code blocks for the equations ---- */
   pre.eq {
-    font-family: var(--mono); font-size: 12.5px; line-height: 1.6;
+    font-family: var(--mono); font-size: 12px; line-height: 1.6;
     background: var(--paper-2); border: 1px solid var(--rule);
     border-left: 4px solid var(--slate);
     border-radius: var(--radius); padding: 12px 14px; margin: var(--sm) 0 var(--md);
     overflow-x: auto; color: var(--ink);
   }
   pre.eq b { font-weight: 600; }
-  .eq-head { font-family: var(--sans); font-size: 13px; font-weight: 620; margin: var(--lg) 0 var(--xs); }
-  .eq-sub { font-size: 12.5px; color: var(--ink-muted); margin: 0 0 var(--xs); }
+  .eq-head { font-family: var(--sans); font-size: 12px; font-weight: 620; margin: var(--lg) 0 var(--xs); }
+  .eq-sub { font-size: 12px; color: var(--ink-muted); margin: 0 0 var(--xs); }
 
   /* ---- citation chips ---- */
   .citechip {
@@ -293,7 +257,7 @@
     display: flex; justify-content: space-between; align-items: baseline;
     gap: var(--md); flex-wrap: wrap;
   }
-  .rig-head .t { font-family: var(--sans); font-size: 13px; font-weight: 620; }
+  .rig-head .t { font-family: var(--sans); font-size: 12px; font-weight: 620; }
   .rig-head .s { font-family: var(--mono); font-size: 11px; color: var(--ink-quiet); letter-spacing: 0.03em; }
   .rig-body { display: grid; grid-template-columns: 290px minmax(0,1fr); gap: 0; }
   .rig-ctrl { padding: var(--md); border-right: 1px solid var(--rule); background: var(--paper); border-radius: 0 0 0 var(--radius); }
@@ -307,16 +271,16 @@
   /* ---- controls ---- */
   .ctl { margin-bottom: var(--md); }
   .ctl label, .ctl .lab {
-    display: block; font-family: var(--sans); font-size: 11.5px; font-weight: 600;
+    display: block; font-family: var(--sans); font-size: 12px; font-weight: 600;
     letter-spacing: 0.02em; margin-bottom: 4px; color: var(--ink);
   }
-  .ctl .val { font-family: var(--mono); font-size: 11.5px; color: var(--slate); font-weight: 500; }
+  .ctl .val { font-family: var(--mono); font-size: 12px; color: var(--slate); font-weight: 500; }
   input[type="range"] { width: 100%; accent-color: var(--slate); }
   input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-  .ctl .hint { font-size: 11.5px; line-height: 1.5; color: var(--ink-quiet); margin-top: 4px; }
-  .radio-row { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; margin-top: 6px; }
+  .ctl .hint { font-size: 12px; line-height: 1.5; color: var(--ink-quiet); margin-top: 4px; }
+  .radio-row { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; margin-top: 6px; }
   .radio-row input { accent-color: var(--slate); margin-top: 3px; flex: none; }
-  .radio-row label { display: inline; font-weight: 400; font-size: 12.5px; margin: 0; }
+  .radio-row label { display: inline; font-weight: 400; font-size: 12px; margin: 0; }
   fieldset { border: 1px solid var(--rule); border-radius: var(--radius-sm); padding: var(--sm) var(--md) var(--md); margin: 0 0 var(--md); }
   legend {
     font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
@@ -324,22 +288,22 @@
   }
   .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius-sm); overflow: hidden; }
   .seg button {
-    font-family: var(--sans); font-size: 11.5px; font-weight: 500;
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
     padding: 6px 11px; background: transparent; color: var(--ink-muted);
     border: 0; border-right: 1px solid var(--rule); cursor: pointer;
   }
   .seg button:last-child { border-right: 0; }
-  .seg button[aria-pressed="true"] { background: var(--tint); color: var(--ink); font-weight: 600; }
+  .seg button[aria-pressed="true"] { background: var(--nt-accent); color: var(--nt-on-accent); font-weight: 600; }
   .seg button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
   /* ---- figures ---- */
   .fig { margin: var(--lg) 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); padding: var(--md); }
-  .fig-title { font-family: var(--sans); font-size: 13px; font-weight: 620; margin: 0 0 var(--sm); }
+  .fig-title { font-family: var(--sans); font-size: 12px; font-weight: 620; margin: 0 0 var(--sm); }
   .fig-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   /* keep figure labels above the readable floor: scroll rather than shrink */
   .fig-scroll svg { display: block; width: 100%; min-width: 620px; height: auto; }
   .fig-scroll.narrow svg { min-width: 480px; }
-  .fig-cap { font-size: 11.5px; line-height: 1.55; color: var(--ink-quiet); margin: var(--sm) 0 0; max-width: none; }
+  .fig-cap { font-size: 12px; line-height: 1.55; color: var(--ink-quiet); margin: var(--sm) 0 0; max-width: none; }
   .fig-cap b { color: var(--ink-muted); }
   svg text { font-family: var(--sans); }
   .t-mono { font-family: var(--mono); font-variant-numeric: tabular-nums lining-nums; }
@@ -347,17 +311,17 @@
   .t-10 { font-size: 10px; }
   .t-105 { font-size: 10.5px; }
   .t-11 { font-size: 11px; }
-  .t-115 { font-size: 11.5px; }
+  .t-115 { font-size: 12px; }
   .t-12 { font-size: 12px; }
-  .t-125 { font-size: 12.5px; }
-  .t-13 { font-size: 13px; }
+  .t-125 { font-size: 12px; }
+  .t-13 { font-size: 12px; }
   .t-15 { font-size: 15px; }
   .t-serif { font-family: var(--serif); }
   .big-num { font-family: var(--mono); font-size: 26px; font-weight: 600; }
   .f-ink { fill: var(--ink); }
   .f-mut { fill: var(--ink-muted); }
   .f-quiet { fill: var(--ink-quiet); }
-  .f-slate { fill: var(--slate); }
+  .f-slate { fill: var(--nt-cat-1); } /* data series (hypoinflammatory, cut points): blue vs --neg red stays CVD-safe */
   .f-pale { fill: var(--slate-pale); }
   .f-neg { fill: var(--neg); }
   .f-pos { fill: var(--pos); }
@@ -368,7 +332,7 @@
   .f-none { fill: none; }
   .s-rule { stroke: var(--rule); fill: none; }
   .s-hair { stroke: var(--hair); fill: none; }
-  .s-slate { stroke: var(--slate); fill: none; }
+  .s-slate { stroke: var(--nt-cat-1); fill: none; }
   .s-pale { stroke: var(--slate-pale); fill: none; }
   .s-neg { stroke: var(--neg); fill: none; }
   .s-pos { stroke: var(--pos); fill: none; }
@@ -380,7 +344,7 @@
   /* ---- calculator ---- */
   .tabs { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--rule); margin: var(--md) 0 var(--lg); }
   .tab {
-    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
     background: transparent; border: 1px solid transparent; border-bottom: 0;
     color: var(--ink-muted); padding: 9px 16px; cursor: pointer;
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -388,7 +352,7 @@
   }
   .tab:hover { color: var(--ink); background: var(--paper-2); }
   .tab[aria-selected="true"] {
-    color: var(--ink); background: var(--card);
+    color: var(--slate); background: var(--card);
     border-color: var(--rule); border-bottom: 1px solid var(--card);
   }
   .tab small { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--ink-quiet); letter-spacing: 0.02em; margin-top: 2px; }
@@ -400,17 +364,17 @@
   .field label { display: block; font-family: var(--sans); font-size: 12px; font-weight: 600; margin-bottom: 3px; }
   .field .row { display: flex; gap: var(--sm); align-items: center; }
   input[type="number"], select {
-    font-family: var(--mono); font-size: 13px;
+    font-family: var(--mono); font-size: 12px;
     padding: 6px 8px; width: 100%;
-    background: var(--paper); color: var(--ink);
+    background: var(--nt-field); color: var(--ink);
     border: 1px solid var(--rule); border-radius: var(--radius-sm);
     font-variant-numeric: tabular-nums lining-nums;
   }
   input[type="number"]:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   input[type="number"][aria-invalid="true"] { border-color: var(--neg); }
   input[type="number"][aria-invalid="true"]:focus-visible { outline-color: var(--neg); }
-  .field .unit { font-family: var(--mono); font-size: 11.5px; color: var(--ink-quiet); white-space: nowrap; flex: none; }
-  .field .hint { font-size: 11.5px; line-height: 1.5; color: var(--ink-quiet); margin-top: 4px; }
+  .field .unit { font-family: var(--mono); font-size: 12px; color: var(--ink-quiet); white-space: nowrap; flex: none; }
+  .field .hint { font-size: 12px; line-height: 1.5; color: var(--ink-quiet); margin-top: 4px; }
   .field .hint b { color: var(--ink-muted); font-weight: 600; }
   .btn-row { display: flex; gap: var(--sm); flex-wrap: wrap; margin-top: var(--sm); }
 
@@ -423,7 +387,7 @@
   details > summary:hover { color: var(--slate-deep); }
   details > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
   details[open] > summary { margin-bottom: var(--xs); }
-  details.dtl > summary { font-size: 11.5px; }
+  details.dtl > summary { font-size: 12px; }
 
   .res-row {
     border: 1px solid var(--rule); border-radius: var(--radius);
@@ -433,10 +397,10 @@
   .res-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--md); flex-wrap: wrap; }
   .res-name { font-family: var(--sans); font-size: 13.5px; font-weight: 620; }
   .res-name .meta { display: block; font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--ink-quiet); letter-spacing: 0.03em; margin-top: 2px; }
-  .res-p { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
-  .res-verdict { font-family: var(--sans); font-size: 12.5px; font-weight: 600; }
+  .res-p { font-family: var(--mono); font-size: 14px; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  .res-verdict { font-family: var(--sans); font-size: 12px; font-weight: 600; }
   .v-hyper { color: var(--neg); }
-  .v-hypo { color: var(--slate); }
+  .v-hypo { color: var(--nt-cat-1); }
   .v-indet { color: var(--caution); }
   .v-none { color: var(--ink-quiet); }
   .res-mid { display: flex; gap: var(--md); align-items: flex-start; flex-wrap: wrap; margin-top: var(--sm); }
@@ -444,7 +408,7 @@
   .res-strip svg { display: block; width: 100%; height: auto; }
   .res-mini { flex: 0 0 150px; }
   .res-mini svg { display: block; width: 150px; height: auto; }
-  .res-acc { font-size: 11.5px; line-height: 1.5; color: var(--ink-muted); margin: var(--sm) 0 0; border-top: 1px solid var(--hair); padding-top: 6px; }
+  .res-acc { font-size: 12px; line-height: 1.5; color: var(--ink-muted); margin: var(--sm) 0 0; border-top: 1px solid var(--hair); padding-top: 6px; }
   .res-acc .k { font-family: var(--mono); color: var(--ink-quiet); }
   .res-teach {
     font-size: 12px; line-height: 1.55; color: var(--ink-muted);
@@ -458,14 +422,14 @@
   .paed-banner {
     border: 1px solid var(--caution); border-left: 4px solid var(--caution);
     background: var(--caution-bg); border-radius: var(--radius);
-    padding: 11px 15px; margin: 0 0 var(--md); font-size: 13px; line-height: 1.55;
+    padding: 11px 15px; margin: 0 0 var(--md); font-size: 12px; line-height: 1.55;
   }
   .paed-banner h4 {
-    font-family: var(--sans); font-size: 11.5px; letter-spacing: 0.08em;
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--caution); margin: 0 0 5px;
   }
   .paed-banner p { margin: 0; max-width: none; }
-  .paed-figs { font-family: var(--mono); font-size: 11.5px; color: var(--ink); margin-top: 6px; }
+  .paed-figs { font-family: var(--mono); font-size: 12px; color: var(--ink); margin-top: 6px; }
 
   /* ---- reproduction checks ---- */
   .repro { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); padding: var(--md); margin: var(--md) 0; }
@@ -473,7 +437,7 @@
   details.repro[open] > .repro-head { margin-bottom: var(--sm); }
   .repro-head.pass { color: var(--pos); }
   .repro-head.fail { color: var(--neg); }
-  .repro-table { font-size: 12.5px; }
+  .repro-table { font-size: 12px; }
   .repro-table td.st { font-family: var(--mono); font-size: 11px; white-space: nowrap; }
   .repro-table td.st.ok { color: var(--pos); }
   .repro-table td.st.no { color: var(--neg); }
@@ -481,19 +445,19 @@
   /* ---- references + footer ---- */
   .cite-footer { margin-top: var(--xxl); padding-top: var(--lg); border-top: 1px solid var(--rule); }
   .cite-footer h2 {
-    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate); margin: 0 0 var(--md);
   }
   .cite-table { font-size: 12px; }
   .cite-table td.id { font-family: var(--mono); color: var(--slate); white-space: nowrap; }
-  .cite-table .ref-title { display: block; font-family: var(--serif); font-size: 11.5px; color: var(--ink-quiet); line-height: 1.4; margin-top: 2px; max-width: 62ch; }
+  .cite-table .ref-title { display: block; font-family: var(--serif); font-size: 12px; color: var(--ink-quiet); line-height: 1.4; margin-top: 2px; max-width: 62ch; }
   .cite-table td.pop { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.03em; color: var(--ink-muted); }
-  .pmid { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
-  .cite-note { font-size: 11.5px; color: var(--ink-quiet); margin: var(--sm) 0 0; }
+  .pmid { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .cite-note { font-size: 12px; color: var(--ink-quiet); margin: var(--sm) 0 0; }
   .tool-footer {
     margin-top: var(--lg); padding-top: var(--md);
     border-top: 1px solid var(--rule); color: var(--slate);
-    font-family: var(--sans); font-size: 11.5px; line-height: 1.65;
+    font-family: var(--sans); font-size: 12px; line-height: 1.65;
   }
   .tool-footer a { color: var(--slate); }
   .tool-footer a:hover { color: var(--ink); }
@@ -544,7 +508,151 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* ============================================================
+     neel-theme alignment (2026-10-03): hairline-only chrome, scoped
+     tabular figures, a readable screen floor (body-length text 14px,
+     labels 11px), semantic text tokens that hold 4.5:1 on their washes.
+     ============================================================ */
+  :root {
+    --caution-ink: #6B4900;           /* caution text on --caution-bg; 6.3:1 */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --caution-ink: var(--nt-caution); }
+  }
+  :root[data-theme="dark"] { --caution-ink: var(--nt-caution); }
+
+  /* tabular figures where numbers are read, not on running prose */
+  table, .num, .mono, code, .big-num, .res-p, .val, .unit, .meta, .paed-figs, input, svg text, .pmid, .srcref {
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  /* measure: prose lines held near 62ch */
+  p { max-width: 62ch !important; }
+  .fig-cap { max-width: 62ch; }
+
+  /* hairline chrome: the coloured left stripes become full hairline borders */
+  .callout { border-left-width: 1px; }
+  .callout--caution { border-color: var(--caution); }
+  .callout--neg { border-color: var(--neg); }
+  .callout--pos { border-color: var(--pos); }
+  .callout--caution h4, .paed-banner h4, .callout--caution h4 { color: var(--caution-ink); }
+  .callout h4, .paed-banner h4 { font-size: 14px; letter-spacing: 0.04em; font-weight: 620; }
+  .paed-banner, .noscript-msg, .boot-msg { border-left-width: 1px; }
+  pre.eq { border-left-width: 1px; }
+  .res-teach { border-left-width: 1px; border: 1px solid var(--rule); }
+  .status-chip.st-partial, .grade.g-rct { color: var(--caution-ink); }
+
+  /* selected / active states carry the accent */
+  .btn[aria-pressed="true"] { background: var(--nt-accent-wash); border-color: var(--slate); color: var(--ink); }
+  .tab[aria-selected="true"] { border-top: 2px solid var(--slate); }
+
+  /* chart structure: rules and gridlines hold 3:1 against the plate */
+  .s-rule, .s-hair { stroke: var(--nt-edge); }
+  .s-hair { stroke-width: 0.6px; }
+  .s-rule { stroke-width: 0.8px; }
+  .f-tint { stroke: var(--nt-edge); stroke-width: 0.8px; }
+  /* Figure 2: gridlines now hold 3:1, so the header and callout labels get a plate-coloured halo (paint-order) where a gridline passes behind them */
+  #f2svg text.t-105, #f2svg text.f-caution { paint-order: stroke fill; stroke: var(--nt-plate); stroke-width: 3px; stroke-linejoin: round; }
+  .res-strip { overflow-x: auto; }
+  .res-strip svg { min-width: 400px; }
+
+  /* readable floor: labels 11px */
+  th, .cite-table th, .status-chip, .grade, .pop-badge, .tab small,
+  .cite-table td.pop, .toc .n, .repro-table td.st, sup, sup a { font-size: 11px; }
+  .t-10, .t-105 { font-size: 11px; }
+  /* readable floor: body-length text 14px */
+  table, .coef-table, .repro-table, .cite-table { font-size: 14px; }
+  .hint, .ctl .hint, .field .hint, .fig-cap, .rig-foot, .rig-head .s, .res-name .meta, .res-acc, .res-teach,
+  .res-verdict, .paed-figs, .disclaimer, .cite-note, .tool-footer, .eq-sub, .eq-head, .fig-title,
+  pre.eq, .radio-row, .radio-row label, .cite-table .ref-title, .cite-table td.id, .repro-head, .pmid,
+  .srcref, .res-acc .k, .ctl .val, .paed-banner, .noscript-msg, .boot-msg { font-size: 14px; }
+  .repro-head { letter-spacing: 0.02em; }
+  .derived-tag { font-size: 14px !important; }
+  details > summary, details.dtl > summary, .rig-head .t, h2.sec-h .n, .tab, .res-name { font-size: 14px; }
+  h2.sec-h .n { font-size: 14px; }
+  .citechip { font-size: 12px; }
+  [style*="font-size"]:not(svg *) { font-size: 14px !important; }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 <div class="shell">
@@ -1334,7 +1442,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
     </div>
 
     <div class="tool-footer">
-      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-09-01 &middot;
+      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-10-03 &middot;
       Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot; session-only, no data leaves this device
       <details class="dtl" style="margin-top:var(--sm)"><summary>How the sources and coefficients were verified</summary>
       <div style="text-align:left">Every PMID and DOI here was resolved against PubMed E-utilities and PubMed Central, most recently on 2026-09-01, with first author, year and journal matched for each of the twenty primary sources. Retraction screening was run by <em>erratum linkage</em> as well as by publication type, because a publication-type screen alone cannot see an erratum published as its own record: that screen returns <em>two</em> errata, both to Famous 2017: PMID 30547667 (2018, the exchanged fluid-arm labels) and PMID 31469324 (2019, supplementary assay-dilution and a driving-pressure mislabel). Both are in the reference table and the first is cited beside the finding it corrects. No retraction was found. Coefficients were transcribed from the table or figure named in each row and re-checked by forward computation against the published cohort medians. The published operating characteristics are reproduced as printed and are <em>not</em> recomputed here, because that would need patient-level data this page does not have. Numbers that no source establishes are labelled DERIVED, marked as not re-verifiable, or are absent.</div>
@@ -2763,30 +2871,24 @@ function wire() {
    THEME
    ========================================================================= */
 const themeIsDark = function () {
+  /* The neel-theme kit owns the theme; its API reports the EFFECTIVE theme. */
+  if (window.NeelTheme) return NeelTheme.get() === "dark";
   const cur = document.documentElement.getAttribute("data-theme");
-  /* With no stored choice the attribute stays absent so the CSS media query
-     keeps tracking the system; the label must therefore read the EFFECTIVE
-     theme, not the attribute. */
   return cur ? cur === "dark"
              : !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
 };
 function initTheme() {
-  const stored = window.localStorage ? localStorage.getItem("ardssub.theme") : null;
-  if (stored) document.documentElement.setAttribute("data-theme", stored);
-  /* The label names the state. A control whose text and accessible name never
-     change cannot tell a sighted or a screen-reader user which theme they are
-     in, which is the one thing this control exists to report. */
+  /* The kit sets data-theme and stores the choice; this function only keeps the
+     (now hidden) in-page button's label and accessible name in step with it. */
   const lbl = function () {
     const dark = themeIsDark();
     $("themeToggle").textContent = dark ? "Light theme" : "Dark theme";
     $("themeToggle").setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " theme");
   };
   lbl();
+  document.addEventListener("neeltheme", lbl);
   $("themeToggle").addEventListener("click", function () {
-    const next = themeIsDark() ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("ardssub.theme", next); } catch (e) { /* private browsing: the toggle still works for this session */ }
-    lbl();
+    if (window.NeelTheme) NeelTheme.set(themeIsDark() ? "light" : "dark");
   });
 }
 
@@ -2806,6 +2908,53 @@ function initTheme() {
 })();
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */

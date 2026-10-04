@@ -1,12 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html data-nt-legacy="cbc-theme" lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ICU CBC Interpreter: sepsis / infection lens</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@500&display=swap" />
 <script crossorigin="anonymous"
         integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
         src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
@@ -18,73 +15,41 @@
         src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <style>
   /* ============================================================
-     Theme tokens: paper / paper-dark, warm-black ink, one warm-slate
-     accent. Inter (UI) · Source Serif 4 (body) · JetBrains Mono (inputs)
+     Theme tokens: aliased to neel-theme v1.0 (--nt-*), which switches
+     light/dark itself. Display (UI) · Literata (body) · Mono (inputs)
      ============================================================ */
-  :root,
-  :root[data-theme="dark"] {
-    --bg:           #14120F;          /* paper-dark warm */
-    --surface:      #1B1814;          /* tint × 0.6 on paper-dark */
-    --surface-2:    #221E18;
-    --line:         #2A2620;          /* hairline */
-    --line-soft:    #221E18;
-    --ink:          #F5F0E6;          /* ink-dark warm */
-    --ink-soft:     #C5BEB0;
-    --ink-mute:     #8A847A;
-    --accent:       #6E7A8F;          /* warm slate, slightly lifted on dark */
-    --accent-deep:  #4A5468;
-    --accent-soft:  rgba(110,122,143,0.16);
-    --calm:         #6FAA8A;          /* warm pos on dark */
-    --caution:      #D3A655;          /* warm gold on dark */
-    --concern:      #C77A48;          /* warm amber */
-    --critical:     #C95E5E;          /* warm neg on dark */
-    --neutral:      #6F6963;
-    --calm-bg:      rgba(111,170,138,0.10);
-    --caution-bg:   rgba(211,166,85,0.10);
-    --concern-bg:   rgba(199,122,72,0.10);
-    --critical-bg:  rgba(201,94,94,0.12);
-    --signature:    #F5F0E6;
-    color-scheme: dark;
+  :root {
+    --bg:           var(--nt-paper);
+    --surface:      var(--nt-plate);
+    --surface-2:    var(--nt-sunken);
+    --line:         var(--nt-rule);
+    --line-soft:    var(--nt-tint);
+    --ink:          var(--nt-ink);
+    --ink-soft:     var(--nt-ink-muted);
+    --ink-mute:     var(--nt-ink-quiet);
+    --accent:       var(--nt-accent);
+    --accent-deep:  var(--nt-accent-deep);
+    --accent-soft:  var(--nt-accent-wash);
+    --calm:         var(--nt-pos);
+    --caution:      var(--nt-caution);
+    --critical:     var(--nt-neg);
+    --neutral:      var(--nt-ink-quiet);
+    --calm-bg:      var(--nt-pos-wash);
+    /* kit caution text on the full caution wash is 4.37:1 in light; 60% wash keeps the badge text >= 4.5:1 */
+    --caution-bg:   color-mix(in srgb, var(--nt-caution-wash) 60%, var(--nt-plate));
+    --critical-bg:  var(--nt-neg-wash);
+    --signature:    var(--nt-ink);
+    /* tool-specific: the amber step between caution and critical (no kit equivalent) */
+    --concern:      #9A4A12;
+    --concern-bg:   #EFD9C8;
+    --sans:  var(--nt-font-display);
+    --serif: var(--nt-font-body);
+    --mono:  var(--nt-font-mono);
   }
-  :root[data-theme="light"] {
-    --bg:           #FAF6EE;          /* paper warm, not pure white */
-    --surface:      #FFFFFF;          /* paper-quiet */
-    --surface-2:    #F1ECDF;          /* tint */
-    --line:         #D9D2C0;
-    --line-soft:    #E7E1CF;
-    --ink:          #1A1A1A;          /* warm black */
-    --ink-soft:     #4A4540;
-    --ink-mute:     #7A746E;
-    --accent:       #4A5468;          /* warm slate */
-    --accent-deep:  #2F3744;
-    --accent-soft:  rgba(74,84,104,0.10);
-    --calm:         #2E7D5B;
-    --caution:      #B88A2C;
-    --concern:      #B5662A;
-    --critical:     #B23A3A;
-    --neutral:      #6A6660;
-    --calm-bg:      rgba(46,125,91,0.08);
-    --caution-bg:   rgba(184,138,44,0.10);
-    --concern-bg:   rgba(181,102,42,0.10);
-    --critical-bg:  rgba(178,58,58,0.10);
-    --signature:    #1A1A1A;
-    color-scheme: light;
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --concern: #EA9A62; --concern-bg: #3D2718; }
   }
-
-  /* Auto match system if user hasn't toggled (data-theme absent) */
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme]) {
-      --bg:#FAF6EE; --surface:#FFFFFF; --surface-2:#F1ECDF;
-      --line:#D9D2C0; --line-soft:#E7E1CF;
-      --ink:#1A1A1A; --ink-soft:#4A4540; --ink-mute:#7A746E;
-      --accent:#4A5468; --accent-deep:#2F3744; --accent-soft:rgba(74,84,104,0.10);
-      --calm:#2E7D5B; --caution:#B88A2C; --concern:#B5662A; --critical:#B23A3A;
-      --calm-bg:rgba(46,125,91,0.08); --caution-bg:rgba(184,138,44,0.10);
-      --concern-bg:rgba(181,102,42,0.10); --critical-bg:rgba(178,58,58,0.10);
-      --signature:#1A1A1A;
-      color-scheme: light;
-    }
-  }
+  :root[data-theme="dark"] { --concern: #EA9A62; --concern-bg: #3D2718; }
 
   :root {
     --radius:    8px;     /* small radii only */
@@ -96,24 +61,24 @@
     background: var(--bg);
     color: var(--ink);
     margin: 0;
-    transition: background-color 200ms ease-out, color 200ms ease-out;
+    transition: background-color 200ms var(--nt-ease), color 200ms var(--nt-ease);
   }
   body {
-    font-family: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+    font-family: var(--serif);
     font-size: 15px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "tnum" 1, "lnum" 1;  /* tabular figures, non-negotiable for data work */
   }
-  /* Display + UI surfaces use Inter; body keeps Source Serif 4 */
+  /* Display + UI surfaces use the display face; body keeps the serif */
   .display, .top h1, .pattern-label, .card h2, .narrative {
-    font-family: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+    font-family: var(--serif);
   }
   .ui, button, input, label, .label, .ev-state, .pattern-sev, .seg button,
   .case-card .ctitle, .case-card .csub, .toggle, .top .sub, .top .right,
   .chip .label, .input-row label, .footer, .pill, .peds-note, .ev-finding,
   .ev-num, .ev-caveat, .ev-claim {
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: var(--sans);
   }
   /* All numerics across UI: tabular figures */
   .val, .ev-num, .input-row input, .case-card, .chip, .ev-finding {
@@ -122,7 +87,7 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--nt-focus);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -140,7 +105,7 @@
     margin-bottom: 20px;
   }
   .top .overline {
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     font-size: 10.5px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.14em;
     color: var(--ink-mute);
@@ -183,7 +148,9 @@
     letter-spacing: 0.08em;
     font-weight: 600;
   }
-  .theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
+  /* the kit's floating Light | Dark switch replaces this React toggle */
+  .theme-toggle { display: none !important; }
+  .theme-toggle:hover { border-color: var(--nt-edge); color: var(--ink); }
   .theme-toggle .glyph {
     width: 12px; height: 12px; border-radius: 50%;
     background: var(--accent);
@@ -194,9 +161,14 @@
     background: var(--ink);
   }
   .disclaimer {
-    font-size: 10.5px; color: var(--ink-mute);
-    max-width: 220px;
+    font-size: 12px; color: var(--ink);
+    max-width: 340px;
     line-height: 1.45;
+    background: var(--caution-bg);
+    border: 1px solid var(--caution);
+    border-left-width: 3px;
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
   }
 
   /* Sticky derived-metric ribbon: asymmetric weights
@@ -230,7 +202,7 @@
     color: var(--ink-mute); margin-bottom: 4px;
   }
   .ribbon .nlr-hero .hero-val {
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     font-weight: 600; font-size: 44px;
     color: var(--ink); line-height: 1;
     letter-spacing: -0.02em;
@@ -239,7 +211,7 @@
   .ribbon .nlr-hero .hero-sub {
     font-size: 11px; color: var(--ink-soft); margin-top: 6px;
     font-style: italic;
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
   }
   .ribbon .chip-grid {
     display: grid;
@@ -255,7 +227,7 @@
     transition: border-color 200ms ease-out;
     display: flex; flex-direction: column; justify-content: center;
   }
-  .chip:hover { border-color: var(--accent); }
+  .chip:hover { border-color: var(--nt-edge); }
   .chip .label {
     font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.09em;
     color: var(--ink-mute);
@@ -291,10 +263,10 @@
   .verdict-tile .label {
     font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--ink-mute); margin-bottom: 4px;
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
   }
   .verdict-tile .verdict-text {
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
     font-size: 13px; line-height: 1.3;
     color: var(--ink);
     font-style: italic;
@@ -317,7 +289,7 @@
     letter-spacing: -0.005em;
   }
   .card h3 {
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--ink-mute); margin: 16px 0 8px; font-weight: 600;
   }
@@ -331,16 +303,16 @@
     font-weight: 600;
   }
   .input-row input {
-    background: var(--bg); color: var(--ink);
+    background: var(--nt-field); color: var(--ink);
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     padding: 8px 10px;
-    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-family: var(--mono);
     font-size: 13px;
     font-feature-settings: "tnum" 1, "lnum" 1;
     transition: border-color 200ms ease-out;
   }
-  .input-row input:hover { border-color: var(--accent); }
+  .input-row input:hover { border-color: var(--nt-edge); }
   .input-row .hint {
     font-size: 10.5px; color: var(--ink-mute); font-style: italic;
   }
@@ -373,7 +345,7 @@
     color: var(--ink-soft);
     transition: border-color 200ms ease-out, background-color 200ms ease-out, color 200ms ease-out;
   }
-  .toggle:hover { border-color: var(--accent); color: var(--ink); }
+  .toggle:hover { border-color: var(--nt-edge); color: var(--ink); }
   .toggle[aria-pressed="true"] {
     background: var(--caution-bg);
     border-color: var(--caution);
@@ -395,7 +367,7 @@
     letter-spacing: 0.04em;
     transition: border-color 200ms ease-out, background-color 200ms ease-out;
   }
-  .btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .btn:hover { border-color: var(--nt-edge); background: var(--accent-soft); }
   .btn.primary { background: var(--accent-soft); border-color: var(--accent); }
 
   /* Interpretation panel: serif display, asymmetric weight */
@@ -408,7 +380,7 @@
   .pattern-sub {
     color: var(--ink-soft); font-size: 13.5px;
     margin-bottom: 14px; line-height: 1.55;
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
   }
   .pattern-sev {
     display: inline-block; font-size: 10px;
@@ -455,7 +427,7 @@
   }
   .ev-num strong {
     color: var(--ink-mute); font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     text-transform: uppercase; letter-spacing: 0.08em;
     font-size: 10px;
     margin-right: 4px;
@@ -470,7 +442,7 @@
     cursor: pointer;
     padding-left: 1px;
     font-weight: 600;
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
   }
   sup.cite:hover { text-decoration: underline; }
 
@@ -489,14 +461,14 @@
   .warn[data-sev="caution"]  { border-color: var(--caution);  border-left-color: var(--caution); }
   .warn[data-sev="critical"] { border-color: var(--critical); border-left-color: var(--critical); }
   .warn .head {
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
     font-size: 10.5px; margin-bottom: 5px;
   }
   .warn[data-sev="caution"]  .head { color: var(--caution); }
   .warn[data-sev="critical"] .head { color: var(--critical); }
 
-  /* Narrative panel: Source Serif 4 editorial */
+  /* Narrative panel: serif editorial */
   .narrative {
     font-size: 15px; line-height: 1.68; color: var(--ink);
     max-width: 64ch;
@@ -520,7 +492,7 @@
     color: var(--ink);
     transition: border-color 200ms ease-out;
   }
-  .case-card:hover { border-color: var(--accent); }
+  .case-card:hover { border-color: var(--nt-edge); }
   .case-card .ctitle {
     font-weight: 600; font-size: 12.5px; margin-bottom: 4px;
     line-height: 1.3;
@@ -528,7 +500,7 @@
   }
   .case-card .csub {
     color: var(--ink-mute); font-size: 11.5px; line-height: 1.45;
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
     font-style: italic;
   }
 
@@ -546,7 +518,7 @@
     content: counter(r) ".";
     position: absolute; left: 6px; top: 10px;
     color: var(--ink-mute);
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
     font-weight: 600;
     font-size: 11.5px;
     font-feature-settings: "tnum" 1, "lnum" 1;
@@ -578,7 +550,7 @@
   }
   .footer .sig {
     margin-top: 14px;
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
     font-style: italic;
     color: var(--ink-mute);
     font-size: 11.5px;
@@ -594,14 +566,14 @@
     margin-top: 14px;
     font-size: 12px;
     color: var(--ink-soft);
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: var(--serif);
     line-height: 1.6;
   }
   .peds-note .ptag {
     color: var(--accent); font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.14em;
     font-size: 10px; margin-right: 8px;
-    font-family: "Inter", sans-serif;
+    font-family: var(--sans);
   }
 
   /* Responsive: collapse bento ribbon, single-column on tablet, stacked on phone */
@@ -628,7 +600,7 @@
     .ribbon .chip-grid { grid-template-columns: repeat(2, 1fr); }
     .shelf { grid-template-columns: 1fr; }
     .inputs { grid-template-columns: 1fr 1fr; }
-    .top { grid-template-columns: 1fr; }
+    .top { grid-template-columns: 1fr; padding-top: 46px; } /* clear the fixed Light | Dark switch */
     .top .right { align-items: flex-start; text-align: left; }
     /* Min 44×44 touch targets on phone */
     .btn, .theme-toggle, .toggle, .seg button { min-height: 44px; padding-top: 10px; padding-bottom: 10px; }
@@ -648,7 +620,7 @@
     border-color: var(--critical);
     box-shadow: inset 0 0 0 1px var(--critical);
   }
-  .input-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .input-row input:focus-visible { outline: 2px solid var(--nt-focus); outline-offset: 1px; }
   .input-audit {
     margin-top: 10px;
     border: 0.5px solid var(--caution);
@@ -683,6 +655,85 @@
     }
   }
 </style>
+<!-- neel-theme:head:start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style id="neel-theme">
+/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+   Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
+   Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
+   Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
+   chosen (data-theme absent or "light" never set); [data-theme="dark"] forces dark.
+   Every tool aliases its own token names to these --nt-* tokens, so both themes follow. */
+:root{
+  --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+  --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+  --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+  --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+  --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+  --nt-sel:#D3E4DA;
+  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+  --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+  --nt-grid:#D6DBDB; --nt-focus:#154533;
+  --nt-font-display:'Atkinson Hyperlegible Next Variable','Atkinson Hyperlegible Next',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --nt-font-body:'Literata Variable','Literata',Georgia,'Times New Roman',serif;
+  --nt-font-mono:'Atkinson Hyperlegible Mono Variable','Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --nt-ease:cubic-bezier(0.23,1,0.32,1);
+  --nt-radius:6px; --nt-radius-sm:4px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+    --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+    --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+    --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+    --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+    --nt-sel:#233B33;
+    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+    --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+    --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --nt-paper:#15191D; --nt-plate:#1E2429; --nt-plate-focal:#252D34; --nt-sunken:#101316;
+  --nt-field:#252D34; --nt-tint:#2A323A; --nt-tint-deep:#343D46;
+  --nt-ink:#E7ECEF; --nt-ink-muted:#C3CBD2; --nt-ink-quiet:#A3ADB6;
+  --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
+  --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
+  --nt-sel:#233B33;
+  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
+  --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
+  --nt-grid:#2C343B; --nt-focus:#B2DEC6;
+  color-scheme:dark;
+}
+html{background:var(--nt-paper)}
+body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease)}
+@media (prefers-reduced-motion: reduce){ body{transition:none} }
+
+/* the Light | Dark tab control (injected by neel-theme.js) */
+.nt-switch{position:fixed; top:12px; right:12px; z-index:2147483000; display:inline-flex; gap:2px; padding:3px;
+  background:var(--nt-plate); border:1px solid var(--nt-edge); border-radius:8px;
+  font:500 13px/1 var(--nt-font-display)}
+.nt-switch button{all:unset; box-sizing:border-box; cursor:pointer; min-height:36px; min-width:56px; padding:0 12px;
+  display:inline-flex; align-items:center; justify-content:center; border-radius:6px;
+  color:var(--nt-ink-muted); font:inherit; letter-spacing:.01em}
+.nt-switch button:hover{color:var(--nt-ink); background:var(--nt-tint)}
+.nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
+.nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
+@media (pointer:coarse){ .nt-switch button{min-height:44px} }
+@media print{ .nt-switch{display:none} }
+</style>
+<script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
+(function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
+if(!t){var o=r.getAttribute('data-nt-legacy');if(o){var v=localStorage.getItem(o);if(v==='light'||v==='dark'){t=v;localStorage.setItem(k,v);}}}
+if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</script>
+<!-- neel-theme:head:end -->
 </head>
 <body>
 <div id="root"></div>
@@ -1406,6 +1457,7 @@ const Cite = ({ ids, clickRef }) => (
 );
 
 function getInitialTheme() {
+  if (window.NeelTheme) return window.NeelTheme.get();
   try {
     const stored = localStorage.getItem("cbc-theme");
     if (stored === "light" || stored === "dark") return stored;
@@ -1425,12 +1477,16 @@ function App() {
   const [theme, setTheme] = useState(getInitialTheme);
   const refsRef = useRef(null);
 
+  // neel-theme owns data-theme and storage; React state only mirrors it.
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    try { localStorage.setItem("cbc-theme", theme); } catch (_) {}
-  }, [theme]);
+    const onTheme = (e) => setTheme(e.detail.theme);
+    document.addEventListener("neeltheme", onTheme);
+    return () => document.removeEventListener("neeltheme", onTheme);
+  }, []);
 
-  const toggleTheme = useCallback(() => setTheme((t) => t === "dark" ? "light" : "dark"), []);
+  const toggleTheme = useCallback(() => {
+    if (window.NeelTheme) window.NeelTheme.set(theme === "dark" ? "light" : "dark");
+  }, [theme]);
 
   const d = useMemo(() => derive(cbc, mode), [cbc, mode]);
   const tset = toggles;
@@ -1863,7 +1919,7 @@ function Footer() {
       <span className="pill">CBC scope only</span>
       <div className="sig">
         Neel Shah, MD · Pediatric Critical Care Medicine<br />
-        v2.2 · updated 2026-09-01 · CC BY-NC 4.0<br />
+        v2.3 · updated 2026-10-03 · CC BY-NC 4.0<br />
         Reference verification status is stated, dated and scoped in the References section above. CBC patterns inform, never adjudicate.
       </div>
     </footer>
@@ -1873,6 +1929,53 @@ function Footer() {
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 
+<!-- neel-theme:body:start -->
+<script>
+/* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
+   github.io origin; reads the tool's legacy key once (data-nt-legacy on <html>). data-theme stays
+   unset until the reader chooses, so OS changes apply until then. Public API:
+   window.NeelTheme.get() -> 'light'|'dark' (effective), .set('light'|'dark'), and a
+   'neeltheme' event on document ({detail:{theme}}) for tools that repaint charts. */
+(function(){
+  var KEY = 'neel.theme', root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function stored(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq && mq.matches ? 'dark' : 'light';
+  }
+  var btns = [];
+  function sync(){
+    var t = effective();
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-nt') === t)); });
+    try { document.dispatchEvent(new CustomEvent('neeltheme', { detail: { theme: t } })); } catch(e){}
+  }
+  function set(t){
+    if (t !== 'light' && t !== 'dark') return;
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch(e){ /* private mode: session-only */ }
+    sync();
+  }
+  window.NeelTheme = { get: effective, set: set };
+  function mount(){
+    if (document.querySelector('.nt-switch')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'nt-switch'; wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Colour theme');
+    ['light', 'dark'].forEach(function(t){
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('data-nt', t); b.textContent = t === 'light' ? 'Light' : 'Dark';
+      b.addEventListener('click', function(){ set(t); });
+      wrap.appendChild(b); btns.push(b);
+    });
+    document.body.appendChild(wrap);
+    sync();
+  }
+  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();
+</script>
+<!-- neel-theme:body:end -->
 <style>
 /* readable floor: mobile. Functional text stays legible on a phone; the design
    system sets a label floor of 11px at <=768px. Desktop sizes are untouched. */
