@@ -2711,11 +2711,11 @@ function logRows() {
 function doseFlag(dose) {
   if (dose === null) return null;
   if (dose > T.doseHard) {
-    return { cls: "neg", title: "Above 10 mU/kg/hr — stop and re-examine the whole picture",
+    return { cls: "neg", title: "Above 10 mU/kg/hr: stop and re-examine the whole picture",
       body: "This is roughly 3.7 times the highest dose reported in any pediatric series for the antidiuretic indication (2.7 mU/kg/hr, n=3) and one third of the lowest pediatric vasopressor dose studied in a randomised trial (30 mU/kg/hr, n=65). No publication in any age group reports treating diabetes insipidus in this band. Ten is this unit's figure and no source names it. Before going higher, ask whether the diagnosis is central diabetes insipidus at all, whether the fluid plan is defeating the infusion, and whether the line is running." };
   }
   if (dose > T.doseCaution) {
-    return { cls: "caution", title: "Above 5 mU/kg/hr — above every published antidiuretic dose",
+    return { cls: "caution", title: "Above 5 mU/kg/hr: above every published antidiuretic dose",
       body: "Five is this unit's figure and no source names it. It sits about 1.9 times the highest starting dose ever published for this indication in a child (2.7 mU/kg/hr, n=3) and five times the top of the best pediatric starting range (1.0 mU/kg/hr, n=14). A child needing more than this is outside the published experience, which is a reason to ask why — the diagnosis, the titration, or the fluid plan." };
   }
   /* Three bands sit below the caution flag, because one title covered all of them and
@@ -3205,7 +3205,7 @@ function drawDoseLadder() {
     const style = (ix ? S.neg : S.caution) + "stroke-dasharray:5 4;stroke-width:1.6";
     s.appendChild(el("path", { d: "M" + X(v) + " 30 L" + X(v) + " 240", style: style }));
     s.appendChild(el("path", { d: "M" + X(v) + " 266 L" + X(v) + " 279", style: style }));
-    s.appendChild(svgTxt(X(v) + (ix ? 6 : -6), 292, ix ? (v + " mU/kg/hr — hard flag") : (v + " mU/kg/hr — caution"),
+    s.appendChild(svgTxt(X(v) + (ix ? 6 : -6), 292, ix ? (v + " mU/kg/hr: hard flag") : (v + " mU/kg/hr: caution"),
       { style: FT(11.5) + (ix ? "fill:var(--neg);" : CAUTION_TXT) + HALO, "text-anchor": ix ? "start" : "end" }));
   });
 
