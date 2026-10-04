@@ -31,7 +31,7 @@ body{
 table,.readout,.mono,.num,.chip .v,.fact .n,.case-n,.eq,.ctl label .val,svg text{font-feature-settings:"tnum" 1,"lnum" 1}
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--lg)}
 h1,h2,h3,h4,.ov,.num,button,label,input,table,.mono{font-family:var(--sans)}
-h1{font-size:clamp(38px,5.4vw,62px); line-height:1.06; font-weight:650; letter-spacing:-.022em; margin:0 0 var(--md); text-wrap:balance; max-width:22ch}
+h1{font-family:var(--nt-font-display); font-size:clamp(40px,5vw,58px); line-height:1.06; font-weight:600; letter-spacing:-.022em; margin:0 0 var(--md); text-wrap:balance; max-width:22ch}
 h2{font-size:clamp(26px,3.1vw,36px); line-height:1.14; font-weight:640; letter-spacing:-.016em; margin:0 0 var(--sm); text-wrap:balance}
 h3{font-size:21px; line-height:1.25; font-weight:620; letter-spacing:-.008em; margin:var(--lg) 0 var(--sm)}
 h4{font-size:16px; font-weight:640; letter-spacing:-.003em; margin:0 0 var(--xs)}
@@ -197,7 +197,7 @@ footer .mono{color:var(--ink-faint)}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style id="neel-theme">
-/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -210,7 +210,7 @@ footer .mono{color:var(--ink-faint)}
   --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
   --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
   --nt-sel:#D3E4DA;
-  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
   --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
   --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
   --nt-grid:#D6DBDB; --nt-focus:#154533;
@@ -229,7 +229,7 @@ footer .mono{color:var(--ink-faint)}
     --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
     --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
     --nt-sel:#233B33;
-    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
     --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
     --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
     --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -243,7 +243,7 @@ footer .mono{color:var(--ink-faint)}
   --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
   --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
   --nt-sel:#233B33;
-  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
   --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
   --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
   --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -970,10 +970,10 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 "use strict";
 const $ = id => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
-let INK, MUT, SLATE, PALE, REF, RULE, HAIR, TINT, CLAY, NEG, POS, PLATE, ONACC;
+let CAT1, INK, MUT, SLATE, PALE, REF, RULE, HAIR, TINT, CLAY, NEG, POS, PLATE, ONACC;
 function readThemeColors(){
   const cs=getComputedStyle(document.documentElement), g=n=>cs.getPropertyValue(n).trim();
-  INK=g("--nt-ink"); MUT=g("--nt-ink-quiet"); SLATE=g("--nt-accent"); PALE=g("--nt-tint-deep"); REF=g("--nt-edge");
+  CAT1=g("--nt-cat-1"); INK=g("--nt-ink"); MUT=g("--nt-ink-quiet"); SLATE=g("--nt-accent"); PALE=g("--nt-tint-deep"); REF=g("--nt-edge");
   RULE=g("--nt-edge"); HAIR=g("--nt-edge"); TINT=g("--nt-tint"); CLAY=g("--nt-caution");
   NEG=g("--nt-neg"); POS=g("--nt-pos"); PLATE=g("--nt-plate"); ONACC=g("--nt-on-accent");
 }
@@ -1348,15 +1348,15 @@ function rig4(){
   rows.forEach(r=>{
     const xr=XV(r.st.Vrest), xt=XV(r.st.VT);
     s.appendChild(el("rect",{x:LX,y:r.y,width:xr-LX,height:r.h,fill:PALE,opacity:r.dim?.55:1,"data-decor":1}));
-    s.appendChild(el("rect",{x:xr,y:r.y,width:Math.max(xt-xr,0),height:r.h,fill:SLATE,opacity:r.op,"data-decor":1}));
+    s.appendChild(el("rect",{x:xr,y:r.y,width:Math.max(xt-xr,0),height:r.h,fill:CAT1,opacity:r.op,"data-decor":1}));
     s.appendChild(el("rect",{x:LX,y:r.y,width:xt-LX,height:r.h,fill:"none",stroke:RULE}));
     s.appendChild(el("line",{x1:xr,y1:r.y,x2:xr,y2:r.y+r.h,stroke:INK,"stroke-width":1.4}));
     s.appendChild(txt(LX-8,r.y+r.h/2+4,r.lab,{class:"lbl","text-anchor":"end"}));
   });
   const xrN=XV(now.Vrest), xtN=XV(now.VT);
   s.appendChild(txt((LX+xrN)/2,86,"rest volume "+fmt(now.Vrest,0)+" mL",{"text-anchor":"middle",fill:MUT}));
-  if(xtN-xrN>110) s.appendChild(txt((xrN+xtN)/2,86,"distending "+fmt(now.Vd,0)+" mL",{"text-anchor":"middle",fill:SLATE}));
-  else s.appendChild(txt(xtN+6,86,"distending "+fmt(now.Vd,0)+" mL",{fill:SLATE}));
+  if(xtN-xrN>110) s.appendChild(txt((xrN+xtN)/2,86,"distending "+fmt(now.Vd,0)+" mL",{"text-anchor":"middle",fill:CAT1}));
+  else s.appendChild(txt(xtN+6,86,"distending "+fmt(now.Vd,0)+" mL",{fill:CAT1}));
   s.appendChild(el("line",{x1:LX,y1:104,x2:RX,y2:104,stroke:HAIR,"stroke-width":1}));
 
   /* ---- delivery against acceptance ---- */
@@ -1371,7 +1371,7 @@ function rig4(){
 
   const lineFor=st=>{let d=""; for(let p=xlo;p<=xhi;p+=.2){const f=Math.max(0,(st.Pms-p)*st.slope); if(f<=ymax+.2) d+=(d?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));} return d;};
   s.appendChild(el("path",{d:lineFor(ref),fill:"none",stroke:REF,"stroke-width":2,"stroke-dasharray":"4 4"}));
-  s.appendChild(el("path",{d:lineFor(now),fill:"none",stroke:SLATE,"stroke-width":2.2}));
+  s.appendChild(el("path",{d:lineFor(now),fill:"none",stroke:CAT1,"stroke-width":2.2}));
   let dc=""; for(let p=xlo;p<=xhi;p+=.2){const f=r4card(p,a); if(f<=ymax+.2) dc+=(dc?"L":"M")+X(p)+" "+Y(Math.min(f,ymax));}
   s.appendChild(el("path",{d:dc,fill:"none",stroke:INK,"stroke-width":2.2,"stroke-dasharray":"7 4"}));
 
@@ -1388,14 +1388,14 @@ function rig4(){
     if(Math.abs(x1-x0)>=62) s.appendChild(txt(mx,y0+(y1<y0?17:-9),"pressure "+sgn(dRA)+fmt(dRA)+" mmHg",{"text-anchor":"middle",fill:CLAY,class:"lbl hal"}));
     if(Math.abs(y1-y0)>=24) s.appendChild(txt(x1+(x1>Rr-120?-8:8),my+4,"flow "+sgn(dCO)+fmt(dCO,2)+" L/min",{"text-anchor":(x1>Rr-120?"end":"start"),fill:POS,class:"lbl hal"}));
   }
-  s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:PLATE,stroke:SLATE,"stroke-width":1.8}));
-  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:SLATE}));
+  s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:PLATE,stroke:CAT1,"stroke-width":1.8}));
+  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:CAT1}));
   s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:"none",stroke:PLATE,"stroke-width":1.4}));
 
   let lp=now.Pms-7.4/now.slope, lx, lf, la="start";
   if(lp<xlo+0.4){ lx=X(Math.min(now.Pms,xhi-1))-8; lf=0; la="end"; }            // line leaves the left edge low: label its zero-flow end
   else { lp=Math.min(lp,xhi-16); lf=Math.max(0.5,(now.Pms-lp)*now.slope); lx=X(lp)+7; }
-  s.appendChild(txt(lx,Y(lf)-10,"delivery now",{class:"lbl hal","text-anchor":la,fill:SLATE}));
+  s.appendChild(txt(lx,Y(lf)-10,"delivery now",{class:"lbl hal","text-anchor":la,fill:CAT1}));
   const cp=xhi-1;
   s.appendChild(txt(X(cp),Y(r4card(cp,a))-15,"acceptance: "+R4.ACC[a].name,{class:"lbl hal","text-anchor":"end",fill:INK}));
   s.appendChild(txt(L,B+74,"Vascular line: rig 2's three-compartment parameters, rest volume explicit.",{fill:MUT}));

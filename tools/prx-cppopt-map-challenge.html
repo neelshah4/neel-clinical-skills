@@ -22,8 +22,8 @@
     --chartGrid: var(--nt-tint);
   }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 24px 20px; max-width: 960px; margin: 0 auto; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-  h1 { font-size: 28px; font-weight: 800; color: var(--heading); text-align: center; letter-spacing: -0.5px; font-family: var(--serif); }
-  .subtitle { font-size: 14px; color: var(--textMuted); text-align: center; margin: 6px 0 18px; letter-spacing: 0.3px; }
+  h1 { font-size: 32px; font-weight: 600; color: var(--heading); text-align: left; letter-spacing: -0.5px; font-family: var(--nt-font-display); }
+  .subtitle { font-size: 14px; color: var(--textMuted); text-align: left; margin: 6px 0 18px; letter-spacing: 0.3px; }
   .disclaimer { display: flex; gap: 10px; align-items: flex-start; background: var(--warnBg); border: 1px solid var(--warn); border-radius: var(--nt-radius); padding: 11px 14px; margin: 0 0 24px; font-size: 14px; line-height: 1.65; color: var(--textDim); }
   .disclaimer .bar { width: 4px; align-self: stretch; background: var(--warn); border-radius: 2px; flex: none; }
   .disclaimer strong { color: var(--heading); }
@@ -98,7 +98,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style id="neel-theme">
-/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -111,7 +111,7 @@
   --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
   --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
   --nt-sel:#D3E4DA;
-  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
   --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
   --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
   --nt-grid:#D6DBDB; --nt-focus:#154533;
@@ -130,7 +130,7 @@
     --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
     --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
     --nt-sel:#233B33;
-    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
     --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
     --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
     --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -144,7 +144,7 @@
   --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
   --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
   --nt-sel:#233B33;
-  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
   --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
   --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
   --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -302,7 +302,7 @@ function switchTab(tab){currentTab=tab;document.querySelectorAll('.tab-content')
 
 function setAutoregState(state){autoregState=state;document.getElementById('pill-intact').className=state==='intact'?'pill active-success':'pill';document.getElementById('pill-impaired').className=state==='impaired'?'pill active-danger':'pill';const prxVal=state==='intact'?-0.18:0.42;const color=prxVal<0?'var(--success)':'var(--danger)';document.getElementById('prx-value').textContent=prxVal.toFixed(2);document.getElementById('prx-value').style.color=color;const d=document.getElementById('prx-display');d.style.background=state==='intact'?V.successBg:V.dangerBg;d.style.border='1px solid '+(state==='intact'?V.successBorder:V.dangerBorder);document.getElementById('prx-explanation').innerHTML=state==='intact'?'<strong style="color:var(--success)">Negative PRx:</strong> ABP↑ triggers vasoconstriction → CBV↓ → ICP↓. ABP and ICP move in <strong>opposite</strong> directions. Vessels are reactive.':'<strong style="color:var(--danger)">Positive PRx (>0.3):</strong> ABP↑ → passive transmission → CBV↑ → ICP↑. ABP and ICP move in the <strong>same</strong> direction. Vessels are pressure-passive.';document.getElementById('wave-subtitle').textContent=state==='intact'?'Watch how they move inversely':'Watch how they move together';initWaveChart();}
 
-function initWaveChart(){if(waveChart)waveChart.destroy();stopWaveAnimation();const ctx=document.getElementById('waveChart').getContext('2d');let phase=0;function gen(){const a=[],b=[],l=[];for(let i=0;i<60;i++){const s=Math.sin(i*0.15+phase*0.06)*12;a.push(85+s+Math.sin(i*1.2)*4);b.push(autoregState==='intact'?12-s*0.15+Math.sin(i*1.2+1)*1.5:18+s*0.7+Math.sin(i*1.2)*2);l.push(i);}return{a,b,l};}const{a,b,l}=gen();waveChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'ABP (mmHg, solid)',data:a,borderColor:TH.chartABP,borderWidth:2.5,pointRadius:0,tension:0.4,yAxisID:'y'},{label:'ICP (mmHg, dashed)',data:b,borderColor:TH.chartICP,borderWidth:2.5,borderDash:[7,4],pointRadius:0,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,animation:false,scales:{x:{display:false},y:{min:60,max:110,position:'left',ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y1:{min:5,max:30,position:'right',ticks:{color:TH.textMuted,font:{size:10}},grid:{drawOnChartArea:false,color:TH.grid}}},plugins:{legend:{labels:{color:TH.textDim,font:{size:11}}}}},plugins:[{id:'waveDirectLabels',afterDatasetsDraw(ch){const c=ch.ctx;c.save();c.font='700 11px '+TH.font;c.textAlign='right';ch.data.datasets.forEach((ds,di)=>{const pts=ch.getDatasetMeta(di).data;if(!pts.length)return;const p=pts[pts.length-1];c.fillStyle=ds.borderColor;c.textBaseline=di===0?'bottom':'top';c.fillText(di===0?'ABP (solid)':'ICP (dashed)',p.x-6,di===0?p.y-9:p.y+9);});c.restore();}}]});function anim(){if(!motionAllowed()){stopWaveAnimation();return;}phase++;const{a,b}=gen();waveChart.data.datasets[0].data=a;waveChart.data.datasets[1].data=b;waveChart.update('none');animFrame=requestAnimationFrame(()=>{animTimer=setTimeout(anim,80);});}if(motionAllowed())anim();}
+function initWaveChart(){if(waveChart)waveChart.destroy();stopWaveAnimation();const ctx=document.getElementById('waveChart').getContext('2d');let phase=0;function gen(){const a=[],b=[],l=[];for(let i=0;i<60;i++){const s=Math.sin(i*0.15+phase*0.06)*12;a.push(85+s+Math.sin(i*1.2)*4);b.push(autoregState==='intact'?12-s*0.15+Math.sin(i*1.2+1)*1.5:18+s*0.7+Math.sin(i*1.2)*2);l.push(i);}return{a,b,l};}const{a,b,l}=gen();waveChart=new Chart(ctx,{type:'line',data:{labels:l,datasets:[{label:'ABP (mmHg, solid)',data:a,borderColor:TH.chartABP,borderWidth:2.5,pointRadius:0,tension:0.4,yAxisID:'y'},{label:'ICP (mmHg, dashed)',data:b,borderColor:TH.chartICP,borderWidth:2.5,borderDash:[7,4],pointRadius:0,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,animation:false,layout:{padding:{right:84}},scales:{x:{display:false},y:{min:60,max:110,position:'left',ticks:{color:TH.textMuted,font:{size:10}},grid:{color:TH.grid}},y1:{min:5,max:30,position:'right',ticks:{color:TH.textMuted,font:{size:10}},grid:{drawOnChartArea:false,color:TH.grid}}},plugins:{legend:{labels:{color:TH.textDim,font:{size:11}}}}},plugins:[{id:'waveDirectLabels',afterDatasetsDraw(ch){const c=ch.ctx;c.save();c.font='700 11px '+TH.font;c.textAlign='right';c.textBaseline='middle';const mid=(ch.chartArea.top+ch.chartArea.bottom)/2;ch.data.datasets.forEach((ds,di)=>{const pts=ch.getDatasetMeta(di).data;if(!pts.length)return;const p=pts[pts.length-1];c.fillStyle=ds.borderColor;const y=di===0?Math.min(p.y,mid-9):Math.max(p.y,mid+9);c.fillText(di===0?'ABP (solid)':'ICP (dashed)',ch.width-4,y);});c.restore();}}]});function anim(){if(!motionAllowed()){stopWaveAnimation();return;}phase++;const{a,b}=gen();waveChart.data.datasets[0].data=a;waveChart.data.datasets[1].data=b;waveChart.update('none');animFrame=requestAnimationFrame(()=>{animTimer=setTimeout(anim,80);});}if(motionAllowed())anim();}
 
 REDUCED_MOTION_MQ.addEventListener('change',()=>{stopWaveAnimation();if(currentTab==='prx')initWaveChart();});
 

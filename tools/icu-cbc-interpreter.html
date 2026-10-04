@@ -119,7 +119,8 @@
     max-width: 64px;
   }
   .top h1 {
-    font-weight: 500; font-size: 28px; margin: 0;
+    font-family: var(--nt-font-display);
+    font-weight: 600; font-size: 32px; margin: 0;
     letter-spacing: -0.012em;
     line-height: 1.1;
     color: var(--ink);
@@ -160,15 +161,18 @@
   :root:not([data-theme]) .theme-toggle .glyph {
     background: var(--ink);
   }
+  /* caution banner: full width of the header grid, in its original DOM position (below the title block) */
+  .top .right { display: contents; }
   .disclaimer {
-    font-size: 12px; color: var(--ink);
-    max-width: 340px;
+    grid-column: 1 / -1;
+    width: auto; max-width: none;
+    text-align: left;
+    font-size: 14px; color: var(--ink);
     line-height: 1.45;
     background: var(--caution-bg);
     border: 1px solid var(--caution);
-    border-left-width: 3px;
     border-radius: var(--radius-sm);
-    padding: 6px 10px;
+    padding: 10px 14px;
   }
 
   /* Sticky derived-metric ribbon: asymmetric weights
@@ -660,7 +664,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style id="neel-theme">
-/* neel-theme v1.0 (2026-10-03) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -673,7 +677,7 @@
   --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
   --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
   --nt-sel:#D3E4DA;
-  --nt-pos:#1F6B4A; --nt-caution:#8A5E00; --nt-neg:#A33232;
+  --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
   --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
   --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
   --nt-grid:#D6DBDB; --nt-focus:#154533;
@@ -692,7 +696,7 @@
     --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
     --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
     --nt-sel:#233B33;
-    --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+    --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
     --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
     --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
     --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -706,7 +710,7 @@
   --nt-rule:#2C343B; --nt-rule-strong:#3E474F; --nt-edge:#7F8A94;
   --nt-accent:#8CCBAA; --nt-accent-deep:#B2DEC6; --nt-accent-wash:#20302A; --nt-on-accent:#0F1417;
   --nt-sel:#233B33;
-  --nt-pos:#6FD0A2; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
+  --nt-pos:#A3D16E; --nt-caution:#E0B24A; --nt-neg:#F28B8B;
   --nt-pos-wash:#1A2D22; --nt-caution-wash:#3D3016; --nt-neg-wash:#3C1C1A;
   --nt-cat-1:#7D9BD6; --nt-cat-2:#E08A63; --nt-cat-3:#8CC27F; --nt-cat-4:#C987B5; --nt-cat-5:#D9AE58;
   --nt-grid:#2C343B; --nt-focus:#B2DEC6;
@@ -1983,7 +1987,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   .card h3 { font-size: 11px; }
   .chip .label { font-size: 11px; }
   .chip .val .unit { font-size: 11px; }
-  .disclaimer { font-size: 11px; }
+  .disclaimer { font-size: 14px; }
   .ev-finding .ev-state { font-size: 11px; }
   .ev-num strong { font-size: 11px; }
   .footer .pill { font-size: 11px; }
