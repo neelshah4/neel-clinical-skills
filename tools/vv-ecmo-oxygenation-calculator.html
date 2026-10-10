@@ -441,6 +441,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     /* v3.0 additions: input groups, badges, solved rows, notes, source disclosures, result bar, gauge ticks. */
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     .min-w-0 { min-width: 0; }
+    .overflow-x-auto { position: relative; }
     .vv-mode { padding-bottom: 4px; }
     .vv-mode-k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--vv-ink-quiet); margin-bottom: 4px; }
     .vv-seg { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 10px; background: var(--vv-tint); }
@@ -461,6 +462,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     .vv-ticks span { position: absolute; top: 0; transform: translateX(-50%); }
     .vv-ticks span:first-child { transform: none; }
     .vv-scn-sub { color: var(--vv-ink-muted); }
+    .bg-emerald-50 .text-slate-500, .bg-rose-50 .text-slate-500, .bg-amber-50 .text-slate-500, .bg-sky-50 .text-slate-500, .bg-violet-50 .text-slate-500 { color: var(--vv-ink-muted); }
     .vv-assume { font-size: 13px; line-height: 1.5; color: var(--vv-ink-muted); padding: 0 2px; }
     .vv-assume p + p { margin-top: 4px; }
     .vv-check-row + .vv-check-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--vv-rule); }
@@ -488,7 +490,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     @media (min-width: 1024px) { .vv-sticky { position: sticky; top: 12px; z-index: 5; background: var(--vv-paper); padding-bottom: 4px; } }
     /* Touch: 44 px targets and a thumb you can hit. */
     @media (pointer: coarse) {
-      input[type=number] { min-height: 44px; }
+      input[type=number] { min-height: 44px; font-size: 16px; }
       button, .vv-load { min-height: 44px; }
       .vv-hufner button { min-width: 52px; }
       input[type=range] { min-height: 32px; }
@@ -958,6 +960,7 @@ function Badge({
     className: cls("vv-badge border", BADGE[kind])
   }, kind);
 }
+const DraftCtx = React.createContext(null);
 let FIELD_SEQ = 0;
 function Field({
   label,
@@ -1091,6 +1094,12 @@ function Field({
     apply(parseFloat(e.target.value));
   };
   const invalid = editing && msg !== null && /^(Outside|Not a number)/.test(msg);
+  const report = React.useContext(DraftCtx);
+  useEffect(() => {
+    if (!report) return undefined;
+    report(id, invalid);
+    return () => report(id, false);
+  }, [invalid]);
   const mid = hasValue ? value : min;
   return React.createElement("div", {
     className: "flex flex-col gap-1.5 py-2"
@@ -1293,7 +1302,8 @@ function ScenarioButton({
 function SummaryBar({
   out,
   status,
-  mode
+  mode,
+  warn
 }) {
   return React.createElement("div", {
     className: "vv-bar",
@@ -1310,7 +1320,11 @@ function SummaryBar({
     className: "vv-bar-k"
   }, mode === "forward" ? "CO (entered)" : "CO (solved)"), React.createElement("span", {
     className: "vv-bar-v"
-  }, fin(out.co) ? out.co.toFixed(2) : "—", React.createElement("small", null, " L/min"))), React.createElement("div", {
+  }, fin(out.co) ? out.co.toFixed(2) : "—", React.createElement("small", null, " L/min"))), warn ? React.createElement("div", {
+    className: "vv-bar-s"
+  }, React.createElement("span", {
+    className: cls("inline-block h-2.5 w-2.5 rounded-full shrink-0", TONE.warn.dot)
+  }), "Typed value not applied yet: these are the last applied values") : React.createElement("div", {
     className: "vv-bar-s"
   }, React.createElement("span", {
     className: cls("inline-block h-2.5 w-2.5 rounded-full shrink-0", TONE[status.tone].dot)
@@ -1386,6 +1400,12 @@ function App() {
   const [state, setState] = useState(BASELINE);
   const [wtTouched, setWtTouched] = useState(false);
   const [scenNote, setScenNote] = useState(null);
+  const [badDrafts, setBadDrafts] = useState({});
+  const reportDraft = useCallback((id, v) => setBadDrafts(b => !!b[id] === v ? b : {
+    ...b,
+    [id]: v
+  }), []);
+  const anyBad = Object.values(badDrafts).some(Boolean);
   const update = useCallback(patch => setState(s => ({
     ...s,
     ...patch
@@ -1498,7 +1518,9 @@ function App() {
       s: parts.slice(1).join(" ")
     });
   }
-  return React.createElement("div", {
+  return React.createElement(DraftCtx.Provider, {
+    value: reportDraft
+  }, React.createElement("div", {
     className: "min-h-screen bg-slate-50 text-slate-900 antialiased"
   }, React.createElement("div", {
     className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
@@ -1527,7 +1549,8 @@ function App() {
   }, React.createElement("summary", null, "Scope and limits"), React.createElement("p", null, "Every threshold, cohort and flow range cited in this tool is adult or animal: the ELSO 2021 ", React.createElement("em", null, "adult"), " V-V guideline, Schmidt 2013, Patel 2019, Fisser 2022, Russ 2022 (pigs) and BLENDER (veno-arterial); the only pediatric-adjacent source is a neonatal cannula simulation. Flow, cardiac-output and VO\u2082 fields are weight-indexed and the sliders reach neonatal values, but no pediatric cut-point here is sourced. Do not carry the 5\u20136 L/min cannula ceiling or the 80\u201390% SaO\u2082 band onto a child.")))), React.createElement(SummaryBar, {
     out: out,
     status: status,
-    mode: state.mode
+    mode: state.mode,
+    warn: anyBad
   }), React.createElement("div", {
     className: "grid grid-cols-1 lg:grid-cols-12 gap-5"
   }, React.createElement("section", {
@@ -2090,6 +2113,10 @@ function App() {
     className: "text-left text-slate-500 border-b border-slate-200"
   }, React.createElement("th", {
     className: "py-2 pr-3 font-medium"
+  }, React.createElement("span", {
+    className: "sr-only"
+  }, "Load")), React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
   }, "#"), React.createElement("th", {
     className: "py-2 pr-3 font-medium"
   }, "Scenario"), React.createElement("th", {
@@ -2114,11 +2141,7 @@ function App() {
     className: "py-2 pr-3 font-medium"
   }, "DO\u2082"), React.createElement("th", {
     className: "py-2 pr-3 font-medium"
-  }, "DO\u2082:VO\u2082"), React.createElement("th", {
-    className: "py-2 pr-3 font-medium"
-  }, React.createElement("span", {
-    className: "sr-only"
-  }, "Load")))), React.createElement("tbody", {
+  }, "DO\u2082:VO\u2082"))), React.createElement("tbody", {
     className: "text-slate-800"
   }, EXAMPLES.map(e => {
     const o = calc(exState(e));
@@ -2126,10 +2149,7 @@ function App() {
     return React.createElement("tr", {
       key: e.n,
       className: "border-b border-slate-100"
-    }, cells.map((c, j) => React.createElement("td", {
-      key: j,
-      className: cls("py-2 pr-3 tabular-nums", j === 1 && "font-medium text-slate-900")
-    }, c)), React.createElement("td", {
+    }, React.createElement("td", {
       className: "py-1 pr-3"
     }, React.createElement("button", {
       type: "button",
@@ -2144,7 +2164,10 @@ function App() {
         });
       },
       "aria-label": "Load example " + e.n + ": " + e.name
-    }, "Load")));
+    }, "Load")), cells.map((c, j) => React.createElement("td", {
+      key: j,
+      className: cls("py-2 pr-3 tabular-nums", j === 1 && "font-medium text-slate-900")
+    }, c)));
   })))), React.createElement("p", {
     className: "text-[12px] text-slate-500 mt-3 leading-snug"
   }, "Conventions: weight 70 kg, so each row's VO\u2082 index is its VO\u2082 \xF7 70 and is not a round number (Load enters it exactly) \xB7 K = 1.34 mL O\u2082/g Hgb \xB7 S_ECMO = 100% \xB7 VO\u2082 in mL/min. Case 5 uses effective Q_ECMO = 4.5 \xD7 (1\u22120.30) = 3.15 L/min. SvO\u2082 is solved from the Fick relation, so each row has one degree of freedom fewer than a model with a free SvO\u2082 slider. The reverse solver returns the entered cardiac output from the unrounded SaO\u2082; typing the one-decimal SaO\u2082 printed above returns it to within about 0.02 L/min on these five rows.")), React.createElement("section", {
@@ -2186,7 +2209,7 @@ function App() {
     className: "text-[12px] text-slate-500 mt-3 leading-snug"
   }, "Retraction and expression-of-concern screen run 2026-08-31 across every entry above: none found. ", React.createElement("strong", null, "Correction screening, re-run 2026-09-01."), " The earlier pass screened publication types only, which cannot see an erratum published as its own record (the usual case). The screen was therefore re-run as an erratum-linkage screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all eleven tools in this set. On this page 18 of 18 source PMIDs were screened, and two carry an erratum: PMID 36117961 (Fisser 2022) and PMID 39162827 (BLENDER), with no retraction and no expression of concern anywhere. What the screen returns is the linkage and not the correction: neither erratum was retrieved, so this page reports that each exists and that a reader should consult it, and asserts nothing about what either one changed. Both are marked on their reference-list row above and at their point of use: the recirculation-fraction field and the oxygen-target caveat bullet. Where a number in this tool has no published source it is labelled in place as a teaching convention or a display heuristic rather than removed."))), React.createElement("footer", {
     className: "mt-6 pb-4 text-center text-[11px] text-slate-500 leading-relaxed"
-  }, "Educational use only \xB7 Not for clinical decision-making", React.createElement("br", null), "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v3.0 \xB7 Updated 2026-10-09 \xB7 CC BY-NC 4.0", React.createElement("br", null), "Adult-derived evidence base \xB7 weight-indexed inputs allow pediatric entry, but no pediatric threshold here is sourced")));
+  }, "Educational use only \xB7 Not for clinical decision-making", React.createElement("br", null), "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v3.0 \xB7 Updated 2026-10-09 \xB7 CC BY-NC 4.0", React.createElement("br", null), "Adult-derived evidence base \xB7 weight-indexed inputs allow pediatric entry, but no pediatric threshold here is sourced"))));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 </script>
