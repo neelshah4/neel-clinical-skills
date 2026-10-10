@@ -573,7 +573,15 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       const editing = draft !== null;
       const shown = editing ? draft : display;
       const range = min + "–" + max + (unit ? " " + unit : "");
-      useEffect(() => { if (value !== lastWrite.current) setMsg(null); }, [value]);
+      useEffect(() => {
+        if (value !== lastWrite.current) {
+          // Another control (scenario, mode switch, Reset, slider) changed this value: drop a pending typed draft so it cannot overwrite that change later.
+          setMsg(null);
+          if (timer.current) { clearTimeout(timer.current); timer.current = null; }
+          setDraft(null);
+        }
+      }, [value]);
+      useEffect(() => { if (draft === null) setMsg(null); }, [min, max]);
       useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
       const stop = () => { if (timer.current) { clearTimeout(timer.current); timer.current = null; } };
       const apply = (v) => { lastWrite.current = v; onChange(v); };
@@ -592,7 +600,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
           else setMsg("Outside " + range + ". Not applied. It moves to the nearest allowed value when you leave the field.");
           return;
         }
-        if (v !== value) apply(v);
+        const vr = rd(v, 3);
+        if (vr !== value) apply(vr);
         setMsg(null);
       };
       const onText = (e) => {
@@ -785,15 +794,17 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       const [state, setState] = useState(BASELINE);
       const [wtTouched, setWtTouched] = useState(false);
       const [scenNote, setScenNote] = useState(null);
+      const [resetN, setResetN] = useState(0);
       const [badDrafts, setBadDrafts] = useState({});
       const reportDraft = useCallback((id, v) => setBadDrafts((b) => (!!b[id] === v ? b : { ...b, [id]: v })), []);
       const anyBad = Object.values(badDrafts).some(Boolean);
       const update = useCallback((patch) => setState((s) => ({ ...s, ...patch })), []);
+      const edit = (patch) => { setScenNote(null); update(patch); };
       const out = useMemo(() => calc(state), [state]);
       const status = useMemo(() => statusFor(out, state), [out, state]);
       const sens = useMemo(() => (calc(state).error ? null : sensitivity(state)), [state]);
 
-      const reset = () => { setState({ ...BASELINE, mode: state.mode }); setWtTouched(false); setScenNote(null); };
+      const reset = () => { setState({ ...BASELINE, mode: state.mode }); setWtTouched(false); setScenNote(null); setResetN((n) => n + 1); };
       // Switching direction carries the value the other direction was showing, so the scenario stays the same one.
       const setMode = (mode) => {
         if (mode === state.mode) return;
@@ -898,7 +909,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-              <section className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" aria-labelledby="vv-inputs-h">
+              <section key={resetN} className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" aria-labelledby="vv-inputs-h">
                 <h2 id="vv-inputs-h" className="text-sm font-semibold text-slate-900 mb-2">Inputs</h2>
 
                 <div className="vv-mode" role="group" aria-label="What you have">
@@ -915,45 +926,45 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
                 </div>
 
                 <Group title="Patient" desc="From the chart, the blood gas and the monitor">
-                  <Field label="Body weight" value={state.wt} onChange={(v) => { setWtTouched(true); update({ wt: v }); }} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" badge="Measured"
+                  <Field label="Body weight" value={state.wt} onChange={(v) => { setWtTouched(true); edit({ wt: v }); }} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" badge="Measured"
                     note={!wtTouched ? "Default 70 kg. Enter the patient's weight: it sets total VO₂, every per-kg readout, the plausibility guards and the scenario step sizes." : null}
                     hint="Sets total VO₂ and indexes the flow readouts."
                     source="Sets total VO₂ and indexes the flow readouts, the plausibility guards and the scenario step sizes. Nothing else in this tool is size-specific. The cited bands and ceilings remain adult." />
-                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => update({ hgb: v })} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" minDec={1} badge="Measured"
+                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => edit({ hgb: v })} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" minDec={1} badge="Measured"
                     hint={"Each gram binds " + state.hufner + " mL O₂; less hemoglobin widens the arterio-venous saturation gap."}
                     source={"Each gram binds " + state.hufner + " mL O₂ (1.34: Bartlett 2017, PMID 27040797; 1.39: ELSO 2021). With VO₂ fixed, less hemoglobin forces a wider arterio-venous saturation gap, so anemia lowers SvO₂ and SaO₂ as well as CaO₂ and DO₂."} />
                   {fwd ? (
-                    <Field label="Cardiac output (CO)" value={state.co} onChange={(v) => update({ co: v })} min={LIM.co[0]} max={LIM.co[1]} sliderMax={clamp(rd(coGuard(state.wt), 2), 1, LIM.co[1])} step={0.05} unit="L/min" minDec={1} badge="Measured"
+                    <Field key="co" label="Cardiac output (CO)" value={state.co} onChange={(v) => edit({ co: v })} min={LIM.co[0]} max={LIM.co[1]} sliderMax={clamp(rd(coGuard(state.wt), 2), 1, LIM.co[1])} step={0.05} unit="L/min" minDec={1} badge="Measured"
                       hint={"Total venous return: " + perKg(state.co, state.wt) + " mL/kg/min at " + state.wt + " kg. Enter an echo or catheter value, or your best estimate."}
                       source="Sepsis, fever and agitation raise CO; a higher CO dilutes the ECMO contribution. Thermodilution overestimated CO by 2.1–2.7 L/min during V-V ECMO in six anesthetized pigs (Russ 2022, PMID 34860710); a porcine finding, not a human V-V ECMO measurement, and not a licence to discount a measured cardiac output by 2 L/min at the bedside." />
                   ) : (
-                    <Field label="Measured arterial SaO₂" value={state.measuredSaO2} onChange={(v) => update({ measuredSaO2: v })} min={LIM.measuredSaO2[0]} max={state.sEcmo} step={0.5} unit="%" minDec={1} badge="Measured"
+                    <Field key="msa" label="Measured arterial SaO₂" value={state.measuredSaO2} onChange={(v) => edit({ measuredSaO2: v })} min={LIM.measuredSaO2[0]} max={state.sEcmo} step={0.5} unit="%" minDec={1} badge="Measured"
                       hint="From the arterial blood gas (a pulse-oximeter SpO₂ is only an estimate of it). It cannot exceed the post-oxygenator saturation."
                       source="Any residual native-lung oxygenation carried inside this number biases the solved cardiac output low." />
                   )}
-                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => update({ paO2: v })} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" badge="Measured"
+                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => edit({ paO2: v })} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" badge="Measured"
                     hint="The patient's arterial value. It adds only the small dissolved-O₂ term, 0.003·PaO₂ mL/dL."
                     source="On V-V ECMO commonly 50–80 mmHg (a teaching convention carried by this tool); ELSO 2021 gives no PaO₂ range and states only that SaO₂ is typically 80–90%. A very high PaO₂ is described with a return cannula across the interatrial septum, where this model does not apply (Guevara-Chaux, PMID 40985532)." />
                 </Group>
 
                 <Group title="Circuit" desc="From the pump console and the circuit monitor">
-                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => update({ qEcmo: v })} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} sliderMax={clamp(rd(GUARD.flowPerKg * state.wt, 2), 1, LIM.qEcmo[1])} step={0.05} unit="L/min" minDec={1} badge="Set on pump"
+                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => edit({ qEcmo: v })} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} sliderMax={clamp(rd(GUARD.flowPerKg * state.wt, 2), 1, LIM.qEcmo[1])} step={0.05} unit="L/min" minDec={1} badge="Set on pump"
                     hint={perKg(state.qEcmo, state.wt) + " mL/kg/min at " + state.wt + " kg, shown for scale only."}
                     source="Cannula-limited. ELSO 2021 gives 5–6 L/min as the usual ceiling set by cannula size and Patel 2019 describes typical flows of 3–4 L/min (both adult figures). No weight-indexed flow target is sourced in this tool. Higher flows are conventionally linked to hemolysis and access insufficiency, but no flow threshold for either is published." />
-                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => update({ sEcmo: v })} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" badge="Measured"
+                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => edit({ sEcmo: v })} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" badge="Measured"
                     hint="Blood leaving the oxygenator, not the drainage line. About 100% when the membrane works."
                     source="A healthy oxygenator returns blood at ~100%. Judge oxygenator dysfunction by a rising transmembrane pressure drop (normal <50 mmHg; a change >100 mmHg suggests obstruction) together with a falling post-membrane PaO₂, not by a single saturation cut-point (Patel 2019, PMID 31632747). No published post-oxygenator saturation threshold was found. The pre-oxygenator (drainage-line) saturation goes in the check box below, not here." />
                 </Group>
 
                 <Group title="Assumptions" desc="Defaults you can change. They are not measured here, and the answer moves with them">
-                  <Field label="Recirculation fraction" value={state.recirc} onChange={(v) => update({ recirc: v })} min={LIM.recirc[0]} max={LIM.recirc[1]} step={1} unit="%" badge="Assumed"
+                  <Field label="Recirculation fraction" value={state.recirc} onChange={(v) => edit({ recirc: v })} min={LIM.recirc[0]} max={LIM.recirc[1]} step={1} unit="%" badge="Assumed"
                     hint="Default 0%. Enter an estimate if you have one; see the sensitivity line under the result."
                     source="Femoro-jugular median 5% (IQR 0–11) vs jugulo-femoral 19% (IQR 13–28) (Fisser 2022, PMID 36117961, erratum on record, Front Med (Lausanne) 2022;9:1045207, PMID 36267622; linkage only, consult before relying on these figures). In single-lumen atrio-femoral support, a conventional draining cannula gave 38.0 ± 13.7% vs 19.0 ± 12.2% for a multistage design (Palmér 2016, PMID 27660904); malpositioned neonatal dual-lumen cannulae reached 39 ± 4%, maximum 42%, in a validated CFD model (Jamil 2020, PMID 31580212). Effective ECMO flow = Q_ECMO × (1 − R). Reviews: Abrams 2015, PMID 25423117; Tomarchio 2024, PMID 38654449." />
-                  <Field label="Oxygen consumption (VO₂ index)" value={state.vo2i} onChange={(v) => update({ vo2i: v })} min={LIM.vo2i[0]} max={LIM.vo2i[1]} step={0.1} unit="mL/kg/min" minDec={1} badge="Assumed"
+                  <Field label="Oxygen consumption (VO₂ index)" value={state.vo2i} onChange={(v) => edit({ vo2i: v })} min={LIM.vo2i[0]} max={LIM.vo2i[1]} step={0.1} unit="mL/kg/min" minDec={1} badge="Assumed"
                     note={state.wt < 40 ? "Below 40 kg, 3.0 mL/kg/min is an adult teaching default and is not sourced for children. The result moves a lot with this value; see the sensitivity line." : null}
                     hint={"Total VO₂ = " + (state.vo2i * state.wt).toFixed(0) + " mL/min at " + state.wt + " kg. A teaching default, not a measurement."}
                     source="Demand, held fixed while flow, hemoglobin and cardiac output vary. This is what makes DO₂:VO₂ a supply:demand ratio rather than a restatement of 1/OER. The 3.0 mL/kg/min default is this tool's teaching convention: no published resting-VO₂ reference was verified for it. If you read the circuit pre-oxygenator saturation, the check box below gives a circuit-based estimate of VO₂." />
-                  <Field label="Venous PvO₂" value={state.pvO2} onChange={(v) => update({ pvO2: v })} min={LIM.pvO2[0]} max={LIM.pvO2[1]} step={1} unit="mmHg" badge="Assumed"
+                  <Field label="Venous PvO₂" value={state.pvO2} onChange={(v) => edit({ pvO2: v })} min={LIM.pvO2[0]} max={LIM.pvO2[1]} step={1} unit="mmHg" badge="Assumed"
                     hint="Enters only the small dissolved-O₂ term."
                     source="Normal mixed venous PO₂ ≈ 40 mmHg (standard oxygen-transport physiology), cited to Dunn 2016 (DOI 10.1093/bjaed/mkw012); that source is paywalled and the number was not independently verified here. Because SvO₂ is solved rather than entered, PvO₂ is not tied to it by the dissociation curve and enters only the small dissolved-O₂ term." />
                   <div className="pt-3 flex flex-wrap items-center justify-between gap-2">
@@ -981,13 +992,13 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
                 <Group title="Check the model against your measurements (optional)" desc="Typed for comparison only. These never change the result">
                   {fwd ? (
-                    <Field label="Measured arterial SaO₂ (comparison)" value={state.cmpSa} onChange={(v) => update({ cmpSa: v })} min={LIM.cmpSa[0]} max={LIM.cmpSa[1]} step={0.5} unit="%" minDec={1} badge="Check only" optional
+                    <Field key="csa" label="Measured arterial SaO₂ (comparison)" value={state.cmpSa} onChange={(v) => edit({ cmpSa: v })} min={LIM.cmpSa[0]} max={LIM.cmpSa[1]} step={0.5} unit="%" minDec={1} badge="Check only" optional
                       hint="Your blood-gas value, to compare with the predicted SaO₂." />
                   ) : (
-                    <Field label="Measured cardiac output (comparison)" value={state.cmpCo} onChange={(v) => update({ cmpCo: v })} min={LIM.cmpCo[0]} max={LIM.cmpCo[1]} step={0.05} unit="L/min" minDec={1} badge="Check only" optional
+                    <Field key="cco" label="Measured cardiac output (comparison)" value={state.cmpCo} onChange={(v) => edit({ cmpCo: v })} min={LIM.cmpCo[0]} max={LIM.cmpCo[1]} step={0.05} unit="L/min" minDec={1} badge="Check only" optional
                       hint="An echo or catheter value, to compare with the solved CO." />
                   )}
-                  <Field label="Circuit pre-oxygenator (venous-line) saturation" value={state.cmpPre} onChange={(v) => update({ cmpPre: v })} min={LIM.cmpPre[0]} max={LIM.cmpPre[1]} step={0.5} unit="%" minDec={1} badge="Check only" optional
+                  <Field label="Circuit pre-oxygenator (venous-line) saturation" value={state.cmpPre} onChange={(v) => edit({ cmpPre: v })} min={LIM.cmpPre[0]} max={LIM.cmpPre[1]} step={0.5} unit="%" minDec={1} badge="Check only" optional
                     hint="The venous-line saturation on the circuit monitor. It is not the same as mixed venous when there is recirculation."
                     source="The model's pre-oxygenator saturation is (1 − R) · SvO₂ + R · S_post, with R the recirculated fraction of pump flow. Walker 2009 (PMID 19948749) reports that recirculation makes the venous-line saturation no longer reflective of mixed venous. The oxygen added across the membrane, 10 · Q · K · Hgb · (S_post − S_pre), equals the patient's VO₂ in steady state when the native lung transfers no oxygen; this tool shows it as an approximate cross-check on the assumed VO₂ and does not feed it into the model." />
                 </Group>
@@ -1171,7 +1182,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <h2 className="text-sm font-semibold text-slate-900 mb-2">Key caveats</h2>
                 <ul className="text-[12px] text-slate-700 space-y-1.5 list-disc pl-5 leading-snug">
-                  <li><strong>No native lung function: the sign of that error flips between the two modes.</strong> In <em>forward</em> mode the predicted SaO₂ is a lower bound: recovering lungs raise the real SaO₂ above it. In <em>reverse</em> mode the same residual lung function raises the measured SaO₂, narrows SaO₂ − SvO₂ and back-solves a cardiac output that is systematically <em>too low</em>. The one note that names this bias flags a solved native flow below 15% of the cardiac output (a heuristic of this tool). The guard for a measured SaO₂ above the post-oxygenator saturation cannot fire while the field limits hold the measured value at or below it. Otherwise nothing warns automatically: read the solved CO as a possible under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support.</li>
+                  <li><strong>No native lung function: the sign of that error flips between the two modes.</strong> In <em>forward</em> mode the predicted SaO₂ is a lower bound: recovering lungs raise the real SaO₂ above it. In <em>reverse</em> mode the same residual lung function raises the measured SaO₂, narrows SaO₂ − SvO₂ and back-solves a cardiac output that is systematically <em>too low</em>. The one note that names this bias flags a solved native flow below 15% of the cardiac output (a heuristic of this tool). The guard for a measured SaO₂ above the post-oxygenator saturation fires only if you lower the post-oxygenator saturation below the measured value. Otherwise nothing warns automatically: read the solved CO as a possible under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support.</li>
                   <li><strong>SvO₂ is solved here, not sampled: no validated bedside route to a true mixed venous on V-V ECMO was found.</strong> The return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it. Entering one collapses the forward equation toward SaO₂ = SvO₂ and drives the reverse denominator toward zero, and at the bedside it teaches a trainee to read arterial-equivalent blood as a reassuring extraction ratio in an under-supported patient. The published alternative (correcting a pre-membrane sample for recirculation) rests on Walker 2009 (PMID 19948749), a bench derivation in a circuit primed with porcine blood whose own conclusion is that the original model is an oversimplification of the high arterial pO₂ during therapy and that accurate clinical calculation awaits further work. Treat it as a method not yet clinically validated. The circuit's pre-oxygenator (venous-line) saturation is a different quantity from the SvO₂ solved here: it mixes true venous blood with recirculated outlet blood. The optional check box under Inputs compares it with the model and never feeds it into the result. No published source was found for the sometimes-taught maneuver of briefly stopping sweep gas to read a true mixed venous, and neither Walker 2009 nor Schmidt 2013 describes it.</li>
                   <li><strong>Status bands are this tool's display heuristics.</strong> The 75% and 80% SaO₂ edges, the 3:1 ratio flag, the 95% over-support label and the 40% OER flag are conventions of this calculator, not guideline cut-points. The 80% edge is taken from the lower bound of the ELSO-described 80–90% typical band. The nearest sourced anchor for low-SaO₂ concern is an ECMO flow below 60% of cardiac output, frequently associated with SaO₂ &lt;90% in ARDS (Schmidt 2013, PMID 23291732; restated in ELSO 2021).</li>
                   <li><strong>SaO₂ 80–90% is a tolerated floor, not a goal</strong> (Ortoleva &amp; Chweich 2022, PMID 35644745; a two-page letter, not a primary study). Lactate, ScvO₂, and the DO₂:VO₂ trend trump any single number.</li>

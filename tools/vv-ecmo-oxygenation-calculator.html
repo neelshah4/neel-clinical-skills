@@ -998,8 +998,18 @@ function Field({
   const shown = editing ? draft : display;
   const range = min + "–" + max + (unit ? " " + unit : "");
   useEffect(() => {
-    if (value !== lastWrite.current) setMsg(null);
+    if (value !== lastWrite.current) {
+      setMsg(null);
+      if (timer.current) {
+        clearTimeout(timer.current);
+        timer.current = null;
+      }
+      setDraft(null);
+    }
   }, [value]);
+  useEffect(() => {
+    if (draft === null) setMsg(null);
+  }, [min, max]);
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current);
   }, []);
@@ -1041,7 +1051,8 @@ function Field({
       } else setMsg("Outside " + range + ". Not applied. It moves to the nearest allowed value when you leave the field.");
       return;
     }
-    if (v !== value) apply(v);
+    const vr = rd(v, 3);
+    if (vr !== value) apply(vr);
     setMsg(null);
   };
   const onText = e => {
@@ -1400,6 +1411,7 @@ function App() {
   const [state, setState] = useState(BASELINE);
   const [wtTouched, setWtTouched] = useState(false);
   const [scenNote, setScenNote] = useState(null);
+  const [resetN, setResetN] = useState(0);
   const [badDrafts, setBadDrafts] = useState({});
   const reportDraft = useCallback((id, v) => setBadDrafts(b => !!b[id] === v ? b : {
     ...b,
@@ -1410,6 +1422,10 @@ function App() {
     ...s,
     ...patch
   })), []);
+  const edit = patch => {
+    setScenNote(null);
+    update(patch);
+  };
   const out = useMemo(() => calc(state), [state]);
   const status = useMemo(() => statusFor(out, state), [out, state]);
   const sens = useMemo(() => calc(state).error ? null : sensitivity(state), [state]);
@@ -1420,6 +1436,7 @@ function App() {
     });
     setWtTouched(false);
     setScenNote(null);
+    setResetN(n => n + 1);
   };
   const setMode = mode => {
     if (mode === state.mode) return;
@@ -1554,6 +1571,7 @@ function App() {
   }), React.createElement("div", {
     className: "grid grid-cols-1 lg:grid-cols-12 gap-5"
   }, React.createElement("section", {
+    key: resetN,
     className: "lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm",
     "aria-labelledby": "vv-inputs-h"
   }, React.createElement("h2", {
@@ -1593,7 +1611,7 @@ function App() {
     value: state.wt,
     onChange: v => {
       setWtTouched(true);
-      update({
+      edit({
         wt: v
       });
     },
@@ -1608,7 +1626,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Hemoglobin",
     value: state.hgb,
-    onChange: v => update({
+    onChange: v => edit({
       hgb: v
     }),
     min: LIM.hgb[0],
@@ -1620,9 +1638,10 @@ function App() {
     hint: "Each gram binds " + state.hufner + " mL O₂; less hemoglobin widens the arterio-venous saturation gap.",
     source: "Each gram binds " + state.hufner + " mL O₂ (1.34: Bartlett 2017, PMID 27040797; 1.39: ELSO 2021). With VO₂ fixed, less hemoglobin forces a wider arterio-venous saturation gap, so anemia lowers SvO₂ and SaO₂ as well as CaO₂ and DO₂."
   }), fwd ? React.createElement(Field, {
+    key: "co",
     label: "Cardiac output (CO)",
     value: state.co,
-    onChange: v => update({
+    onChange: v => edit({
       co: v
     }),
     min: LIM.co[0],
@@ -1635,9 +1654,10 @@ function App() {
     hint: "Total venous return: " + perKg(state.co, state.wt) + " mL/kg/min at " + state.wt + " kg. Enter an echo or catheter value, or your best estimate.",
     source: "Sepsis, fever and agitation raise CO; a higher CO dilutes the ECMO contribution. Thermodilution overestimated CO by 2.1\u20132.7 L/min during V-V ECMO in six anesthetized pigs (Russ 2022, PMID 34860710); a porcine finding, not a human V-V ECMO measurement, and not a licence to discount a measured cardiac output by 2 L/min at the bedside."
   }) : React.createElement(Field, {
+    key: "msa",
     label: "Measured arterial SaO\u2082",
     value: state.measuredSaO2,
-    onChange: v => update({
+    onChange: v => edit({
       measuredSaO2: v
     }),
     min: LIM.measuredSaO2[0],
@@ -1651,7 +1671,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Arterial PaO\u2082",
     value: state.paO2,
-    onChange: v => update({
+    onChange: v => edit({
       paO2: v
     }),
     min: LIM.paO2[0],
@@ -1667,7 +1687,7 @@ function App() {
   }, React.createElement(Field, {
     label: "ECMO blood flow (Q_ECMO)",
     value: state.qEcmo,
-    onChange: v => update({
+    onChange: v => edit({
       qEcmo: v
     }),
     min: LIM.qEcmo[0],
@@ -1682,7 +1702,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Post-oxygenator (ECMO outlet) saturation",
     value: state.sEcmo,
-    onChange: v => update({
+    onChange: v => edit({
       sEcmo: v
     }),
     min: LIM.sEcmo[0],
@@ -1698,7 +1718,7 @@ function App() {
   }, React.createElement(Field, {
     label: "Recirculation fraction",
     value: state.recirc,
-    onChange: v => update({
+    onChange: v => edit({
       recirc: v
     }),
     min: LIM.recirc[0],
@@ -1711,7 +1731,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Oxygen consumption (VO\u2082 index)",
     value: state.vo2i,
-    onChange: v => update({
+    onChange: v => edit({
       vo2i: v
     }),
     min: LIM.vo2i[0],
@@ -1726,7 +1746,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Venous PvO\u2082",
     value: state.pvO2,
-    onChange: v => update({
+    onChange: v => edit({
       pvO2: v
     }),
     min: LIM.pvO2[0],
@@ -1785,9 +1805,10 @@ function App() {
     title: "Check the model against your measurements (optional)",
     desc: "Typed for comparison only. These never change the result"
   }, fwd ? React.createElement(Field, {
+    key: "csa",
     label: "Measured arterial SaO\u2082 (comparison)",
     value: state.cmpSa,
-    onChange: v => update({
+    onChange: v => edit({
       cmpSa: v
     }),
     min: LIM.cmpSa[0],
@@ -1799,9 +1820,10 @@ function App() {
     optional: true,
     hint: "Your blood-gas value, to compare with the predicted SaO\u2082."
   }) : React.createElement(Field, {
+    key: "cco",
     label: "Measured cardiac output (comparison)",
     value: state.cmpCo,
-    onChange: v => update({
+    onChange: v => edit({
       cmpCo: v
     }),
     min: LIM.cmpCo[0],
@@ -1815,7 +1837,7 @@ function App() {
   }), React.createElement(Field, {
     label: "Circuit pre-oxygenator (venous-line) saturation",
     value: state.cmpPre,
-    onChange: v => update({
+    onChange: v => edit({
       cmpPre: v
     }),
     min: LIM.cmpPre[0],
@@ -2178,7 +2200,7 @@ function App() {
     className: "text-sm font-semibold text-slate-900 mb-2"
   }, "Key caveats"), React.createElement("ul", {
     className: "text-[12px] text-slate-700 space-y-1.5 list-disc pl-5 leading-snug"
-  }, React.createElement("li", null, React.createElement("strong", null, "No native lung function: the sign of that error flips between the two modes."), " In ", React.createElement("em", null, "forward"), " mode the predicted SaO\u2082 is a lower bound: recovering lungs raise the real SaO\u2082 above it. In ", React.createElement("em", null, "reverse"), " mode the same residual lung function raises the measured SaO\u2082, narrows SaO\u2082 \u2212 SvO\u2082 and back-solves a cardiac output that is systematically ", React.createElement("em", null, "too low"), ". The one note that names this bias flags a solved native flow below 15% of the cardiac output (a heuristic of this tool). The guard for a measured SaO\u2082 above the post-oxygenator saturation cannot fire while the field limits hold the measured value at or below it. Otherwise nothing warns automatically: read the solved CO as a possible under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support."), React.createElement("li", null, React.createElement("strong", null, "SvO\u2082 is solved here, not sampled: no validated bedside route to a true mixed venous on V-V ECMO was found."), " The return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it. Entering one collapses the forward equation toward SaO\u2082 = SvO\u2082 and drives the reverse denominator toward zero, and at the bedside it teaches a trainee to read arterial-equivalent blood as a reassuring extraction ratio in an under-supported patient. The published alternative (correcting a pre-membrane sample for recirculation) rests on Walker 2009 (PMID 19948749), a bench derivation in a circuit primed with porcine blood whose own conclusion is that the original model is an oversimplification of the high arterial pO\u2082 during therapy and that accurate clinical calculation awaits further work. Treat it as a method not yet clinically validated. The circuit's pre-oxygenator (venous-line) saturation is a different quantity from the SvO\u2082 solved here: it mixes true venous blood with recirculated outlet blood. The optional check box under Inputs compares it with the model and never feeds it into the result. No published source was found for the sometimes-taught maneuver of briefly stopping sweep gas to read a true mixed venous, and neither Walker 2009 nor Schmidt 2013 describes it."), React.createElement("li", null, React.createElement("strong", null, "Status bands are this tool's display heuristics."), " The 75% and 80% SaO\u2082 edges, the 3:1 ratio flag, the 95% over-support label and the 40% OER flag are conventions of this calculator, not guideline cut-points. The 80% edge is taken from the lower bound of the ELSO-described 80\u201390% typical band. The nearest sourced anchor for low-SaO\u2082 concern is an ECMO flow below 60% of cardiac output, frequently associated with SaO\u2082 <90% in ARDS (Schmidt 2013, PMID 23291732; restated in ELSO 2021)."), React.createElement("li", null, React.createElement("strong", null, "SaO\u2082 80\u201390% is a tolerated floor, not a goal"), " (Ortoleva & Chweich 2022, PMID 35644745; a two-page letter, not a primary study). Lactate, ScvO\u2082, and the DO\u2082:VO\u2082 trend trump any single number."), React.createElement("li", null, React.createElement("strong", null, "DO\u2082:VO\u2082 < 2:1"), " = the supply-dependence threshold, with 5:1 as the normal ratio, both stated in ELSO 2021 (PMID 33965970)."), React.createElement("li", null, React.createElement("strong", null, "Dissolved O\u2082 small but real."), " 0.003\xB7PaO\u2082 mL/dL: about 1.5% of CaO\u2082 at PaO\u2082 100 with Hgb 15 and SaO\u2082 100%, about 2.0% at Hgb 11 under the same conditions, about 1.4% at this tool's baseline (PaO\u2082 60, SaO\u2082 88%), and larger in severe anemia. ELSO 2021 writes the same term as 0.0034\xB7PaO\u2082."), React.createElement("li", null, React.createElement("strong", null, "H\xFCfner constant 1.34 vs 1.39."), " 1.34 accounts for normal MetHb/COHb (Bartlett 2017, PMID 27040797); ELSO 2021 uses 1.39."), React.createElement("li", null, React.createElement("strong", null, "DO\u2082:VO\u2082 means something here only because VO\u2082 is an input."), " If SvO\u2082 were a free slider, VO\u2082 = CO\xB7(CaO\u2082 \u2212 CvO\u2082)\xB710 and DO\u2082 = CO\xB7CaO\u2082\xB710 would share the cardiac-output factor: the ratio would collapse to 1/OER, CO would cancel identically, and weaning ECMO flow would make the ratio rise. This calculator holds VO\u2082 fixed at weight \xD7 index and solves SvO\u2082 from Fick, so the ratio responds to flow, hemoglobin and cardiac output in the directions a bedside clinician expects. The 3.0 mL/kg/min default index is this calculator's teaching convention; no published resting-VO\u2082 reference was verified for it."), React.createElement("li", null, React.createElement("strong", null, "Reverse mode has an SaO\u2082 floor, and no solution below it."), " The back-solve is a quadratic in SaO\u2082 \u2212 SvO\u2082. Its roots are real only when the measured SaO\u2082 is at or above a floor, S_ECMO \u2212 (\u221A(VO\u2082/(10\xB7Q_eff)) \u2212 \u221Ab)\xB2 / (K\xB7Hgb) with b = 0.003\xB7(PaO\u2082 \u2212 PvO\u2082). Below the floor the entered VO\u2082 is too ", React.createElement("em", null, "low"), ", or the effective flow too high, to explain a saturation that low: raising VO\u2082, adding recirculation or lowering hemoglobin moves the floor down, and the error text gives its value at the current settings. The tool also reports no solution when the only root is non-positive or when the implied SvO\u2082 falls to zero. For small patients the quadratic can have a second physiologic root at a very high cardiac output; the tool returns the root with the larger saturation gap, which is the lower cardiac output."), React.createElement("li", null, React.createElement("strong", null, "Real recirculation runs higher than a zeroed slider suggests, and this tool has no input for its strongest determinant."), " In 21 high-flow V-V patients, recirculation was measurable in 19 (median 14%, IQR 7\u201325) and 12 (57%) had \u226510%; right ventricular dysfunction more than doubled it (25% vs 9%) (PMID 42490650)."), React.createElement("li", null, React.createElement("strong", null, "Measured cardiac output is itself biased high on V-V ECMO (in pigs)."), " Thermodilution overestimated CO by a mean 2.1 L/min in healthy animals and 2.7 L/min after lung injury, and the error grew with recirculation, in six anesthetized pigs (Russ 2022, PMID 34860710). It is a porcine finding, not a human V-V ECMO measurement, and the reverse mode is not the corrective for it: the back-solve carries its own opposite bias (first bullet above), so the two errors do not cancel."), React.createElement("li", null, React.createElement("strong", null, "A return cannula across the interatrial septum invalidates the model."), " Inadvertent veno-left-atrial return produces a very high PaO\u2082 with absent recirculation and a low sweep requirement; in reverse mode this calculator would back-solve a meaningless cardiac output (Guevara-Chaux, PMID 40985532)."), React.createElement("li", null, React.createElement("strong", null, "Oxygen-target trials do not yet license moving the band."), " BLENDER randomized conservative (SaO\u2082 92\u201396%) against liberal (97\u2013100%) targets and found no difference in ICU-free days or mortality, but it studied ", React.createElement("em", null, "veno-arterial"), " ECMO (PMID 39162827). A meta-analysis of 12 studies found hyperoxia associated with higher mortality overall (OR 1.41, 95% CI 1.22\u20131.64) with no significant association in the V-V subgroup (PMID 41237735), which also tempers the over-supported label above. ", React.createElement("span", {
+  }, React.createElement("li", null, React.createElement("strong", null, "No native lung function: the sign of that error flips between the two modes."), " In ", React.createElement("em", null, "forward"), " mode the predicted SaO\u2082 is a lower bound: recovering lungs raise the real SaO\u2082 above it. In ", React.createElement("em", null, "reverse"), " mode the same residual lung function raises the measured SaO\u2082, narrows SaO\u2082 \u2212 SvO\u2082 and back-solves a cardiac output that is systematically ", React.createElement("em", null, "too low"), ". The one note that names this bias flags a solved native flow below 15% of the cardiac output (a heuristic of this tool). The guard for a measured SaO\u2082 above the post-oxygenator saturation fires only if you lower the post-oxygenator saturation below the measured value. Otherwise nothing warns automatically: read the solved CO as a possible under-estimate. It does not correct the thermodilution bias below; it errs the other way, and a spuriously low CO in a hypoxemic patient invites inotrope or volume decisions this model cannot support."), React.createElement("li", null, React.createElement("strong", null, "SvO\u2082 is solved here, not sampled: no validated bedside route to a true mixed venous on V-V ECMO was found."), " The return cannula discharges upstream of the pulmonary artery, so a PA-catheter sample is the post-mixing product of this equation rather than an input to it. Entering one collapses the forward equation toward SaO\u2082 = SvO\u2082 and drives the reverse denominator toward zero, and at the bedside it teaches a trainee to read arterial-equivalent blood as a reassuring extraction ratio in an under-supported patient. The published alternative (correcting a pre-membrane sample for recirculation) rests on Walker 2009 (PMID 19948749), a bench derivation in a circuit primed with porcine blood whose own conclusion is that the original model is an oversimplification of the high arterial pO\u2082 during therapy and that accurate clinical calculation awaits further work. Treat it as a method not yet clinically validated. The circuit's pre-oxygenator (venous-line) saturation is a different quantity from the SvO\u2082 solved here: it mixes true venous blood with recirculated outlet blood. The optional check box under Inputs compares it with the model and never feeds it into the result. No published source was found for the sometimes-taught maneuver of briefly stopping sweep gas to read a true mixed venous, and neither Walker 2009 nor Schmidt 2013 describes it."), React.createElement("li", null, React.createElement("strong", null, "Status bands are this tool's display heuristics."), " The 75% and 80% SaO\u2082 edges, the 3:1 ratio flag, the 95% over-support label and the 40% OER flag are conventions of this calculator, not guideline cut-points. The 80% edge is taken from the lower bound of the ELSO-described 80\u201390% typical band. The nearest sourced anchor for low-SaO\u2082 concern is an ECMO flow below 60% of cardiac output, frequently associated with SaO\u2082 <90% in ARDS (Schmidt 2013, PMID 23291732; restated in ELSO 2021)."), React.createElement("li", null, React.createElement("strong", null, "SaO\u2082 80\u201390% is a tolerated floor, not a goal"), " (Ortoleva & Chweich 2022, PMID 35644745; a two-page letter, not a primary study). Lactate, ScvO\u2082, and the DO\u2082:VO\u2082 trend trump any single number."), React.createElement("li", null, React.createElement("strong", null, "DO\u2082:VO\u2082 < 2:1"), " = the supply-dependence threshold, with 5:1 as the normal ratio, both stated in ELSO 2021 (PMID 33965970)."), React.createElement("li", null, React.createElement("strong", null, "Dissolved O\u2082 small but real."), " 0.003\xB7PaO\u2082 mL/dL: about 1.5% of CaO\u2082 at PaO\u2082 100 with Hgb 15 and SaO\u2082 100%, about 2.0% at Hgb 11 under the same conditions, about 1.4% at this tool's baseline (PaO\u2082 60, SaO\u2082 88%), and larger in severe anemia. ELSO 2021 writes the same term as 0.0034\xB7PaO\u2082."), React.createElement("li", null, React.createElement("strong", null, "H\xFCfner constant 1.34 vs 1.39."), " 1.34 accounts for normal MetHb/COHb (Bartlett 2017, PMID 27040797); ELSO 2021 uses 1.39."), React.createElement("li", null, React.createElement("strong", null, "DO\u2082:VO\u2082 means something here only because VO\u2082 is an input."), " If SvO\u2082 were a free slider, VO\u2082 = CO\xB7(CaO\u2082 \u2212 CvO\u2082)\xB710 and DO\u2082 = CO\xB7CaO\u2082\xB710 would share the cardiac-output factor: the ratio would collapse to 1/OER, CO would cancel identically, and weaning ECMO flow would make the ratio rise. This calculator holds VO\u2082 fixed at weight \xD7 index and solves SvO\u2082 from Fick, so the ratio responds to flow, hemoglobin and cardiac output in the directions a bedside clinician expects. The 3.0 mL/kg/min default index is this calculator's teaching convention; no published resting-VO\u2082 reference was verified for it."), React.createElement("li", null, React.createElement("strong", null, "Reverse mode has an SaO\u2082 floor, and no solution below it."), " The back-solve is a quadratic in SaO\u2082 \u2212 SvO\u2082. Its roots are real only when the measured SaO\u2082 is at or above a floor, S_ECMO \u2212 (\u221A(VO\u2082/(10\xB7Q_eff)) \u2212 \u221Ab)\xB2 / (K\xB7Hgb) with b = 0.003\xB7(PaO\u2082 \u2212 PvO\u2082). Below the floor the entered VO\u2082 is too ", React.createElement("em", null, "low"), ", or the effective flow too high, to explain a saturation that low: raising VO\u2082, adding recirculation or lowering hemoglobin moves the floor down, and the error text gives its value at the current settings. The tool also reports no solution when the only root is non-positive or when the implied SvO\u2082 falls to zero. For small patients the quadratic can have a second physiologic root at a very high cardiac output; the tool returns the root with the larger saturation gap, which is the lower cardiac output."), React.createElement("li", null, React.createElement("strong", null, "Real recirculation runs higher than a zeroed slider suggests, and this tool has no input for its strongest determinant."), " In 21 high-flow V-V patients, recirculation was measurable in 19 (median 14%, IQR 7\u201325) and 12 (57%) had \u226510%; right ventricular dysfunction more than doubled it (25% vs 9%) (PMID 42490650)."), React.createElement("li", null, React.createElement("strong", null, "Measured cardiac output is itself biased high on V-V ECMO (in pigs)."), " Thermodilution overestimated CO by a mean 2.1 L/min in healthy animals and 2.7 L/min after lung injury, and the error grew with recirculation, in six anesthetized pigs (Russ 2022, PMID 34860710). It is a porcine finding, not a human V-V ECMO measurement, and the reverse mode is not the corrective for it: the back-solve carries its own opposite bias (first bullet above), so the two errors do not cancel."), React.createElement("li", null, React.createElement("strong", null, "A return cannula across the interatrial septum invalidates the model."), " Inadvertent veno-left-atrial return produces a very high PaO\u2082 with absent recirculation and a low sweep requirement; in reverse mode this calculator would back-solve a meaningless cardiac output (Guevara-Chaux, PMID 40985532)."), React.createElement("li", null, React.createElement("strong", null, "Oxygen-target trials do not yet license moving the band."), " BLENDER randomized conservative (SaO\u2082 92\u201396%) against liberal (97\u2013100%) targets and found no difference in ICU-free days or mortality, but it studied ", React.createElement("em", null, "veno-arterial"), " ECMO (PMID 39162827). A meta-analysis of 12 studies found hyperoxia associated with higher mortality overall (OR 1.41, 95% CI 1.22\u20131.64) with no significant association in the V-V subgroup (PMID 41237735), which also tempers the over-supported label above. ", React.createElement("span", {
     className: "text-slate-500"
   }, "BLENDER (PMID 39162827) has an erratum on record: Intensive Care Med 2024;50(12):2241\u20132242, PMID 39412548. Link only; consult it before relying on this result.")), React.createElement("li", null, React.createElement("strong", null, "Confirming recirculation or cannula position is an ultrasound question."), " The 2026 ELSO state-of-the-art review covers the bedside strategies this calculator cannot substitute for (Doufl\xE9, PMID 41588617)."), React.createElement("li", null, React.createElement("strong", null, "Every threshold in this tool is adult or animal; none of it is a pediatric cut-point."), " The cited evidence base is the ELSO 2021 ", React.createElement("em", null, "adult"), " V-V guideline, Schmidt 2013 (adult ARDS), Patel 2019 (adult review), Fisser 2022 (adult), Russ 2022 (pigs), Ortoleva 2022 (adult letter) and BLENDER (adult veno-arterial); the only pediatric-adjacent source is a neonatal cannula flow simulation (CFD) (Jamil 2020). Flow, cardiac-output and VO\u2082 are weight-indexed and the sliders reach neonatal values: a 3 kg neonate on roughly 0.2 L/min of circuit flow against a cardiac output near 0.6 L/min can be entered, but the 5\u20136 L/min cannula ceiling, the 80\u201390% SaO\u2082 band and the 60%-of-CO flow anchor must not be carried onto a child. No weight-indexed flow target is sourced in this tool."), React.createElement("li", null, React.createElement("strong", null, "Typed values are never rewritten in silence."), " A value is applied after a short pause or when you leave the field, so a number such as 12.5 never passes through 1 or 12 on its way in. A value outside the range is held, and on leaving the field it moves to the nearest allowed value with a message under the field. The box always shows the value the model is using, and a message clears when something else changes the value."), React.createElement("li", null, React.createElement("strong", null, "Plausibility guards and the status label."), " A note appears, and the status cannot read as reassuring, when an entered or solved cardiac output exceeds 12 L/min or 400 mL/kg/min (whichever is lower), when circuit flow exceeds 300 mL/kg/min, or when the solved native flow is under 15% of the cardiac output. These numbers are heuristics of this tool, set to catch a wrong weight or unit; none is a published cut-point. In \"The patient's SaO\u2082\" mode a low DO\u2082:VO\u2082 is labelled a lower bound, because the solved cardiac output is one."), React.createElement("li", null, React.createElement("strong", null, "Two assumptions move the answer and cannot be measured here."), " The VO\u2082 index and the recirculation fraction are defaults. The panel under the result shows how far the answer runs across a VO\u2082 index of \xB133% and recirculation of 0\u201320%. The optional circuit saturation check estimates VO\u2082 from the oxygen added across the membrane; it is approximate and is shown beside the assumption, not in place of it."))), React.createElement("div", {
     className: "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
