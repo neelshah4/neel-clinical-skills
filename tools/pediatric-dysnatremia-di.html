@@ -350,11 +350,12 @@
   }
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -421,7 +422,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -503,12 +527,12 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       <div class="field" id="dx-ga-field" hidden>
         <label for="dx-ga">Gestational age at birth</label>
         <div class="row"><input type="number" id="dx-ga" min="20" max="44" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">weeks</span></div>
-        <div class="hint" id="h-dx-ga">Below 35 weeks, blocks a salt-wasting call on a urine sodium.</div>
+        <div class="hint" id="h-dx-ga">Below 35 weeks, adds a note for preterm infants. It does not change the ranking.</div>
       </div>
       <div class="field">
         <label for="dx-wt">Weight</label>
-        <div class="row"><input type="number" id="dx-wt" min="0.3" max="150" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">kg</span></div>
-        <div class="hint">Used to compute urine output.</div>
+        <div class="row"><input type="number" id="dx-wt" min="0.3" max="200" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">kg</span></div>
+        <div class="hint" id="h-dx-wt">Used to compute urine output.</div>
       </div>
     </div>
   </div>
@@ -534,12 +558,12 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       <div class="field">
         <label for="dx-uvol">Urine volume</label>
         <div class="row"><input type="number" id="dx-uvol" min="0" max="20000" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mL</span></div>
-        <div class="hint">Timed collection.</div>
+        <div class="hint" id="h-dx-uvol">Timed collection.</div>
       </div>
       <div class="field">
         <label for="dx-uhrs">Over how many hours</label>
-        <div class="row"><input type="number" id="dx-uhrs" min="0.25" max="48" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">h</span></div>
-        <div class="hint">Decimals are fine.</div>
+        <div class="row"><input type="number" id="dx-uhrs" min="0.5" max="48" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">h</span></div>
+        <div class="hint" id="h-dx-uhrs">Decimals are fine.</div>
       </div>
       <div class="field">
         <label for="dx-uop-out">Urine output (computed)</label>
@@ -710,7 +734,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       <div class="field">
         <label for="tt-dose">Vasopressin dose</label>
         <div class="row"><input type="number" id="tt-dose" min="0" max="500" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">mU/kg/hr</span></div>
-        <div class="hint">1 unit = 1000 mU. A rate written in U/kg/hr is 1000&times; this number; a rate in U/kg/min is 60,000&times; it.</div>
+        <div class="hint">1 unit = 1000 mU. A rate written in U/kg/hr is this number divided by 1000 (10 mU/kg/hr = 0.01 U/kg/hr); a rate in U/kg/min is this number divided by 60,000.</div>
       </div>
       <div class="field">
         <label for="tt-hours-since">Hours since the last dose change</label>
@@ -1626,6 +1650,20 @@ function deriveSg(i) {
   i.sgDemoted = !!(i.sgScorable && (i.sgInterferent || i.soluteLoad || i.sgDemoteOnly));
   return i;
 }
+/* Entry checks for the three urine-output inputs on the Interpret tab. These are not
+   clinical thresholds. Outside them a unit slip (grams for kilograms, litres for
+   millilitres, minutes for hours) is more likely than a real value, so no urine output
+   is calculated and no verdict is given on it. lowFloor is the computed output, in
+   mL/kg/hr, below which the tool says to check the collection rather than call the
+   urine output normal. */
+const UOP_INPUT = { wtLo: 0.3, wtHi: 200, volLo: 0, volHi: 20000, hrsLo: 0.5, hrsHi: 48, lowFloor: 0.1 };
+function uopInputProblems(wt, vol, hrs) {
+  return {
+    wt:  (wt !== null && !(wt >= UOP_INPUT.wtLo && wt <= UOP_INPUT.wtHi)) ? "Weight must be 0.3 to 200 kg. Check the units: kilograms, not grams." : null,
+    vol: (vol !== null && !(vol >= UOP_INPUT.volLo && vol <= UOP_INPUT.volHi)) ? "Urine volume must be 0 to 20,000 mL. Check the units: millilitres, not litres." : null,
+    hrs: (hrs !== null && !(hrs >= UOP_INPUT.hrsLo && hrs <= UOP_INPUT.hrsHi)) ? "Collection time must be 0.5 to 48 hours. Check the units: hours, not minutes." : null
+  };
+}
 function computeUop(vol, hrs, wt) {
   if (vol === null || hrs === null || wt === null) return null;
   if (!(hrs > 0) || !(wt > 0) || vol < 0) return null;
@@ -1648,7 +1686,11 @@ function ageToDays(v, unit) {
    ========================================================================= */
 function readDx() {
   const wt = num("dx-wt");
-  const uop = computeUop(num("dx-uvol"), num("dx-uhrs"), wt);
+  /* Out-of-range weight, volume or hours: no urine output is calculated, and the
+     verdicts that read it see "not entered" while the fields say why. */
+  const uopProblems = uopInputProblems(wt, num("dx-uvol"), num("dx-uhrs"));
+  const uopUnits = !!(uopProblems.wt || uopProblems.vol || uopProblems.hrs);
+  const uop = uopUnits ? null : computeUop(num("dx-uvol"), num("dx-uhrs"), wt);
   const na = num("dx-na"), naPrev = num("dx-na-prev"), naHrs = num("dx-na-hrs");
   const sgRaw = num("dx-sg"), sgGuard = checkSG(sgRaw);
   const uosmRaw = num("dx-uosm");
@@ -1668,6 +1710,7 @@ function readDx() {
   const ga = (gaRaw !== null && gaRaw >= 20 && gaRaw <= 45) ? gaRaw : null;
   const i = {
     ageDays: ageDays, ga: ga, wt: wt, uop: uop,
+    uopUnits: uopUnits, uopProblems: uopProblems,
     na: na, naPrev: naPrev, naHrs: naHrs,
     naDelta: (na !== null && naPrev !== null) ? (na - naPrev) : null,
     naRate: (na !== null && naPrev !== null && naHrs !== null && naHrs > 0) ? ((na - naPrev) / naHrs) : null,
@@ -1709,6 +1752,8 @@ function readDx() {
   if (uosmRaw !== null && uosmRaw <= 0) i.rangeWarn.push("A urine osmolality of zero or below is not a measurement. Nothing below is a statement about urine concentration until it is corrected.");
   if (uosmRaw !== null && uosmRaw > 1600) i.rangeWarn.push("A urine osmolality above 1600 mOsm/kg is beyond the human maximum. Check the value before reading anything below.");
   if (uop !== null && uop > 60) i.rangeWarn.push("A urine output of " + fmt(uop, 1) + " mL/kg/hr is implausible. Check the volume, the interval and the weight.");
+  if (uopUnits) i.rangeWarn.push("The weight, urine volume or collection time is outside the range this tool accepts, so the urine output is not calculated and no urine-output verdict is given. Check the units: kilograms, millilitres, hours.");
+  if (uop !== null && uop < UOP_INPUT.lowFloor) i.rangeWarn.push("The urine output is " + fmt(uop, 2) + " mL/kg/hr: oliguria or anuria, check the collection. A volume left out, or a weight or time in the wrong unit, gives the same number.");
   /* A urine osmolality of zero or below is not scored at all, rather than being
      reported as confirming a hypotonic urine. */
   if (uosmRaw !== null && uosmRaw <= 0) i.uosm = null;
@@ -2007,6 +2052,8 @@ const V = {
   polyuria:        { what: "a measured urine output at or above the 2 mL/kg/hr mark", ok: i => i.uop !== null && i.uop >= T.uopPossible },
   notPolyuric:     { what: "a urine output that is absent or below the 2 mL/kg/hr mark", ok: i => i.uop === null || i.uop < T.uopPossible },
   uopAbsent:       { what: "no urine output entered", ok: i => i.uop === null },
+  uopUnusable:     { what: "a urine output that could not be calculated from in-range inputs, or one below 0.1 mL/kg/hr", ok: i => i.uopUnits === true || (i.uop !== null && i.uop < UOP_INPUT.lowFloor) },
+  uopUsable:       { what: "a urine output that is absent, or calculated from in-range inputs and at or above 0.1 mL/kg/hr", ok: i => !(i.uopUnits === true || (i.uop !== null && i.uop < UOP_INPUT.lowFloor)) },
   hypotonicUrine:  { what: "a urine osmolality at or below 300", ok: i => i.uosm !== null && i.uosm <= T.uosmHypotonicCeil },
   concUsable:      { what: "a urine osmolality that is being scored", ok: i => i.uosm !== null && !i.neoGate },
   noUsableConc:    { what: "no urine osmolality that can be scored", ok: i => i.uosm === null || i.neoGate },
@@ -2178,7 +2225,15 @@ const NODES = {
       ? ["A specific gravity is entered and is displayed above. It is not missing — it is not being classified, for the reason given in the gate above — so it is not a usable measurement of urine concentration here."]
       : [] },
 
-  "node-310-nothing-abnormal": { requires: ["na", "uop"], asserts: [V.naInPedInterval, V.notPolyuric, V.notNeonate], cls: "quiet", title: "No dysnatremia and no polyuria in what is entered",
+  "node-305-uop-check": { requires: ["na"], asserts: [V.naInPedInterval, V.notNeonate, V.uopUnusable], cls: "caution", title: "Urine output not usable: check the units or the collection",
+    body: ["The urine output could not be used, so this tool gives no urine-output verdict.",
+           "The serum sodium is inside the pediatric reference interval of 137 to 143 mmol/L (ages 0.45 to 17 years, n=1000). That says nothing about the urine output."],
+    dyn: (i) => [ i.uopUnits
+        ? "The weight, urine volume or collection time is outside the range this tool accepts (0.3 to 200 kg, 0 to 20,000 mL, 0.5 to 48 hours), so no urine output was calculated. Check the units: kilograms, millilitres, hours."
+        : "The computed urine output is " + fmt(i.uop, 2) + " mL/kg/hr, below 0.1: oliguria or anuria, check the collection.",
+      "On the entered values: serum sodium " + fmt(i.na, 0) + " mmol/L." ] },
+
+  "node-310-nothing-abnormal": { requires: ["na", "uop"], asserts: [V.naInPedInterval, V.notPolyuric, V.notNeonate, V.uopUsable], cls: "quiet", title: "No dysnatremia and no polyuria in what is entered",
     body: ["The serum sodium is inside the pediatric reference interval of 137 to 143 mmol/L (ages 0.45 to 17 years, n=1000), and the measured urine output is below the polyuria mark. That interval is narrower than the adult 135 to 145 convention: a child at 136 is below the pediatric interval and inside the adult one, and this tool uses the pediatric one.",
            "That is a statement about the values entered and about nothing else."],
     dyn: (i) => [ "On the entered values: serum sodium " + fmt(i.na, 0) + " mmol/L and urine output " + fmt(i.uop, 2) + " mL/kg/hr." ] },
@@ -2291,6 +2346,7 @@ function pickNode(i, diffs, ctx) {
      sodium is worth naming, but it is not polyuria and is not called that. */
   if (ctx.branchPoly && ctx.hasConc && V.hypotonicUrine.ok(i, ctx) && V.naHigh.ok(i, ctx)) return pick("node-140-dilute-hypertonic-no-poly");
   if (V.naInPedInterval.ok(i, ctx) && V.notNeonate.ok(i, ctx)) {
+    if (V.uopUnusable.ok(i, ctx)) return pick("node-305-uop-check");
     if (i.uop === null) return pick("node-315-na-normal-no-uop");
     if (i.uop < T.uopPossible) return pick("node-310-nothing-abnormal");
   }
@@ -2447,11 +2503,21 @@ function renderDx() {
     let tag = "below the 2 mL/kg/hr possible-polyuria mark";
     if (i.uop >= T.uopClear) tag = "at or above 3 mL/kg/hr, clear polyuria on the pediatric operational criterion";
     else if (i.uop >= T.uopPossible) tag = "at or above 2 mL/kg/hr, possible polyuria";
+    else if (i.uop < UOP_INPUT.lowFloor) tag = "below 0.1 mL/kg/hr: oliguria or anuria, check the collection";
     $("dx-uop-note").textContent = fmt(num("dx-uvol"), 0) + " mL ÷ " + fmt(num("dx-uhrs"), 2) + " h ÷ " + fmt(i.wt, 2) + " kg: " + tag;
   } else {
     uopEl.textContent = "—";
-    $("dx-uop-note").textContent = "Needs a urine volume, its interval and a weight.";
+    $("dx-uop-note").textContent = i.uopUnits ? "Not calculated: check the units in the fields above." : "Needs a urine volume, its interval and a weight.";
   }
+  /* Out-of-range entries are named under their own field, in red, and the field is
+     marked invalid for assistive technology. A valid entry restores the original hint. */
+  [["dx-wt", "h-dx-wt", "wt", "Used to compute urine output."],
+   ["dx-uvol", "h-dx-uvol", "vol", "Timed collection."],
+   ["dx-uhrs", "h-dx-uhrs", "hrs", "Decimals are fine."]].forEach(f => {
+    const h = $(f[1]), inp = $(f[0]), msg = i.uopProblems[f[2]];
+    if (msg) { h.textContent = msg; h.className = "err"; inp.setAttribute("aria-invalid", "true"); }
+    else { h.textContent = f[3]; h.className = "hint"; inp.removeAttribute("aria-invalid"); }
+  });
   const trendEl = $("dx-na-trend");
   if (i.naRate !== null) {
     trendEl.textContent = "Δ " + (i.naDelta >= 0 ? "+" : "") + fmt(i.naDelta, 1) + " mmol/L over " + fmt(i.naHrs, 1) + " h = " + fmt(i.naRate, 2) + " mmol/L/hr";
@@ -2839,11 +2905,19 @@ function renderRateBox() {
   if (fall24 && fall24.d < -T.fall24Lo) {
     breaches.push("The sodium fell " + fmt(fall24.d, 1) + " mmol/L between t = " + fmt(fall24.a.t, 1) + " h and t = " + fmt(fall24.b.t, 1) + " h, an interval of " + fmt(fall24.b.t - fall24.a.t, 1) + " h, which is past the 10 to 12 mmol/L per 24 hours ceiling for correcting a <strong>hypernatremia</strong>.");
   }
-  if (rise24 && rise24.d > T.rise24) {
+  /* The 8 mmol/L in 24 hours limit is the Royal Children's Hospital Melbourne ceiling for
+     CORRECTING a hyponatremia, so it is cited only when the window starts below 135. A
+     rise that starts at or above 135 (a diabetes insipidus getting worse) is reported
+     as a rising sodium and is not judged against that ceiling. */
+  let riseNote = null;
+  if (rise24 && rise24.d > T.rise24 && rise24.a.na >= T.naHypo) {
+    riseNote = "The sodium rose " + fmt(rise24.d, 1) + " mmol/L between t = " + fmt(rise24.a.t, 1) + " h and t = " + fmt(rise24.b.t, 1) + " h, an interval of " + fmt(rise24.b.t - rise24.a.t, 1) + " h, from a starting sodium of " + fmt(rise24.a.na, 0) + " mmol/L. This is not a correction. Review the dose and the fluid plan.";
+  }
+  if (rise24 && rise24.d > T.rise24 && rise24.a.na < T.naHypo) {
     breaches.push("The sodium rose " + fmt(rise24.d, 1) + " mmol/L between t = " + fmt(rise24.a.t, 1) + " h and t = " + fmt(rise24.b.t, 1) + " h, an interval of " + fmt(rise24.b.t - rise24.a.t, 1) + " h, which is past the 8 mmol/L in 24 hours maximum the Royal Children's Hospital Melbourne hyponatraemia guideline sets for a non-seizing child.");
   }
   const box = document.createElement("div");
-  box.className = "verdict " + (breaches.length ? "caution" : "quiet");
+  box.className = "verdict " + ((breaches.length || riseNote) ? "caution" : "quiet");
   const t = document.createElement("div"); t.className = "vtitle";
   t.textContent = "Fastest logged sodium change: " + (worst.rate >= 0 ? "+" : "") + fmt(worst.rate, 2) + " mmol/L/hr, between t = " + fmt(worst.a.t, 1) + " h and t = " + fmt(worst.b.t, 1) + " h";
   box.appendChild(t);
@@ -2854,9 +2928,17 @@ function renderRateBox() {
     const pb = document.createElement("p");
     pb.innerHTML = "<strong>Past a ceiling this tool states.</strong> " + breaches.join(" ");
     box.appendChild(pb);
-  } else if (worst.rate > 0 && worst.rate * 24 > T.rise24) {
+  }
+  if (riseNote) {
+    const pr = document.createElement("p");
+    pr.innerHTML = "<strong>Rising sodium.</strong> " + riseNote;
+    box.appendChild(pr);
+  }
+  if (!breaches.length && !riseNote && worst.rate > 0 && worst.rate * 24 > T.rise24) {
     const pp = document.createElement("p");
-    pp.innerHTML = "<strong>A projection, not a breach.</strong> Held at " + fmt(worst.rate, 2) + " mmol/L/hr the sodium would rise " + fmt(worst.rate * 24, 1) + " mmol/L over 24 hours, past the 8 mmol/L ceiling for correcting a hyponatremia. No source gives an hourly ceiling for the rising direction, so this is arithmetic on the 24 hour figure and not a published rate limit.";
+    pp.innerHTML = worst.a.na < T.naHypo
+      ? "<strong>A projection, not a breach.</strong> Held at " + fmt(worst.rate, 2) + " mmol/L/hr the sodium would rise " + fmt(worst.rate * 24, 1) + " mmol/L over 24 hours, past the 8 mmol/L ceiling for correcting a hyponatremia. No source gives an hourly ceiling for the rising direction, so this is arithmetic on the 24 hour figure and not a published rate limit."
+      : "<strong>A projection, not a breach.</strong> Held at " + fmt(worst.rate, 2) + " mmol/L/hr the sodium would rise " + fmt(worst.rate * 24, 1) + " mmol/L over 24 hours. No source gives an hourly ceiling for the rising direction, so this is arithmetic on the logged rate and not a published rate limit.";
     box.appendChild(pp);
   }
   const p2 = document.createElement("p");
@@ -3298,7 +3380,7 @@ function initTheme() {
    surfaced in a role="alert" banner, expanded, so it cannot be missed.
    ========================================================================= */
 const EMPTY_I = {
-  ageDays: null, ga: null, wt: null, uop: null, na: null, naPrev: null, naHrs: null,
+  ageDays: null, ga: null, wt: null, uop: null, uopUnits: false, na: null, naPrev: null, naHrs: null,
   naDelta: null, naRate: null, uosm: null, sosm: null, una: null, sg: null, sgInvalid: null,
   uglu: null, sglu: null, ddavp: null, copeptin: null, feurate: null, endo: null, vol: null,
   cfContrast: false, cfMannitol: false, cfHtsaline: false, cfProtein: false, cfKetones: false,
@@ -4569,7 +4651,7 @@ document.addEventListener("DOMContentLoaded", function () {
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });

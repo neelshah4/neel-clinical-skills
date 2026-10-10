@@ -343,11 +343,12 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 #figMatrix text.ax{font-family:var(--nt-font-display); paint-order:stroke; stroke:var(--card); stroke-width:3px; stroke-linejoin:round}
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -414,7 +415,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -653,6 +677,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
             <div class="pin"><span class="k">&tau; est. V T / PEF</span><span class="v" id="oTauE">--</span></div>
           </div>
           <div class="flags">
+            <div class="flag" id="fNone" hidden>No breath delivered at these settings.</div>
             <div class="flag" id="fTrap" hidden>End-expiratory flow present. Suspect air trapping.</div>
             <div class="flag" id="fPlat" hidden>Plateau read during active effort. Not a valid plateau.</div>
             <div class="flag" id="fIntrinsic" hidden>Flow reached zero before T<sub>I</sub> ended. PIP is already the plateau.</div>
@@ -1630,7 +1655,7 @@ function newModel(S){
             autoPeep:null, totalPeep:null, lastAuto:0,
             holdI:false, holdE:false, apnea:false, atLimit:false,
             nPat:0, nBreaths:0, bi:0, sampCount:0,
-            eeFlow:0, paw:S.peep, flow:0 };
+            eeFlow:0, eeEnd:0, paw:S.peep, flow:0 };
   M.b = newBreath(M,S,"mand");
   return M;
 }
@@ -1653,6 +1678,10 @@ function prvcUpdate(M,S){
 }
 function startBreath(M,S,kind){
   if(M.b){ M.last = M.b; M.hist.push(M.b); if(M.hist.length>60) M.hist.shift(); }
+  /* END-EXPIRATORY FLOW is the flow in the last sample before this breath starts.
+     eeFlow is the latest expiratory flow and is non-zero all through a normal
+     exhalation, so the air-trapping flag reads the latched value instead. */
+  M.eeEnd = M.eeFlow;
   M.nBreaths++; M.bi++;
   if(S.mode==="PRVC" && kind==="mand" && M.last && M.last.VTi>0) prvcUpdate(M,S);
   M.lastAuto = M.V/S.C - S.peep;
@@ -2098,9 +2127,34 @@ function flag(id,on,cls){
   if(e.className !== cn) e.className = cn;
 }
 
+/* No breath has been delivered at these settings (PRVC with no room under P_max,
+   or pressure support 0 with nothing to trigger it). Clear every value that
+   belongs to a breath so the last setting's numbers do not stay on screen. */
+function renderNoBreath(){
+  ["oPip","oPplat","oPtot","oAuto","oDrive","oVti","oVte","oRate","oMv","oTi","oTe","oIe","oTauE"].forEach(function(id){ setRead(id,"--"); });
+  setRead("oPeep", fmt(S.peep,0), "cmH2O");
+  setRead("oTau", fmt(S.R*S.C,2), "s");
+  var room = S.pmax - S.peep - 5;
+  flag("fNone", true, "warn");
+  flag("fTrap", false); flag("fPlat", false); flag("fIntrinsic", false); flag("fDrive", false);
+  flag("fPert", PERT.hidden, "on");
+  flag("fLimit", S.mode==="PRVC" && (M.atLimit || room <= 0), "warn");
+  flag("fApnea", S.mode==="PS" && M.apnea, "on");
+  flag("fMiss", S.spont && S.pmusPk>0 && S.pmusPk < trigThreshold(S, M.lastAuto), "warn");
+  $("simStatus").textContent = "no breath" + (running ? "" : " . paused");
+  var why = (S.mode==="PRVC" && room <= 0)
+    ? "P<sub>max</sub> &minus; PEEP &minus; 5 is 0 cmH<sub>2</sub>O or less, so the controller has no pressure to add above PEEP. Lower PEEP or raise P<sub>max</sub>."
+    : (S.mode==="PS")
+      ? (S.ps <= 0 ? "Pressure support is 0 cmH<sub>2</sub>O, so a triggered or backup breath adds no pressure above PEEP. Raise support."
+                   : "The patient's effort is below the trigger threshold, so the ventilator starts no breath. Lower the trigger setting or raise the effort.")
+      : "Check the pressure, volume and timing settings.";
+  var html = "<b>What the rig shows.</b> No breath delivered at these settings. " + why;
+  if($("simFoot").innerHTML !== html) $("simFoot").innerHTML = html;
+}
 function renderReadout(){
   var b = M.last;
-  if(!b || b.VTi<=0){ return; }
+  if(!b || b.VTi<=0){ renderNoBreath(); return; }
+  flag("fNone", false);
   var Ttot = b.tI + b.tE, rate = Ttot>0 ? 60/Ttot : NaN;
   setRead("oPip",  fmt(b.PIP,1), "cmH2O");
   setRead("oPplat", M.Pplat==null ? "--" : fmt(M.Pplat,1), M.Pplat==null?"":"cmH2O");
@@ -2122,7 +2176,7 @@ function renderReadout(){
   setRead("oTau", fmt(S.R*S.C,2), "s");
   setRead("oTauE", b.pkE>0 ? fmt(b.VTe/b.pkE,2) : "--", b.pkE>0?"s":"");
 
-  var trapping = Math.abs(M.eeFlow) > 0.01;
+  var trapping = Math.abs(M.eeEnd) > 0.01;
   flag("fTrap", trapping, "on");
   flag("fPlat", M.Pplat!=null && M.platActive, "warn");
   flag("fIntrinsic", M.platIntrinsic && !M.platActive, "on");
@@ -2133,7 +2187,7 @@ function renderReadout(){
      once flow has ceased. */
   var dpFlag = (dpMeas!=null) ? dpMeas
     : ((S.mode==="VC"||S.mode==="PRVC") ? (S.vt/S.C) : (S.mode==="PC" ? S.dp : S.ps));
-  flag("fDrive", isFinite(dpFlag) && dpFlag > 15, "on");
+  flag("fDrive", isFinite(dpFlag) && +fmt(dpFlag,1) > 15, "on");
   flag("fLimit", S.mode==="PRVC" && M.atLimit, "warn");
   flag("fApnea", S.mode==="PS" && M.apnea, "on");
   var thr = trigThreshold(S, M.lastAuto);
@@ -4212,7 +4266,7 @@ document.addEventListener("DOMContentLoaded", function(){
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });

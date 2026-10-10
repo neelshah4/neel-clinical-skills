@@ -193,11 +193,12 @@ footer .mono{color:var(--ink-faint)}
 @media print{ .rig-ctrl{display:none} body{font-size:11pt} }
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -264,7 +265,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -550,6 +574,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
             <div><span class="k">Pms (zero flow)</span><span class="v" id="r3pms">3.74<small> cmH&#8322;O</small></span></div>
             <div class="pin"><span class="k">Total distending vol</span><span class="v" id="r3vd">1251<small> mL</small></span></div>
           </div>
+          <p id="r3clamp" hidden style="margin:6px 0;font-family:var(--sans);font-size:14px;font-weight:560"></p>
           <div class="readout" style="margin-top:1px">
             <div><span class="k">Arterial Vd</span><span class="v" id="r3va">189<small> mL</small></span></div>
             <div><span class="k">Periph venous Vd</span><span class="v" id="r3vpv">830<small> mL</small></span></div>
@@ -712,7 +737,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
         </div>
         <div class="rig-view"><svg id="r4svg" viewBox="0 0 560 496" role="img" aria-labelledby="r4title"><title id="r4title">A blood-volume ledger showing rest and distending volume, above a plot in which the delivery line slides along a fixed acceptance curve and the move from the reference operating point splits into a pressure leg and a flow leg</title></svg></div>
       </div>
-      <div class="rig-foot" id="r4note"><b>What the rig shows.</b> The dashed curve is acceptance and moves only with the acceptance setting; the solid line is the delivery state and moves with the contents or the container. The step from the hollow point to the filled one is the intervention, split into the part that became pressure and the part that became flow. Add 500 mL at good acceptance and most of the step is vertical; add the same 500 mL at poor acceptance and most of it is horizontal. <b>Try this.</b> Set acceptance to reduced, then compare 5500 mL at baseline tone against 5000 mL at tone +20: the operating point lands in the same place from two container states, at two values of Pms. That they coincide to three decimals is arithmetic of this rig's parameters; that two mechanisms can put a patient at the same bedside numbers is the point. <b>Calibration.</b> This rig uses the three-compartment compliances of rigs 1 and 2, inheriting their disclosed approximation and settling at a reference Pms near 11 mmHg rather than the 19 to 21 of human bedside estimates. Rest volume is 3000 mL of a 5000 mL total, matching the roughly three-quarters rest fraction used in part III. The acceptance settings are three positions on rig 2's schematic Starling relationship, not a model of any mechanism; the tone slider moves venous compliance and rest volume only, with arteriolar resistance held fixed. The provenance note under the references gives the numbers.</div>
+      <div class="rig-foot" id="r4note"><b>What the rig shows.</b> The dashed curve is acceptance and moves only with the acceptance setting; the solid line is the delivery state and moves with the contents or the container. The step from the hollow point to the filled one is the intervention, split into the part that became pressure and the part that became flow. Add 500 mL at good acceptance and most of the step is vertical; add the same 500 mL at poor acceptance and most of it is horizontal. <b>Try this.</b> Set acceptance to reduced, then compare 5500 mL at baseline tone against 5000 mL at tone +20: the operating point lands in the same place from two container states, at two values of Pms. That they coincide to three decimals is arithmetic of this rig's parameters; that two mechanisms can put a patient at the same bedside numbers is the point. <b>Calibration.</b> This rig uses the three-compartment compliances of rigs 1 and 2, inheriting their disclosed approximation and settling at a reference Pms near 11 mmHg rather than the 19 to 21 of human bedside estimates. Rest volume is 3000 mL of a 5000 mL total, a 60% rest fraction, below the roughly three-quarters used in part III. The acceptance settings are three positions on rig 2's schematic Starling relationship, not a model of any mechanism; the tone slider moves venous compliance and rest volume only, with arteriolar resistance held fixed. The provenance note under the references gives the numbers.</div>
     </div>
 
     <h3>Where Pms sits in all of this</h3>
@@ -955,7 +980,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">1. The compliance of rigs 1 and 2.</b> Total compliance is 175 mL/mmHg (8.75 arterial plus 166.25 venous in rig 1; 8.75 plus 140 plus 26.25 in rig 2). These are schematic appendix parameters, not human measurements, and run roughly 2.5 times measured human systemic compliance, reported as 0.98 mL/mmHg/kg, about 69 mL/mmHg at 70 kg (ref 23), and as a median of 73 mL/mmHg, IQR 56 to 133 (ref 26). The 2000 mL default for distending volume is inside the measured range (1677 mL in ref 23; median 2029 mL in ref 26). The rigs' Pms of 11.4 mmHg is 2000 divided by 175, which is why they sit below the 19 to 21 mmHg human bedside estimates. A disclosed approximation, not a reported value.</p>
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">2. The pivot position.</b> The figures of 31.4% of cumulative compliance at fixed vascular properties, and 28.2% to 32.8% under defended aortic pressure, are computed by rig 3. Reference 6 does not express a pivot or crossover point as a percentage of cumulative compliance, so no published number exists to check them against. A novel derivation from a published model, not a reproduction of a published result.</p>
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">3. The "roughly twenty times larger" comparison in part II.</b> Arithmetic on the classical animal-preparation figures, 98 divided by 5. Levy's full text could not be retrieved when this page was revised, so those inputs are the numbers the argument is conventionally told with rather than values quoted from the paper. The 3 to 6 mmHg gradient half is separately supported (ref 15); the 7 mmHg Pms half is not, and human bedside values are three times higher (refs 23 to 25).</p>
-  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">4. Everything rig 4 reports.</b> Rig 4 has no published counterpart. Its vascular half reuses the three-compartment compliances of rigs 1 and 2 and carries the same disclosed approximation; its rest volume of 3000 mL in a 5000 mL total sits at the roughly three-quarters rest fraction discussed in part III (ref 13, ref 6) rather than being measured; its three acceptance settings are positions on rig 2's schematic Starling relationship, chosen so the curve stays well behaved across the slider range, and correspond to no patient or preparation. The "mL/min per mmHg" figure is the change in cardiac output divided by the change in right atrial pressure from this rig's reference state, and the words attached to it label its own arithmetic at cut points of 240 and 130, not clinical thresholds. Read the rig for the shape of the relationship, never for a number.</p>
+  <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">4. Everything rig 4 reports.</b> Rig 4 has no published counterpart. Its vascular half reuses the three-compartment compliances of rigs 1 and 2 and carries the same disclosed approximation; its rest volume of 3000 mL in a 5000 mL total sits at a 60% rest fraction, below the roughly three-quarters discussed in part III (ref 13, ref 6), rather than being measured; its three acceptance settings are positions on rig 2's schematic Starling relationship, chosen so the curve stays well behaved across the slider range, and correspond to no patient or preparation. The "mL/min per mmHg" figure is the change in cardiac output divided by the change in right atrial pressure from this rig's reference state, and the words attached to it label its own arithmetic at cut points of 240 and 130, not clinical thresholds. Read the rig for the shape of the relationship, never for a number.</p>
   <p style="font-size:13px">One further gap is recorded rather than papered over: the classical claim that Rothe measured normal filling pressures of 7 to 10 mmHg could not be traced to Rothe. The 1993 abstract carries no numeric value and the full text was unreachable; the animal figure survives only indirectly, through ref 13.</p>
 
   <p style="margin-top:var(--xl); font-size:13px">Rigs 1 and 3 implement the models in reference 6 using the segmental data of reference 4 as tabulated there. Rig 2 uses the three-compartment appendix parameters of reference 6 for the vascular function line; its cardiac function curve is schematic, not a fitted dataset.</p>
@@ -997,7 +1022,7 @@ function rig1(){
   $("r1tot").innerHTML=Vd+"<small> mL</small>";
   $("r1pms").innerHTML=fmt(Pms)+"<small> mmHg</small>";
 
-  const s=$("r1svg"); s.textContent=""; s.appendChild(el("title")).textContent="Two tank levels and a pinned total volume bar";
+  const s=$("r1svg"); s.textContent=""; s.appendChild(el("title",{id:"r1title"})).textContent="Two tank levels and a pinned total volume bar";
   const H=318, base=232, top=26, maxP=170;
   const y=p=>base-Math.max(0,Math.min(p,maxP))/maxP*(base-top);
   // stiff (arterial) tank: narrow. floppy (venous): wide.
@@ -1058,14 +1083,14 @@ function rig2(){
 
   $("r2vv").textContent=Vd+" mL";
   $("r2tv").textContent = tone===0?"baseline":(tone>0?"+"+tone+" constricted":tone+" dilated");
-  $("r2cv").textContent = con===100?"normal":(con<100?con+"% depressed":con+"% augmented");
+  $("r2cv").textContent = con===100?"normal":(con+"% of normal");
   $("r2rv").textContent = fmt(Ra)+" units";
   $("r2co").innerHTML=fmt(CO)+"<small> L/min</small>";
   $("r2ra").innerHTML=fmt(Pra)+"<small> mmHg</small>";
   $("r2ms").innerHTML=fmt(Pms)+"<small> mmHg</small>";
   $("r2sl").innerHTML=fmt(slope,2)+"<small> L/min/mmHg</small>";
 
-  const s=$("r2svg"); s.textContent="";
+  const s=$("r2svg"), t2=s.querySelector("title"); s.textContent=""; if(t2) s.appendChild(t2);
   const L=54,Rr=536,T=22,B=278;
   // axes grow with the sliders so nothing is ever drawn outside the plot
   const xmax=Math.max(26, Math.ceil((Pms+3)/4)*4), ymax=Math.max(11, Math.ceil(COmax*1.15));
@@ -1168,6 +1193,10 @@ function rig3(){
   $("r3va").innerHTML=fmt(grp.A,0)+"<small> mL</small>";
   $("r3vpv").innerHTML=fmt(grp.PV,0)+"<small> mL</small>";
   $("r3vcv").innerHTML=fmt(grp.CV,0)+"<small> mL</small>";
+  const clampMsg=$("r3clamp");
+  clampMsg.style.color=NEG;
+  clampMsg.textContent = clamped ? "Blood pressure cannot be defended at this flow: the arterioles are at their limit." : "";
+  clampMsg.hidden = !clamped;
   const note=$("r3note");
   let warn=$("r3warn");
   if(belowRest){
@@ -1183,7 +1212,7 @@ function rig3(){
   const tag = pct<=0 ? " below rest" : pct<25 ? " marginal" : "";
   m.innerHTML = '<span style="color:'+col+'">'+fmt(pct,0)+'<small>% of reference'+tag+'</small></span>';
 
-  const s=$("r3svg"); s.textContent="";
+  const s=$("r3svg"), t3=s.querySelector("title"); s.textContent=""; if(t3) s.appendChild(t3);
   const cum=[0]; CC.forEach(c=>cum.push(cum[cum.length-1]+c));
   // pivot: where the descending entrance-pressure profile crosses the numerical value of Pms
   let piv=null;
@@ -1337,7 +1366,7 @@ function rig4(){
   $("r4verd").innerHTML='<span style="color:'+vcol+'">'+verdict+"</span>";
   $("r4ratio").innerHTML=ratioTxt;
 
-  const s=$("r4svg"); s.textContent="";
+  const s=$("r4svg"), t4=s.querySelector("title"); s.textContent=""; if(t4) s.appendChild(t4);
 
   /* ---- ledger: contents (bar length) and container (divider position) ---- */
   const LX=104, RX=544, VMAX=6400;
@@ -1461,7 +1490,7 @@ document.addEventListener("neeltheme",()=>{readThemeColors();rig1();rig2();rig3(
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });

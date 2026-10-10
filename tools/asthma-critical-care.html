@@ -443,6 +443,9 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   .rig-ctrl,.theme-btn,.toc{display:none}
   body{font-size:11pt; background:#fff; color:#000}
   section,.rig,.dcard,.practice{break-inside:avoid}
+  /* The screen layout gives figures a minimum width and a sideways scroll; paper cannot scroll, so the figure shrinks to the page. */
+  svg{min-width:0!important}
+  .rig-view{overflow:visible!important}
   /* Print hides the controls, so every interactive figure prints frozen at
      whatever state it happened to be in. Saying so on the page itself is the
      only honest substitute: a printed copy silently loses the interaction. */
@@ -541,11 +544,12 @@ svg#d1 text[x="26"][y="142"]{letter-spacing:-.068em}
 svg#d1 text[x="436"][y="188"]{letter-spacing:-.055em}
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -612,7 +616,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -1893,7 +1920,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
               <input type="range" id="c5rr" min="4" max="24" step="1" value="18" aria-describedby="c5rra">
               <span class="anchor" id="c5rra">breaths/min. The cohort was measured at 6, 12 and 18 only; anything else is extrapolation.</span></div>
             <div class="ctl"><label for="c5flow">Inspiratory flow<span class="val" id="c5flowv">79</span></label>
-              <input type="range" id="c5flow" min="40" max="100" step="5" value="79" aria-describedby="c5flowa">
+              <input type="range" id="c5flow" min="40" max="100" step="1" value="79" aria-describedby="c5flowa">
               <span class="anchor" id="c5flowa">L/min. This is the lever that makes peak and plateau move in opposite directions.</span></div>
             <div class="derived"><span>Tidal volume, held</span><b>613 mL</b></div>
             <div class="derived"><span>Expiratory time</span><b id="c5te">2.87 s</b></div>
@@ -3445,7 +3472,8 @@ function c5Draw(){
   if(rr<6) f = "<b>Six to four breaths a minute buys almost nothing.</b> Expiratory flow at rate 6 was already down to 23.1 &plusmn; 5.8 mL/s, so there is very little left to recover, and the minute ventilation you gave up to get here is real.";
   else if(rr>=12 && rr<=18) f = "<b>Rate 18 to 12 bought 1.7 s of expiration and 2.1 cmH<sub>2</sub>O of plateau. Peak moved 0.4 cmH<sub>2</sub>O. In the wrong direction.</b> The peak is not a monitor of hyperinflation.";
   else f = "<b>Rate 12 to 6 bought 5 seconds of expiration and the same 2 cmH<sub>2</sub>O of plateau that 1.7 seconds had bought.</b> The returns diminish because expiratory flow decays, and by six breaths a minute there is almost nothing left to exhale.";
-  if(fl!==79) f += " <b>Inspiratory flow is at "+fl+" L/min.</b> Raising it shortens inspiratory time and lengthens expiratory time at the same rate, so you just made the peak alarm worse and the patient safer: peak was predominantly related to inspiratory flow and did not reflect lung volume.";
+  if(fl>79) f += " <b>Inspiratory flow is at "+fl+" L/min.</b> Raising it shortens inspiratory time and lengthens expiratory time at the same rate, so you just made the peak alarm worse and the patient safer: peak was predominantly related to inspiratory flow and did not reflect lung volume.";
+  else if(fl<79) f += " <b>Inspiratory flow is at "+fl+" L/min.</b> Lowering it lengthens inspiratory time and shortens expiratory time at the same rate, so the peak alarm falls while the plateau and auto-PEEP rise. A lower peak here is not a safer patient. Peak was predominantly related to inspiratory flow and did not reflect lung volume.";
   $("c5foot").innerHTML = f;
 }
 function c5Init(){
@@ -3908,7 +3936,7 @@ document.addEventListener("DOMContentLoaded", function(){
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });

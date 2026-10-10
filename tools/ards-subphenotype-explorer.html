@@ -556,7 +556,6 @@
   /* Figure 2: gridlines now hold 3:1, so the header and callout labels get a plate-coloured halo (paint-order) where a gridline passes behind them */
   #f2svg text.t-105, #f2svg text.f-caution { paint-order: stroke fill; stroke: var(--nt-plate); stroke-width: 3px; stroke-linejoin: round; }
   .res-strip { overflow-x: auto; }
-  .res-strip svg { min-width: 400px; }
 
   /* readable floor: labels 11px */
   th, .cite-table th, .status-chip, .grade, .pop-badge, .tab small,
@@ -576,11 +575,12 @@
   [style*="font-size"]:not(svg *) { font-size: 14px !important; }
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -647,7 +647,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -1657,9 +1680,12 @@ function modelProb(model, vals) { return logistic(modelLogit(model, vals)); }
 /* Returns one of:
    {kind:"point", p}
    {kind:"range", lo, hi, missing}
-   {kind:"blocked", missing:[...]}                    two or more absent    */
-function runModel(model, inputs) {
+   {kind:"blocked", missing:[...]}                    two or more absent
+   {kind:"invalid", bad:[...]}                        an entry was rejected; `bad` is optional */
+function runModel(model, inputs, bad) {
   const need = model.terms.map(t => t.v);
+  const rejected = bad ? need.filter(v => bad[v]) : [];
+  if (rejected.length) return { kind: "invalid", bad: rejected };
   const missing = need.filter(v => inputs[v] === null || inputs[v] === undefined || !isFinite(inputs[v]));
   if (missing.length === 0) return { kind: "point", p: modelProb(model, inputs) };
   if (missing.length >= 2) return { kind: "blocked", missing: missing };
@@ -1928,6 +1954,9 @@ function drawF3() {
    ========================================================================= */
 const STATE = {
   inputs: { il8: null, il6: null, stnfr1: null, protc: null, hco3: null, vaso: null },
+  /* entries typed but rejected (negative, or outside the box's min/max): never used,
+     never swept as if blank. {raw, kind: "neg" | "range", lo, hi} per variable. */
+  bad: {},
   pop: "ADULT",
   cutMode: "youden",
   /* null, "hypo" or "hyper": which published example the reader loaded, and
@@ -1938,12 +1967,15 @@ const STATE = {
 const INPUT_IDS = { il8: "in-il8", il6: "in-il6", stnfr1: "in-stnfr1", protc: "in-protc", hco3: "in-hco3" };
 
 function readInputs() {
+  STATE.bad = {};
   for (const k in INPUT_IDS) {
     const e = $(INPUT_IDS[k]);
     const raw = e.value.trim();
     if (raw === "") { STATE.inputs[k] = null; e.removeAttribute("aria-invalid"); continue; }
     const v = parseFloat(raw);
-    if (!isFinite(v) || v < 0) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); }
+    const lo = Math.max(0, parseFloat(e.getAttribute("min")) || 0), hi = parseFloat(e.getAttribute("max"));
+    if (!isFinite(v) || v < 0) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); if (isFinite(v)) STATE.bad[k] = { raw: raw, kind: "neg" }; }
+    else if (v < lo || (isFinite(hi) && v > hi)) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); STATE.bad[k] = { raw: raw, kind: "range", lo: lo, hi: hi }; }
     else { STATE.inputs[k] = v; e.removeAttribute("aria-invalid"); }
   }
   const vs = $("in-vaso").value;
@@ -2018,12 +2050,37 @@ function miniSvg(model, pop) {
   return s;
 }
 
+/* ---- rejected entries and the reach of a sweep ------------------------------ */
+function badEntryText(vars) {
+  const parts = vars.map(function (k, i) {
+    const b = STATE.bad[k], V = VARS[k];
+    const who = i === 0 ? V.label.charAt(0).toUpperCase() + V.label.slice(1) : V.label;
+    return b.kind === "neg"
+      ? who + " " + b.raw + ": negative values are not allowed"
+      : who + " " + b.raw + " is outside " + b.lo + " to " + b.hi + " " + V.unit;
+  });
+  return parts.join("; ") + "; verdict withheld. " + (vars.length > 1 ? "These values were" : "This value was") + " not used.";
+}
+function sweepScope(model, v, hyperSide) {
+  /* A verdict that holds across the swept range says nothing about values beyond
+     it. Name the range, and the side of it that could change the class. Binary
+     vasopressor use is swept in both states, so its wording stays whole. */
+  if (v === "vaso") return " across the whole sweep";
+  const t = model.terms.filter(x => x.v === v)[0];
+  const raisesP = t.coef > 0;
+  const open = (hyperSide === raisesP) ? "lower" : "higher";
+  const V = VARS[v];
+  return " across the swept " + V.label + " range of " + V.sweep[0] + " to " + V.sweep[1] + " " + V.unit +
+    "; " + open + " " + V.label + " values were not swept";
+}
+
 /* ---- one result row ------------------------------------------------------ */
 function resultRow(model, pop) {
-  const res = runModel(model, STATE.inputs);
+  const res = runModel(model, STATE.inputs, STATE.bad);
   const cut = activeCut(model, pop, STATE.cutMode === "half" ? "half" : "youden");
+  const noRun = res.kind === "blocked" || res.kind === "invalid";
   const row = document.createElement("div");
-  row.className = "res-row" + (res.kind === "blocked" ? " off" : "");
+  row.className = "res-row" + (noRun ? " off" : "");
 
   const top = document.createElement("div"); top.className = "res-top";
   const nm = document.createElement("div"); nm.className = "res-name";
@@ -2036,7 +2093,7 @@ function resultRow(model, pop) {
 
   const pv = document.createElement("div"); pv.className = "res-p";
   const vd = document.createElement("div"); vd.className = "res-verdict";
-  if (!cut && res.kind !== "blocked") {
+  if (!cut && !noRun) {
     /* the probability is still the model's own output and is shown; the class
        word is withheld because no cut-point for this population exists. */
     pv.textContent = res.kind === "point"
@@ -2053,8 +2110,15 @@ function resultRow(model, pop) {
     pv.textContent = "P = " + fmt(res.lo, 3) + " to " + fmt(res.hi, 3);
     const spans = res.lo < cut.p && res.hi > cut.p;
     if (spans) { vd.className += " v-indet"; vd.textContent = "indeterminate: the missing value decides the class"; }
-    else if (res.lo >= cut.p) { vd.className += " v-hyper"; vd.textContent = "hyperinflammatory across the whole sweep"; }
-    else { vd.className += " v-hypo"; vd.textContent = "hypoinflammatory across the whole sweep"; }
+    else {
+      const hyperSide = res.lo >= cut.p;
+      vd.className += hyperSide ? " v-hyper" : " v-hypo";
+      vd.textContent = (hyperSide ? "hyperinflammatory" : "hypoinflammatory") + sweepScope(model, res.missing, hyperSide);
+    }
+  } else if (res.kind === "invalid") {
+    pv.textContent = "-";
+    vd.className += " v-none";
+    vd.textContent = "verdict withheld";
   } else {
     pv.textContent = "-";
     vd.className += " v-none";
@@ -2071,7 +2135,7 @@ function resultRow(model, pop) {
       ". Not imputed.";
     row.appendChild(tag);
   }
-  if (!cut && res.kind !== "blocked") {
+  if (!cut && !noRun) {
     const tag = document.createElement("div");
     tag.style.cssText = "font-family:var(--mono);font-size:11px;color:var(--caution);margin-top:4px;letter-spacing:0.03em";
     const yc = model.cuts[0];
@@ -2079,6 +2143,12 @@ function resultRow(model, pop) {
       fmt(yc.p, 3) + ", was derived in the " + (yc.pop === "CHILD" ? "pediatric" : "adult") +
       " cohort. It is drawn on the strip and not applied here, because a threshold does not transport. " +
       "The 0.5 rule is a convention rather than a cohort estimate and is available on either tab.";
+    row.appendChild(tag);
+  }
+  if (res.kind === "invalid") {
+    const tag = document.createElement("div");
+    tag.style.cssText = "font-family:var(--mono);font-size:11px;color:var(--neg);margin-top:4px;letter-spacing:0.03em";
+    tag.textContent = badEntryText(res.bad);
     row.appendChild(tag);
   }
   if (res.kind === "blocked") {
@@ -2948,7 +3018,7 @@ function initTheme() {
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });

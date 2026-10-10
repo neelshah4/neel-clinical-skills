@@ -133,6 +133,12 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:14px; padding
 .tbl-note{font-size:14px; font-family:var(--sans); color:var(--ink-faint); line-height:1.5; margin-top:var(--sm)}
 .scrollx{overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch}
 .scrollx table{min-width:640px}
+/* Rig 3's live table holds the rig's only numbers: it wraps instead of scrolling inside the figure's own scroller */
+#v3tblmount table{min-width:0}
+@media (max-width:480px){
+  #v3tblmount th, #v3tblmount td, #v3tblmount td.num, #v3tblmount th.num{padding-right:6px}
+  #v3tblmount th.num{font-family:var(--sans)}
+}
 
 /* ---------- cross-links ---------- */
 .links{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius); overflow:hidden; margin:var(--lg) 0}
@@ -204,6 +210,7 @@ select{width:100%; font-family:var(--sans); font-size:14px; padding:8px 10px; mi
 .flag.on{border-color:var(--caution); background:var(--caution-bg); color:var(--ink)}
 .flag.warn{border-color:var(--neg); background:var(--neg-bg); color:var(--ink)}
 .flag[hidden]{display:none}
+.ctl .flag{margin-top:6px}
 
 /* small-multiple grid for the six-mode simulator */
 .simgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:var(--radius-sm); overflow:hidden}
@@ -314,11 +321,12 @@ p[style*="font-size:1"],span[style*="font-size:11px"]{font-size:14px !important}
 }
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -385,7 +393,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -831,7 +862,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
               </div>
               <div class="ctl">
                 <label for="v6paco2">Observed PaCO<sub>2</sub><span class="val">mmHg</span></label>
-                <input type="number" id="v6paco2" min="15" max="120" step="1" value="45" inputmode="numeric" aria-describedby="v6paco2h">
+                <input type="number" id="v6paco2" min="15" max="120" step="1" value="45" inputmode="numeric" aria-describedby="v6paco2e v6paco2h">
+                <div class="flag warn" id="v6paco2e" hidden></div>
                 <span class="hint" id="v6paco2h">Typed by you. The tool scales it by the modelled change in alveolar ventilation and never invents an absolute value.</span>
               </div>
             </div>
@@ -855,7 +887,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
               </div>
               <div class="ctl">
                 <label for="v6pao2">Observed PaO<sub>2</sub>, for the index<span class="val">mmHg</span></label>
-                <input type="number" id="v6pao2" min="20" max="500" step="1" value="70" inputmode="numeric" aria-describedby="v6pao2h">
+                <input type="number" id="v6pao2" min="20" max="500" step="1" value="70" inputmode="numeric" aria-describedby="v6pao2e v6pao2h">
+                <div class="flag warn" id="v6pao2e" hidden></div>
                 <span class="hint" id="v6pao2h">Typed by you. The tool computes no PaO<sub>2</sub> of its own, because the iso-shunt constants were not retrievable during verification.</span>
               </div>
             </div>
@@ -2486,10 +2519,16 @@ function r5Animate(which){
    PaO2 the reader types. The tool computes no PaO2 of its own.
    ========================================================================= */
 const R6 = { PINSP_BASE:14, RATE_REF:20, VT_REF:6 };
+/* A typed value is used only inside the field's own min and max. Blank or out of
+   range gives NaN, and every readout that depends on it prints a dash. */
+function r6Typed(id){
+  var e=$(id), v=(e.value==="") ? NaN : +e.value;
+  return (isFinite(v) && v>=+e.min && v<=+e.max) ? v : NaN;
+}
 function r6State(){
   var vtkg=+$("v6vt").value, rate=+$("v6rate").value, vdb=+$("v6vd").value, wt=+$("v6wt").value,
       peep=+$("v6peep").value, pi=+$("v6pi").value, ti=+$("v6ti").value, fio2=+$("v6fio2").value,
-      pao2=+$("v6pao2").value, paco2=+$("v6paco2").value;
+      pao2=r6Typed("v6pao2"), paco2=r6Typed("v6paco2");
   var linked=pressed("v6link"), worse=pressed("v6worse");
   var cf = worse ? 0.6 : 1.0;
   var vtBase = vtkg*wt;                                   /* mL */
@@ -2637,6 +2676,12 @@ function rig6(){
   $("v6_paco2").innerHTML=fmt(S.vaRef/Math.max(S.va,0.001),2)+"<small> × ref</small>";
   $("v6_pawr").innerHTML=fmt(S.pawRect,1)+"<small> cmH₂O</small>";
   $("v6_oi").innerHTML=isFinite(S.oi)?fmt(S.oi,1):"—";
+  [["v6paco2","v6paco2e",S.paco2,"Enter PaCO₂ 15 to 120 mmHg."],
+   ["v6pao2","v6pao2e",S.pao2,"Enter PaO₂ 20 to 500 mmHg, not kPa."]].forEach(function(a){
+    var bad=!isFinite(a[2]);
+    setFlag(a[1],bad,"warn",a[3]);
+    $(a[0]).setAttribute("aria-invalid",bad?"true":"false");
+  });
   setFlag("v6flag", S.vt<=S.vdVol*1.05, "warn",
     "Tidal volume is at or below the dead-space volume, so alveolar ventilation is effectively nil. In ventilated infants dead space was 5.7 to 6.4 mL/kg (PMID 33603211): against a 6 mL/kg breath the alveolar share is close to nothing.");
   setFlag("v6flag2", S.worse, "on",
@@ -2991,11 +3036,14 @@ function rig9(){
   $("v9edi_v").textContent="+"+ediResp+"%";
   $("v9_breath").textContent=String(R9S.applied?R9S.breath:0);
   var appliedMag = R9S.applied ? mag : 0;
+  /* Before Apply nothing has been done to the lung, so "now" is the same adapted
+     state the ghost shows, and the Edi response waits for the insult. */
+  var nowBreath = R9S.applied ? R9S.breath : R9.NB, nowEdi = R9S.applied ? ediResp : 0;
 
   var grid=$("v9grid"); grid.innerHTML="";
   R9.MODES.forEach(function(m){
     var base=r9Calc(m.id,ins,0,R9.NB,plim,0,false);
-    var now =r9Calc(m.id,ins,appliedMag,R9S.breath,plim,ediResp,comp);
+    var now =r9Calc(m.id,ins,appliedMag,nowBreath,plim,nowEdi,comp);
     var cell=document.createElement("div"); cell.className="simcell";
     var h=document.createElement("h6"); h.textContent=m.name; cell.appendChild(h);
     var sub=document.createElement("span"); sub.className="sub"; sub.textContent=m.sub; cell.appendChild(sub);
@@ -3499,7 +3547,7 @@ document.addEventListener("DOMContentLoaded",function(){
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
