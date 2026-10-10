@@ -15,7 +15,7 @@ Every tool is independently linkable. You can send a colleague one URL and they 
 
 | Tool | What it does |
 |---|---|
-| [V-V ECMO Oxygenation Calculator](tools/vv-ecmo-oxygenation-calculator.html) | Solves the venovenous mixing equation in both directions. Enter cardiac output and it predicts arterial saturation; enter a measured SaO2 and it solves for cardiac output. Recirculation fraction, hemoglobin, and oxygen delivery are all live inputs. |
+| [V-V ECMO Oxygenation Calculator](tools/vv-ecmo-oxygenation-calculator.html) | Solves the venovenous mixing equation in both directions. Enter a cardiac output and it predicts arterial saturation; enter a measured SaO2 and it solves for cardiac output. Inputs are sorted into measured, set on the pump, assumed and solved, with optional cross-checks against a measured SaO2, a cardiac output or the circuit's pre-oxygenator saturation. Recirculation, VO2 and hemoglobin are inputs; oxygen delivery is an output. Runs offline. |
 | [CO2 Gap and ScvO2 Interpreter](tools/co2-gap-scvo2-interpreter.html) | Reads PaCO2, PvCO2, ScvO2 and lactate through three stacked tiers: the venoarterial CO2 gap, the macrocirculatory versus microcirculatory pattern, and anaerobic stratification. Returns a verdict, the edge cases that break the gap, and what to do next. |
 | [ICU CBC Interpreter](tools/icu-cbc-interpreter.html) | Bedside CBC interpretation through a sepsis lens, with the evidence graded per finding and nine confounders you can switch on: steroids, G-CSF, recent chemotherapy, asplenia, hematologic malignancy, recent seizure, late pregnancy, beta-agonist infusion, recent transfusion. |
 | [Pediatric AKI Risk Tool](tools/pediatric-aki-risk-tool.html) | Renal angina index tracked day by day, with a Bayesian layer that moves a pretest severe-AKI rate to a posttest probability using urinary NGAL and cystatin C. |
@@ -26,15 +26,14 @@ Every tool is independently linkable. You can send a colleague one URL and they 
 | [Ventilator Fundamentals](tools/ventilator-fundamentals.html) | The equation of motion, made movable. Pressure, flow and volume are solved live rather than drawn, so changing compliance or resistance redraws real curves. Covers holds and what each measures, volume control against pressure control and PRVC, trigger types, and how inspiratory time, rise time and cycle-off work. |
 | [Ventilator Advanced](tools/ventilator-advanced.html) | Patient effort graphed against ventilator pressure; why PRVC withdraws support as the patient works harder while pressure control holds it constant; the decremental trial that finds best-compliance PEEP; and deadspace against shunt. |
 | [ARDS Inflammatory Subphenotypes](tools/ards-subphenotype-explorer.html) | Exploratory only. Runs the published hypo- and hyperinflammatory classifiers that print their coefficients, refuses the ones that do not, and reports a range rather than a number when an input is missing. Pediatric results carry how poorly the adult signature transports to children. |
-| [Pediatric Dysnatremia and Diabetes Insipidus](tools/pediatric-dysnatremia-di.html) | Two tabs for one episode. Reads sodium, weight-indexed urine output and urine concentration into a ranked differential; says plainly when the data cannot separate SIADH from salt wasting, and names the next test. Then runs a vasopressin infusion in mU/kg/hr against live charts. Stores nothing. | v1.0 |
+| [Pediatric Dysnatremia and Diabetes Insipidus](tools/pediatric-dysnatremia-di.html) | Two tabs for one episode. Reads sodium, weight-indexed urine output and urine concentration into a ranked differential; says plainly when the data cannot separate SIADH from salt wasting, and names the next test. Then runs a vasopressin infusion in mU/kg/hr against live charts. Stores nothing. |
 
 ## How to use them
 
 Open the live site and pick a tool, or click any link above. Everything runs client side.
 
-To run them offline, clone the repository and open any file in `tools/` directly. A few pages pull
-fonts or a charting library from a CDN, so a page opened without a network connection will fall back
-to system fonts and, in two cases, will not draw its figures.
+To run them offline, clone the repository and open any file in `tools/` directly. Every page runs without a network connection: React and Chart.js are inlined. Typefaces load from a CDN
+without blocking the page, and a page opened offline falls back to system fonts.
 
 ```bash
 git clone https://github.com/neelshah4/neel-clinical-skills.git
@@ -59,8 +58,18 @@ anyone can make here.
 ## Contributing
 
 Issues and pull requests are welcome, particularly for clinical accuracy. Please keep each tool a
-single self-contained HTML file with no build step, and keep the disclaimer and the evidence labelling
-intact.
+single self-contained HTML file, and keep the disclaimer and the evidence labelling intact.
+
+Nine tools are plain HTML and JavaScript: edit the file in `tools/`. Three (V-V ECMO, ICU CBC,
+Pediatric AKI) are written as JSX in `src/<name>.src.html` and compiled: edit the source, then run
+
+```bash
+node scripts/build-react-tools.mjs        # Node 18 or later
+```
+
+to rebuild `tools/<name>.html`. The build downloads pinned React and Babel once, checks each file
+against the integrity hash in the source, compiles the JSX, and inlines everything. Do not edit the
+built file; the next build overwrites it.
 
 ## License
 

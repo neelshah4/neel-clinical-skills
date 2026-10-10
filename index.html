@@ -85,11 +85,12 @@
   }
 </style>
 <!-- neel-theme:head:start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/literata@5.3.0/index.css" integrity="sha384-O4kpo19PDoVNx0Kht9/A717p+G1rP0FhuoU1ltVBruHCYKA525MOb2SkcvGBZhuy" crossorigin="anonymous" referrerpolicy="no-referrer"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-mono@5.3.0/index.css" integrity="sha384-H5lC56FyzBmbZvNGbHeogfbg9KZXQ9Jdiojj+SPI7XUgpl6PfQ8CCXP8USguB+nt" crossorigin="anonymous" referrerpolicy="no-referrer"></noscript>
 <style id="neel-theme">
-/* neel-theme v1.0.1 (2026-10-03; pos moved off the accent hue) — universal light/dark kit for Neel's web tools.
+/* neel-theme v1.0.3 (2026-10-10; switch scrolls with the page at every width so it cannot cover a field; print is always light; selected state survives forced colours; pos moved off the accent hue in v1.0.1) — universal light/dark kit for Neel's web tools.
    Light: L2 "formulary line" neutrals and type, with L3 green ink as the annotation layer.
    Dark:  D3 "bento plates" graphite neutrals, with the warm-editorial dark green (#8CCBAA).
    Three states (DESIGN.md 8.4): :root = light; OS dark applies only while the reader has not
@@ -156,7 +157,30 @@ body{transition:background-color 200ms var(--nt-ease), color 200ms var(--nt-ease
 .nt-switch button[aria-pressed="true"]{background:var(--nt-accent); color:var(--nt-on-accent)}
 .nt-switch button:focus-visible{outline:2px solid var(--nt-focus); outline-offset:2px}
 @media (pointer:coarse){ .nt-switch button{min-height:44px} }
+/* The switch scrolls with the page at every width. A fixed switch at the top-right covers whatever sits there while scrolling and took taps meant for the field beneath (found 2026-10-09, V-V ECMO diagnostic; 6 pages affected at 1100 px and wider). */
+.nt-switch{position:absolute}
 @media print{ .nt-switch{display:none} }
+
+/* Paper is always light, whatever theme is on screen, and chips and selected states keep their fill (found 2026-10-09: dark print was 1.2:1 light ink on white). */
+@media print{
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  html:root, html:root[data-theme="dark"], html:root:not([data-theme="light"]){
+    --nt-paper:#F4F6F5; --nt-plate:#FAFBFA; --nt-plate-focal:#FFFFFF; --nt-sunken:#EBEFEE;
+    --nt-field:#FAFBFA; --nt-tint:#E5E9E9; --nt-tint-deep:#D6DBDB;
+    --nt-ink:#1A1A1A; --nt-ink-muted:#3A3A3A; --nt-ink-quiet:#5F646A;
+    --nt-rule:#D6DBDB; --nt-rule-strong:#BCC3C3; --nt-edge:#7A8187;
+    --nt-accent:#1E5E45; --nt-accent-deep:#154533; --nt-accent-wash:#DDE8E1; --nt-on-accent:#F4F6F5;
+    --nt-sel:#D3E4DA; --nt-pos:#2F6B26; --nt-caution:#8A5E00; --nt-neg:#A33232;
+    --nt-pos-wash:#D1DED1; --nt-caution-wash:#EDE0C7; --nt-neg-wash:#ECD0CA;
+    --nt-cat-1:#3C5C98; --nt-cat-2:#9E4A2E; --nt-cat-3:#629857; --nt-cat-4:#8D4978; --nt-cat-5:#B18535;
+    --nt-grid:#D6DBDB; --nt-focus:#154533; color-scheme:light;
+  }
+  html{background:#fff}
+}
+/* Forced colours drop fills, so the selected state needs an outline. */
+@media (forced-colors: active){
+  [aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]{ outline:3px solid Highlight; outline-offset:-3px }
+}
 </style>
 <script>/* neel-theme no-flash: apply a saved choice before first paint; migrate a legacy per-tool key once. */
 (function(){try{var r=document.documentElement,k='neel.theme',t=localStorage.getItem(k);
@@ -170,7 +194,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   <div class="overline">Critical care teaching tools</div>
   <h1>Move the inputs, watch the physiology</h1>
   <p class="lede">Twelve interactive tools for pediatric and adult critical care. Each is a single self-contained page with no install, no account, and no server. Nothing you type leaves your browser.</p>
-  <div class="stamp">v2.x &middot; updated 3 October 2026 &middot; CC BY-NC 4.0</div>
+  <div class="stamp">v2.x &middot; updated 9 October 2026 &middot; CC BY-NC 4.0</div>
 </header>
 
 <div class="warn">
@@ -184,8 +208,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     <div>
       <h2><a href="tools/vv-ecmo-oxygenation-calculator.html">V-V ECMO Oxygenation Calculator</a></h2>
       <span class="domain">ECMO / gas exchange</span>
-      <p class="does">Solves the venovenous mixing equation in both directions. Enter cardiac output and it predicts arterial saturation; enter a measured SaO<sub>2</sub> and it solves for cardiac output. Recirculation fraction, hemoglobin, sweep and oxygen delivery are all live inputs, with five worked scenarios and the assumptions stated in place.</p>
-      <div class="meta">v2.3 &middot; updated 2026-10-03 &middot; <a href="tools/vv-ecmo-oxygenation-calculator.html">Open tool</a></div>
+      <p class="does">Solves the venovenous mixing equation in both directions. Enter a cardiac output and it predicts arterial saturation; enter a measured SaO<sub>2</sub> and it solves for cardiac output. Inputs are sorted into measured, set on the pump, assumed and solved, and you can check the model against a measured SaO<sub>2</sub>, a cardiac output or the circuit&rsquo;s pre-oxygenator saturation. Recirculation, VO<sub>2</sub> and hemoglobin are inputs; oxygen delivery is an output. Five worked scenarios load with one click, and the page runs offline.</p>
+      <div class="meta">v3.0 &middot; updated 2026-10-09 &middot; <a href="tools/vv-ecmo-oxygenation-calculator.html">Open tool</a></div>
     </div>
   </li>
 
@@ -347,7 +371,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       b.addEventListener('click', function(){ set(t); });
       wrap.appendChild(b); btns.push(b);
     });
-    document.body.appendChild(wrap);
+    document.body.insertBefore(wrap, document.body.firstChild);
     sync();
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function(){ if (!stored()) sync(); });
