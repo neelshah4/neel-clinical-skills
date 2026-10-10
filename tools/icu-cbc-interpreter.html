@@ -880,6 +880,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* Responsive: collapse bento ribbon, single-column on tablet, stacked on phone */
   @media (max-width: 1100px) {
     .ribbon {
+      position: static;   /* a sticky ribbon fills a short or landscape viewport and covers the inputs */
       grid-template-columns: 1fr 2fr;
     }
     .verdict-tile { grid-column: 1 / -1; }
@@ -1717,7 +1718,8 @@ function corePattern(d, toggles) {
     sub: mildLeftShift ? "Pattern is consistent with SIRS; bacterial infection not excluded but less specific than the bandemia + eosinopenia signature." : "Pattern is consistent with SIRS; bacterial infection not excluded. The left-shift limb is not evaluated here: this tool carries no IG%-specific cut-point, so an analyser IG% is displayed but not scored. Switch to manual diff if a band count is available."
   };
   if (d.wbc >= 4 && d.wbc <= 12 && d.nlr != null && d.nlr < 3.0) {
-    const flagged = chipSeverities(d, plt).concat(nlrSeverity(d.nlr)).some(s => s === "concern" || s === "critical");
+    const sevs = chipSeverities(d, plt);
+    const flagged = sevs.concat(nlrSeverity(d.nlr)).some(s => s === "concern" || s === "critical") || sevs.some(s => s === "caution") || plt == null;
     if (flagged) return {
       label: "No dominant sepsis pattern in the WBC and NLR; some values are flagged below",
       sev: "neutral",
