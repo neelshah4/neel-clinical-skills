@@ -5,3 +5,4 @@ _work/
 .claude/
 tools/.orig-check.html
 .orig-check*
+scripts/.cache/
