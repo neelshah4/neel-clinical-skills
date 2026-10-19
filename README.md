@@ -1,6 +1,6 @@
 # Neel Clinical Skills
 
-Twelve interactive teaching tools for pediatric and adult critical care. Each one is a single
+Thirteen interactive teaching tools for pediatric and adult critical care. Each one is a single
 self-contained HTML page: open it, move the inputs, and watch the physiology or the diagnostic
 reasoning change. No install, no account, no server. Nothing you type leaves your browser.
 
@@ -27,6 +27,7 @@ Every tool is independently linkable. You can send a colleague one URL and they 
 | [Ventilator Advanced](tools/ventilator-advanced.html) | Patient effort graphed against ventilator pressure; why PRVC withdraws support as the patient works harder while pressure control holds it constant; the decremental trial that finds best-compliance PEEP; and deadspace against shunt. |
 | [ARDS Inflammatory Subphenotypes](tools/ards-subphenotype-explorer.html) | Exploratory only. Runs the published hypo- and hyperinflammatory classifiers that print their coefficients, refuses the ones that do not, and reports a range rather than a number when an input is missing. Pediatric results carry how poorly the adult signature transports to children. |
 | [Pediatric Dysnatremia and Diabetes Insipidus](tools/pediatric-dysnatremia-di.html) | Two tabs for one episode. Reads sodium, weight-indexed urine output and urine concentration into a ranked differential; says plainly when the data cannot separate SIADH from salt wasting, and names the next test. Then runs a vasopressin infusion in mU/kg/hr against live charts. Stores nothing. |
+| [CRRT: Clearance, Replacement Fluid, and Anticoagulation](tools/crrt-fundamentals.html) | Follows the blood around a CRRT circuit, with a Pediatric or Adult switch that changes which population leads. Rigs show how diffusion, convection and adsorption differ, what runs in CVVH, CVVHD and CVVHDF, and how pre- versus post-dilution changes filtration fraction and delivered dose, from illustrative inputs rather than patient data. A drug explorer lists 67 drugs with what each source reported for children and for adults, and prints a gap where no pediatric data were found. Tables cover anticoagulation, terms and formulas, aquapheresis, and peritoneal dialysis against intermittent hemodialysis, and a static figure shows what the published net ultrafiltration analyses report, with a note that no pediatric analysis by rate was found. |
 
 ## How to use them
 
