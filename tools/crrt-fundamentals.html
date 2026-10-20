@@ -955,6 +955,20 @@ html[data-crrt-refs="on"] .crrt-sources-link { display: none; }
   .crrt-tbx-panel { break-inside: auto; }
   .crrt-tbx-h { break-after: avoid; }
 }
+@media (min-width: 721px) and (max-width: 1099px) {
+  .crrt-tbl-dense, .crrt-tbl-dense tbody, .crrt-tbl-dense tr, .crrt-tbl-dense td, .crrt-tbl-dense th { display: block; }
+  .crrt-tbl-dense thead { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .crrt-tbl-dense .crrt-tbl-cap { display: block; }
+  .crrt-tbl-dense .crrt-row { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--nt-rule); }
+  .crrt-tbl-dense .crrt-rh { padding: 0 0 8px; border: 0; font-size: 17px; line-height: 1.3; }
+  .crrt-tbl-dense .crrt-c { padding: 6px 0; border: 0; }
+  .crrt-tbl-dense .crrt-c::before { content: attr(data-label); display: block; margin-bottom: 2px; font-size: 13px; line-height: 1.3; font-weight: 600; color: var(--nt-ink-quiet); }
+  .crrt-tbl-dense .crrt-row:not(.crrt-open) .crrt-p3 { display: none; }
+  .crrt-tbl-dense .crrt-more-mid { display: none; }
+  .crrt-tbl-dense .crrt-c-more { display: block; padding: 6px 0 0; border: 0; text-align: left; font-weight: 400; }
+  .crrt-tbl-dense .crrt-more-card { display: flex; align-items: center; justify-content: center; width: 100%; margin-top: 0; }
+  .crrt-tbl-dense .crrt-detail-row, .crrt-tbl-dense .crrt-detail-row:not([hidden]) { display: none; }
+}
 
 
 .crrt-fig { margin: var(--crrt-lg) 0 0; min-width: 0; }
