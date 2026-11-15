@@ -849,6 +849,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     color: var(--ink-soft); margin: 0 4px;
     font-weight: 600;
   }
+  .footer .hub-link {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px;
+    color: var(--accent); font-style: normal; font-weight: 600; text-decoration: underline;
+  }
   .footer .sig {
     margin-top: 14px;
     font-family: var(--serif);
@@ -1600,6 +1604,12 @@ function diffAudit(cbc, mode) {
     sumOff: Math.abs(sum - 100) > 0.5 && (missing.length === 0 || sum > 100.5)
   };
 }
+function igShortNote(audit, cbc, mode) {
+  const ig = numOrNull(cbc.bandPct);
+  if (mode !== "auto" || ig == null || ig <= 0) return "";
+  if (Math.abs(100 - audit.sum - ig) > 0.05) return "";
+  return " If these are manual-differential values, switch to Manual diff.";
+}
 function nlrSeverity(nlr) {
   if (nlr == null) return "neutral";
   if (nlr < 0.7) return "concern";
@@ -1677,9 +1687,9 @@ function corePattern(d, toggles) {
     sub: "ANC <500 cells/µL. No temperature is entered anywhere in this tool, so it cannot establish febrile neutropenia: if fever is documented, the febrile-neutropenia framework and local empiric-coverage protocol apply. Severe neutropenia without fever has causes that do not call for empiric antibacterials: drug-induced agranulocytosis, marrow infiltration, sepsis-induced marrow suppression, and benign ethnic (Duffy-null) neutropenia, which is a baseline rather than a risk state. Establish the cause and the fever status before treating the number."
   };
   if (plt != null && plt < 100 && d.wbc > 12) return {
-    label: "Septic profile with thrombocytopenia: consider DIC",
-    sev: "critical",
-    sub: "Trajectory matters more than the single value. Check PT/PTT, fibrinogen, D-dimer; calculate ISTH DIC score."
+    label: "Leukocytosis with thrombocytopenia: check coagulation",
+    sev: plateletSeverity(plt),
+    sub: "This trigger (WBC above 12 with platelets below 100) is a tool convention, not a published DIC criterion. Trajectory matters more than the single value. Check PT/PTT, fibrinogen, D-dimer; calculate ISTH DIC score."
   };
   if (d.isManual && d.nlr != null && d.nlr >= 12.65 && d.aec != null && d.aec < AEC_EOSINOPENIA && d.bandPct >= 11) return {
     label: "Bandemic leukocytosis with eosinopenia: bacterial sepsis pattern",
@@ -1978,18 +1988,17 @@ function getInitialTheme() {
 }
 function App() {
   const [cbc, setCbc] = useState({
-    wbc: 12.0,
-    neutPct: 74,
-    bandPct: 4,
-    lymphPct: 20,
-    monoPct: 4,
-    eosPct: 1.5,
-    basoPct: 0.5,
-    plt: 200
+    wbc: "",
+    neutPct: "",
+    bandPct: "",
+    lymphPct: "",
+    monoPct: "",
+    eosPct: "",
+    basoPct: "",
+    plt: ""
   });
   const [mode, setMode] = useState("auto");
   const [toggles, setToggles] = useState(new Set());
-  const [edited, setEdited] = useState(false);
   const [highlightedRef, setHighlightedRef] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
   const refsRef = useRef(null);
@@ -2004,15 +2013,22 @@ function App() {
   const d = useMemo(() => derive(cbc, mode), [cbc, mode]);
   const tset = toggles;
   const pltVal = numOrNull(cbc.plt);
-  const outOfRange = useMemo(() => diffAudit(cbc, mode).outOfRange, [cbc, mode]);
+  const audit = useMemo(() => diffAudit(cbc, mode), [cbc, mode]);
+  const outOfRange = audit.outOfRange;
+  const withheld = outOfRange.length > 0 || audit.sumOff;
   const pattern = useMemo(() => outOfRange.length ? {
     label: "Pattern read withheld: a value is out of range",
     sev: "neutral",
-    sub: "Correct the field marked out of range (see the note under the inputs). The chips and evidence rows use the value as entered and are not reliable until you do."
+    sub: "Correct the field marked out of range (see the note under the inputs). The chips are blanked and the evidence rows use the value as entered, so they are not reliable until you do."
+  } : audit.sumOff ? {
+    label: "Pattern read withheld: differential sums to " + audit.sum.toFixed(1) + "%",
+    sev: "neutral",
+    sub: "The differential must sum to 100% (within 0.5). ANC, ALC and AEC are each WBC × percent, so a differential that does not close gives wrong counts. The chips are blanked and the evidence rows are not reliable until it closes." + igShortNote(audit, cbc, mode)
   } : patternLabel({
     ...d,
     plt: pltVal
-  }, tset), [d, pltVal, tset, outOfRange]);
+  }, tset), [d, pltVal, tset, outOfRange, audit, cbc, mode]);
+  const blankAll = Object.keys(FIELD_SPEC).every(k => numOrNull(cbc[k]) == null);
   const rows = useMemo(() => {
     const r = evidenceRows(d, tset);
     const pltSev = plateletSeverity(pltVal);
@@ -2055,7 +2071,6 @@ function App() {
     return r;
   }, [d, pltVal, tset]);
   const update = useCallback((k, v) => {
-    setEdited(true);
     setCbc(c => ({
       ...c,
       [k]: v === "" ? "" : Number(v)
@@ -2070,7 +2085,6 @@ function App() {
   }, []);
   const loadCase = useCallback(c => {
     setCbc(c.cbc);
-    setEdited(false);
     setToggles(new Set(c.toggles));
     if (c.mode) setMode(c.mode);
     window.scrollTo({
@@ -2094,7 +2108,7 @@ function App() {
     body: "Glucocorticoids demarginate neutrophils and suppress eosinophils and lymphocytes acutely. The commonly quoted magnitude (a 2–3× neutrophil rise within 5–24 h) is conventional teaching; no primary source for that figure is carried in this tool, so treat the direction as reliable and the multiplier as an approximation. The suppression is also not total: in a prospective CAP cohort an eosinophil count ≤30/µL predicted mechanical ventilation regardless of glucocorticoid treatment, so a very low AEC on steroids still carries some prognostic weight even though its diagnostic value collapses. Lean on lactate, MAP, source control, and procalcitonin (if available).",
     cites: [26]
   });
-  if (tset.has("chemo") && d.anc != null && d.anc < 0.5) warnings.push({
+  if (!withheld && tset.has("chemo") && d.anc != null && d.anc < 0.5) warnings.push({
     sev: "critical",
     head: "Neutropenic fever framework",
     body: "ANC <500 in the setting of recent cytotoxic chemotherapy. NLR is uninterpretable. Treat as febrile neutropenia per institutional protocol; empiric coverage takes priority over CBC pattern."
@@ -2158,17 +2172,23 @@ function App() {
     "aria-hidden": "true"
   }), theme === "dark" ? "Light theme" : "Dark theme"), React.createElement("div", {
     className: "disclaimer"
-  }, "Educational. Not for clinical decision-making. CBC alone does not adjudicate sepsis."))), React.createElement("main", null, React.createElement(Ribbon, {
+  }, "Educational. Not for clinical decision-making. CBC alone does not adjudicate sepsis."))), React.createElement("main", null, blankAll && React.createElement("div", {
+    className: "example-note",
+    id: "start-note"
+  }, "No values entered. Type the patient's CBC with differential below, or", " ", React.createElement("button", {
+    className: "btn",
+    onClick: () => loadCase(CASES[0])
+  }, "Load sample case 1")), React.createElement(Ribbon, {
     d: d,
     cbc: cbc,
-    pattern: pattern
+    pattern: pattern,
+    withheld: withheld
   }), React.createElement("div", {
     className: "main"
   }, React.createElement("section", {
     "aria-labelledby": "inputs-h"
   }, React.createElement(InputPanel, {
     cbc: cbc,
-    edited: edited,
     update: update,
     mode: mode,
     setMode: setMode,
@@ -2184,7 +2204,8 @@ function App() {
     warnings: warnings,
     d: d,
     cbc: cbc,
-    clickRef: clickRef
+    clickRef: clickRef,
+    withheldWhy: outOfRange.length > 0 ? "range" : audit.sumOff ? "sum" : null
   }))), React.createElement("section", {
     "aria-labelledby": "cases-h"
   }, React.createElement(CaseShelf, {
@@ -2203,9 +2224,10 @@ function App() {
 function Ribbon({
   d,
   cbc,
-  pattern
+  pattern,
+  withheld
 }) {
-  const nlrSev = nlrSeverity(d.nlr);
+  const nlrSev = withheld ? "neutral" : nlrSeverity(d.nlr);
   const plt = numOrNull(cbc.plt);
   const nlrLabel = d.nlr == null ? "Not calculable: WBC or a differential % is blank, or lymphocytes are zero" : d.nlr < 0.7 ? "Below Zahorec pathological low limit (<0.7)" : d.nlr < 1.0 ? "Below Zahorec normal range, above the 0.7 low limit" : d.nlr < 2.0 ? "Within Zahorec normal range (1–2)" : d.nlr < 2.3 ? "Between Zahorec normal range and grey zone (2–2.3)" : d.nlr < 3.0 ? "Zahorec grey zone (2.3–3.0)" : d.nlr < 7.97 ? "Above Zahorec pathological limit (>3.0)" : d.nlr < 9.05 ? "Sepsis-diagnosis cut-point exceeded (7.97)" : d.nlr < 12.65 ? "90-day mortality cut-point exceeded (9.05)" : "Bacteremia cut-point exceeded (12.65)";
   const chips = [{
@@ -2245,6 +2267,11 @@ function Ribbon({
     unit: "×10³",
     sev: plateletSeverity(plt)
   }];
+  const shownChips = withheld ? chips.map(c => ({
+    ...c,
+    val: "—",
+    sev: "neutral"
+  })) : chips;
   return React.createElement("div", {
     className: "ribbon"
   }, React.createElement("div", {
@@ -2254,11 +2281,11 @@ function Ribbon({
     className: "label"
   }, "NLR (Neutrophil-to-lymphocyte ratio)"), React.createElement("div", {
     className: "hero-val"
-  }, d.nlr == null ? "—" : d.nlr.toFixed(2)), React.createElement("div", {
+  }, withheld || d.nlr == null ? "—" : d.nlr.toFixed(2)), React.createElement("div", {
     className: "hero-sub"
-  }, nlrLabel)), React.createElement("div", {
+  }, withheld ? "Withheld: the inputs fail the check shown under the inputs" : nlrLabel)), React.createElement("div", {
     className: "chip-grid"
-  }, chips.map(c => React.createElement("div", {
+  }, shownChips.map(c => React.createElement("div", {
     key: c.key,
     className: "chip",
     "data-sev": c.sev
@@ -2281,7 +2308,6 @@ function Ribbon({
 }
 function InputPanel({
   cbc,
-  edited,
   update,
   mode,
   setMode,
@@ -2327,14 +2353,13 @@ function InputPanel({
   const nameOf = k => (fields.find(f => f.k === k) || {
     label: k
   }).label;
-  const showAudit = audit.sumOff || audit.outOfRange.length > 0 || audit.blank.length > 0;
+  const allBlank = audit.blank.length === Object.keys(FIELD_SPEC).length;
+  const showAudit = !allBlank && (audit.sumOff || audit.outOfRange.length > 0 || audit.blank.length > 0);
   return React.createElement("div", {
     className: "card"
   }, React.createElement("h2", {
     id: "inputs-h"
-  }, "CBC inputs"), !edited && React.createElement("div", {
-    className: "example-note"
-  }, "Example values. Replace them with the patient's before reading the result."), React.createElement("div", {
+  }, "CBC inputs"), React.createElement("div", {
     className: "seg",
     role: "tablist",
     "aria-label": "Differential mode"
@@ -2368,7 +2393,7 @@ function InputPanel({
     min: FIELD_SPEC[f.k].min,
     max: FIELD_SPEC[f.k].max,
     "aria-label": f.label,
-    "aria-invalid": audit.outOfRange.includes(f.k) || audit.blank.includes(f.k) ? "true" : undefined,
+    "aria-invalid": audit.outOfRange.includes(f.k) || !allBlank && audit.blank.includes(f.k) ? "true" : undefined,
     "aria-describedby": showAudit ? "input-audit" : undefined,
     value: cbc[f.k],
     onChange: e => update(f.k, e.target.value)
@@ -2377,7 +2402,7 @@ function InputPanel({
     id: "input-audit",
     role: "status",
     "aria-live": "polite"
-  }, audit.blank.length > 0 && React.createElement("div", null, React.createElement("strong", null, "Empty:"), " ", audit.blank.map(nameOf).join(", "), ". A blank field is not read as zero. Anything derived from it shows \u201C\u2014\u201D rather than a number."), audit.outOfRange.length > 0 && React.createElement("div", null, React.createElement("strong", null, "Out of range:"), " ", audit.outOfRange.map(k => `${nameOf(k)} must sit between ${FIELD_SPEC[k].min} and ${FIELD_SPEC[k].max}`).join("; "), "."), audit.sumOff && React.createElement("div", null, React.createElement("strong", null, "Differential sums to ", audit.sum.toFixed(1), "%, not 100%."), " Every absolute on this page is WBC \xD7 percent, so a differential that does not close produces a wrong ANC, ALC and AEC (and a confident pattern read on top of them) with nothing else to signal it.", mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential.")), React.createElement("div", {
+  }, audit.blank.length > 0 && React.createElement("div", null, React.createElement("strong", null, "Empty:"), " ", audit.blank.map(nameOf).join(", "), ". A blank field is not read as zero. Anything derived from it shows \u201C\u2014\u201D rather than a number."), audit.outOfRange.length > 0 && React.createElement("div", null, React.createElement("strong", null, "Out of range:"), " ", audit.outOfRange.map(k => `${nameOf(k)} must sit between ${FIELD_SPEC[k].min} and ${FIELD_SPEC[k].max}`).join("; "), "."), audit.sumOff && React.createElement("div", null, React.createElement("strong", null, "Differential sums to ", audit.sum.toFixed(1), "%, not 100%."), " Every absolute on this page is WBC \xD7 percent, so a differential that does not close produces a wrong ANC, ALC and AEC, so the pattern read is withheld and the ribbon chips show \u201C\u2014\u201D until it closes.", igShortNote(audit, cbc, mode), mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential.")), React.createElement("div", {
     className: "hint",
     style: {
       fontSize: 11,
@@ -2442,8 +2467,10 @@ function Interpretation({
   warnings,
   d,
   cbc,
-  clickRef
+  clickRef,
+  withheldWhy
 }) {
+  const withheldLine = withheldWhy === "range" ? "Withheld until the out-of-range value is corrected." : "Withheld until the differential adds up to 100%.";
   return React.createElement("div", {
     className: "card"
   }, React.createElement("h2", {
@@ -2468,7 +2495,17 @@ function Interpretation({
   }, w.head), React.createElement("div", null, w.body, React.createElement(Cite, {
     ids: w.cites,
     clickRef: clickRef
-  })))), React.createElement("h3", null, "Evidence by finding"), rows.map(r => React.createElement("div", {
+  })))), React.createElement("h3", null, "Evidence by finding"), withheldWhy && rows.map(r => React.createElement("div", {
+    key: r.id,
+    className: "ev-row"
+  }, React.createElement("div", {
+    className: "ev-finding"
+  }, React.createElement("span", null, r.finding.split(" =")[0]), React.createElement("span", {
+    className: "ev-state",
+    "data-sev": "neutral"
+  }, "Withheld")), React.createElement("div", {
+    className: "ev-claim"
+  }, withheldLine))), !withheldWhy && rows.map(r => React.createElement("div", {
     key: r.id,
     className: "ev-row"
   }, React.createElement("div", {
@@ -2572,7 +2609,10 @@ function Footer() {
     className: "pill"
   }, "CBC scope only"), React.createElement("div", {
     className: "sig"
-  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine", React.createElement("br", null), "v2.3 \xB7 updated 2026-10-03 \xB7 CC BY-NC 4.0", React.createElement("br", null), "Reference verification status is stated, dated and scoped in the References section above. CBC patterns inform, never adjudicate."));
+  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine", React.createElement("br", null), "v2.4 \xB7 updated 2026-11-14 \xB7 CC BY-NC 4.0 \xB7 ", React.createElement("a", {
+    className: "hub-link",
+    href: "../index.html"
+  }, "All tools"), React.createElement("br", null), "Reference verification status is stated, dated and scoped in the References section above. CBC patterns inform, never adjudicate."));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 </script>

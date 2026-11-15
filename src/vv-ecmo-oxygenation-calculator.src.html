@@ -164,8 +164,8 @@
     .vv-assume { font-size: 13px; line-height: 1.5; color: var(--vv-ink-muted); padding: 0 2px; }
     .vv-assume p + p { margin-top: 4px; }
     .vv-check-row + .vv-check-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--vv-rule); }
-    .vv-load { font-size: 12px; font-weight: 600; padding: 4px 12px; min-height: 32px; border: 1px solid var(--vv-edge); border-radius: 6px; background: var(--vv-card); color: var(--vv-accent); }
-    .vv-load:hover { background: var(--vv-accent-wash); }
+    .vv-load, .vv-confirm-btn { font-size: 12px; font-weight: 600; padding: 4px 12px; min-height: 32px; border: 1px solid var(--vv-edge); border-radius: 6px; background: var(--vv-card); color: var(--vv-accent); }
+    .vv-load:hover, .vv-confirm-btn:hover { background: var(--vv-accent-wash); }
     /* Selected state does not rely on colour alone (print, forced colours, colour-vision). */
     .vv-seg button[aria-pressed="true"]::before, .vv-tabs-row button[aria-pressed="true"]::before, .vv-hufner button[aria-pressed="true"]::before { content: "\2713\00a0"; }
     /* Number boxes and slider tracks meet 3:1 against the card. */
@@ -182,14 +182,20 @@
       .vv-bar-v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--vv-ink); }
       .vv-bar-v small { font-size: 12px; font-weight: 500; color: var(--vv-ink-quiet); }
       .vv-bar-s { display: flex; align-items: center; gap: 6px; flex: 1 1 11rem; font-size: 13px; font-weight: 600; color: var(--vv-ink); }
+      .vv-bar-r { flex: 1 1 100%; font-size: 12px; line-height: 1.3; font-weight: 500; color: var(--vv-ink-muted); }
     }
+    /* Neutral tone: used while a verdict would rest on example values the user has not entered. */
+    .vv-dot-neutral { background-color: var(--vv-ink-quiet); }
+    .vv-back { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; font-size: 12px; font-weight: 600; color: var(--vv-accent); text-decoration: underline; }
+    .vv-badge-default { border-style: dashed; }
+    .vv-confirm { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 12px; line-height: 1.35; color: var(--vv-ink-muted); }
     /* The bar is sticky, so keyboard and tap focus must scroll a field clear of it. */
-    @media (max-width: 1023px) { html { scroll-padding-top: 112px; } }
+    @media (max-width: 1023px) { html { scroll-padding-top: calc(var(--vv-bar-h, 100px) + 16px); } }
     @media (min-width: 1024px) { .vv-sticky { position: sticky; top: 12px; z-index: 5; background: var(--vv-paper); padding-bottom: 4px; } }
     /* Touch: 44 px targets and a thumb you can hit. */
     @media (pointer: coarse) {
       input[type=number] { min-height: 44px; font-size: 16px; }
-      button, .vv-load { min-height: 44px; }
+      button, .vv-load, .vv-confirm-btn { min-height: 44px; }
       .vv-hufner button { min-width: 52px; }
       input[type=range] { min-height: 32px; }
       input[type=range]::-webkit-slider-thumb { height: 26px; width: 26px; margin-top: -11px; }
@@ -361,6 +367,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
     const cls = (...xs) => xs.filter(Boolean).join(" ");
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+    const firstSentence = (t) => { const m = /^[\s\S]*?\.(?=\s|$)/.exec(t || ""); return m ? m[0] : (t || ""); };
 
     // MODEL CLOSURE. VO₂ is an INPUT (weight × index) and SvO₂ is SOLVED from the Fick relation.
     // If SvO₂ were a free slider, VO₂ = CO·(CaO₂−CvO₂)·10 and DO₂ = CO·CaO₂·10 would share the cardiac-output
@@ -535,17 +542,19 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       info:   { bg: "bg-sky-50",      text: "text-sky-800",      dot: "bg-sky-500",     border: "border-sky-300" },
       warn:   { bg: "bg-amber-50",    text: "text-amber-900",    dot: "bg-amber-500",   border: "border-amber-300" },
       danger: { bg: "bg-rose-50",     text: "text-rose-900",     dot: "bg-rose-500",    border: "border-rose-300" },
+      neutral:{ bg: "bg-white",       text: "text-slate-800",    dot: "vv-dot-neutral", border: "border-slate-200" },
     };
 
     const BADGE = {
       "Measured":    "bg-sky-100 text-sky-700 border-sky-200",
+      "Default":     "bg-slate-100 text-slate-700 border-slate-200",
       "Set on pump": "bg-slate-100 text-slate-700 border-slate-200",
       "Assumed":     "bg-amber-50 text-amber-800 border-amber-200",
       "Solved":      "bg-violet-100 text-violet-700 border-violet-200",
       "Check only":  "bg-white text-slate-700 border-slate-200",
     };
     function Badge({ kind }) {
-      return <span className={cls("vv-badge border", BADGE[kind])}>{kind}</span>;
+      return <span className={cls("vv-badge border", BADGE[kind], kind === "Default" && "vv-badge-default")}>{kind}</span>;
     }
 
     // Entry rules (commit on pause, blur or Enter; honest messages):
@@ -556,7 +565,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     //  - Escape puts back the value the field had when it was entered. Focusing a box selects its contents.
     const DraftCtx = React.createContext(null);
     let FIELD_SEQ = 0;
-    function Field({ label, value, onChange, min, max, step, unit, hint, source, minDec = 0, badge, optional, note, sliderMax }) {
+    function Field({ label, value, onChange, min, max, step, unit, hint, source, minDec = 0, badge, optional, note, sliderMax, onTouch, entered, blankTo }) {
       step = step || 1;
       const idRef = useRef(null);
       if (idRef.current === null) { FIELD_SEQ += 1; idRef.current = "vvf" + FIELD_SEQ; }
@@ -568,6 +577,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       const timer = useRef(null);
       const lastWrite = useRef(undefined);
       const startVal = useRef(undefined);
+      const startEntered = useRef(false);
       const justFocused = useRef(false);
       const skipBlur = useRef(false);
       const editing = draft !== null;
@@ -590,17 +600,25 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
         if (t === "") {
           if (bad) { setMsg(final ? "Kept the previous value; that entry is not a number." : "Not a number. Allowed range " + range + "."); return; }
           if (optional) { apply(null); setMsg(null); return; }
+          if (final && blankTo !== undefined) {
+            // A cleared entry is no entry: the field goes back to its default and stops counting as entered.
+            if (onTouch) onTouch(false);
+            if (blankTo !== value) apply(blankTo);
+            setMsg("Left blank; back to the default " + fmtVal(blankTo, minDec) + (unit ? " " + unit : "") + ".");
+            return;
+          }
           setMsg(final ? "Left blank; kept " + display + (unit ? " " + unit : "") + "." : "Enter a value in " + range + ". Nothing applied yet.");
           return;
         }
         const v = parseFloat(t);
         if (!fin(v)) { setMsg(final ? "Kept the previous value; that entry is not a number." : "Not a number. Allowed range " + range + "."); return; }
         if (v < min || v > max) {
-          if (final) { const c = clamp(v, min, max); apply(c); setMsg("Adjusted " + v + " to " + c + ". Allowed range is " + range + "."); }
+          if (final) { const c = clamp(v, min, max); if (onTouch) onTouch(true); apply(c); setMsg("Adjusted " + v + " to " + c + ". Allowed range is " + range + "."); }
           else setMsg("Outside " + range + ". Not applied. It moves to the nearest allowed value when you leave the field.");
           return;
         }
         const vr = rd(v, 3);
+        if (onTouch) onTouch(true);
         if (vr !== value) apply(vr);
         setMsg(null);
       };
@@ -623,12 +641,13 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
         else if (e.key === "Escape") {
           stop(); skipBlur.current = true; setDraft(null); setMsg(null);
           if (startVal.current !== undefined && value !== startVal.current) apply(startVal.current);
+          if (onTouch) onTouch(startEntered.current);
           e.currentTarget.blur();
         }
       };
-      const onFocus = (e) => { startVal.current = hasValue ? value : null; justFocused.current = true; e.target.select(); };
+      const onFocus = (e) => { startVal.current = hasValue ? value : null; startEntered.current = !!entered; justFocused.current = true; e.target.select(); };
       const onMouseUp = (e) => { if (justFocused.current) { e.preventDefault(); justFocused.current = false; } };
-      const fromSlider = (e) => { stop(); setDraft(null); setMsg(null); apply(parseFloat(e.target.value)); };
+      const fromSlider = (e) => { stop(); setDraft(null); setMsg(null); if (onTouch) onTouch(true); apply(parseFloat(e.target.value)); };
       const invalid = editing && msg !== null && /^(Outside|Not a number)/.test(msg);
       const report = React.useContext(DraftCtx);
       useEffect(() => { if (!report) return undefined; report(id, invalid); return () => report(id, false); }, [invalid]);
@@ -760,9 +779,20 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     }
 
     // Compact result for phones and tablets: it stays on screen while the fields are edited.
-    function SummaryBar({ out, status, mode, warn }) {
+    // It carries the range the page computes below (sens) and the reason when there is no solution, so the
+    // value is never read without its uncertainty. Its height is published as --vv-bar-h so focus scrolling clears it.
+    function SummaryBar({ out, status, mode, warn, sens, rangeText }) {
+      const ref = useRef(null);
+      useEffect(() => {
+        const el = ref.current; if (!el) return undefined;
+        const set = () => document.documentElement.style.setProperty("--vv-bar-h", Math.ceil(el.getBoundingClientRect().height) + "px");
+        set();
+        if (typeof ResizeObserver === "undefined") return undefined;
+        const ro = new ResizeObserver(set); ro.observe(el);
+        return () => ro.disconnect();
+      }, []);
       return (
-        <div className="vv-bar" aria-hidden="true">
+        <div className="vv-bar" aria-hidden="true" ref={ref}>
           <div className="vv-bar-n">
             <span className="vv-bar-k">{mode === "forward" ? "Predicted SaO₂" : "Measured SaO₂"}</span>
             <span className="vv-bar-v">{fin(out.saO2) ? out.saO2.toFixed(1) : "—"}<small>%</small></span>
@@ -774,6 +804,9 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
           {warn
             ? <div className="vv-bar-s"><span className={cls("inline-block h-2.5 w-2.5 rounded-full shrink-0", TONE.warn.dot)} />Typed value not applied yet: these are the last applied values</div>
             : <div className="vv-bar-s"><span className={cls("inline-block h-2.5 w-2.5 rounded-full shrink-0", TONE[status.tone].dot)} />{status.label}</div>}
+          {out.error
+            ? <div className="vv-bar-r">{firstSentence(out.error)}</div>
+            : rangeText && <div className="vv-bar-r">{rangeText}</div>}
         </div>
       );
     }
@@ -792,26 +825,54 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     function App() {
       const [tab, setTab] = useState("sat");
       const [state, setState] = useState(BASELINE);
-      const [wtTouched, setWtTouched] = useState(false);
+      // Which Patient and Circuit fields the user has entered. An untouched field still holds its example value.
+      const [touched, setTouched] = useState({});
+      const touch = (k, v = true) => setTouched((t) => (!!t[k] === v ? t : { ...t, [k]: v }));
+      const confirmAll = () => setTouched({ wt: true, hgb: true, co: true, sa: true, paO2: true, q: true, sEcmo: true });
+      const wtTouched = !!touched.wt;
       const [scenNote, setScenNote] = useState(null);
+      const [modeNote, setModeNote] = useState(null);
       const [resetN, setResetN] = useState(0);
       const [badDrafts, setBadDrafts] = useState({});
       const reportDraft = useCallback((id, v) => setBadDrafts((b) => (!!b[id] === v ? b : { ...b, [id]: v })), []);
       const anyBad = Object.values(badDrafts).some(Boolean);
       const update = useCallback((patch) => setState((s) => ({ ...s, ...patch })), []);
-      const edit = (patch) => { setScenNote(null); update(patch); };
+      const edit = (patch) => { setScenNote(null); setModeNote(null); update(patch); };
       const out = useMemo(() => calc(state), [state]);
-      const status = useMemo(() => statusFor(out, state), [out, state]);
+      // The six entries a verdict rests on: Patient (weight, hemoglobin, the cardiac output or the SaO₂, PaO₂) and Circuit (flow, outlet saturation).
+      const entries = [
+        { k: "wt", name: "body weight", val: fmtVal(state.wt) + " kg" },
+        { k: "hgb", name: "hemoglobin", val: fmtVal(state.hgb, 1) + " g/dL" },
+        state.mode === "forward"
+          ? { k: "co", name: "cardiac output", val: fmtVal(state.co, 1) + " L/min" }
+          : { k: "sa", name: "measured SaO₂", val: fmtVal(state.measuredSaO2, 1) + "%" },
+        { k: "paO2", name: "PaO₂", val: fmtVal(state.paO2) + " mmHg" },
+        { k: "q", name: "ECMO flow", val: fmtVal(state.qEcmo, 1) + " L/min" },
+        { k: "sEcmo", name: "post-oxygenator saturation", val: fmtVal(state.sEcmo) + "%" },
+      ];
+      const notEntered = entries.filter((e) => !touched[e.k]);
+      const unconfirmed = notEntered.length > 0;
+      // While any of the six is still an example value, the verdict stays neutral. A failure to solve is still said.
+      const status = useMemo(() => {
+        const s = statusFor(out, state);
+        if (unconfirmed && s.label !== "Cannot solve; check inputs") return { label: "Example values: " + notEntered.length + " of 6 not entered", tone: "neutral" };
+        return s;
+      }, [out, state, unconfirmed, notEntered.length]);
       const sens = useMemo(() => (calc(state).error ? null : sensitivity(state)), [state]);
 
-      const reset = () => { setState({ ...BASELINE, mode: state.mode }); setWtTouched(false); setScenNote(null); setResetN((n) => n + 1); };
+      const reset = () => { setState({ ...BASELINE, mode: state.mode }); setTouched({}); setScenNote(null); setModeNote(null); setResetN((n) => n + 1); };
       // Switching direction carries the value the other direction was showing, so the scenario stays the same one.
       const setMode = (mode) => {
         if (mode === state.mode) return;
         const patch = { mode };
         if (mode === "reverse" && fin(out.saO2)) patch.measuredSaO2 = clamp(rd(out.saO2, 1), LIM.measuredSaO2[0], state.sEcmo);
-        if (mode === "forward" && fin(out.co)) patch.co = clamp(rd(out.co, 2), LIM.co[0], LIM.co[1]);
-        update(patch); setScenNote(null);
+        let held = null;
+        if (mode === "forward" && fin(out.co)) {
+          const c = clamp(rd(out.co, 2), LIM.co[0], LIM.co[1]);
+          patch.co = c;
+          if (Math.abs(c - out.co) > 0.005) held = NAMES.co + " held at " + fmtVal(c, 1) + " " + UNITS.co + ", the limit of the field; the solved value was " + out.co.toFixed(2) + " " + UNITS.co + ".";
+        }
+        update(patch); setScenNote(null); setModeNote(held);
       };
       // Scenario buttons: every result is clamped to the field limits, and a clamp is said out loud.
       const scenario = (raw) => {
@@ -822,7 +883,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
           patch[k] = rd(c);
           if (Math.abs(c - raw[k]) > 1e-9) notes.push(NAMES[k] + " held at " + fmtVal(patch[k]) + " " + UNITS[k] + ", the limit of the field");
         }
-        update(patch); setScenNote(notes.length ? notes.join("; ") + "." : null);
+        update(patch); confirmAll(); setModeNote(null); setScenNote(notes.length ? notes.join("; ") + "." : null);
       };
       const flowStep = clamp(Math.round(state.wt * 0.025 / 0.05) * 0.05, 0.05, 1.0);
       const fs = fmtFlow(flowStep);
@@ -838,9 +899,12 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       const sSaDown   = () => scenario({ measuredSaO2: state.measuredSaO2 - 5 });
 
       const fwd = state.mode === "forward";
+      const rangeText = !sens ? null
+        : sens.ok > 0 ? (fwd ? "Range " + sens.lo.toFixed(1) + " to " + sens.hi.toFixed(1) + "% across the assumed VO₂ and recirculation" : "Range " + sens.lo.toFixed(2) + " to " + sens.hi.toFixed(2) + " L/min across the assumed VO₂ and recirculation")
+        : "No solution across the assumed VO₂ and recirculation";
       const ra1 = fin(out.ratio) ? Math.round(out.ratio * 10) / 10 : NaN;
       const oerPct = fin(out.oer) ? Math.round(out.oer * 100) : NaN;
-      const ratioTone = !fin(ra1) ? "default" : (ra1 < 2 ? (fwd ? "danger" : "warn") : ra1 < 3 ? "warn" : "ok");
+      const ratioTone = !fin(ra1) || unconfirmed ? "default" : (ra1 < 2 ? (fwd ? "danger" : "warn") : ra1 < 3 ? "warn" : "ok");
 
       // Cross-check block: display only, never read by calc().
       const x = [];
@@ -905,7 +969,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
               </div>
             </div>
 
-            <SummaryBar out={out} status={status} mode={state.mode} warn={anyBad} />
+            <SummaryBar out={out} status={status} mode={state.mode} warn={anyBad} sens={sens} rangeText={rangeText} />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
@@ -923,35 +987,42 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
                     </button>
                   </div>
                   <p className="text-[12px] text-slate-500 mt-1.5">{fwd ? "Enter a cardiac output; the SaO₂ shown is predicted by the mixing equation." : "Enter the arterial SaO₂ from the blood gas; the calculator back-solves the cardiac output."} Switching carries the value across.</p>
+                  {modeNote && <p role="status" className="text-[12px] font-medium text-amber-800 mt-1.5">{modeNote}</p>}
+                  {unconfirmed && (
+                    <div className="vv-confirm">
+                      <span>{notEntered.length} of 6 values are still examples, marked Default.</span>
+                      <button type="button" className="vv-confirm-btn" onClick={confirmAll}>Use as teaching example</button>
+                    </div>
+                  )}
                 </div>
 
                 <Group title="Patient" desc="From the chart, the blood gas and the monitor">
-                  <Field label="Body weight" value={state.wt} onChange={(v) => { setWtTouched(true); edit({ wt: v }); }} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" badge="Measured"
+                  <Field label="Body weight" value={state.wt} onChange={(v) => edit({ wt: v })} onTouch={(v) => touch("wt", v)} entered={!!touched.wt} blankTo={BASELINE.wt} min={LIM.wt[0]} max={LIM.wt[1]} step={0.5} unit="kg" badge={touched.wt ? "Measured" : "Default"}
                     note={!wtTouched ? "Default 70 kg. Enter the patient's weight: it sets total VO₂, every per-kg readout, the plausibility guards and the scenario step sizes." : null}
                     hint="Sets total VO₂ and indexes the flow readouts."
                     source="Sets total VO₂ and indexes the flow readouts, the plausibility guards and the scenario step sizes. Nothing else in this tool is size-specific. The cited bands and ceilings remain adult." />
-                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => edit({ hgb: v })} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" minDec={1} badge="Measured"
+                  <Field label="Hemoglobin" value={state.hgb} onChange={(v) => edit({ hgb: v })} onTouch={(v) => touch("hgb", v)} entered={!!touched.hgb} blankTo={BASELINE.hgb} min={LIM.hgb[0]} max={LIM.hgb[1]} step={0.5} unit="g/dL" minDec={1} badge={touched.hgb ? "Measured" : "Default"}
                     hint={"Each gram binds " + state.hufner + " mL O₂; less hemoglobin widens the arterio-venous saturation gap."}
                     source={"Each gram binds " + state.hufner + " mL O₂ (1.34: Bartlett 2017, PMID 27040797; 1.39: ELSO 2021). With VO₂ fixed, less hemoglobin forces a wider arterio-venous saturation gap, so anemia lowers SvO₂ and SaO₂ as well as CaO₂ and DO₂."} />
                   {fwd ? (
-                    <Field key="co" label="Cardiac output (CO)" value={state.co} onChange={(v) => edit({ co: v })} min={LIM.co[0]} max={LIM.co[1]} sliderMax={clamp(rd(coGuard(state.wt), 2), 1, LIM.co[1])} step={0.05} unit="L/min" minDec={1} badge="Measured"
+                    <Field key="co" label="Cardiac output (CO)" value={state.co} onChange={(v) => edit({ co: v })} onTouch={(v) => touch("co", v)} entered={!!touched.co} blankTo={BASELINE.co} min={LIM.co[0]} max={LIM.co[1]} sliderMax={clamp(rd(coGuard(state.wt), 2), 1, LIM.co[1])} step={0.05} unit="L/min" minDec={1} badge={touched.co ? "Measured" : "Default"}
                       hint={"Total venous return: " + perKg(state.co, state.wt) + " mL/kg/min at " + state.wt + " kg. Enter an echo or catheter value, or your best estimate."}
                       source="Sepsis, fever and agitation raise CO; a higher CO dilutes the ECMO contribution. Thermodilution overestimated CO by 2.1–2.7 L/min during V-V ECMO in six anesthetized pigs (Russ 2022, PMID 34860710); a porcine finding, not a human V-V ECMO measurement, and not a licence to discount a measured cardiac output by 2 L/min at the bedside." />
                   ) : (
-                    <Field key="msa" label="Measured arterial SaO₂" value={state.measuredSaO2} onChange={(v) => edit({ measuredSaO2: v })} min={LIM.measuredSaO2[0]} max={state.sEcmo} step={0.5} unit="%" minDec={1} badge="Measured"
+                    <Field key="msa" label="Measured arterial SaO₂" value={state.measuredSaO2} onChange={(v) => edit({ measuredSaO2: v })} onTouch={(v) => touch("sa", v)} entered={!!touched.sa} blankTo={BASELINE.measuredSaO2} min={LIM.measuredSaO2[0]} max={state.sEcmo} step={0.5} unit="%" minDec={1} badge={touched.sa ? "Measured" : "Default"}
                       hint="From the arterial blood gas (a pulse-oximeter SpO₂ is only an estimate of it). It cannot exceed the post-oxygenator saturation."
                       source="Any residual native-lung oxygenation carried inside this number biases the solved cardiac output low." />
                   )}
-                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => edit({ paO2: v })} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" badge="Measured"
+                  <Field label="Arterial PaO₂" value={state.paO2} onChange={(v) => edit({ paO2: v })} onTouch={(v) => touch("paO2", v)} entered={!!touched.paO2} blankTo={BASELINE.paO2} min={LIM.paO2[0]} max={LIM.paO2[1]} step={1} unit="mmHg" badge={touched.paO2 ? "Measured" : "Default"}
                     hint="The patient's arterial value. It adds only the small dissolved-O₂ term, 0.003·PaO₂ mL/dL."
                     source="On V-V ECMO commonly 50–80 mmHg (a teaching convention carried by this tool); ELSO 2021 gives no PaO₂ range and states only that SaO₂ is typically 80–90%. A very high PaO₂ is described with a return cannula across the interatrial septum, where this model does not apply (Guevara-Chaux, PMID 40985532)." />
                 </Group>
 
                 <Group title="Circuit" desc="From the pump console and the circuit monitor">
-                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => edit({ qEcmo: v })} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} sliderMax={clamp(rd(GUARD.flowPerKg * state.wt, 2), 1, LIM.qEcmo[1])} step={0.05} unit="L/min" minDec={1} badge="Set on pump"
+                  <Field label="ECMO blood flow (Q_ECMO)" value={state.qEcmo} onChange={(v) => edit({ qEcmo: v })} onTouch={(v) => touch("q", v)} entered={!!touched.q} blankTo={BASELINE.qEcmo} min={LIM.qEcmo[0]} max={LIM.qEcmo[1]} sliderMax={clamp(rd(GUARD.flowPerKg * state.wt, 2), 1, LIM.qEcmo[1])} step={0.05} unit="L/min" minDec={1} badge={touched.q ? "Set on pump" : "Default"}
                     hint={perKg(state.qEcmo, state.wt) + " mL/kg/min at " + state.wt + " kg, shown for scale only."}
                     source="Cannula-limited. ELSO 2021 gives 5–6 L/min as the usual ceiling set by cannula size and Patel 2019 describes typical flows of 3–4 L/min (both adult figures). No weight-indexed flow target is sourced in this tool. Higher flows are conventionally linked to hemolysis and access insufficiency, but no flow threshold for either is published." />
-                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => edit({ sEcmo: v })} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" badge="Measured"
+                  <Field label="Post-oxygenator (ECMO outlet) saturation" value={state.sEcmo} onChange={(v) => edit({ sEcmo: v })} onTouch={(v) => touch("sEcmo", v)} entered={!!touched.sEcmo} blankTo={BASELINE.sEcmo} min={LIM.sEcmo[0]} max={LIM.sEcmo[1]} step={1} unit="%" badge={touched.sEcmo ? "Measured" : "Default"}
                     hint="Blood leaving the oxygenator, not the drainage line. About 100% when the membrane works."
                     source="A healthy oxygenator returns blood at ~100%. Judge oxygenator dysfunction by a rising transmembrane pressure drop (normal <50 mmHg; a change >100 mmHg suggests obstruction) together with a falling post-membrane PaO₂, not by a single saturation cut-point (Patel 2019, PMID 31632747). No published post-oxygenator saturation threshold was found. The pre-oxygenator (drainage-line) saturation goes in the check box below, not here." />
                 </Group>
@@ -1032,6 +1103,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
                       <span className="text-[11px] font-medium uppercase tracking-wide text-slate-600">Status</span>
                     </div>
                     <div className={cls("mt-1 text-sm font-semibold leading-snug", TONE[status.tone].text)} aria-live="polite">{status.label}</div>
+                    {unconfirmed && (<div className="mt-1 text-[12px] text-slate-800 leading-snug">Not entered yet, still the example value: {notEntered.map((e) => e.name + " " + e.val).join(", ")}. The verdict appears when all six are entered.</div>)}
                     {out.error && (<div className="mt-1 text-[12px] text-slate-800 leading-snug">{out.error}</div>)}
                     {out.warn && (<div className="mt-1 text-[12px] text-slate-800 leading-snug">{out.warn}</div>)}
                     <div className="mt-1 text-[12px] text-slate-600 leading-snug">
@@ -1067,9 +1139,9 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
                     <Stat label={fwd ? "Cardiac output" : "Cardiac output (solved)"} value={fin(out.co) ? out.co.toFixed(2) : "—"} unit="L/min" tone={!fwd ? "derived" : "default"} emphasize sub={!fwd ? "Back-solved (lower bound)" : "User-supplied"} />
                     <Stat label="CaO₂ (arterial)" value={fin(out.caO2) ? out.caO2.toFixed(2) : "—"} unit="mL/dL" tone="primary" sub={state.hufner + "·Hgb·SaO₂ + 0.003·PaO₂"} />
                     <Stat label="CvO₂ (venous)" value={fin(out.cvO2) ? out.cvO2.toFixed(2) : "—"} unit="mL/dL" sub="From the solved SvO₂" />
-                    <Stat label="DO₂ (delivery)" value={fin(out.do2) ? out.do2.toFixed(0) : "—"} unit="mL/min" tone={!fin(ra1) ? "default" : ra1 < 3 ? "warn" : "ok"} emphasize sub="CO × CaO₂ × 10" />
+                    <Stat label="DO₂ (delivery)" value={fin(out.do2) ? out.do2.toFixed(0) : "—"} unit="mL/min" tone={!fin(ra1) || unconfirmed ? "default" : ra1 < 3 ? "warn" : "ok"} emphasize sub="CO × CaO₂ × 10" />
                     <Stat label="VO₂ (demand, assumed)" value={out.vo2.toFixed(0)} unit="mL/min" sub={fmtVal(state.vo2i, 1) + " mL/kg/min × " + state.wt + " kg · " + (state.vo2i === BASELINE.vo2i ? "tool default, unsourced" : "your entry, not measured here")} />
-                    <Stat label="OER" value={fin(oerPct) ? oerPct : "—"} unit="%" tone={!fin(oerPct) ? "default" : oerPct > 40 ? "warn" : "ok"} sub="VO₂ ÷ DO₂ · normal ≈ 25% (transport physiology) · the 40% flag is this tool's heuristic" />
+                    <Stat label="OER" value={fin(oerPct) ? oerPct : "—"} unit="%" tone={!fin(oerPct) || unconfirmed ? "default" : oerPct > 40 ? "warn" : "ok"} sub="VO₂ ÷ DO₂ · normal ≈ 25% (transport physiology) · the 40% flag is this tool's heuristic" />
                     <Stat label="DO₂ : VO₂ ratio" value={fin(ra1) ? ra1.toFixed(1) : "—"} unit=": 1" tone={ratioTone} emphasize sub={(!fwd ? "Lower bound in this direction · " : "Responds to flow, Hgb and CO · ") + "ELSO 2021: normal 5:1, supply dependence near 2:1 · the 3:1 flag is this tool's"} />
                   </div>
                 )}
@@ -1165,7 +1237,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
                         o.svO2.toFixed(1) + "%", o.saO2.toFixed(1) + "%", o.do2.toFixed(0), o.ratio.toFixed(1)];
                       return (
                         <tr key={e.n} className="border-b border-slate-100">
-                          <td className="py-1 pr-3"><button type="button" className="vv-load" onClick={() => { setState(exState(e)); setWtTouched(true); setScenNote(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={"Load example " + e.n + ": " + e.name}>Load</button></td>
+                          <td className="py-1 pr-3"><button type="button" className="vv-load" onClick={() => { setState(exState(e)); confirmAll(); setScenNote(null); setModeNote(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} aria-label={"Load example " + e.n + ": " + e.name}>Load</button></td>
                           {cells.map((c, j) => (
                             <td key={j} className={cls("py-2 pr-3 tabular-nums", j === 1 && "font-medium text-slate-900")}>{c}</td>
                           ))}
@@ -1237,7 +1309,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
             <footer className="mt-6 pb-4 text-center text-[11px] text-slate-500 leading-relaxed">
               Educational use only · Not for clinical decision-making<br />
-              Neel Shah, MD · Pediatric Critical Care Medicine · v3.0 · Updated 2026-10-09 · CC BY-NC 4.0<br />
+              Neel Shah, MD · Pediatric Critical Care Medicine · v3.1 · Updated 2026-11-14 · CC BY-NC 4.0<br />
+              <a className="vv-back" href="../index.html">All tools</a><br />
               Adult-derived evidence base · weight-indexed inputs allow pediatric entry, but no pediatric threshold here is sourced
             </footer>
           </div>

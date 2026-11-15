@@ -826,6 +826,45 @@ function ScrUnitBanner() {
     }
   }, SCR_UNIT_MSG), "No result is shown while either SCr is above ", SCR_MAX_MGDL, " mg/dL.");
 }
+function entryProblems(curr, base, uo) {
+  const out = [];
+  const c = num(curr),
+    b = num(base),
+    u = num(uo);
+  if (c !== null && c <= 0) out.push({
+    key: "curr",
+    head: `Current SCr ${c} mg/dL: enter a value above 0`,
+    body: "No result is shown while current SCr is at or below 0."
+  });
+  if (b !== null && b <= 0) out.push({
+    key: "base",
+    head: `Baseline SCr ${b} mg/dL: enter a value above 0`,
+    body: "No result is shown while baseline SCr is at or below 0."
+  });
+  if (u !== null && u < 0) out.push({
+    key: "uo",
+    head: `Urine output ${u} mL/kg/h: enter 0 or more`,
+    body: "No result is shown while urine output is below 0."
+  });
+  return out;
+}
+function EntryBanners({
+  problems
+}) {
+  return React.createElement(React.Fragment, null, problems.map(pr => React.createElement("div", {
+    key: pr.key,
+    className: "floorbanner fb-severe",
+    role: "alert",
+    style: {
+      marginTop: "var(--sm)"
+    }
+  }, React.createElement("b", {
+    style: {
+      display: "block",
+      marginBottom: "2px"
+    }
+  }, pr.head), pr.body)));
+}
 function injuryFromCr(curr, base) {
   const c = num(curr),
     b = num(base);
@@ -1080,7 +1119,9 @@ function RaiTab({
   const ag = ageCheck(age, ageUnit);
   const derivedRisk = mv && vaso ? 5 : transplant ? 3 : 1;
   const risk = manualRisk !== null ? manualRisk : derivedRisk;
-  const scrBad = scrUnitSuspect(curr, base);
+  const scrUnit = scrUnitSuspect(curr, base);
+  const problems = entryProblems(curr, base, null);
+  const scrBad = scrUnit || problems.length > 0;
   const crInj = scrBad ? null : injuryFromCr(curr, base);
   const foInj = injuryFromFO(fo);
   let autoInjury = null,
@@ -1095,8 +1136,17 @@ function RaiTab({
   const rai = injury !== null && !ag.block && !scrBad ? risk * injury : null;
   const positive = rai !== null && rai >= 8;
   useEffect(() => {
-    setRaiShared(rai);
-  }, [rai]);
+    setRaiShared({
+      rai,
+      positive,
+      curr,
+      base,
+      fo,
+      mv,
+      vaso,
+      transplant
+    });
+  }, [rai, positive, curr, base, fo, mv, vaso, transplant]);
   const kdigoNow = ag.block || scrBad ? null : kdigoFromCr(curr, base);
   const kdigoMet = kdigoNow !== null && kdigoNow >= 1;
   const reassureSuppressed = kdigoMet && rai !== null && !positive;
@@ -1194,7 +1244,9 @@ function RaiTab({
     value: base,
     onChange: setBase,
     placeholder: "e.g. 0.4"
-  })), scrBad ? React.createElement(ScrUnitBanner, null) : null, React.createElement("div", {
+  })), scrUnit ? React.createElement(ScrUnitBanner, null) : null, React.createElement(EntryBanners, {
+    problems: problems
+  }), React.createElement("div", {
     style: {
       marginTop: "var(--md)"
     }
@@ -1249,7 +1301,7 @@ function RaiTab({
     }
   }, React.createElement("span", {
     className: "dot bg-caution"
-  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute" : "Out of range for this index" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"), manualInjury !== null ? React.createElement("div", {
+  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute" : "Out of range for this index" : problems.length > 0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"), manualInjury !== null ? React.createElement("div", {
     className: "inline-out",
     role: "group",
     "aria-label": "Manual injury stratum override",
@@ -1549,6 +1601,17 @@ function CompTab({
     [k]: v
   }));
   const ag = ageCheck(age, ageUnit);
+  const tab1 = raiShared && raiShared.rai !== null ? raiShared : null;
+  const useTab1 = () => setS(p => ({
+    ...p,
+    curr: raiShared.curr,
+    base: raiShared.base,
+    fo: raiShared.fo,
+    mv: raiShared.mv,
+    vaso: raiShared.vaso,
+    transplant: raiShared.transplant,
+    raiMode: "auto"
+  }));
   const pre = PRETESTS.find(p => p.key === s.pretestKey);
   let p0 = pre.p;
   if (s.pretestKey === "custom") {
@@ -1557,7 +1620,9 @@ function CompTab({
   }
   const transplant = s.transplant;
   const raiRisk = s.mv && s.vaso ? 5 : transplant ? 3 : 1;
-  const scrBad = scrUnitSuspect(s.curr, s.base);
+  const scrUnit = scrUnitSuspect(s.curr, s.base);
+  const problems = entryProblems(s.curr, s.base, s.uo);
+  const scrBad = scrUnit || problems.length > 0;
   const crInj = scrBad ? null : injuryFromCr(s.curr, s.base),
     foInj = injuryFromFO(s.fo);
   let raiInjury = null,
@@ -1749,13 +1814,32 @@ function CompTab({
   const bandTier = typeof posterior === "number" ? band(posterior) : "muted";
   const lowButKdigo = kdigoMet && bandTier === "pos";
   const tier = lowButKdigo ? "caution" : bandTier;
+  const cohortOnly = typeof posterior === "number" && steps.length === 1;
+  const factorsEntered = [s.curr, s.base, s.fo, s.uo, s.uoHrs].some(x => x !== "") || s.mv || s.vaso || s.transplant || s.ngal !== "unknown" || s.cystatin !== "none" || s.raiMode !== "auto";
   return React.createElement("div", null, React.createElement("div", {
     className: "caveat",
     style: {
       marginTop: "var(--md)",
       borderLeftColor: "var(--slate)"
     }
-  }, React.createElement("b", null, "How this works."), " The estimate starts at the population baseline and is ", React.createElement("b", null, "monotonic"), ": worsening inputs only raise it, never lower it. ", React.createElement("b", null, "Positive"), " findings multiply it up: a renal angina index \u2265 8 (auto-computed from organ support + creatinine + fluid overload), elevated urinary NGAL, or elevated cystatin C. ", React.createElement("b", null, "Current injury sets a floor"), ": KDIGO stage 2\u20133 (established severe AKI) floors at 90\u201395%; stage 1, oliguria, or fluid overload floor above baseline. ", React.createElement("b", null, "Negative findings do not lower the number below baseline"), "; they appear as reassurance notes, and formal rule-out / de-escalation uses the renal angina index's negative predictive value on Tab 1. Blank fields contribute nothing; each factor is badged by evidence tier. Chaining likelihood ratios assumes the tests are ", React.createElement("b", null, "conditionally independent"), ", which they are not: where a directly pooled joint estimate exists, as it does for renal angina plus urinary NGAL, this tool applies that single combined LR instead of the product."), React.createElement("div", {
+  }, React.createElement("b", null, "How this works."), " The estimate starts at the population baseline and is ", React.createElement("b", null, "monotonic"), ": worsening inputs only raise it, never lower it. ", React.createElement("b", null, "Positive"), " findings multiply it up: a renal angina index \u2265 8 (auto-computed from organ support + creatinine + fluid overload), elevated urinary NGAL, or elevated cystatin C. ", React.createElement("b", null, "Current injury sets a floor"), ": KDIGO stage 2\u20133 (established severe AKI) floors at 90\u201395%; stage 1, oliguria, or fluid overload floor above baseline. ", React.createElement("b", null, "Negative findings do not lower the number below baseline"), "; they appear as reassurance notes, and formal rule-out / de-escalation uses the renal angina index's negative predictive value on Tab 1. Blank fields contribute nothing; each factor is badged by evidence tier. Chaining likelihood ratios assumes the tests are ", React.createElement("b", null, "conditionally independent"), ", which they are not: where a directly pooled joint estimate exists, as it does for renal angina plus urinary NGAL, this tool applies that single combined LR instead of the product."), tab1 ? React.createElement("div", {
+    className: "inline-out",
+    id: "tab1-ref",
+    style: {
+      marginTop: "var(--md)"
+    }
+  }, React.createElement("div", null, "Tab 1 RAI for reference: ", React.createElement("b", {
+    className: "tnum"
+  }, raiShared.rai, " / 40"), ", renal angina ", raiShared.positive ? "positive" : "negative", "."), React.createElement("button", {
+    type: "button",
+    className: "toggle-btn sans",
+    style: {
+      marginTop: "8px"
+    },
+    onClick: useTab1
+  }, "Use Tab 1 values"), React.createElement("div", {
+    className: "help"
+  }, "Fills Tab 2's creatinine, baseline, fluid overload and organ-support toggles from Tab 1's current entries and sets the renal angina input to Auto.")) : null, React.createElement("div", {
     className: "grid2"
   }, React.createElement("section", {
     className: "card"
@@ -1836,7 +1920,9 @@ function CompTab({
     value: s.base,
     onChange: v => up("base", v),
     placeholder: "optional"
-  })), scrBad ? React.createElement(ScrUnitBanner, null) : null, React.createElement("div", {
+  })), scrUnit ? React.createElement(ScrUnitBanner, null) : null, React.createElement(EntryBanners, {
+    problems: problems.filter(pr => pr.key !== "uo")
+  }), React.createElement("div", {
     className: "row cols2",
     style: {
       marginTop: "var(--md)"
@@ -1865,7 +1951,9 @@ function CompTab({
     onChange: v => up("uoHrs", v),
     placeholder: "e.g. 14",
     min: "0"
-  })), React.createElement("div", {
+  })), React.createElement(EntryBanners, {
+    problems: problems.filter(pr => pr.key === "uo")
+  }), React.createElement("div", {
     className: "inline-out",
     style: {
       marginTop: "var(--md)"
@@ -1896,9 +1984,7 @@ function CompTab({
   }, "Force \u2212"), React.createElement(ToggleBtn, {
     on: s.raiMode === "ignore",
     onClick: () => up("raiMode", "ignore")
-  }, "Ignore")), raiShared !== null ? React.createElement("div", {
-    className: "help"
-  }, "Tab 1 RAI for reference: ", raiShared, ".") : null), React.createElement("h3", {
+  }, "Ignore"))), React.createElement("h3", {
     style: {
       marginTop: "var(--lg)"
     }
@@ -1959,12 +2045,25 @@ function CompTab({
       marginTop: "var(--md)"
     }
   }, React.createElement("div", {
-    className: "stripe " + (tier === "muted" ? "bg-caution" : "bg-" + tier)
+    className: "stripe " + (cohortOnly ? "" : tier === "muted" ? "bg-caution" : "bg-" + tier),
+    style: cohortOnly ? {
+      background: "var(--hair-strong)"
+    } : undefined
   }), React.createElement("div", {
     className: "result-body"
   }, React.createElement("div", {
     className: "card-label"
-  }, "Estimated probability of Day-3 severe AKI (KDIGO 2\u20133)"), typeof posterior === "number" ? React.createElement("div", null, React.createElement("div", {
+  }, "Estimated probability of Day-3 severe AKI (KDIGO 2\u20133)"), cohortOnly ? React.createElement("div", null, React.createElement("div", {
+    className: "bignum tnum"
+  }, (posterior * 100).toFixed(1), React.createElement("small", null, "%")), React.createElement("div", {
+    className: "inline-out"
+  }, "Pretest rate ", (posterior * 100).toFixed(1), "% (", factorsEntered ? "cohort rate; the factors entered do not change it" : "cohort rate, no patient factor entered", ")."), React.createElement("p", {
+    className: "interp",
+    style: {
+      fontSize: "12.5px",
+      color: "var(--ink-quiet)"
+    }
+  }, factorsEntered ? "The factors entered do not raise the estimate. Enter another patient factor to move it from this starting rate." : "Enter a patient factor to move the estimate from this starting rate.")) : typeof posterior === "number" ? React.createElement("div", null, React.createElement("div", {
     className: "bignum tnum tier-" + tier
   }, (posterior * 100).toFixed(0), React.createElement("small", null, "%")), React.createElement("div", {
     className: "inline-out"
@@ -1990,7 +2089,7 @@ function CompTab({
     }
   }, React.createElement("span", {
     className: "dot bg-caution"
-  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."))), typeof posterior === "number" && steps.length > 0 ? React.createElement("section", {
+  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool." : problems.length > 0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."))), typeof posterior === "number" && steps.length > 0 ? React.createElement("section", {
     className: "card"
   }, React.createElement("div", {
     className: "card-label"
@@ -2150,11 +2249,18 @@ function App() {
     setAgeUnit: setAgeUnit
   }))), React.createElement("footer", null, React.createElement("div", {
     className: "footer-inner"
-  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v2.2 \xB7 Updated 2026-10-03 \xB7 Licensed ", React.createElement("a", {
+  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v2.3 \xB7 Updated 2026-11-14 \xB7 Licensed ", React.createElement("a", {
     href: "https://creativecommons.org/licenses/by-nc/4.0/",
     target: "_blank",
     rel: "noopener"
-  }, "CC BY-NC 4.0"), ".", React.createElement("div", {
+  }, "CC BY-NC 4.0"), ".", React.createElement("div", null, React.createElement("a", {
+    href: "../index.html",
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      minHeight: "44px"
+    }
+  }, "All tools")), React.createElement("div", {
     style: {
       marginTop: "6px"
     }

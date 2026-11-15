@@ -1433,7 +1433,7 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
   <!-- ============================ REFERENCES ============================ -->
   <footer class="cite-footer" id="refs">
     <h2>References and provenance</h2>
-    <p style="font-size:12.5px;color:var(--ink-muted);max-width:80ch">Population is a column rather than a footnote: twelve of the twenty sources are adult and the intended reader is a pediatric intensivist.</p>
+    <p style="font-size:12.5px;color:var(--ink-muted);max-width:80ch">Population is a column rather than a footnote: fifteen of the twenty sources are adult and the intended reader is a pediatric intensivist.</p>
     <div class="tablewrap">
       <table class="cite-table">
         <caption class="visually-hidden">Sources, with identifier, journal, year and the population each was derived in</caption>
@@ -1466,8 +1466,8 @@ P(hyperinflammatory) = 1 / (1 + e^-logit)</pre>
     </div>
 
     <div class="tool-footer">
-      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-10-03 &middot;
-      Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot; session-only, no data leaves this device
+      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.4 &middot; Updated 2026-11-14 &middot;
+      Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot; session-only, no data leaves this device &middot; <a href="../index.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 4px">All tools</a>
       <details class="dtl" style="margin-top:var(--sm)"><summary>How the sources and coefficients were verified</summary>
       <div style="text-align:left">Every PMID and DOI here was resolved against PubMed E-utilities and PubMed Central, most recently on 2026-09-01, with first author, year and journal matched for each of the twenty primary sources. Retraction screening was run by <em>erratum linkage</em> as well as by publication type, because a publication-type screen alone cannot see an erratum published as its own record: that screen returns <em>two</em> errata, both to Famous 2017: PMID 30547667 (2018, the exchanged fluid-arm labels) and PMID 31469324 (2019, supplementary assay-dilution and a driving-pressure mislabel). Both are in the reference table and the first is cited beside the finding it corrects. No retraction was found. Coefficients were transcribed from the table or figure named in each row and re-checked by forward computation against the published cohort medians. The published operating characteristics are reproduced as printed and are <em>not</em> recomputed here, because that would need patient-level data this page does not have. Numbers that no source establishes are labelled DERIVED, marked as not re-verifiable, or are absent.</div>
       </details>
@@ -1962,7 +1962,10 @@ const STATE = {
   /* null, "hypo" or "hyper": which published example the reader loaded, and
      null again the moment they type a value of their own. Only the loaded-
      example case may draw the teaching note in resultRow. */
-  example: null
+  example: null,
+  /* input key -> the raw text of a zero the reader confirmed as measured.
+     Cleared when that field is edited or the form is cleared. */
+  zeroOk: {}
 };
 const INPUT_IDS = { il8: "in-il8", il6: "in-il6", stnfr1: "in-stnfr1", protc: "in-protc", hco3: "in-hco3" };
 
@@ -1976,6 +1979,7 @@ function readInputs() {
     const lo = Math.max(0, parseFloat(e.getAttribute("min")) || 0), hi = parseFloat(e.getAttribute("max"));
     if (!isFinite(v) || v < 0) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); if (isFinite(v)) STATE.bad[k] = { raw: raw, kind: "neg" }; }
     else if (v < lo || (isFinite(hi) && v > hi)) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); STATE.bad[k] = { raw: raw, kind: "range", lo: lo, hi: hi }; }
+    else if (v === 0 && STATE.zeroOk[k] !== raw) { STATE.inputs[k] = null; e.setAttribute("aria-invalid", "true"); STATE.bad[k] = { raw: raw, kind: "zero" }; }
     else { STATE.inputs[k] = v; e.removeAttribute("aria-invalid"); }
   }
   const vs = $("in-vaso").value;
@@ -2057,8 +2061,12 @@ function badEntryText(vars) {
     const who = i === 0 ? V.label.charAt(0).toUpperCase() + V.label.slice(1) : V.label;
     return b.kind === "neg"
       ? who + " " + b.raw + ": negative values are not allowed"
-      : who + " " + b.raw + " is outside " + b.lo + " to " + b.hi + " " + V.unit;
+      : b.kind === "zero"
+        ? who + " " + b.raw + ": 0 is a measured value; leave the field empty if not measured"
+        : who + " " + b.raw + " is outside " + b.lo + " to " + b.hi + " " + V.unit;
   });
+  const allZero = vars.every(function (k) { return STATE.bad[k].kind === "zero"; });
+  if (allZero) return parts.join("; ") + "; verdict withheld until you confirm or clear " + (vars.length > 1 ? "them" : "it") + ".";
   return parts.join("; ") + "; verdict withheld. " + (vars.length > 1 ? "These values were" : "This value was") + " not used.";
 }
 function sweepScope(model, v, hyperSide) {
@@ -2150,6 +2158,14 @@ function resultRow(model, pop) {
     tag.style.cssText = "font-family:var(--mono);font-size:11px;color:var(--neg);margin-top:4px;letter-spacing:0.03em";
     tag.textContent = badEntryText(res.bad);
     row.appendChild(tag);
+    res.bad.filter(function (k) { return STATE.bad[k].kind === "zero"; }).forEach(function (k) {
+      const cb = document.createElement("button");
+      cb.type = "button"; cb.className = "btn zero-confirm";
+      cb.style.marginTop = "6px"; cb.style.marginRight = "6px";
+      cb.textContent = "Confirm " + VARS[k].label + " " + STATE.bad[k].raw + " as measured";
+      cb.addEventListener("click", function () { STATE.zeroOk[k] = STATE.bad[k].raw; redrawAll(); });
+      row.appendChild(cb);
+    });
   }
   if (res.kind === "blocked") {
     const tag = document.createElement("div");
@@ -2274,7 +2290,10 @@ function readCrpValue() {
   const raw = e.value.trim();
   if (raw === "") { e.removeAttribute("aria-invalid"); return null; }
   const v = parseFloat(raw);
-  if (!isFinite(v) || v < 0) { e.setAttribute("aria-invalid", "true"); return null; }
+  const hi = parseFloat(e.getAttribute("max"));
+  if (!isFinite(v)) { e.setAttribute("aria-invalid", "true"); return null; }
+  if (v < 0) { e.setAttribute("aria-invalid", "true"); return { bad: "C-reactive protein " + raw + " mg/dL is negative. Negative values are not allowed." }; }
+  if (isFinite(hi) && v > hi) { e.setAttribute("aria-invalid", "true"); return { bad: "C-reactive protein " + raw + " is above " + hi + " mg/dL, the largest value this field accepts. Is it in mg/L? Enter the value in mg/dL." }; }
   e.removeAttribute("aria-invalid");
   return v;
 }
@@ -2285,6 +2304,11 @@ function renderCrpReadout() {
   const meansLine = "Published SAILS class means (n=" + CRP_STATS.n + "): hyperinflammatory " +
     fmt(hyper.mean, 1) + " &plusmn; " + fmt(hyper.sd, 1) + " mg/dL, hypoinflammatory " +
     fmt(hypo.mean, 1) + " &plusmn; " + fmt(hypo.sd, 1) + " mg/dL (" + CRP_STATS.pText + ").";
+  if (v !== null && typeof v === "object") {
+    box.innerHTML = "<p style=\"margin:0;font-size:12.5px;color:var(--neg)\"></p>";
+    box.firstChild.textContent = v.bad + " No comparison is shown.";
+    return;
+  }
   if (v === null) {
     box.innerHTML = "<p style=\"margin:0;font-size:12.5px;color:var(--ink-quiet)\">Enter a value to compare it against the published class means. " +
       meansLine + " No class probability is computed here.</p>";
@@ -2878,6 +2902,10 @@ function wire() {
     STATE.example = null;
     redrawAll();
   });
+  /* an edit to a field retires its zero confirmation */
+  Object.keys(INPUT_IDS).forEach(function (k) {
+    $(INPUT_IDS[k]).addEventListener("input", function () { delete STATE.zeroOk[k]; readInputs(); renderResults(); });
+  });
   /* CRP is wired separately and deliberately does not touch STATE.example or
      redrawAll(): it feeds no model, so typing it must never retire a loaded
      example or move any of the four model rows. */
@@ -2886,6 +2914,7 @@ function wire() {
     ["in-il8", "in-il6", "in-stnfr1", "in-protc", "in-hco3"].forEach(function (id) { $(id).value = ""; $(id).removeAttribute("aria-invalid"); });
     $("in-vaso").value = "";
     $("in-crp").value = ""; $("in-crp").removeAttribute("aria-invalid");
+    STATE.zeroOk = {};
     STATE.example = null;
     redrawAll();
     renderCrpReadout();
@@ -3045,5 +3074,46 @@ function initTheme() {
   svg text.t-105 { font-size: 11px; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

@@ -502,6 +502,9 @@ html[data-crrt-refs="on"] .crrt-sources-link { display: none; }
 .crrt-footer { margin-top: var(--crrt-lg); padding: var(--crrt-lg) 0 var(--crrt-xxl); border-top: 1px solid var(--nt-rule); color: var(--nt-ink-quiet); }
 .crrt-foot-small { margin: 0 0 8px; max-width: 56ch; font-size: 13px; line-height: 1.65; }
 .crrt-foot-by { color: var(--nt-ink-muted); }
+.crrt-foot-nav { margin-bottom: 0; }
+.crrt-foot-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--nt-ink-muted); text-decoration: underline; text-underline-offset: 3px; }
+.crrt-foot-link:hover { color: var(--nt-accent-deep); }
 
 /* ---- motion, forced colours, print ---- */
 @media (prefers-reduced-motion: reduce) {
@@ -1734,7 +1737,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
 <footer id="crrt-footer" class="crrt-footer">
   <div class="crrt-wrap">
-    <p class="crrt-foot-small crrt-foot-by">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.1 &middot; Updated 2026-10-19 &middot; CC BY-NC 4.0</p>
+    <p class="crrt-foot-small crrt-foot-by">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.2 &middot; Updated 2026-11-14 &middot; CC BY-NC 4.0</p>
+    <div class="crrt-foot-small crrt-foot-nav"><a class="crrt-foot-link" href="../index.html">All tools</a></div>
     <p class="crrt-foot-small" id="crrt-foot-note">Educational use only. Sources are listed at the bottom of this page.</p>
   </div>
 </footer>

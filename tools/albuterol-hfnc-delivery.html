@@ -112,6 +112,7 @@
     border-top: 1px solid var(--rule); margin-top: 30px; padding-top: 12px;
     font-size: 12px; color: var(--ink-quiet); line-height: 1.6;
   }
+  .tool-footer .hub-link { display: flex; align-items: center; min-height: 44px; width: fit-content; padding: 0 4px; margin-left: -4px; color: var(--ink); font-weight: 600; text-decoration: underline; }
   /* Device section */
   .dev-note {
     font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin: 0 0 12px;
@@ -176,6 +177,13 @@
     border-radius: 6px; font-size: 14px; line-height: 1.65; color: var(--ink);
   }
   sub, sup { font-size: 11px; }
+  .zone-inline { display: none; }
+  @media (max-width: 600px) {
+    .ratio-table .zone-col { display: none; }
+    .ratio-table th { white-space: normal; }
+    .ratio-table th, .ratio-table td { padding-left: 6px; padding-right: 6px; }
+    .ratio-table .zone-inline { display: block; margin-top: 3px; font-size: 12px; line-height: 1.35; color: var(--ink-muted); }
+  }
   /* keep running prose to a readable line length */
   .subtitle, .caption, .footnote, .dev-note, .key-box .content p, .key-box li, .corr p, .col-warn,
   .disclaimer > div, .case-card .case-sub, .case-pif .src, .case-note, .case-gap, .refs li { max-width: 52ch; }
@@ -305,7 +313,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   <div class="chart-wrap">
     <div class="chart-container"><canvas id="chartFlow"></canvas></div>
   </div>
-  <p class="caption">Figure A. Individual reported values from named studies (not a fitted curve, and not interpolated). Every point is a measured inhaled or lung dose at a stated gas flow; hover to see the study and model. At 3 L/min alone, bench models span 0.6% to 12.6%, so the flow axis by itself does not determine delivery. Delivery falls with rising flow once gas flow exceeds the patient's inspiratory flow, but the crossover is <strong>not</strong> at 10&ndash;15 L/min in small patients. Measured mean peak tidal inspiratory flow in 44 infants up to 6 months old with bronchiolitis (median weight 4.3 kg) was 7.45 L/min (95% CI 6.51&ndash;8.39), i.e. 1.68 L/kg/min (95% CI 1.51&ndash;1.85), so a routine infant setting of 8&ndash;10 L/min is already <em>above</em> inspiratory flow, not below it (Milesi 2021, PMID 33333115). For children beyond infancy the crossover is <span class="unsourced-tag">UNSOURCED</span>: no measured peak inspiratory flow for that age range appears anywhere in the cited literature, and weight-indexed extrapolation would place it far higher, so no pediatric band is asserted here in either direction. The adult and adolescent crossover is well above 15 L/min (Dailey 2017; Li 2019, both adult models; neither measured a pediatric inspiratory flow). Read the pediatric bench points above accordingly: they sit at 0.1&ndash;0.6% at 10&ndash;20 L/min, not at the ~20% reported in adult work at the same flows. Vibrating mesh nebulizers outperform jet nebulizers during HFNC, but the advantage is not universal across interfaces: with a low-flow nasal cannula there was no significant difference between mesh and jet in either infant (p=.643) or pediatric (p=.255) models (Ari 2019). Only one flow-paired jet-nebulizer value during HFNC was located in the literature (1.0% at 30 L/min, Dugernier 2017).</p>
+  <p class="caption">Figure A. Individual reported values from named studies (not a fitted curve, and not interpolated). Every point is a measured inhaled or lung dose at a stated gas flow; hover to see the study and model. At 3 L/min alone, bench models span 0.6% to 12.6%, so the flow axis by itself does not determine delivery. Delivery falls with rising flow once gas flow exceeds the patient's inspiratory flow, but the crossover is <strong>not</strong> at 10&ndash;15 L/min in small patients. Measured mean peak tidal inspiratory flow in 44 infants up to 6 months old with bronchiolitis (median weight 4.3 kg) was 7.45 L/min (95% CI 6.51&ndash;8.39), i.e. 1.68 L/kg/min (95% CI 1.51&ndash;1.85), so a routine infant setting of 8&ndash;10 L/min is already <em>above</em> inspiratory flow, not below it (Milesi 2021, PMID 33333115). For children beyond infancy the crossover is <span class="unsourced-tag">UNSOURCED</span>: no measured peak inspiratory flow for that age range appears anywhere in the cited literature, and weight-indexed extrapolation would place it far higher, so no pediatric band is asserted here in either direction. The adult and adolescent crossover is well above 15 L/min (Dailey 2017; Li 2019, both adult models; neither measured a pediatric inspiratory flow). Read the pediatric bench points above accordingly: they sit at 0.0&ndash;0.1% at 10&ndash;20 L/min (Perry 2013, pediatric cannula), not at the ~20% reported in adult work at the same flows. Vibrating mesh nebulizers outperform jet nebulizers during HFNC, but the advantage is not universal across interfaces: with a low-flow nasal cannula there was no significant difference between mesh and jet in either infant (p=.643) or pediatric (p=.255) models (Ari 2019). Only one flow-paired jet-nebulizer value during HFNC was located in the literature (1.0% at 30 L/min, Dugernier 2017).</p>
 </div>
 
 <div id="panel-ratio" class="panel">
@@ -548,7 +556,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 <p class="footnote">Exact delivery varies with cannula size and cannula-to-nares ratio, interface fit, breathing pattern and effort, circuit humidity and condensation, nebulizer position, and nebulizer brand. Values above are the numbers the cited studies report; they are not estimates of what an individual patient receives. Most are bench models or healthy-volunteer studies. Where a figure could not be traced to a source it has been removed rather than approximated, and the one derived quantity in this tool is labelled <span class="derived-tag">DERIVED</span> in place.</p>
 
 <footer class="tool-footer">
-  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v3.2 &middot; Updated 2026-10-03 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> 37 PMIDs are cited here. On 2026-09-01, twelve of them (21438178, 23628834, 28463044, 28669609, 30920155, 31083346, 31313534, 33333115, 34683948, 34789564, 37553215 and 38981652, the sources behind the device section, the inspiratory-flow cases and both figures) were re-resolved against PubMed with title, journal, first author, volume, issue and page range matched to the record, which is how the DiBlasi 2024 page range in this tool was found to be wrong and corrected. The remaining twenty-five carry the 2026-08-31 check: they resolve in PubMed and match the title, journal and first author shown. The four manufacturer documents listed above have no PMID and were retrieved from the manufacturers&rsquo; own sites on 2026-09-01; every device claim tagged MANUFACTURER is a quotation from one of them. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text, but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
+  <a class="hub-link" href="../index.html">All tools</a>
+  Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v3.3 &middot; Updated 2026-11-14 &middot; Licensed CC BY-NC 4.0 &middot; <strong>Scope of verification:</strong> 37 PMIDs are cited here. On 2026-09-01, twelve of them (21438178, 23628834, 28463044, 28669609, 30920155, 31083346, 31313534, 33333115, 34683948, 34789564, 37553215 and 38981652, the sources behind the device section, the inspiratory-flow cases and both figures) were re-resolved against PubMed with title, journal, first author, volume, issue and page range matched to the record, which is how the DiBlasi 2024 page range in this tool was found to be wrong and corrected. The remaining twenty-five carry the 2026-08-31 check: they resolve in PubMed and match the title, journal and first author shown. The four manufacturer documents listed above have no PMID and were retrieved from the manufacturers&rsquo; own sites on 2026-09-01; every device claim tagged MANUFACTURER is a quotation from one of them. Reported percentages were checked against source abstracts and, where the value is load-bearing, against the full text, but not exhaustively across every value, and a value that matches its source may still be quoted outside the population or condition in which it was measured. This is a narrower claim than the &ldquo;Evidence PubMed-verified&rdquo; that appeared here through v2.0. Renders and computes entirely in this browser.
 </footer>
 
 <script>
@@ -894,6 +903,7 @@ var pifCases = [
     pifText: '7.45 L/min',
     pifDetail: '95% CI 6.51–8.39 · observed range 2.40–16.00 · indexed to weight, 1.68 L/kg/min (95% CI 1.51–1.85)',
     src: 'Peak tidal inspiratory flow measured by spirometry in 44 infants up to 6 months old admitted to a PICU with acute viral bronchiolitis; median weight 4.3 kg (Milesi 2021, PMID 33333115). PTIF was under 2.5 L/kg/min in 89% of infants, correlated with weight (&rho; = 0.55), and correlated with <em>no</em> marker of disease severity: not the modified Wood score, not the Silverman-Andersen score, not respiratory rate, F<sub>IO2</sub> or PCO<sub>2</sub>. This is a true spirometric peak.',
+    zoneNote: 'A measured peak gives a smaller ratio than Figure B&rsquo;s convention, by up to a factor of 1.57. Three rows keep their zone because that correction cannot move them across a cut point: multiplying by 1.57 takes 0.15 to at most 0.23, still under 0.5, and 1.07 and 1.15 can only rise above 1.0. The 0.87 row would reach 1.37, which crosses 1.0, so no zone is given.',
     rows: [
       { f: 6.5, fl: '1.5 L/kg/min ≈ 6.5 L/min', z: { cls: 'na', text: 'not comparable with Figure B' } },
       { f: 8,   fl: 'routine 8 L/min' },
@@ -986,7 +996,7 @@ var pifCases = [
       { f: 50, fl: '50 L/min',        pif: [13.5, 31.5], pl: 'quiet breathing' },
       { f: 50, fl: '50 L/min',        pif: [27, 52.5],   pl: 'distressed breathing' }
     ],
-    note: '<strong>The distressed adult is the only patient on this page who routinely sits at or below a ratio of 1.0 at a clinical flow.</strong> That, together with device and humidifier differences (see Nebulizer Compatibility and Placement by HFNC Platform, above), is part of why the adult inhaled-dose figures in this tool run 17–22% while the pediatric bench values at comparable flows run 0.0–0.8%. The adult has enough inspiratory demand to keep the ratio down at flows a child could never generate. It follows that adult delivery data does not transfer downward, and neither does any recommendation built on it.'
+    note: '<strong>The distressed adult is the only patient on this page who routinely sits at or below a ratio of 1.0 at a clinical flow.</strong> That, together with device and humidifier differences (see Nebulizer Compatibility and Placement by HFNC Platform, above), is part of why the adult inhaled-dose figures in this tool run 17–22% while the pediatric bench values run 0.0–0.8% across pediatric and adult cannulas at 10–20 L/min (Perry 2013). The adult has enough inspiratory demand to keep the ratio down at flows a child could never generate. It follows that adult delivery data does not transfer downward, and neither does any recommendation built on it.'
   }
 ];
 
@@ -1044,7 +1054,7 @@ var pifCases = [
       html += '<th>Set HFNC flow</th>';
       html += '<th>Inspiratory flow used</th>';
       if (anyProfile) { html += '<th>Pattern</th>'; }
-      html += '<th>GF:IF</th><th>Zone in Figure B</th>';
+      html += '<th>GF:IF</th><th class="zone-col">Zone in Figure B</th>';
       html += '</tr></thead><tbody>';
       c.rows.forEach(function(row) {
         var p = (row.pif !== undefined) ? row.pif : c.pif;
@@ -1056,11 +1066,12 @@ var pifCases = [
         html += '<td>' + row.fl + '</td>';
         html += '<td>' + pTxt + '</td>';
         if (anyProfile) { html += '<td>' + (row.pl || 'N/A') + '</td>'; }
-        html += '<td><span class="rchip ' + z.cls + '">' + ratioText(r) + '</span></td>';
-        html += '<td>' + z.text + '</td>';
+        html += '<td><span class="rchip ' + z.cls + '">' + ratioText(r) + '</span><span class="zone-inline">' + z.text + '</span></td>';
+        html += '<td class="zone-col">' + z.text + '</td>';
         html += '</tr>';
       });
       html += '</tbody></table></div>';
+      if (c.zoneNote) { html += '<p class="case-note zone-note">' + c.zoneNote + '</p>'; }
     }
 
     if (c.gap) { html += '<div class="case-gap">' + c.gap + '</div>'; }
@@ -1162,5 +1173,46 @@ var pifCases = [
   sub, sup { font-size: 11px; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

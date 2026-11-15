@@ -46,15 +46,29 @@
   }
   .warn b{font-weight:600}
 
+  .jump{margin-top:var(--lg)}
+  .jump-group{font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase;
+              color:var(--ink-muted); margin-top:var(--md); padding-bottom:var(--xs); border-bottom:2px solid var(--ink)}
+  .jump ul{list-style:none}
+  .jump li{border-bottom:1px solid var(--rule)}
+  .jump li a{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; column-gap:var(--md);
+             min-height:44px; padding:var(--xs) 0; font-family:var(--serif); font-size:16px; line-height:1.3;
+             border-bottom:0; color:var(--slate)}
+  .jump li a:hover .jump-title{text-decoration-color:var(--slate-deep)}
+  .jump-title{text-decoration:underline; text-decoration-color:var(--slate-pale); text-underline-offset:3px}
+  .jump-cue{font-family:var(--mono); font-size:13px; color:var(--ink-muted); white-space:nowrap}
+  h2.group{font-family:var(--sans); font-size:22px; font-weight:600; line-height:1.25;
+           margin-top:var(--xl); padding-top:var(--md); border-top:2px solid var(--ink)}
+  .domain.type{border-color:var(--slate); color:var(--slate-deep)}
   ol.rows{list-style:none; margin-top:var(--xs)}
   .row{display:grid; grid-template-columns:76px 1fr; gap:0 var(--lg);
        padding:var(--lg) 0; border-bottom:1px solid var(--rule);}
   .numeral{font-family:var(--serif); font-size:56px; line-height:0.9;
            font-weight:400; color:var(--nt-accent); letter-spacing:-0.02em; padding-top:2px;
            font-variant-numeric:lining-nums;}
-  .row h2{font-family:var(--serif); font-size:23px; font-weight:600;
+  .row h3{font-family:var(--serif); font-size:23px; font-weight:600;
           line-height:1.25; letter-spacing:-0.005em;}
-  .row h2 a{border-bottom-width:2px}
+  .row h3 a{border-bottom-width:2px}
   .domain{display:inline-block; margin-top:var(--xs); font-size:11px; font-weight:600;
           letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted);
           border:1px solid var(--slate-pale); border-radius:3px; padding:2px 7px;}
@@ -76,12 +90,13 @@
     h1{font-size:32px}
     .row{grid-template-columns:1fr; gap:var(--sm)}
     .numeral{font-size:44px}
-    .row h2{font-size:22.5px}
+    .row h3{font-size:22.5px}
   }
   @media (prefers-reduced-motion: reduce){ a{transition:none} }
   @media print{
     body{background:#fff;color:#000;max-width:none;padding:0.5in}
     .row{break-inside:avoid}
+    h2.group{break-after:avoid}
   }
 </style>
 <!-- neel-theme:head:start -->
@@ -194,146 +209,188 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   <div class="overline">Critical care teaching tools</div>
   <h1>Move the inputs, watch the physiology</h1>
   <p class="lede">Thirteen interactive tools for pediatric and adult critical care. Each is a single self-contained page with no install, no account, and no server. Nothing you type leaves your browser.</p>
-  <div class="stamp">v2.x &middot; updated 19 October 2026 &middot; CC BY-NC 4.0</div>
+  <div class="stamp">v2.x &middot; updated 14 November 2026 &middot; CC BY-NC 4.0</div>
 </header>
 
 <div class="warn">
   <b>These are teaching tools, not medical devices.</b> None is externally validated or FDA-cleared, and none is for autonomous clinical decision-making. Thresholds here are risk-stratifiers drawn from specific populations, not treatment targets. Defer to your own judgment and local protocols, and do not enter protected health information. See <a href="DISCLAIMER.md">the full disclaimer</a>.
 </div>
 
+<nav class="jump" aria-label="Jump to a tool">
+  <p class="jump-group">Calculators and interpreters</p>
+  <ul>
+    <li><a href="#vv-ecmo-oxygenation-calculator"><span class="jump-title">V-V ECMO Oxygenation Calculator</span> <span class="jump-cue">about 15 phone screens</span></a></li>
+    <li><a href="#co2-gap-scvo2-interpreter"><span class="jump-title">CO<sub>2</sub> Gap and ScvO<sub>2</sub> Interpreter</span> <span class="jump-cue">about 10 phone screens</span></a></li>
+    <li><a href="#icu-cbc-interpreter"><span class="jump-title">ICU CBC Interpreter</span> <span class="jump-cue">about 20 phone screens</span></a></li>
+    <li><a href="#pediatric-aki-risk-tool"><span class="jump-title">Pediatric AKI Risk Tool</span> <span class="jump-cue">about 4 phone screens</span></a></li>
+    <li><a href="#pediatric-dysnatremia-di"><span class="jump-title">Pediatric Dysnatremia and Diabetes Insipidus</span> <span class="jump-cue">about 19 phone screens</span></a></li>
+  </ul>
+  <p class="jump-group">Interactive explainers</p>
+  <ul>
+    <li><a href="#albuterol-hfnc-delivery"><span class="jump-title">Albuterol Delivery During HFNC</span> <span class="jump-cue">about 34 phone screens</span></a></li>
+    <li><a href="#prx-cppopt-map-challenge"><span class="jump-title">PRx, CPPopt and the MAP Challenge</span> <span class="jump-cue">about 5 phone screens</span></a></li>
+    <li><a href="#ards-subphenotype-explorer"><span class="jump-title">ARDS Inflammatory Subphenotypes</span> <span class="jump-cue">about 48 phone screens</span></a></li>
+  </ul>
+  <p class="jump-group">Long-form teaching pages</p>
+  <ul>
+    <li><a href="#venous-return-wars"><span class="jump-title">The Venous Return Wars</span> <span class="jump-cue">about 57 phone screens</span></a></li>
+    <li><a href="#asthma-critical-care"><span class="jump-title">Critical Asthma: Drugs, Noninvasive Support, and the Ventilator</span> <span class="jump-cue">about 144 phone screens</span></a></li>
+    <li><a href="#ventilator-fundamentals"><span class="jump-title">Ventilator Fundamentals</span> <span class="jump-cue">about 98 phone screens</span></a></li>
+    <li><a href="#ventilator-advanced"><span class="jump-title">Ventilator Advanced</span> <span class="jump-cue">about 100 phone screens</span></a></li>
+    <li><a href="#crrt-fundamentals"><span class="jump-title">CRRT: Clearance, Replacement Fluid, and Anticoagulation</span> <span class="jump-cue">about 60 phone screens</span></a></li>
+  </ul>
+</nav>
+
+<section aria-labelledby="g-calc">
+<h2 class="group" id="g-calc">Calculators and interpreters</h2>
 <ol class="rows">
 
-  <li class="row">
+  <li class="row" id="vv-ecmo-oxygenation-calculator">
     <div class="numeral">01</div>
     <div>
-      <h2><a href="tools/vv-ecmo-oxygenation-calculator.html">V-V ECMO Oxygenation Calculator</a></h2>
-      <span class="domain">ECMO / gas exchange</span>
+      <h3><a href="tools/vv-ecmo-oxygenation-calculator.html">V-V ECMO Oxygenation Calculator</a></h3>
+      <span class="domain">ECMO / gas exchange</span> <span class="domain type">Calculator</span>
       <p class="does">Solves the venovenous mixing equation in both directions. Enter a cardiac output and it predicts arterial saturation; enter a measured SaO<sub>2</sub> and it solves for cardiac output. Inputs are sorted into measured, set on the pump, assumed and solved, and you can check the model against a measured SaO<sub>2</sub>, a cardiac output or the circuit&rsquo;s pre-oxygenator saturation. Recirculation, VO<sub>2</sub> and hemoglobin are inputs; oxygen delivery is an output. Five worked scenarios load with one click, and the page runs offline.</p>
-      <div class="meta">v3.0 &middot; updated 2026-10-09 &middot; <a href="tools/vv-ecmo-oxygenation-calculator.html">Open tool</a></div>
+      <div class="meta">about 15 phone screens &middot; v3.1 &middot; updated 2026-11-14 &middot; <a href="tools/vv-ecmo-oxygenation-calculator.html">Open tool</a></div>
     </div>
   </li>
 
-  <li class="row">
+  <li class="row" id="co2-gap-scvo2-interpreter">
     <div class="numeral">02</div>
     <div>
-      <h2><a href="tools/co2-gap-scvo2-interpreter.html">CO<sub>2</sub> Gap and ScvO<sub>2</sub> Interpreter</a></h2>
-      <span class="domain">Shock / perfusion</span>
+      <h3><a href="tools/co2-gap-scvo2-interpreter.html">CO<sub>2</sub> Gap and ScvO<sub>2</sub> Interpreter</a></h3>
+      <span class="domain">Shock / perfusion</span> <span class="domain type">Calculator</span>
       <p class="does">Reads PaCO<sub>2</sub>, PvCO<sub>2</sub>, ScvO<sub>2</sub> and lactate through three stacked tiers: the venoarterial gap, the macrocirculatory versus microcirculatory pattern, and anaerobic stratification. Returns a verdict, the edge cases that invalidate the gap, and the next clinical actions, each traced to its source.</p>
-      <div class="meta">v2.2 &middot; updated 2026-10-03 &middot; <a href="tools/co2-gap-scvo2-interpreter.html">Open tool</a></div>
+      <div class="meta">about 10 phone screens &middot; v2.3 &middot; updated 2026-11-14 &middot; <a href="tools/co2-gap-scvo2-interpreter.html">Open tool</a></div>
     </div>
   </li>
 
-  <li class="row">
+  <li class="row" id="icu-cbc-interpreter">
     <div class="numeral">03</div>
     <div>
-      <h2><a href="tools/icu-cbc-interpreter.html">ICU CBC Interpreter</a></h2>
-      <span class="domain">Sepsis / infection</span>
+      <h3><a href="tools/icu-cbc-interpreter.html">ICU CBC Interpreter</a></h3>
+      <span class="domain">Sepsis / infection</span> <span class="domain type">Calculator</span>
       <p class="does">Bedside CBC interpretation through a sepsis lens with the evidence graded per finding. Nine confounders can be switched on, each of which changes what the count means: steroids, G-CSF, recent chemotherapy, asplenia, hematologic malignancy, a seizure within 24 hours, late pregnancy, a beta-agonist infusion, and recent transfusion.</p>
-      <div class="meta">v2.3 &middot; updated 2026-10-03 &middot; <a href="tools/icu-cbc-interpreter.html">Open tool</a></div>
+      <div class="meta">about 20 phone screens &middot; v2.4 &middot; updated 2026-11-14 &middot; <a href="tools/icu-cbc-interpreter.html">Open tool</a></div>
     </div>
   </li>
 
-  <li class="row">
+  <li class="row" id="pediatric-aki-risk-tool">
     <div class="numeral">04</div>
     <div>
-      <h2><a href="tools/pediatric-aki-risk-tool.html">Pediatric AKI Risk Tool</a></h2>
-      <span class="domain">Renal</span>
+      <h3><a href="tools/pediatric-aki-risk-tool.html">Pediatric AKI Risk Tool</a></h3>
+      <span class="domain">Renal</span> <span class="domain type">Calculator</span>
       <p class="does">Renal angina index tracked day by day against its threshold, with a Bayesian layer that moves a pretest severe-AKI rate to a posttest probability using urinary NGAL and cystatin C. Derived likelihood ratios are labelled as derived rather than presented as directly reported.</p>
-      <div class="meta">v2.2 &middot; updated 2026-10-03 &middot; <a href="tools/pediatric-aki-risk-tool.html">Open tool</a></div>
+      <div class="meta">about 4 phone screens &middot; v2.3 &middot; updated 2026-11-14 &middot; <a href="tools/pediatric-aki-risk-tool.html">Open tool</a></div>
     </div>
   </li>
 
-  <li class="row">
+  <li class="row" id="pediatric-dysnatremia-di">
     <div class="numeral">05</div>
     <div>
-      <h2><a href="tools/albuterol-hfnc-delivery.html">Albuterol Delivery During HFNC</a></h2>
-      <span class="domain">Asthma / aerosol</span>
-      <p class="does">Charts inhaled lung dose as a percentage of the nominal nebulizer dose against high-flow nasal cannula flow, so the tradeoff between flow and delivery is visible rather than asserted. Names the platforms (Optiflow and Vapotherm) and states which nebulizer each takes and where it sits in the circuit, and works peak inspiratory flow through six cases from infant to adult so the flow-to-demand ratio has a number behind it. Values that come from adult studies are flagged as adult-derived where they appear.</p>
-      <div class="meta">v3.2 &middot; updated 2026-10-03 &middot; <a href="tools/albuterol-hfnc-delivery.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">06</div>
-    <div>
-      <h2><a href="tools/prx-cppopt-map-challenge.html">PRx, CPPopt and the MAP Challenge</a></h2>
-      <span class="domain">Neurocritical care</span>
-      <p class="does">Cerebral autoregulation made concrete for fellows: animated pressure-reactivity waveforms, a PRx versus CPP U-curve you can move, a norepinephrine and MAP challenge simulator, and a walkthrough of the tiered protocol with its safety limits.</p>
-      <div class="meta">v2.5 &middot; updated 2026-10-03 &middot; <a href="tools/prx-cppopt-map-challenge.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">07</div>
-    <div>
-      <h2><a href="tools/venous-return-wars.html">The Venous Return Wars</a></h2>
-      <span class="domain">Hemodynamics</span>
-      <p class="does">An interactive teaching essay on the Guyton and Brengelmann dispute, worked from the ground up. Four live rigs let you drive the argument instead of reading it: two tanks and a pump, a venous return curve you can reshape, a vasodilate-then-defend-blood-pressure sequence, and a fourth that separates what you changed, the contents or the container, from what the change became, flow or pressure.</p>
-      <div class="meta">v2.4 &middot; updated 2026-10-03 &middot; <a href="tools/venous-return-wars.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">08</div>
-    <div>
-      <h2><a href="tools/asthma-critical-care.html">Critical Asthma: Drugs, Noninvasive Support, and the Ventilator</a></h2>
-      <span class="domain">Asthma / ventilation</span>
-      <p class="does">Ten agents in one pharmacology table that shows where its sources disagree rather than averaging them, a toxicity matrix for what stacks when three drugs run at once, an interactive Campbell diagram for CPAP and BiPAP, and two PEEP schematics built from adult physiology that is labelled as adult. A ledger at the end names every claim that is adult, modelled, or nobody's data.</p>
-      <div class="meta">v2.2 &middot; updated 2026-10-03 &middot; <a href="tools/asthma-critical-care.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">09</div>
-    <div>
-      <h2><a href="tools/ventilator-fundamentals.html">Ventilator Fundamentals</a></h2>
-      <span class="domain">Respiratory mechanics</span>
-      <p class="does">The equation of motion, made movable. Pressure, flow and volume are solved live rather than drawn, so changing compliance or resistance redraws real curves and the difference between a resistance problem and a compliance problem becomes something you can see. Covers holds and what each one measures, volume control against pressure control and PRVC, trigger types, and how inspiratory time, rise time and cycle-off actually work.</p>
-      <div class="meta">v2.2 &middot; updated 2026-10-03 &middot; <a href="tools/ventilator-fundamentals.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">10</div>
-    <div>
-      <h2><a href="tools/ventilator-advanced.html">Ventilator Advanced</a></h2>
-      <span class="domain">Patient effort / gas exchange</span>
-      <p class="does">What the fundamentals leave out. Patient effort graphed against ventilator pressure and how the two sum; why PRVC withdraws support as the patient works harder while pressure control holds it constant, and why that can hide a deterioration; the decremental trial that finds best-compliance PEEP; the recruitment-to-inflation ratio and the airway opening pressure, each worked through as a bedside procedure and computed from the numbers the manoeuvre gives you; and deadspace against shunt, which separates a CO<sub>2</sub> problem from an oxygenation one.</p>
-      <div class="meta">v2.2 &middot; updated 2026-10-03 &middot; <a href="tools/ventilator-advanced.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">11</div>
-    <div>
-      <h2><a href="tools/ards-subphenotype-explorer.html">ARDS Inflammatory Subphenotypes</a></h2>
-      <span class="domain">ARDS / exploratory</span>
-      <p class="does">Exploratory only, and it says so before you type anything. Runs the published hypo- and hyperinflammatory classifiers that actually print their coefficients, refuses to run the ones that do not, and reports a range rather than a number when an input is missing. Every pediatric result carries how poorly the adult signature transports to children, and the calculator opens on one estimate per model with the model bench a click away.</p>
-      <div class="meta">v2.3 &middot; updated 2026-10-03 &middot; <a href="tools/ards-subphenotype-explorer.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">12</div>
-    <div>
-      <h2><a href="tools/pediatric-dysnatremia-di.html">Pediatric Dysnatremia and Diabetes Insipidus</a></h2>
-      <span class="domain">Endocrine / sodium</span>
+      <h3><a href="tools/pediatric-dysnatremia-di.html">Pediatric Dysnatremia and Diabetes Insipidus</a></h3>
+      <span class="domain">Endocrine / sodium</span> <span class="domain type">Calculator</span>
       <p class="does">Two tabs for one clinical episode. The first reads sodium, weight-indexed urine output and urine concentration into a ranked differential, says out loud when the data cannot separate SIADH from salt wasting, and names the next test rather than guessing; the confounders that decouple specific gravity from osmolality change the reading rather than sitting in a footnote. The second runs a vasopressin infusion in mU/kg/hr against live charts, with the dose flags marked as this unit&rsquo;s figures because no source names them.</p>
-      <div class="meta">v1.1 &middot; updated 2026-10-03 &middot; <a href="tools/pediatric-dysnatremia-di.html">Open tool</a></div>
-    </div>
-  </li>
-
-  <li class="row">
-    <div class="numeral">13</div>
-    <div>
-      <h2><a href="tools/crrt-fundamentals.html">CRRT: Clearance, Replacement Fluid, and Anticoagulation</a></h2>
-      <span class="domain">Renal / extracorporeal</span>
-      <p class="does">Follows the blood around a CRRT circuit, with a Pediatric | Adult switch that changes which population leads. Rigs show how diffusion, convection and adsorption differ, what runs in CVVH, CVVHD and CVVHDF, and how pre- versus post-dilution changes filtration fraction and delivered dose, from illustrative inputs rather than patient data. A drug explorer lists 67 drugs with what each source reported for children and for adults, and prints a gap where no pediatric data were found. Tables cover anticoagulation, terms and formulas, aquapheresis, and peritoneal dialysis against intermittent hemodialysis, and a static figure shows what the published net ultrafiltration analyses report, with a note that no pediatric analysis by rate was found.</p>
-      <div class="meta">v1.1 &middot; updated 2026-10-19 &middot; <a href="tools/crrt-fundamentals.html">Open tool</a></div>
+      <div class="meta">about 19 phone screens &middot; v1.2 &middot; updated 2026-11-14 &middot; <a href="tools/pediatric-dysnatremia-di.html">Open tool</a></div>
     </div>
   </li>
 
 </ol>
+</section>
+
+<section aria-labelledby="g-expl">
+<h2 class="group" id="g-expl">Interactive explainers</h2>
+<ol class="rows">
+
+  <li class="row" id="albuterol-hfnc-delivery">
+    <div class="numeral">06</div>
+    <div>
+      <h3><a href="tools/albuterol-hfnc-delivery.html">Albuterol Delivery During HFNC</a></h3>
+      <span class="domain">Asthma / aerosol</span> <span class="domain type">Explainer</span>
+      <p class="does">Charts inhaled lung dose as a percentage of the nominal nebulizer dose against high-flow nasal cannula flow, so the tradeoff between flow and delivery is visible rather than asserted. Names the platforms (Optiflow and Vapotherm) and states which nebulizer each takes and where it sits in the circuit, and works peak inspiratory flow through six cases from infant to adult so the flow-to-demand ratio has a number behind it. Values that come from adult studies are flagged as adult-derived where they appear.</p>
+      <div class="meta">about 34 phone screens &middot; v3.3 &middot; updated 2026-11-14 &middot; <a href="tools/albuterol-hfnc-delivery.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="prx-cppopt-map-challenge">
+    <div class="numeral">07</div>
+    <div>
+      <h3><a href="tools/prx-cppopt-map-challenge.html">PRx, CPPopt and the MAP Challenge</a></h3>
+      <span class="domain">Neurocritical care</span> <span class="domain type">Explainer</span>
+      <p class="does">Cerebral autoregulation made concrete for fellows: animated pressure-reactivity waveforms, a PRx versus CPP U-curve you can move, a norepinephrine and MAP challenge simulator, and a walkthrough of the tiered protocol with its safety limits.</p>
+      <div class="meta">about 5 phone screens &middot; v2.6 &middot; updated 2026-11-14 &middot; <a href="tools/prx-cppopt-map-challenge.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="ards-subphenotype-explorer">
+    <div class="numeral">08</div>
+    <div>
+      <h3><a href="tools/ards-subphenotype-explorer.html">ARDS Inflammatory Subphenotypes</a></h3>
+      <span class="domain">ARDS / exploratory</span> <span class="domain type">Explainer</span>
+      <p class="does">Exploratory only, and it says so before you type anything. Runs the published hypo- and hyperinflammatory classifiers that actually print their coefficients, refuses to run the ones that do not, and reports a range rather than a number when an input is missing. Every pediatric result carries how poorly the adult signature transports to children, and the calculator opens on one estimate per model with the model bench a click away.</p>
+      <div class="meta">about 48 phone screens &middot; v2.4 &middot; updated 2026-11-14 &middot; <a href="tools/ards-subphenotype-explorer.html">Open tool</a></div>
+    </div>
+  </li>
+
+</ol>
+</section>
+
+<section aria-labelledby="g-long">
+<h2 class="group" id="g-long">Long-form teaching pages</h2>
+<ol class="rows">
+
+  <li class="row" id="venous-return-wars">
+    <div class="numeral">09</div>
+    <div>
+      <h3><a href="tools/venous-return-wars.html">The Venous Return Wars</a></h3>
+      <span class="domain">Hemodynamics</span> <span class="domain type">Teaching page</span>
+      <p class="does">An interactive teaching essay on the Guyton and Brengelmann dispute, worked from the ground up. Four live rigs let you drive the argument instead of reading it: two tanks and a pump, a venous return curve you can reshape, a vasodilate-then-defend-blood-pressure sequence, and a fourth that separates what you changed, the contents or the container, from what the change became, flow or pressure.</p>
+      <div class="meta">about 57 phone screens &middot; v2.5 &middot; updated 2026-11-14 &middot; <a href="tools/venous-return-wars.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="asthma-critical-care">
+    <div class="numeral">10</div>
+    <div>
+      <h3><a href="tools/asthma-critical-care.html">Critical Asthma: Drugs, Noninvasive Support, and the Ventilator</a></h3>
+      <span class="domain">Asthma / ventilation</span> <span class="domain type">Teaching page</span>
+      <p class="does">Ten agents in one pharmacology table that shows where its sources disagree rather than averaging them, a toxicity matrix for what stacks when three drugs run at once, an interactive Campbell diagram for CPAP and BiPAP, and two PEEP schematics built from adult physiology that is labelled as adult. A ledger at the end names every claim that is adult, modelled, or nobody's data.</p>
+      <div class="meta">about 144 phone screens &middot; v2.3 &middot; updated 2026-11-14 &middot; <a href="tools/asthma-critical-care.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="ventilator-fundamentals">
+    <div class="numeral">11</div>
+    <div>
+      <h3><a href="tools/ventilator-fundamentals.html">Ventilator Fundamentals</a></h3>
+      <span class="domain">Respiratory mechanics</span> <span class="domain type">Teaching page</span>
+      <p class="does">The equation of motion, made movable. Pressure, flow and volume are solved live rather than drawn, so changing compliance or resistance redraws real curves and the difference between a resistance problem and a compliance problem becomes something you can see. Covers holds and what each one measures, volume control against pressure control and PRVC, trigger types, and how inspiratory time, rise time and cycle-off actually work.</p>
+      <div class="meta">about 98 phone screens &middot; v2.3 &middot; updated 2026-11-14 &middot; <a href="tools/ventilator-fundamentals.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="ventilator-advanced">
+    <div class="numeral">12</div>
+    <div>
+      <h3><a href="tools/ventilator-advanced.html">Ventilator Advanced</a></h3>
+      <span class="domain">Patient effort / gas exchange</span> <span class="domain type">Teaching page</span>
+      <p class="does">What the fundamentals leave out. Patient effort graphed against ventilator pressure and how the two sum; why PRVC withdraws support as the patient works harder while pressure control holds it constant, and why that can hide a deterioration; the decremental trial that finds best-compliance PEEP; the recruitment-to-inflation ratio and the airway opening pressure, each worked through as a bedside procedure and computed from the numbers the manoeuvre gives you; and deadspace against shunt, which separates a CO<sub>2</sub> problem from an oxygenation one.</p>
+      <div class="meta">about 100 phone screens &middot; v2.3 &middot; updated 2026-11-14 &middot; <a href="tools/ventilator-advanced.html">Open tool</a></div>
+    </div>
+  </li>
+
+  <li class="row" id="crrt-fundamentals">
+    <div class="numeral">13</div>
+    <div>
+      <h3><a href="tools/crrt-fundamentals.html">CRRT: Clearance, Replacement Fluid, and Anticoagulation</a></h3>
+      <span class="domain">Renal / extracorporeal</span> <span class="domain type">Teaching page</span>
+      <p class="does">Follows the blood around a CRRT circuit, with a Pediatric | Adult switch that changes which population leads. Rigs show how diffusion, convection and adsorption differ, what runs in CVVH, CVVHD and CVVHDF, and how pre- versus post-dilution changes filtration fraction and delivered dose, from illustrative inputs rather than patient data. A drug explorer lists 67 drugs with what each source reported for children and for adults, and prints a gap where no pediatric data were found. Tables cover anticoagulation, terms and formulas, aquapheresis, and peritoneal dialysis against intermittent hemodialysis, and a static figure shows what the published net ultrafiltration analyses report, with a note that no pediatric analysis by rate was found.</p>
+      <div class="meta">about 60 phone screens &middot; v1.2 &middot; updated 2026-11-14 &middot; <a href="tools/crrt-fundamentals.html">Open tool</a></div>
+    </div>
+  </li>
+
+</ol>
+</section>
 
 <footer>
   <p>Every quantitative claim in these tools went through a literature refresh and was then reviewed independently by readers who did not write the file. Identifiers are resolved against PubMed and Crossref rather than recalled, and a sample of each tool's verified identifiers is re-fetched blind and compared before release.</p>

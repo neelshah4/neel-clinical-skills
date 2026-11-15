@@ -440,6 +440,21 @@ function ScrUnitBanner(){
   return <div className="floorbanner fb-severe" role="alert" style={{marginTop:"var(--sm)"}}><b style={{display:"block",marginBottom:"2px"}}>{SCR_UNIT_MSG}</b>No result is shown while either SCr is above {SCR_MAX_MGDL} mg/dL.</div>;
 }
 
+// Entries that cannot be real values. A creatinine at or below 0 and a negative urine output
+// are rejected by name and value, and nothing is staged, floored or banded from them. A urine
+// output of exactly 0 is real (anuria) and is accepted.
+function entryProblems(curr, base, uo){
+  const out=[];
+  const c=num(curr), b=num(base), u=num(uo);
+  if(c!==null && c<=0) out.push({ key:"curr", head:`Current SCr ${c} mg/dL: enter a value above 0`, body:"No result is shown while current SCr is at or below 0." });
+  if(b!==null && b<=0) out.push({ key:"base", head:`Baseline SCr ${b} mg/dL: enter a value above 0`, body:"No result is shown while baseline SCr is at or below 0." });
+  if(u!==null && u<0) out.push({ key:"uo", head:`Urine output ${u} mL/kg/h: enter 0 or more`, body:"No result is shown while urine output is below 0." });
+  return out;
+}
+function EntryBanners({problems}){
+  return <>{problems.map(pr=> <div key={pr.key} className="floorbanner fb-severe" role="alert" style={{marginTop:"var(--sm)"}}><b style={{display:"block",marginBottom:"2px"}}>{pr.head}</b>{pr.body}</div>)}</>;
+}
+
 function injuryFromCr(curr, base){
   // Canonical RAI injury metric (Basu 2014, PMID 24048379): % DECREASE in estimated
   // creatinine clearance from baseline. eCrCl = 0.413·height/SCr, so the % CHANGE is
@@ -610,7 +625,9 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
   const derivedRisk = (mv && vaso) ? 5 : (transplant ? 3 : 1);
   const risk = manualRisk!==null ? manualRisk : derivedRisk;
 
-  const scrBad = scrUnitSuspect(curr, base);
+  const scrUnit = scrUnitSuspect(curr, base);
+  const problems = entryProblems(curr, base, null);
+  const scrBad = scrUnit || problems.length>0;
   const crInj = scrBad ? null : injuryFromCr(curr, base);
   const foInj = injuryFromFO(fo);
   let autoInjury=null, driver=null;
@@ -625,7 +642,8 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
   const rai = (injury!==null && !ag.block && !scrBad) ? risk*injury : null;
   const positive = rai!==null && rai>=8;
 
-  useEffect(()=>{ setRaiShared(rai); }, [rai]);
+  // Tab 2 reads a snapshot of this tab's entries, for its reference line and "Use Tab 1 values" button.
+  useEffect(()=>{ setRaiShared({ rai, positive, curr, base, fo, mv, vaso, transplant }); }, [rai, positive, curr, base, fo, mv, vaso, transplant]);
 
   // Established AKI by creatinine (this tab has no urine-output input). A negative index is not reassuring then.
   const kdigoNow = (ag.block || scrBad) ? null : kdigoFromCr(curr, base);
@@ -684,7 +702,8 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
             <NumField label="Current SCr" note="mg/dL" value={curr} onChange={setCurr} placeholder="e.g. 0.8" />
             <NumField label="Baseline SCr" note="mg/dL" value={base} onChange={setBase} placeholder="e.g. 0.4" />
           </div>
-          {scrBad ? <ScrUnitBanner /> : null}
+          {scrUnit ? <ScrUnitBanner /> : null}
+          <EntryBanners problems={problems} />
           <div style={{marginTop:"var(--md)"}}>
             <NumField label="Fluid overload" note="%" value={fo} onChange={setFo} placeholder="e.g. 7" />
           </div>
@@ -718,7 +737,7 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
               {positive ? "Renal angina POSITIVE (RAI ≥ 8)" : "Renal angina negative (RAI < 8)"}
             </div>
           ) : (
-            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute" : "Out of range for this index") : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"}</div>
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute" : "Out of range for this index") : problems.length>0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"}</div>
           )}
           {manualInjury!==null ? (
             <div className="inline-out" role="group" aria-label="Manual injury stratum override" style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px"}}>
@@ -869,6 +888,9 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
   });
   const up = (k,v)=> setS(p=>({...p,[k]:v}));
   const ag = ageCheck(age, ageUnit);
+  // Tab 1 publishes a snapshot of its entries; it is shown only when Tab 1 has a computed RAI.
+  const tab1 = (raiShared && raiShared.rai!==null) ? raiShared : null;
+  const useTab1 = ()=> setS(p=>({...p, curr:raiShared.curr, base:raiShared.base, fo:raiShared.fo, mv:raiShared.mv, vaso:raiShared.vaso, transplant:raiShared.transplant, raiMode:"auto"}));
 
   const pre = PRETESTS.find(p=>p.key===s.pretestKey);
   let p0 = pre.p;
@@ -877,7 +899,9 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
   // ---- Auto-derive the RAI from THIS tab's own inputs (validated instrument) ----
   const transplant = s.transplant;
   const raiRisk = (s.mv && s.vaso) ? 5 : (transplant ? 3 : 1);
-  const scrBad = scrUnitSuspect(s.curr, s.base);
+  const scrUnit = scrUnitSuspect(s.curr, s.base);
+  const problems = entryProblems(s.curr, s.base, s.uo);
+  const scrBad = scrUnit || problems.length>0;
   const crInj = scrBad ? null : injuryFromCr(s.curr, s.base), foInj = injuryFromFO(s.fo);
   let raiInjury=null, raiDriver=null;
   if(crInj || foInj){
@@ -964,12 +988,24 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
   // Established AKI is never shown as a green, below-average result.
   const lowButKdigo = kdigoMet && bandTier==="pos";
   const tier = lowButKdigo ? "caution" : bandTier;
+  // Until a patient factor has moved the estimate, the number is the cohort pretest rate and
+  // carries no range, band label or tier colour.
+  const cohortOnly = typeof posterior==="number" && steps.length===1;
+  const factorsEntered = [s.curr,s.base,s.fo,s.uo,s.uoHrs].some(x=>x!=="") || s.mv || s.vaso || s.transplant || s.ngal!=="unknown" || s.cystatin!=="none" || s.raiMode!=="auto";
 
   return (
     <div>
       <div className="caveat" style={{marginTop:"var(--md)",borderLeftColor:"var(--slate)"}}>
         <b>How this works.</b> The estimate starts at the population baseline and is <b>monotonic</b>: worsening inputs only raise it, never lower it. <b>Positive</b> findings multiply it up: a renal angina index ≥ 8 (auto-computed from organ support + creatinine + fluid overload), elevated urinary NGAL, or elevated cystatin C. <b>Current injury sets a floor</b>: KDIGO stage 2–3 (established severe AKI) floors at 90–95%; stage 1, oliguria, or fluid overload floor above baseline. <b>Negative findings do not lower the number below baseline</b>; they appear as reassurance notes, and formal rule-out / de-escalation uses the renal angina index's negative predictive value on Tab 1. Blank fields contribute nothing; each factor is badged by evidence tier. Chaining likelihood ratios assumes the tests are <b>conditionally independent</b>, which they are not: where a directly pooled joint estimate exists, as it does for renal angina plus urinary NGAL, this tool applies that single combined LR instead of the product.
       </div>
+
+      {tab1 ? (
+        <div className="inline-out" id="tab1-ref" style={{marginTop:"var(--md)"}}>
+          <div>Tab 1 RAI for reference: <b className="tnum">{raiShared.rai} / 40</b>, renal angina {raiShared.positive?"positive":"negative"}.</div>
+          <button type="button" className="toggle-btn sans" style={{marginTop:"8px"}} onClick={useTab1}>Use Tab 1 values</button>
+          <div className="help">Fills Tab 2's creatinine, baseline, fluid overload and organ-support toggles from Tab 1's current entries and sets the renal angina input to Auto.</div>
+        </div>
+      ) : null}
 
       <div className="grid2">
         <section className="card">
@@ -1000,7 +1036,8 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
             <NumField label="Current SCr" note="mg/dL" value={s.curr} onChange={v=>up("curr",v)} placeholder="optional" />
             <NumField label="Baseline SCr" note="mg/dL" value={s.base} onChange={v=>up("base",v)} placeholder="optional" />
           </div>
-          {scrBad ? <ScrUnitBanner /> : null}
+          {scrUnit ? <ScrUnitBanner /> : null}
+          <EntryBanners problems={problems.filter(pr=>pr.key!=="uo")} />
           <div className="row cols2" style={{marginTop:"var(--md)"}}>
             <NumField label="Fluid overload" note="%" value={s.fo} onChange={v=>up("fo",v)} placeholder="optional" />
             <NumField label="Urine output" note="mL/kg/h, averaged over the hours below; you supply the weight normalization" value={s.uo} onChange={v=>up("uo",v)} placeholder="optional" />
@@ -1008,6 +1045,7 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
           <div className="row cols2" style={{marginTop:"var(--md)"}}>
             <NumField label="Hours held at that urine output" note="h · required before urine output stages anything" value={s.uoHrs} onChange={v=>up("uoHrs",v)} placeholder="e.g. 14" min="0" />
           </div>
+          <EntryBanners problems={problems.filter(pr=>pr.key==="uo")} />
           <div className="inline-out" style={{marginTop:"var(--md)"}}>
             Computed RAI: <b className="tnum">{autoRAI!==null?autoRAI:"–"}</b>{autoRAI!==null?` (risk ${raiRisk} × injury ${raiInjury}${raiDriver?`, ${raiDriver}`:""})`:", needs Cr or %FO"}
             {raiStatus?<span className="pill drive" style={{marginLeft:"8px"}}>{raiStatus==="pos"?"renal angina +":"renal angina −"}{s.raiMode!=="auto"?` · ${s.raiMode}`:""}</span>:null}
@@ -1020,7 +1058,6 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
               <ToggleBtn on={s.raiMode==="neg"} onClick={()=>up("raiMode","neg")}>Force −</ToggleBtn>
               <ToggleBtn on={s.raiMode==="ignore"} onClick={()=>up("raiMode","ignore")}>Ignore</ToggleBtn>
             </div>
-            {raiShared!==null?<div className="help">Tab 1 RAI for reference: {raiShared}.</div>:null}
           </details>
 
           <h3 style={{marginTop:"var(--lg)"}}>Biomarkers</h3>
@@ -1048,10 +1085,16 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
 
       {/* POSTERIOR */}
       <div className="result" style={{marginTop:"var(--md)"}}>
-        <div className={"stripe "+(tier==="muted"?"bg-caution":"bg-"+tier)}></div>
+        <div className={"stripe "+(cohortOnly?"":(tier==="muted"?"bg-caution":"bg-"+tier))} style={cohortOnly?{background:"var(--hair-strong)"}:undefined}></div>
         <div className="result-body">
           <div className="card-label">Estimated probability of Day-3 severe AKI (KDIGO 2–3)</div>
-          {typeof posterior==="number" ? (
+          {cohortOnly ? (
+            <div>
+              <div className="bignum tnum">{(posterior*100).toFixed(1)}<small>%</small></div>
+              <div className="inline-out">Pretest rate {(posterior*100).toFixed(1)}% ({factorsEntered?"cohort rate; the factors entered do not change it":"cohort rate, no patient factor entered"}).</div>
+              <p className="interp" style={{fontSize:"12.5px",color:"var(--ink-quiet)"}}>{factorsEntered?"The factors entered do not raise the estimate. Enter another patient factor to move it from this starting rate.":"Enter a patient factor to move the estimate from this starting rate."}</p>
+            </div>
+          ) : typeof posterior==="number" ? (
             <div>
               <div className={"bignum tnum tier-"+tier}>{(posterior*100).toFixed(0)}<small>%</small></div>
               <div className="inline-out">Approximate range {(postLow*100).toFixed(0)}–{(postHigh*100).toFixed(0)}%{floorApplied?" · injury floor applied":" · from each factor's reported CI"}.</div>
@@ -1063,7 +1106,7 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
               <p className="interp" style={{fontSize:"12.5px",color:"var(--ink-quiet)"}}>Interpretive bands (low &lt;10%, intermediate 10–30%, high &gt;30%) are heuristics anchored to the AWARE severe-AKI incidence (11.6%) and the RAI-positive rate (~42%); they are not validated decision cutoffs.</p>
             </div>
           ) : (
-            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool.") : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."}</div>
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool.") : problems.length>0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."}</div>
           )}
         </div>
       </div>
@@ -1204,7 +1247,8 @@ function App(){
 
       <footer>
         <div className="footer-inner">
-          Neel Shah, MD · Pediatric Critical Care Medicine · v2.2 · Updated 2026-10-03 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
+          Neel Shah, MD · Pediatric Critical Care Medicine · v2.3 · Updated 2026-11-14 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
+          <div><a href="../index.html" style={{display:"inline-flex",alignItems:"center",minHeight:"44px"}}>All tools</a></div>
           <div style={{marginTop:"6px"}}>Evidence: renal angina index, AWARE, and pediatric biomarker meta-analyses. Identifiers were last checked against PubMed on 2026-08-31; this page performs no check of its own when it loads. Staging implements KDIGO 2012; the 2026 KDIGO AKI/AKD revision was in public review through 11 May 2026 and is not finally published as of this date. Session-only; no data leaves this device.</div>
         </div>
       </footer>

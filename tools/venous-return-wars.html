@@ -730,6 +730,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
             <div><span class="k">Change in output</span><span class="v" id="r4dco">0<small> mL/min</small></span></div>
             <div><span class="k">Change in RAP</span><span class="v" id="r4dra">0.0<small> mmHg</small></span></div>
           </div>
+          <p class="mono" id="r4ref" style="font-size:12px; line-height:1.4; color:var(--ink-muted); margin:6px 0 0">Both changes are measured against 5,000 mL at baseline tone, with the same acceptance setting.</p>
           <div class="readout" style="margin-top:1px">
             <div><span class="k">The change became</span><span class="v" id="r4verd" style="font-size:15px">reference</span></div>
             <div><span class="k">Output per mmHg RAP</span><span class="v" id="r4ratio">&ndash;<small> mL/min</small></span></div>
@@ -987,7 +988,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
   <p style="font-size:13px"><b style="font-family:var(--sans); color:var(--ink)">Educational use only.</b> This page is a teaching tool about a disputed area of cardiovascular physiology. It is not clinical decision support, it gives no patient-specific advice, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators, and every case is a teaching vignette rather than a protocol. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
 
-  <p class="mono" style="margin-top:var(--xl); font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.4 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0</p>
+  <div style="margin-top:var(--xl); display:flex; flex-wrap:wrap; align-items:center; column-gap:var(--md)"><p class="mono" style="margin:0; font-size:12px; color:var(--ink-faint)">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.5 &middot; Updated 2026-11-14 &middot; CC BY-NC 4.0</p><a href="../index.html" style="display:inline-flex; align-items:center; min-height:44px; padding:0 4px; font-size:14px">All tools</a></div>
  </div>
 </footer>
 
@@ -1115,7 +1116,7 @@ function rig2(){
   // operating point
   s.appendChild(el("line",{x1:X(Pra),y1:Y(CO),x2:X(Pra),y2:B,stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
   s.appendChild(el("line",{x1:L,y1:Y(CO),x2:X(Pra),y2:Y(CO),stroke:SLATE,"stroke-width":.75,"stroke-dasharray":"3 3"}));
-  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:SLATE}));
+  s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:SLATE,"data-op":1}));
   s.appendChild(el("circle",{cx:X(Pra),cy:Y(CO),r:5.5,fill:"none",stroke:PLATE,"stroke-width":1.4}));
   // direct labels, no legend. Each is parked in its own band so they cannot collide
   // with one another or with the axis furniture at any slider position.
@@ -1132,6 +1133,7 @@ function rig2(){
   s.appendChild(txt(ox,oy,"operating point",{class:"lbl hal","text-anchor":flip?"end":"start",fill:SLATE}));
   s.appendChild(txt(L,B+52,"Vascular line: Guyton 1955 three-compartment model, as derived in",{fill:MUT,"font-size":10}));
   s.appendChild(txt(L,B+66,"Brengelmann 2019. Cardiac curve: schematic Starling, not fitted.",{fill:MUT,"font-size":10}));
+  vrwReveal("r2svg");
 }
 
 /* ============================================================
@@ -1299,10 +1301,11 @@ function rig3(){
     s.appendChild(el("path",{d,fill:"none",stroke:SLATE,"stroke-width":2}));
     s.appendChild(el("circle",{cx:X(Pms),cy:Y(0),r:3.2,fill:CLAY}));
     s.appendChild(txt(X(Pms),B+13,"Pms",{"text-anchor":"middle",fill:CLAY,class:"hal"}));
-    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:SLATE}));
+    s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:SLATE,"data-op":1}));
     s.appendChild(el("circle",{cx:X(st.Pra),cy:Y(F),r:5,fill:"none",stroke:PLATE,"stroke-width":1.3}));
     s.appendChild(txt(Rr,B+26,"right atrial P (cmH\u2082O)",{"text-anchor":"end",fill:MUT,"font-size":10}));
   }
+  vrwReveal("r3svg");
 }
 
 /* ============================================================
@@ -1354,13 +1357,17 @@ function rig4(){
   $("r4dra").innerHTML=sgn(dRA)+fmt(dRA)+"<small> mmHg</small>";
 
   let verdict, vcol=INK, ratioTxt="&ndash;<small> mL/min</small>";
+  /* direction: the sign of the change in output (of RAP when output is unchanged) decides gained or lost */
+  const gain = Math.abs(dCO)>=0.005 ? dCO>0 : dRA>0;
+  const dirw = gain ? "gained as " : "lost as ";
   if(now.CO<=0.01){ verdict="no flow"; vcol=NEG; }
   else if(Math.abs(dRA)<0.05 && Math.abs(dCO)<0.005){ verdict="reference"; vcol=MUT; }
-  else if(Math.abs(dRA)<0.05){ verdict="flow"; vcol=POS; }
+  else if(Math.abs(dRA)<0.05){ verdict=dirw+"flow"; vcol=gain?POS:NEG; }
   else{
     const ratio=dCO*1000/dRA;
-    verdict = ratio>=240 ? "flow" : ratio>=130 ? "mixed" : "pressure";
-    vcol = ratio>=240 ? POS : ratio>=130 ? INK : CLAY;
+    if(ratio>=240){ verdict=dirw+"flow"; vcol=gain?POS:NEG; }
+    else if(ratio>=130){ verdict="mixed"; vcol=INK; }
+    else{ verdict=dirw+"pressure"; vcol=gain?CLAY:NEG; }
     ratioTxt = fmt(ratio,0)+"<small> mL/min</small>";
   }
   $("r4verd").innerHTML='<span style="color:'+vcol+'">'+verdict+"</span>";
@@ -1418,7 +1425,7 @@ function rig4(){
     if(Math.abs(y1-y0)>=24) s.appendChild(txt(x1+(x1>Rr-120?-8:8),my+4,"flow "+sgn(dCO)+fmt(dCO,2)+" L/min",{"text-anchor":(x1>Rr-120?"end":"start"),fill:POS,class:"lbl hal"}));
   }
   s.appendChild(el("circle",{cx:X(ref.Pra),cy:Y(ref.CO),r:5,fill:PLATE,stroke:CAT1,"stroke-width":1.8}));
-  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:CAT1}));
+  s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:CAT1,"data-op":1}));
   s.appendChild(el("circle",{cx:X(now.Pra),cy:Y(now.CO),r:5.5,fill:"none",stroke:PLATE,"stroke-width":1.4}));
 
   let lp=now.Pms-7.4/now.slope, lx, lf, la="start";
@@ -1429,6 +1436,19 @@ function rig4(){
   s.appendChild(txt(X(cp),Y(r4card(cp,a))-15,"acceptance: "+R4.ACC[a].name,{class:"lbl hal","text-anchor":"end",fill:INK}));
   s.appendChild(txt(L,B+74,"Vascular line: rig 2's three-compartment parameters, rest volume explicit.",{fill:MUT}));
   s.appendChild(txt(L,B+91,"Acceptance: one schematic Starling curve at three settings.",{fill:MUT}));
+  vrwReveal("r4svg");
+}
+
+/* ---------- phone: keep a rig's operating point in the visible part of its sideways-scrolling chart ----------
+   Runs after a slider or button redraws the chart; never on first load, and only where the chart is wider than its box. */
+let vrwBoot=true;
+function vrwReveal(id){
+  if(vrwBoot) return;
+  const s=$(id), w=s.parentElement, c=s.querySelector("[data-op]");
+  if(!c || w.scrollWidth-w.clientWidth<=1) return;
+  const wb=w.getBoundingClientRect(), cb=c.getBoundingClientRect();
+  if(cb.left>=wb.left+16 && cb.right<=wb.right-16) return;
+  w.scrollLeft += (cb.left+cb.width/2)-(wb.left+wb.width/2);
 }
 
 /* ---------- wiring ---------- */
@@ -1437,6 +1457,7 @@ bind(["r1f","r1v","r1r"],rig1);
 bind(["r2v","r2t","r2c","r2r"],rig2);
 bind(["r3f","r3v"],rig3);
 bind(["r4v","r4t"],rig4);
+vrwBoot=false;
 $("r1reset").addEventListener("click",()=>{$("r1f").value=5;$("r1v").value=2000;$("r1r").value=20.9;rig1();});
 $("r2reset").addEventListener("click",()=>{$("r2v").value=2000;$("r2t").value=0;$("r2c").value=100;$("r2r").value=20;rig2();});
 $("r3reset").addEventListener("click",()=>{$("r3f").value=5;$("r3v").value=5000;$("r3dil").setAttribute("aria-pressed","false");$("r3bp").setAttribute("aria-pressed","false");$("r3curve").setAttribute("aria-pressed","true");rig3();});
@@ -1509,5 +1530,46 @@ document.addEventListener("neeltheme",()=>{readThemeColors();rig1();rig2();rig3(
   .tagline { font-size: 12px; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

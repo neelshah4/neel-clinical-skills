@@ -293,6 +293,16 @@ p[style*="font-size:1"],span[style*="font-size:11px"]{font-size:14px !important}
   .rig-view svg{min-width:620px}
   .simcell svg{min-width:0}
 }
+
+/* rig layout: figure stays on screen with its controls (audit 2026-11-14) */
+@media (min-width:901px){.rig-view{position:sticky; top:8px; align-self:start} .rig-body>.sc-cue-hint{grid-column:1/-1; margin:8px var(--md) 0}}
+@media (max-width:900px){
+  .rig-body{display:flex; flex-direction:column}
+  .rig-view[data-sc-cue]{-webkit-mask-image:none!important; mask-image:none!important}
+  .rig-ctrl input,.rig-ctrl button,.rig-ctrl select,.rig-ctrl a{scroll-margin-top:calc(56vh + 12px)}
+  .rig-body>.sc-cue-hint{order:-2; margin:8px var(--md) 0}
+    .rig-view{order:-1; position:sticky; top:0; z-index:5; max-height:56vh; overflow:auto; background:var(--card); border-bottom:1px solid var(--rule)}
+}
 @media (max-width:768px){
   body{font-size:16px}
   .wrap{padding:0 var(--md)}
@@ -1642,7 +1652,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   <div class="tool-footer">
     <p style="font-size:11.5px; max-width:86ch"><b>Educational use only.</b> This page is a teaching tool about patient effort, support scaling and gas exchange during mechanical ventilation. It is not clinical decision support, it gives no patient-specific advice, it is not FDA-cleared, and nothing in it should be used to make a treatment decision. The rigs are simplified models, not patient simulators. Defer to your own clinical judgment, your bedside assessment, and your local protocols.</p>
     <p style="font-size:11.5px; max-width:86ch">Every identifier in this table was resolved against PubMed E-utilities; the sources carried over from v1.0 on 2026-08-31 and the ten added in v2.0 on 2026-09-01, with first author, year and journal matched for each. <b>Correction screening.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 81 of 81 source PMIDs have been screened by that method, the ten added in v2.0 on 2026-09-01 and the rest on 2026-08-31, and two carry an erratum (PMID 22710796 and PMID 33603211) with no retraction and no expression of concern anywhere. None of the ten new sources returned any erratum, retraction or expression-of-concern linkage. One erratum carries a PubMed record of its own, PMID 34404931, which was resolved the same way and is printed in its marker; an erratum record is a correction and not a source, so it is not counted among the 81. Both are marked on their row in the table above, and the dead-space values taken from PMID 33603211, which seed the infant preset of rig 8, carry the marker at the point of use as well. What the screen returns is the linkage and not the correction: the errata themselves were not retrieved, so this page reports that an erratum exists and that a reader should consult it, and asserts nothing about what it changes. Four published models that could not be sourced in full (the Otis least-work formula as implemented in adaptive support ventilation, the internal E<sub>di</sub>-to-pressure scaling in NAVA, the Benatar iso-shunt construction, and the adaptive-pressure-control support curve of the bench series) are described in words, are listed with their reasons in the table above, and are not computed anywhere in the tool. Numbers that no source establishes are labelled derived, consensus, extrapolated or author-chosen in place rather than dropped silently. One non-peer-reviewed source is used and is labelled where it appears: the bedside procedure in section 10 follows the R/I and airway-closure pages of rtmaven.com, a free teaching site and calculator built by the group behind PMID 31577153; its four demonstration videos are hosted on Vimeo and are linked in that section. It is cited for how to run the manoeuvre on a real ventilator, never for what the number means. Session-only; no data leaves this device.</p>
-    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0</p>
+    <p class="mono" style="font-size:12px; color:var(--ink-faint); margin-bottom:0">Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-11-14 &middot; CC BY-NC 4.0</p>
+    <p style="margin:4px 0 0; font-size:12px"><a href="../index.html" style="display:inline-flex; align-items:center; min-height:44px; padding:0 4px">All tools</a></p>
   </div>
  </div>
 </footer>
@@ -2673,7 +2684,10 @@ function rig6(){
     "ventilation, which could not be retrieved."]);
 
   $("v6_va").innerHTML=fmt(S.va,2)+"<small> L/min</small>";
-  $("v6_paco2").innerHTML=fmt(S.vaRef/Math.max(S.va,0.001),2)+"<small> × ref</small>";
+  /* Display ceiling, not a clinical threshold: ratios above R6_RATIO_CEIL print as "> N x ref" so the readout never shows four-digit values. The model value (S.vaRef/S.va) is unchanged. */
+  var R6_RATIO_CEIL=20;
+  var rel6=S.vaRef/Math.max(S.va,0.001);
+  $("v6_paco2").innerHTML=(rel6>R6_RATIO_CEIL)?"&gt; "+R6_RATIO_CEIL+"<small> × ref</small>":fmt(rel6,2)+"<small> × ref</small>";
   $("v6_pawr").innerHTML=fmt(S.pawRect,1)+"<small> cmH₂O</small>";
   $("v6_oi").innerHTML=isFinite(S.oi)?fmt(S.oi,1):"—";
   [["v6paco2","v6paco2e",S.paco2,"Enter PaCO₂ 15 to 120 mmHg."],
@@ -2684,8 +2698,9 @@ function rig6(){
   });
   setFlag("v6flag", S.vt<=S.vdVol*1.05, "warn",
     "Tidal volume is at or below the dead-space volume, so alveolar ventilation is effectively nil. In ventilated infants dead space was 5.7 to 6.4 mL/kg (PMID 33603211): against a 6 mL/kg breath the alveolar share is close to nothing.");
-  setFlag("v6flag2", S.worse, "on",
-    "Compliance is down 40%. Mean airway pressure has not moved, so nothing on the oxygenation panel changed by itself; the tidal volume fell, and that is the one wire between the panels. Predicted PaCO₂ from your typed value: "+fmt(S.paco2*S.vaRef/Math.max(S.va,0.001),0)+" mmHg.");
+  var pred6=S.paco2*S.vaRef/Math.max(S.va,0.001), max6=+$("v6paco2").max;
+  setFlag("v6flag2", S.worse && S.linked, "on",
+    "Compliance is down 40%. Mean airway pressure has not moved, so nothing on the oxygenation panel changed by itself; the tidal volume fell, and that is the one wire between the panels. Predicted PaCO₂ from your typed value: "+(pred6>max6?"above "+max6+" mmHg, outside the range this field accepts.":fmt(pred6,0)+" mmHg."));
   $("v6foot").innerHTML = S.linked
     ? "<b>Linked.</b> The tidal volume the left panel uses is the volume the right panel's pressure settings deliver, so worsening compliance shows up in the CO₂ panel and nowhere else."
     : "<b>Unlinked.</b> The two panels are now fully independent: nothing you move on one changes the other.";
@@ -3575,5 +3590,46 @@ document.addEventListener("DOMContentLoaded",function(){
   .lnk .lk { font-size: 11px; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

@@ -553,6 +553,10 @@
     color: var(--ink-soft); margin: 0 4px;
     font-weight: 600;
   }
+  .footer .hub-link {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px;
+    color: var(--accent); font-style: normal; font-weight: 600; text-decoration: underline;
+  }
   .footer .sig {
     margin-top: 14px;
     font-family: var(--serif);
@@ -1050,6 +1054,16 @@ function diffAudit(cbc, mode) {
   };
 }
 
+// In auto mode, a manual-differential typed into the default fields leaves the
+// sum short by exactly the last field's value (bands read as IG%, which the
+// auto sum excludes). Name that case.
+function igShortNote(audit, cbc, mode) {
+  const ig = numOrNull(cbc.bandPct);
+  if (mode !== "auto" || ig == null || ig <= 0) return "";
+  if (Math.abs((100 - audit.sum) - ig) > 0.05) return "";
+  return " If these are manual-differential values, switch to Manual diff.";
+}
+
 // NLR display bands. Every boundary is a published number, not a house scheme:
 //   0.7:   Zahorec 2021 LOW pathological limit [19]
 //   2.3 / 3.0: Zahorec 2021 grey zone and upper pathological limit [19]
@@ -1198,9 +1212,10 @@ function corePattern(d, toggles) {
   // alc < 1.0 conjunct was dropped rather than replaced with a new number: it
   // was unsourced, and it excluded case 6 at ALC 1.215 even after reordering.
   if (plt != null && plt < 100 && d.wbc > 12) return {
-    label: "Septic profile with thrombocytopenia: consider DIC",
-    sev: "critical",
-    sub: "Trajectory matters more than the single value. Check PT/PTT, fibrinogen, D-dimer; calculate ISTH DIC score.",
+    label: "Leukocytosis with thrombocytopenia: check coagulation",
+    // Severity is the platelet chip's own band, so the tile cannot outrank its chips.
+    sev: plateletSeverity(plt),
+    sub: "This trigger (WBC above 12 with platelets below 100) is a tool convention, not a published DIC criterion. Trajectory matters more than the single value. Check PT/PTT, fibrinogen, D-dimer; calculate ISTH DIC score.",
   };
 
   // Bacterial-sepsis signature. 12.65 = Russell 2019 bacteremia cut-point;
@@ -1550,13 +1565,13 @@ function getInitialTheme() {
 function App() {
   // Default is auto-diff, so the five-part differential closes to 100 on its
   // own and IG% is carried alongside it, the way an analyser reports it.
+  // The page starts blank: nothing is read from values the user did not enter.
+  // Sample values sit behind the "Load case" buttons.
   const [cbc, setCbc] = useState({
-    wbc: 12.0, neutPct: 74, bandPct: 4, lymphPct: 20, monoPct: 4, eosPct: 1.5, basoPct: 0.5, plt: 200,
+    wbc: "", neutPct: "", bandPct: "", lymphPct: "", monoPct: "", eosPct: "", basoPct: "", plt: "",
   });
   const [mode, setMode] = useState("auto"); // auto vs manual diff
   const [toggles, setToggles] = useState(new Set());
-  // False while the inputs still hold the page's own example values.
-  const [edited, setEdited] = useState(false);
   const [highlightedRef, setHighlightedRef] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
   const refsRef = useRef(null);
@@ -1576,12 +1591,21 @@ function App() {
   const tset = toggles;
   // A cleared platelet field must reach the engine as null, never as 0.
   const pltVal = numOrNull(cbc.plt);
-  const outOfRange = useMemo(() => diffAudit(cbc, mode).outOfRange, [cbc, mode]);
+  const audit = useMemo(() => diffAudit(cbc, mode), [cbc, mode]);
+  const outOfRange = audit.outOfRange;
+  // Integrity failure: a value outside its bounds, or a differential that does
+  // not close. The pattern read is withheld and the ribbon chips show "—".
+  const withheld = outOfRange.length > 0 || audit.sumOff;
   const pattern = useMemo(() => outOfRange.length ? {
     label: "Pattern read withheld: a value is out of range",
     sev: "neutral",
-    sub: "Correct the field marked out of range (see the note under the inputs). The chips and evidence rows use the value as entered and are not reliable until you do.",
-  } : patternLabel({ ...d, plt: pltVal }, tset), [d, pltVal, tset, outOfRange]);
+    sub: "Correct the field marked out of range (see the note under the inputs). The chips are blanked and the evidence rows use the value as entered, so they are not reliable until you do.",
+  } : audit.sumOff ? {
+    label: "Pattern read withheld: differential sums to " + audit.sum.toFixed(1) + "%",
+    sev: "neutral",
+    sub: "The differential must sum to 100% (within 0.5). ANC, ALC and AEC are each WBC × percent, so a differential that does not close gives wrong counts. The chips are blanked and the evidence rows are not reliable until it closes." + igShortNote(audit, cbc, mode),
+  } : patternLabel({ ...d, plt: pltVal }, tset), [d, pltVal, tset, outOfRange, audit, cbc, mode]);
+  const blankAll = Object.keys(FIELD_SPEC).every((k) => numOrNull(cbc[k]) == null);
   const rows = useMemo(() => {
     const r = evidenceRows(d, tset);
     // append platelet row
@@ -1626,7 +1650,6 @@ function App() {
   }, [d, pltVal, tset]);
 
   const update = useCallback((k, v) => {
-    setEdited(true);
     setCbc((c) => ({ ...c, [k]: v === "" ? "" : Number(v) }));
   }, []);
 
@@ -1642,7 +1665,6 @@ function App() {
   // its mode is what let a manual band count be scored as an analyser IG%.
   const loadCase = useCallback((c) => {
     setCbc(c.cbc);
-    setEdited(false);
     setToggles(new Set(c.toggles));
     if (c.mode) setMode(c.mode);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1663,7 +1685,8 @@ function App() {
     body: "Glucocorticoids demarginate neutrophils and suppress eosinophils and lymphocytes acutely. The commonly quoted magnitude (a 2–3× neutrophil rise within 5–24 h) is conventional teaching; no primary source for that figure is carried in this tool, so treat the direction as reliable and the multiplier as an approximation. The suppression is also not total: in a prospective CAP cohort an eosinophil count ≤30/µL predicted mechanical ventilation regardless of glucocorticoid treatment, so a very low AEC on steroids still carries some prognostic weight even though its diagnostic value collapses. Lean on lactate, MAP, source control, and procalcitonin (if available).",
     cites: [26],
   });
-  if (tset.has("chemo") && d.anc != null && d.anc < 0.5) warnings.push({
+  // Graded from ANC, so it is dropped while the counts are withheld.
+  if (!withheld && tset.has("chemo") && d.anc != null && d.anc < 0.5) warnings.push({
     sev: "critical",
     head: "Neutropenic fever framework",
     body: "ANC <500 in the setting of recent cytotoxic chemotherapy. NLR is uninterpretable. Treat as febrile neutropenia per institutional protocol; empiric coverage takes priority over CBC pattern.",
@@ -1727,17 +1750,24 @@ function App() {
       </header>
 
       <main>
-        <Ribbon d={d} cbc={cbc} pattern={pattern} />
+        {blankAll && (
+          <div className="example-note" id="start-note">
+            No values entered. Type the patient's CBC with differential below, or{" "}
+            <button className="btn" onClick={() => loadCase(CASES[0])}>Load sample case 1</button>
+          </div>
+        )}
+        <Ribbon d={d} cbc={cbc} pattern={pattern} withheld={withheld} />
 
         <div className="main">
           <section aria-labelledby="inputs-h">
-            <InputPanel cbc={cbc} edited={edited} update={update} mode={mode} setMode={setMode}
+            <InputPanel cbc={cbc} update={update} mode={mode} setMode={setMode}
                         toggles={tset} toggle={toggle} loadCase={loadCase}
                         clickRef={clickRef} />
           </section>
           <section aria-labelledby="interp-h">
             <Interpretation pattern={pattern} rows={rows} warnings={warnings}
-                            d={d} cbc={cbc} clickRef={clickRef} />
+                            d={d} cbc={cbc} clickRef={clickRef}
+                            withheldWhy={outOfRange.length > 0 ? "range" : audit.sumOff ? "sum" : null} />
           </section>
         </div>
 
@@ -1759,8 +1789,8 @@ function App() {
   );
 }
 
-function Ribbon({ d, cbc, pattern }) {
-  const nlrSev = nlrSeverity(d.nlr);
+function Ribbon({ d, cbc, pattern, withheld }) {
+  const nlrSev = withheld ? "neutral" : nlrSeverity(d.nlr);
   const plt = numOrNull(cbc.plt);
   // Ribbon band labels use the same published boundaries as nlrSeverity():
   // 0.7, 2.3 and 3.0 from Zahorec 2021 [19]; 7.97 sepsis-diagnosis and 9.05
@@ -1793,15 +1823,19 @@ function Ribbon({ d, cbc, pattern }) {
       sev: igChipSeverity(d) },
     { key: "plt", label: "Plt", val: plt == null ? "—" : String(plt), unit: "×10³", sev: plateletSeverity(plt) },
   ];
+  // Chips show "—" and carry neutral severity while the pattern read is
+  // withheld for an integrity reason (out-of-range value, or a differential
+  // that does not close).
+  const shownChips = withheld ? chips.map((c) => ({ ...c, val: "—", sev: "neutral" })) : chips;
   return (
     <div className="ribbon">
       <div className="nlr-hero" data-sev={nlrSev}>
         <div className="label">NLR (Neutrophil-to-lymphocyte ratio)</div>
-        <div className="hero-val">{d.nlr == null ? "—" : d.nlr.toFixed(2)}</div>
-        <div className="hero-sub">{nlrLabel}</div>
+        <div className="hero-val">{withheld || d.nlr == null ? "—" : d.nlr.toFixed(2)}</div>
+        <div className="hero-sub">{withheld ? "Withheld: the inputs fail the check shown under the inputs" : nlrLabel}</div>
       </div>
       <div className="chip-grid">
-        {chips.map((c) => (
+        {shownChips.map((c) => (
           <div key={c.key} className="chip" data-sev={c.sev}>
             <div className="label"><span className="severity-dot"></span>{c.label}</div>
             <div className="val">{c.val}<span className="unit">{c.unit}</span></div>
@@ -1816,7 +1850,7 @@ function Ribbon({ d, cbc, pattern }) {
   );
 }
 
-function InputPanel({ cbc, edited, update, mode, setMode, toggles, toggle, loadCase, clickRef }) {
+function InputPanel({ cbc, update, mode, setMode, toggles, toggle, loadCase, clickRef }) {
   const fields = [
     { k: "wbc",      label: "WBC",   unit: "×10³/µL" },
     { k: "plt",      label: "Plt",   unit: "×10³/µL" },
@@ -1829,14 +1863,12 @@ function InputPanel({ cbc, edited, update, mode, setMode, toggles, toggle, loadC
   ];
   const audit = diffAudit(cbc, mode);
   const nameOf = (k) => (fields.find((f) => f.k === k) || { label: k }).label;
-  const showAudit = audit.sumOff || audit.outOfRange.length > 0 || audit.blank.length > 0;
+  // A page with nothing entered is covered by the start note, not the audit.
+  const allBlank = audit.blank.length === Object.keys(FIELD_SPEC).length;
+  const showAudit = !allBlank && (audit.sumOff || audit.outOfRange.length > 0 || audit.blank.length > 0);
   return (
     <div className="card">
       <h2 id="inputs-h">CBC inputs</h2>
-
-      {!edited && (
-        <div className="example-note">Example values. Replace them with the patient's before reading the result.</div>
-      )}
 
       <div className="seg" role="tablist" aria-label="Differential mode">
         <button aria-pressed={mode === "auto"}   onClick={() => setMode("auto")}>Auto diff (IG%)</button>
@@ -1851,7 +1883,7 @@ function InputPanel({ cbc, edited, update, mode, setMode, toggles, toggle, loadC
                    type="number" inputMode="decimal" step="0.1"
                    min={FIELD_SPEC[f.k].min} max={FIELD_SPEC[f.k].max}
                    aria-label={f.label}
-                   aria-invalid={audit.outOfRange.includes(f.k) || audit.blank.includes(f.k) ? "true" : undefined}
+                   aria-invalid={audit.outOfRange.includes(f.k) || (!allBlank && audit.blank.includes(f.k)) ? "true" : undefined}
                    aria-describedby={showAudit ? "input-audit" : undefined}
                    value={cbc[f.k]}
                    onChange={(e) => update(f.k, e.target.value)} />
@@ -1867,7 +1899,7 @@ function InputPanel({ cbc, edited, update, mode, setMode, toggles, toggle, loadC
             <div><strong>Out of range:</strong> {audit.outOfRange.map((k) => `${nameOf(k)} must sit between ${FIELD_SPEC[k].min} and ${FIELD_SPEC[k].max}`).join("; ")}.</div>
           )}
           {audit.sumOff && (
-            <div><strong>Differential sums to {audit.sum.toFixed(1)}%, not 100%.</strong> Every absolute on this page is WBC × percent, so a differential that does not close produces a wrong ANC, ALC and AEC (and a confident pattern read on top of them) with nothing else to signal it.{mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential."}</div>
+            <div><strong>Differential sums to {audit.sum.toFixed(1)}%, not 100%.</strong> Every absolute on this page is WBC × percent, so a differential that does not close produces a wrong ANC, ALC and AEC, so the pattern read is withheld and the ribbon chips show “—” until it closes.{igShortNote(audit, cbc, mode)}{mode === "manual" ? " Bands are counted inside the 100 in manual mode." : " IG% is excluded from this sum: analysers report it alongside NEUT%, not inside the 100-cell differential."}</div>
           )}
         </div>
       )}
@@ -1908,7 +1940,12 @@ function InputPanel({ cbc, edited, update, mode, setMode, toggles, toggle, loadC
   );
 }
 
-function Interpretation({ pattern, rows, warnings, d, cbc, clickRef }) {
+function Interpretation({ pattern, rows, warnings, d, cbc, clickRef, withheldWhy }) {
+  // While the verdict is withheld for an integrity reason, every evidence row
+  // is withheld too: the counts behind it are not trustworthy.
+  const withheldLine = withheldWhy === "range"
+    ? "Withheld until the out-of-range value is corrected."
+    : "Withheld until the differential adds up to 100%.";
   return (
     <div className="card">
       <h2 id="interp-h" style={{ position: "absolute", left: "-9999px" }}>Interpretation</h2>
@@ -1924,7 +1961,16 @@ function Interpretation({ pattern, rows, warnings, d, cbc, clickRef }) {
       ))}
 
       <h3>Evidence by finding</h3>
-      {rows.map((r) => (
+      {withheldWhy && rows.map((r) => (
+        <div key={r.id} className="ev-row">
+          <div className="ev-finding">
+            <span>{r.finding.split(" =")[0]}</span>
+            <span className="ev-state" data-sev="neutral">Withheld</span>
+          </div>
+          <div className="ev-claim">{withheldLine}</div>
+        </div>
+      ))}
+      {!withheldWhy && rows.map((r) => (
         <div key={r.id} className="ev-row">
           <div className="ev-finding">
             <span>{r.finding}</span>
@@ -2013,7 +2059,7 @@ function Footer() {
       <span className="pill">CBC scope only</span>
       <div className="sig">
         Neel Shah, MD · Pediatric Critical Care Medicine<br />
-        v2.3 · updated 2026-10-03 · CC BY-NC 4.0<br />
+        v2.4 · updated 2026-11-14 · CC BY-NC 4.0 · <a className="hub-link" href="../index.html">All tools</a><br />
         Reference verification status is stated, dated and scoped in the References section above. CBC patterns inform, never adjudicate.
       </div>
     </footer>

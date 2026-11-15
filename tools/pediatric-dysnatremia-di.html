@@ -312,6 +312,7 @@
   /* ---------- footer ---------- */
   .tool-footer { margin-top:var(--lg); padding-top:var(--md); border-top:1px solid var(--rule); color:var(--slate); font-family:var(--sans); font-size:11.5px; line-height:1.65; }
   .tool-footer a { color:var(--slate); }
+  .tool-footer a.hub-link { display:inline-flex; align-items:center; min-height:44px; padding:0 6px; }
   .tool-footer p { margin:0 0 6px; max-width:100ch; }
   .tool-footer p:last-child { margin-bottom:0; }
 
@@ -829,7 +830,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 
   <h3>Three views on one clock</h3>
   <div class="fig">
-    <div class="fig-scroll">
+    <div class="fig-scroll" data-sc-cue="off">
       <svg id="ttsvg" viewBox="0 0 880 640" role="img" aria-labelledby="ttsvg-title">
         <title id="ttsvg-title">Three stacked panels sharing one time axis: urine output in millilitres per kilogram per hour with the two-to-three target band shaded and serum sodium overlaid on a right-hand axis; the vasopressin dose drawn as a step plot with the caution and hard-flag lines marked; and urine concentration with specific gravity on the left axis against its target band and urine osmolality on the right axis with no target band. Vertical markers mark every timepoint at which the dose changed.</title>
       </svg>
@@ -853,7 +854,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   </details>
 
   <details class="verdict quiet foldref"><summary class="vtitle">The published dose ladder, in one scale</summary>
-    <div class="fig-scroll">
+    <div class="fig-scroll" data-sc-cue="off">
       <svg id="dosesvg" viewBox="0 0 880 300" role="img" aria-labelledby="dosesvg-title">
         <title id="dosesvg-title">A logarithmic dose scale in milliunits per kilogram per hour showing each published pediatric and mixed-age series as a bar, the antidiuretic range ending at 2.7, the empty band between 2.7 and 30 in which this unit's caution and hard-flag lines sit, and the pressor range beginning at 30.</title>
       </svg>
@@ -980,7 +981,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     <p>Session-only; no data leaves this device, and nothing but the color-theme preference is stored on it.</p>
     <details class="more"><summary>How every identifier and number here was checked</summary>
     <div class="mb"><p>Every PMID and every numeric claim rendered on this page was resolved against PubMed E-utilities on 2026-09-06, with first author, year and journal matched, and each number was confirmed against the abstract or, where the abstract does not carry it, against the PubMed Central full text &mdash; PMC11747752, PMC6457470, PMC7923125 and PMC10103237. The two non-PubMed sources, the Endotext SIADH chapter (NCBI Bookshelf NBK279055) and the Royal Children&rsquo;s Hospital Melbourne hyponatraemia guideline, were fetched and read the same day. Three rows carry <strong>[A]?</strong> rather than [A] &mdash; Chung 1987, Imran 2010 and Maesaka 2020. Each carries no age MeSH term and no age statement, so the adult label on them is an inference from the setting rather than a fact from the record; over-calling a cohort adult is the conservative direction here, and the marker says which three rest on inference. Values that no source establishes are either labelled as this unit&rsquo;s figures with the gap they sit in stated, or are absent.</p></div></details>
-    <p>Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.1 &middot; Updated 2026-10-03 &middot; CC BY-NC 4.0</p>
+    <p>Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.2 &middot; Updated&nbsp;2026-11-14 &middot; CC&nbsp;BY-NC&nbsp;4.0 &middot; <a class="hub-link" href="../index.html">All tools</a></p>
   </div>
 </footer>
 
@@ -2869,6 +2870,38 @@ function renderLogTable() {
   t.appendChild(tb); wrap.appendChild(t); m.appendChild(wrap);
 }
 
+/* Entry checks for the Titrate log. They reuse uopInputProblems and the two urine-output
+   lines from the Interpret tab, so a unit slip is caught on the tab used to adjust a dose
+   as it is on the tab used to read a pattern. The one check added here carries no clinical
+   number: a collection cannot run longer than the time since the previous logged timepoint,
+   so a longer one is queried in words (minutes typed as hours is the usual cause). */
+function uopRangeLines(uop) {
+  const out = [];
+  if (uop !== null && uop > 60) out.push("A urine output of " + fmt(uop, 1) + " mL/kg/hr is implausible. Check the volume, the interval and the weight.");
+  if (uop !== null && uop < UOP_INPUT.lowFloor) out.push("The urine output is " + fmt(uop, 2) + " mL/kg/hr: oliguria or anuria, check the collection. A volume left out, or a weight or time in the wrong unit, gives the same number.");
+  return out;
+}
+function logEntryCheck(wt, vol, hrs, t) {
+  const out = { rejects: [], queries: [], uop: null };
+  if (vol === null && hrs === null) return out;
+  const p = uopInputProblems(wt, vol, hrs);
+  if (p.wt) out.rejects.push("Weight entered: " + String(wt) + ". " + p.wt);
+  if (p.vol) out.rejects.push("Urine volume entered: " + String(vol) + ". " + p.vol);
+  if (p.hrs) out.rejects.push("Collection time entered: " + String(hrs) + ". " + p.hrs);
+  if (!out.rejects.length) {
+    out.uop = computeUop(vol, hrs, wt);
+    uopRangeLines(out.uop).forEach(x => out.queries.push(x));
+  }
+  if (t !== null && hrs !== null) {
+    let prev = null;
+    LOG.forEach(r => { if (r.t < t && (prev === null || r.t > prev)) prev = r.t; });
+    if (prev !== null && hrs > (t - prev) + 1e-9) {
+      out.queries.push("The collection interval of " + fmt(hrs, 2) + " h is longer than the " + fmt(t - prev, 2) + " h since the last logged timepoint (t = " + fmt(prev, 1) + " h): hours, not minutes?");
+    }
+  }
+  return out;
+}
+
 function renderRateBox() {
   const m = $("tt-rate"); clearKids(m);
   const withNa = logRows().filter(r => r.na !== null);
@@ -2899,11 +2932,15 @@ function renderRateBox() {
   const total = withNa[withNa.length - 1].na - withNa[0].na;
 
   const breaches = [];
+  /* Whether any logged sodium was ever in the hypernatremic range decides which hazard the
+     fall-rate sentence may name. The range is the top of the target band the chart draws
+     (T.tgtNaHi); no new threshold is introduced. */
+  const everHyper = withNa.some(r => r.na > T.tgtNaHi);
   if (worst.rate < -T.rateFallPerHour) {
-    breaches.push("The sodium fell at " + fmt(worst.rate, 2) + " mmol/L/hr between t = " + fmt(worst.a.t, 1) + " h and t = " + fmt(worst.b.t, 1) + " h, faster than the 0.5 mmol/L per hour ceiling that applies when a <strong>hypernatremia</strong> is being corrected.");
+    breaches.push("The sodium fell at " + fmt(worst.rate, 2) + " mmol/L/hr between t = " + fmt(worst.a.t, 1) + " h and t = " + fmt(worst.b.t, 1) + " h, faster than the 0.5 mmol/L per hour ceiling " + (everHyper ? "that applies when a <strong>hypernatremia</strong> is being corrected." : "this tool states for correcting a <strong>hypernatremia</strong>; no logged sodium was in the hypernatremic range."));
   }
   if (fall24 && fall24.d < -T.fall24Lo) {
-    breaches.push("The sodium fell " + fmt(fall24.d, 1) + " mmol/L between t = " + fmt(fall24.a.t, 1) + " h and t = " + fmt(fall24.b.t, 1) + " h, an interval of " + fmt(fall24.b.t - fall24.a.t, 1) + " h, which is past the 10 to 12 mmol/L per 24 hours ceiling for correcting a <strong>hypernatremia</strong>.");
+    breaches.push("The sodium fell " + fmt(fall24.d, 1) + " mmol/L between t = " + fmt(fall24.a.t, 1) + " h and t = " + fmt(fall24.b.t, 1) + " h, an interval of " + fmt(fall24.b.t - fall24.a.t, 1) + " h, which is past the 10 to 12 mmol/L per 24 hours ceiling " + (everHyper ? "for correcting a <strong>hypernatremia</strong>." : "this tool states for a falling sodium; no logged sodium was in the hypernatremic range."));
   }
   /* The 8 mmol/L in 24 hours limit is the Royal Children's Hospital Melbourne ceiling for
      CORRECTING a hyponatremia, so it is cited only when the window starts below 135. A
@@ -2916,8 +2953,28 @@ function renderRateBox() {
   if (rise24 && rise24.d > T.rise24 && rise24.a.na < T.naHypo) {
     breaches.push("The sodium rose " + fmt(rise24.d, 1) + " mmol/L between t = " + fmt(rise24.a.t, 1) + " h and t = " + fmt(rise24.b.t, 1) + " h, an interval of " + fmt(rise24.b.t - rise24.a.t, 1) + " h, which is past the 8 mmol/L in 24 hours maximum the Royal Children's Hospital Melbourne hyponatraemia guideline sets for a non-seizing child.");
   }
+  /* Level check. The ceilings above watch the speed of a change; a sodium that is low and
+     still falling on a fixed antidiuretic dose crosses none of them. It reuses the page's
+     own 135 and 130 (T.naHypo, T.naSevereHypo) and gives no dose advice. */
+  const lastNa = withNa[withNa.length - 1], prevNa = withNa[withNa.length - 2];
+  const lowFall = lastNa.na < T.naHypo && total < 0 && lastNa.na <= prevNa.na;
+  let lowFallText = null;
+  if (lowFall) {
+    const rows = logRows();
+    let uopRow = null, sgRow = null;
+    for (let n = rows.length - 1; n >= 0; n--) {
+      if (uopRow === null && rows[n].uop !== null && rows[n].uop !== undefined) uopRow = rows[n];
+      if (sgRow === null && rows[n].sg !== null && rows[n].sg !== undefined) sgRow = rows[n];
+    }
+    lowFallText = "The latest logged sodium is " + fmt(lastNa.na, 0) + " mmol/L at t = " + fmt(lastNa.t, 1) + " h, below 135" +
+      (lastNa.na < T.naSevereHypo ? " and below the 130 mmol/L severe-hyponatremia mark" : "") +
+      ", after a fall from " + fmt(withNa[0].na, 0) + " mmol/L at t = " + fmt(withNa[0].t, 1) + " h; " +
+      (uopRow ? "the latest logged urine output is " + fmt(uopRow.uop, 2) + " mL/kg/hr at t = " + fmt(uopRow.t, 1) + " h" : "no urine output is logged") + " and " +
+      (sgRow ? "the latest specific gravity is " + fmt(sgRow.sg, 3) + " at t = " + fmt(sgRow.t, 1) + " h" : "no specific gravity is logged") +
+      "; the triphasic-response card below describes hyponatremia that follows the initial diabetes insipidus.";
+  }
   const box = document.createElement("div");
-  box.className = "verdict " + ((breaches.length || riseNote) ? "caution" : "quiet");
+  box.className = "verdict " + ((breaches.length || riseNote || lowFallText) ? "caution" : "quiet");
   const t = document.createElement("div"); t.className = "vtitle";
   t.textContent = "Fastest logged sodium change: " + (worst.rate >= 0 ? "+" : "") + fmt(worst.rate, 2) + " mmol/L/hr, between t = " + fmt(worst.a.t, 1) + " h and t = " + fmt(worst.b.t, 1) + " h";
   box.appendChild(t);
@@ -2928,6 +2985,11 @@ function renderRateBox() {
     const pb = document.createElement("p");
     pb.innerHTML = "<strong>Past a ceiling this tool states.</strong> " + breaches.join(" ");
     box.appendChild(pb);
+  }
+  if (lowFallText) {
+    const pl = document.createElement("p");
+    pl.innerHTML = "<strong>Low and falling sodium.</strong> " + lowFallText;
+    box.appendChild(pl);
   }
   if (riseNote) {
     const pr = document.createElement("p");
@@ -2958,8 +3020,12 @@ function renderRateBox() {
 function renderTitrate() {
   renderDoseFlag();
   const wt = num("tt-wt");
-  const lgUop = computeUop(num("lg-uvol"), num("lg-uhrs"), wt);
-  $("lg-uop-note").textContent = lgUop === null ? "Needs a volume, an interval and the weight above." : "= " + fmt(lgUop, 2) + " mL/kg/hr";
+  const lgChk = logEntryCheck(wt, num("lg-uvol"), num("lg-uhrs"), num("lg-t"));
+  const lgUop = lgChk.rejects.length ? null : computeUop(num("lg-uvol"), num("lg-uhrs"), wt);
+  const lgNote = $("lg-uop-note");
+  if (lgChk.rejects.length) { lgNote.textContent = lgChk.rejects.join(" ") + " Not calculated."; lgNote.className = "err"; }
+  else if (lgUop === null) { lgNote.textContent = "Needs a volume, an interval and the weight above."; lgNote.className = "hint"; }
+  else { lgNote.textContent = "= " + fmt(lgUop, 2) + " mL/kg/hr" + (lgChk.queries.length ? ". " + lgChk.queries.join(" ") : ""); lgNote.className = lgChk.queries.length ? "warn" : "hint"; }
   const sgG = checkSG(num("lg-sg")), h = $("h-lg-sg"), inp = $("lg-sg");
   if (!sgG.ok) { h.textContent = sgG.msg; h.className = "err"; inp.setAttribute("aria-invalid", "true"); }
   else { h.textContent = "Enter as 1.015, not 1015."; h.className = "hint"; inp.removeAttribute("aria-invalid"); }
@@ -2984,11 +3050,13 @@ function addTimepoint() {
   if (lgNa !== null && (lgNa < 80 || lgNa > 200)) problems.push("a serum sodium inside 80 to 200 mmol/L; the value entered is outside anything a laboratory reports");
   if (lgUosm !== null && (lgUosm <= 0 || lgUosm > 1600)) problems.push("a urine osmolality above zero and at or below 1600 mOsm/kg");
   if (lgDose !== null && lgDose < 0) problems.push("a dose at or above zero");
-  const uop = computeUop(num("lg-uvol"), num("lg-uhrs"), wt);
-  if (uop === null && num("lg-uvol") !== null) problems.push("a weight and a collection interval, so the urine output can be computed");
-  if (problems.length) {
+  const chk = logEntryCheck(wt, num("lg-uvol"), num("lg-uhrs"), t);
+  const uop = chk.rejects.length ? null : computeUop(num("lg-uvol"), num("lg-uhrs"), wt);
+  if (!chk.rejects.length && uop === null && num("lg-uvol") !== null) problems.push("a weight and a collection interval, so the urine output can be computed");
+  if (problems.length || chk.rejects.length) {
     const d = document.createElement("div"); d.className = "gate";
-    d.innerHTML = "<strong>Not added.</strong> This timepoint needs " + problems.join("; and ") + ".";
+    d.innerHTML = "<strong>Not added.</strong>" + (problems.length ? " This timepoint needs " + problems.join("; and ") + "." : "");
+    chk.rejects.forEach(x => { const q = document.createElement("div"); q.textContent = x; d.appendChild(q); });
     msg.appendChild(d);
     return false;
   }
@@ -2996,6 +3064,12 @@ function addTimepoint() {
              dose: num("lg-dose"), sg: sgRaw, uosm: num("lg-uosm"), na: num("lg-na") });
   ["lg-uvol", "lg-uhrs", "lg-dose", "lg-sg", "lg-uosm", "lg-na"].forEach(id => { $(id).value = ""; });
   renderTitrate();
+  if (chk.queries.length) {
+    const d = document.createElement("div"); d.className = "gate";
+    d.innerHTML = "<strong>Added, with a query.</strong>";
+    chk.queries.forEach(x => { const q = document.createElement("div"); q.textContent = x; d.appendChild(q); });
+    msg.appendChild(d);
+  }
   return true;
 }
 </script>
@@ -4011,6 +4085,76 @@ function runSelfTest() {
   $("lg-t").value = savedT; LOG.length = 0; keepLog.forEach(r => LOG.push(r)); clearKids($("lg-msg")); renderTitrate();
   gate("a negative timepoint is refused rather than logged", negAccepted === false, "a negative time was accepted");
 
+  /* ---- 7d. the level check: a low, falling sodium on a fixed dose is not a quiet log ---- */
+  const levelCase = (rows) => {
+    const keep = LOG.slice();
+    LOG.length = 0; rows.forEach(r => LOG.push({ t: r[0], uvol: null, uhrs: null, uop: r[2] === undefined ? null : r[2], dose: 1.0, sg: r[3] === undefined ? null : r[3], uosm: null, na: r[1] }));
+    renderRateBox();
+    const txt = $("tt-rate").textContent;
+    const cls = ($("tt-rate").querySelector(".verdict") || { className: "" }).className;
+    LOG.length = 0; keep.forEach(r => LOG.push(r));
+    return { txt: txt, cls: cls };
+  };
+  const slow123 = levelCase([[0, 138, 2.0, 1.025], [8, 135, 1.4, 1.025], [16, 132, 1.0, 1.025], [24, 129, 0.8, 1.025], [32, 126, 0.6, 1.025], [40, 123, 0.39, 1.025]]);
+  gate("a sodium that falls from 138 to 123 over 40 h inside every rate ceiling still turns the box to caution and says it is below 135 and below 130",
+       /caution/.test(slow123.cls) && /below 135/.test(slow123.txt) && /below the 130 mmol\/L severe-hyponatremia mark/.test(slow123.txt),
+       "class '" + slow123.cls + "'");
+  gate("the low-and-falling sentence names the latest sodium, urine output and specific gravity, and points to the triphasic card",
+       /latest logged sodium is 123 mmol\/L/.test(slow123.txt) && /urine output is 0\.39 mL\/kg\/hr/.test(slow123.txt) && /specific gravity is 1\.025/.test(slow123.txt) && /triphasic-response card/.test(slow123.txt),
+       slow123.txt.slice(0, 160));
+  gate("a fall that never started in the hypernatremic range is not described as the correction of a hypernatremia",
+       !/when a hypernatremia is being corrected/.test(levelCase([[0, 140], [6, 134]]).txt) && /no logged sodium was in the hypernatremic range/.test(levelCase([[0, 140], [6, 134]]).txt),
+       "the fall-rate sentence still names a hypernatremia that was never logged");
+  const nonHyper24 = levelCase([[0, 141], [20, 125]]);
+  gate("a fall of 16 mmol/L in 20 h from 141 states the fall without calling it the correction of a hypernatremia",
+       /past the 10 to 12 mmol\/L per 24 hours ceiling this tool states for a falling sodium/.test(nonHyper24.txt) && !/ceiling for correcting a hypernatremia/.test(nonHyper24.txt) && /no logged sodium was in the hypernatremic range/.test(nonHyper24.txt),
+       nonHyper24.txt.slice(0, 200));
+  gate("a fall of 14 mmol/L in 20 h that starts at 170 keeps the hypernatremia wording",
+       /ceiling for correcting a hypernatremia/.test(levelCase([[0, 170], [20, 156]]).txt), "wording lost when a hypernatremia was logged");
+  const low133 = levelCase([[0, 138], [8, 133]]);
+  gate("a latest sodium of 133 says below 135 and does not use the below-130 wording",
+       /caution/.test(low133.cls) && /below 135/.test(low133.txt) && !/severe-hyponatremia mark/.test(low133.txt), "class '" + low133.cls + "'");
+  const lowRising = levelCase([[0, 120], [24, 127]]);
+  gate("a low sodium that is rising is not called a low and falling sodium",
+       /quiet/.test(lowRising.cls) && !/Low and falling sodium/.test(lowRising.txt), "class '" + lowRising.cls + "'");
+  gate("a correction from 168 that stays above 135 raises no level sentence",
+       !/Low and falling sodium/.test(levelCase([[0, 168], [12, 163]]).txt), "level sentence on a hypernatremic fall");
+  const keepDemo = LOG.slice(), keepDemoWt = $("tt-wt").value, keepDemoDose = $("tt-dose").value, keepDemoHs = $("tt-hours-since").value;
+  loadDemo();
+  const demoCls = ($("tt-rate").querySelector(".verdict") || { className: "" }).className, demoTxt = $("tt-rate").textContent, demoMsg = $("lg-msg").textContent;
+  LOG.length = 0; keepDemo.forEach(r => LOG.push(r)); $("tt-wt").value = keepDemoWt; $("tt-dose").value = keepDemoDose; $("tt-hours-since").value = keepDemoHs; renderTitrate();
+  gate("the worked example keeps the quiet rate box, raises no level sentence and loads with no rejection message",
+       /quiet/.test(demoCls) && !/Low and falling sodium/.test(demoTxt) && demoMsg === "", "class '" + demoCls + "', message '" + demoMsg + "'");
+
+  /* ---- 7e. the log path uses the same entry guard as the Interpret tab ---- */
+  const logKeep = LOG.slice(), logFields = ["tt-wt", "lg-t", "lg-uvol", "lg-uhrs", "lg-na"].map(id => [id, $(id).value]);
+  LOG.length = 0; LOG.push({ t: 0, uvol: null, uhrs: null, uop: 3, dose: null, sg: null, uosm: null, na: 150 });
+  const slip = (wt, t, vol, hrs) => {
+    const before = LOG.length;
+    $("tt-wt").value = String(wt); $("lg-t").value = String(t); $("lg-uvol").value = String(vol); $("lg-uhrs").value = String(hrs); $("lg-na").value = "150";
+    const added = addTimepoint();
+    const text = $("lg-msg").textContent;
+    while (LOG.length > before) LOG.pop();
+    clearKids($("lg-msg"));
+    return { added: added, text: text };
+  };
+  const sGrams = slip(12000, 1, 60, 0.5), sLitres = slip(12, 1, 0.06, 0.5), sSmallH = slip(12, 1, 60, 0.1), sMinutes = slip(12, 1, 60, 30), sTrue = slip(12, 1, 60, 0.5);
+  gate("a weight typed in grams is not added to the log, and the message names the field and the value",
+       sGrams.added === false && /Not added/.test(sGrams.text) && /Weight entered: 12000/.test(sGrams.text), sGrams.text.slice(0, 120));
+  gate("a collection time of 0.1 h is not added to the log",
+       sSmallH.added === false && /Not added/.test(sSmallH.text) && /Collection time entered: 0\.1\./.test(sSmallH.text), sSmallH.text.slice(0, 120));
+  gate("a urine volume typed in litres is added with the low-output query shown",
+       sLitres.added === true && /Added, with a query/.test(sLitres.text) && /oliguria or anuria, check the collection/.test(sLitres.text), sLitres.text.slice(0, 120));
+  gate("an interval typed in minutes (30 h, 1 h after the last entry) is queried in words",
+       sMinutes.added === true && /longer than the 1\.00 h since the last logged timepoint/.test(sMinutes.text) && /hours, not minutes\?/.test(sMinutes.text), sMinutes.text.slice(0, 160));
+  gate("a true collection (60 mL in 0.5 h in 12 kg) is added with no message",
+       sTrue.added === true && sTrue.text === "", "message '" + sTrue.text + "'");
+  gate("the two urine-output lines on the log path are the lines the Interpret tab shows",
+       uopRangeLines(61)[0] === "A urine output of 61.0 mL/kg/hr is implausible. Check the volume, the interval and the weight." &&
+       /^The urine output is 0\.01 mL\/kg\/hr: oliguria or anuria, check the collection\./.test(uopRangeLines(0.01)[0]) && uopRangeLines(10).length === 0,
+       "line text differs");
+  LOG.length = 0; logKeep.forEach(r => LOG.push(r)); logFields.forEach(f => { $(f[0]).value = f[1]; }); clearKids($("lg-msg")); renderTitrate();
+
   /* ---- 8. the osmolality-versus-specific-gravity split by tab (CROSS-2) ---- */
   /* The old gate asserted `T.tgtUosmLo === undefined && T.tgtUosmHi === undefined`.
      Neither identifier appears anywhere in this file, so it compared two never-defined
@@ -4480,7 +4624,7 @@ const DX_IDS = ["dx-age", "dx-age-unit", "dx-ga", "dx-wt", "dx-na", "dx-na-prev"
   "dx-ddavp", "dx-copeptin", "dx-feurate", "dx-endo", "dx-vol",
   "cf-contrast", "cf-mannitol", "cf-htsaline", "cf-protein", "cf-ketones", "cf-diuretic",
   "cf-freewater", "cf-vaso", "cf-avpr"];
-const TT_IDS = ["tt-wt", "tt-dose", "tt-hours-since", "lg-uvol", "lg-uhrs", "lg-sg", "lg-uosm"];
+const TT_IDS = ["tt-wt", "tt-dose", "tt-hours-since", "lg-t", "lg-uvol", "lg-uhrs", "lg-sg", "lg-uosm"];
 
 function loadDemo() {
   LOG.length = 0;
@@ -4677,5 +4821,46 @@ document.addEventListener("DOMContentLoaded", function () {
   input[type="number"] { font-size: 16px; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

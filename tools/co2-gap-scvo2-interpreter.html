@@ -616,6 +616,8 @@
   }
   .tool-footer a { color: var(--nt-accent); }
   .tool-footer a:hover { color: var(--ink); }
+  .tool-footer a.hub-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; vertical-align: middle; }
+  .tool-footer a[href*="creativecommons"] { white-space: nowrap; }
 </style>
 <!-- neel-theme:head:start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
@@ -1016,7 +1018,8 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       <tbody id="citeTbody"></tbody>
     </table>
     <div class="tool-footer">
-      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-10-03 &middot;
+      Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; <span style="white-space:nowrap">v2.3 &middot; Updated 2026-11-14</span> &middot;
+      <a class="hub-link" href="../index.html">All tools</a> &middot;
       Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
       Every identifier in this table was resolved against PubMed; all 72 PMIDs and the trial registration NCT05032521 were re-verified against E-utilities and ClinicalTrials.gov on 2026-08-31, with first author, year, and journal matched for each. Numbers that no source establishes are labelled consensus, extrapolated, or derived, and kept with their provenance stated, rather than dropped silently. Session-only; no data leaves this device.
     </div>
@@ -1109,7 +1112,7 @@ const RULESET = {
     {"trigger_id":"peds-sepsis-weak","predicate":"population == peds-sepsis","message":"In pediatric septic shock the CO₂ gap is a weak signal; do not escalate based on gap alone.","pmids":[31903324,42015841]},
     {"trigger_id":"ecmo-cutpoint","predicate":"population == ecmo","message":"On ECMO the adult-sepsis 6 mmHg cut-point does not apply. Peds/neonatal: ≥16 mmHg, and that figure is the FIRST gradient measured on support, a late-implementation marker, not a validated on-support monitoring threshold. Adult VA-ECMO: >6.2 mmHg at the H6 sample. A value below either number is not reassurance.","pmids":[20092075,21114220,32496416]},
     {"trigger_id":"cyanotic-scvo2","predicate":"population in [peds-cpb, post-cpb-early]","message":"Cyanotic, single-ventricle, and shunt-dependent physiology break the 70% ScvO₂ cut-point. In a parallel or shunt-dependent circulation the expected systemic venous saturation sits well below 70%, and with an arterial saturation of 80% the venous saturation is proportionally lower at entirely normal extraction. No source in this tool’s evidence base fixes a normal ScvO₂ range for that anatomy, so no number is offered here; the point is that 70% is not it. After a bidirectional Glenn an SVC sample reflects cerebral extraction and is not a global mixed-venous surrogate. Do not read a low ScvO₂ in these patients as flow-limited shock without the surgical anatomy in front of you.","pmids":[41655126,37233175]},
-    {"trigger_id":"pco2-out-of-range","predicate":"paco2 or pvco2 outside 10-150 mmHg","message":"PaCO₂ or PvCO₂ is outside the plausible range of 10–150 mmHg. Check the units: enter both in mmHg, not kPa (5.3 kPa is 40 mmHg, so a kPa entry makes the gap look about 7.5 times too narrow). Verify the value before reading anything below. These bounds are input guards, not clinical cut-points, and no source establishes them.","pmids":[]},
+    {"trigger_id":"pco2-out-of-range","predicate":"paco2 or pvco2 outside 10-150 mmHg","message":"PaCO₂ or PvCO₂ is outside the plausible range of 10–150 mmHg. Check the units: enter both in mmHg, not kPa (5.3 kPa is 40 mmHg, so a kPa entry makes the gap look about 7.5 times too narrow). No interpretation is shown until both values are in range. These bounds are input guards, not clinical cut-points, and no source establishes them.","pmids":[]},
     {"trigger_id":"scvo2-implausible-low","predicate":"1 < scvo2 < 20","message":"An ScvO₂ below 20% is rare outside cardiac arrest or a profound low-output state. Verify the value, the units, and the sampling site: a transposed digit routes the case as flow-limited shock. This bound is an input guard, not a clinical cut-point.","pmids":[]},
     {"trigger_id":"lactate-implausible","predicate":"lactate > 25 mmol/L","message":"A lactate above 25 mmol/L is rare. If this figure came from a result reported in mg/dL, convert it to mmol/L before entering: a mg/dL value read as mmol/L routes the case as severe anaerobic metabolism. This bound is an input guard, not a clinical cut-point.","pmids":[]}
   ],
@@ -1123,8 +1126,8 @@ const RULESET = {
     {"id":"adult-sepsis","label":"Adult sepsis / septic shock","gap_threshold":6,
      "gap_threshold_source":"Bakker 1992 (PMID 1735281), derived from MIXED venous sampling; applied to central venous sampling by Vallée 2008 (PMID 18607565)",
      "ratio_threshold":1.4,"ratio_basis":"tension-based ΔPCO₂/C(a-v)O₂ (PMID 11904655); the content-based ratio uses 1.0","ratio_units":"mmHg per mL O₂/dL"},
-    {"id":"adult-postop","label":"Adult postop (non-cardiac)","gap_threshold":5,
-     "gap_threshold_source":"CONSENSUS: upper limit of the adult normal range (PMID 11007564, 37233175), not a cut-point derived in a postoperative cohort",
+    {"id":"adult-postop","label":"Adult postop (non-cardiac)","gap_threshold":6,
+     "gap_threshold_source":"Uses the adult cut-point of 6 mmHg, the same as adult sepsis, because no postoperative cohort cut-point exists. The adult normal range (PMID 11007564, 37233175) is not a postoperative cut-point",
      "ratio_threshold":1.4,"ratio_basis":"tension-based ΔPCO₂/C(a-v)O₂ (PMID 11904655)","ratio_units":"mmHg per mL O₂/dL"},
     {"id":"peds-cpb","label":"Post-CPB pediatric","gap_threshold":6,
      "gap_threshold_source":"EXTRAPOLATED from adult data; flagged as not independently validated in children by Cousin 2023 (PMID 37233175)",
@@ -1328,11 +1331,17 @@ function interpret(inputs, populationId) {
   if (pop.gap_threshold_source) trace.push(`Threshold provenance: ${pop.gap_threshold_source}`);
   if (pop.ratio_basis) trace.push(`Ratio basis: ${pop.ratio_basis}`);
 
-  // ---- Plausibility guards. Non-blocking: they warn, they do not stop the walk.
+  // ---- Plausibility guards. The PCO2 guard BLOCKS: a PaCO2 or PvCO2 outside the
+  // input-guard range returns no node and no verdict, as the negative-gap path does.
+  // A kPa value typed into an mmHg field (5.3 for 40) made the gap look about 7.5 times
+  // too narrow and reached a green "Low" pill beside its own warning. The lactate and
+  // ScvO2 guards below stay non-blocking: a wrong value there errs toward caution.
   if (inputs.paco2 < B.pco2_min_mmHg || inputs.paco2 > B.pco2_max_mmHg ||
       inputs.pvco2 < B.pco2_min_mmHg || inputs.pvco2 > B.pco2_max_mmHg) {
     pushWarn("pco2-out-of-range");
-    trace.push(`WARN: PCO₂ outside the ${B.pco2_min_mmHg}–${B.pco2_max_mmHg} mmHg input-guard range`);
+    trace.push(`WARN: PCO₂ outside the ${B.pco2_min_mmHg}–${B.pco2_max_mmHg} mmHg input-guard range; no interpretation made`);
+    const w = RULESET.edge_warnings.find(x => x.trigger_id === "pco2-out-of-range");
+    return {error:"pco2-out-of-range", message:w.message, trace, warnings, tier, delta, node:null};
   }
   if (isFinite(inputs.scvo2) && inputs.scvo2 > 1 && inputs.scvo2 < B.scvo2_min_plausible_pct) {
     pushWarn("scvo2-implausible-low");
@@ -1618,8 +1627,20 @@ function render() {
   const result = interpret(STATE.inputs, STATE.population);
   renderTierStatus(result.tier, STATE.inputs);
 
-  if (result.error === "missing-inputs" || result.error === "validation" || result.error === "negative-gap") {
-    if (result.error === "negative-gap") {
+  if (result.error === "missing-inputs" || result.error === "validation" || result.error === "negative-gap" || result.error === "pco2-out-of-range") {
+    if (result.error === "pco2-out-of-range") {
+      // PCO2 outside the input-guard range: no gap, no verdict, no highlighted quadrant.
+      $("hsDelta").textContent = "—";
+      $("hsPattern").textContent = "PCO₂ out of range";
+      $("hsRisk").textContent = "Check inputs (units)";
+      $("hsRisk").className = "risk-pill slate";
+      $("interpBody").innerHTML = `<div class="empty"><strong>Check inputs.</strong>${result.message}</div>`;
+      $("warns").style.display = "none";
+      $("traceWrap").style.display = "none";
+      $("actionsWrap").style.display = "none";
+      $("citesWrap").style.display = "none";
+      highlightQuadrant(null);
+    } else if (result.error === "negative-gap") {
       // Venous below arterial: show the gap and the warning, no verdict, no highlighted quadrant.
       $("hsDelta").textContent = result.delta.toFixed(1);
       $("hsPattern").textContent = "Gap below zero";
@@ -1885,10 +1906,10 @@ const SELFTEST_CASES = [
   {name:"M10 regression: lactate 36 (mg/dL entered as mmol/L) warns", in:{paco2:40,pvco2:44,scvo2:78,lactate:36}, pop:"adult-sepsis", expectNode:"node-E-cytopathic", expectWarning:"lactate-implausible"},
   {name:"M10 regression: PaCO2 of 0 is a validation error, not a silent empty state", in:{paco2:0,pvco2:44,scvo2:72,lactate:2.0}, pop:"adult-sepsis", expectValidationError:true},
   {name:"M10 regression: PvCO2 of 0 is a validation error", in:{paco2:40,pvco2:0,scvo2:72,lactate:2.0}, pop:"adult-sepsis", expectValidationError:true},
-  {name:"M10 regression: PaCO2 of 400 warns as out of range but still computes", in:{paco2:400,pvco2:410,scvo2:72,lactate:1.5}, pop:"adult-sepsis", expectWarning:"pco2-out-of-range"},
+  {name:"M10 regression: PaCO2 of 400 is out of range and returns no node", in:{paco2:400,pvco2:410,scvo2:72,lactate:1.5}, pop:"adult-sepsis", expectNoNode:true, expectWarning:"pco2-out-of-range"},
   {name:"Negative gap gives no verdict: venous below arterial returns no node", in:{paco2:48,pvco2:40,scvo2:75,lactate:1.0}, pop:"adult-sepsis", expectNoNode:true, expectWarning:"negative-gap"},
   {name:"Narrow gap with lactate blank is never green Low: grey, add lactate", in:{paco2:40,pvco2:44,scvo2:75}, pop:"adult-sepsis", expectNode:"node-A-low-gap", expectRisk:"Add lactate", expectRiskCls:"slate"},
-  {name:"kPa slip (PaCO2 5.3, PvCO2 6.1) warns before it computes", in:{paco2:5.3,pvco2:6.1,scvo2:72,lactate:1.8}, pop:"adult-sepsis", expectWarning:"pco2-out-of-range"}
+  {name:"kPa slip (PaCO2 5.3, PvCO2 6.1) returns no node and shows the units message", in:{paco2:5.3,pvco2:6.1,scvo2:72,lactate:1.8}, pop:"adult-sepsis", expectNoNode:true, expectWarning:"pco2-out-of-range"}
 ];
 
 function runSelfTest() {
@@ -2112,5 +2133,46 @@ document.addEventListener("DOMContentLoaded", () => {
   .cite-footer { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>

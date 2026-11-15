@@ -199,8 +199,17 @@ svg [stroke-opacity]:not([stroke="currentColor"]){stroke-opacity:.8}
 .rig-view svg{min-width:680px}
 /* the rig column is only ~690px wide at desktop, so its two svgs hold scale 1 and take 11px labels */
 #svgScalars text.ax, #svgScalars text.tiny, #svgLoops text.ax, #svgLoops text.tiny{font-size:11px}
-.rig-read{padding:var(--md); border-top:1px solid var(--rule); background:var(--paper); grid-column:1 / -1}
+.rig-read{padding:var(--md); border-top:1px solid var(--rule); background:var(--paper); grid-column:1 / -1; position:relative; z-index:6}
 .rig-read .readout{grid-template-columns:repeat(4,1fr)}
+.hold-note{margin:8px 0 0; font-family:var(--mono); font-size:11.5px; line-height:1.4; color:var(--ink-muted)}
+/* the traces stay on screen while the controls that drive them are used; the phone variant caps the figure so the controls remain reachable */
+@media (min-width:901px){
+  .rig-body{grid-template-rows:auto 1fr auto}
+  .rig-ctrl{grid-column:1; grid-row:1 / span 2}
+  .rig-body > .sc-cue-hint{grid-column:2; grid-row:1; margin:var(--md) var(--md) 0}
+  .rig-view{grid-column:2; grid-row:2; position:sticky; top:8px; align-self:start}
+  .rig-read{grid-row:3}
+}
 .rig-foot{padding:12px var(--md); border-top:1px solid var(--rule); font-size:14px; color:var(--ink-muted); font-family:var(--serif)}
 .rig-foot b{color:var(--ink); font-family:var(--sans); font-size:14px; font-weight:600}
 
@@ -284,6 +293,7 @@ footer{padding:var(--xxl) 0; border-top:1px solid var(--rule); color:var(--ink-m
 footer ol{padding-left:22px; max-width:86ch}
 footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
 .tool-footer{margin-top:var(--xl); padding-top:var(--md); border-top:1px solid var(--rule); color:var(--ink-muted); font-family:var(--sans); font-size:11.5px; line-height:1.65}
+.tool-footer .hub-link{display:inline-flex; align-items:center; min-height:44px; padding:0 8px; vertical-align:middle}
 .tool-footer a{color:var(--slate)}
 .tool-footer a:hover{color:var(--ink)}
 .boot-msg{border:1px solid var(--caution); background:var(--caution-bg); border-radius:var(--radius); padding:12px 14px; font-family:var(--sans); font-size:13px; color:var(--ink-muted); margin:var(--md) 0}
@@ -295,7 +305,11 @@ footer li{margin-bottom:9px; font-size:13.5px; line-height:1.45}
   .rig-read .readout{grid-template-columns:repeat(4,1fr)}
 }
 @media (max-width:900px){
-  .rig-body{grid-template-columns:1fr}
+  .rig-body{grid-template-columns:1fr; display:flex; flex-direction:column}
+  .rig-view[data-sc-cue]{-webkit-mask-image:none; mask-image:none} /* the pinned figure keeps an opaque edge; the cue text above it still shows */
+  html{scroll-padding-top:calc(56vh + 12px)}
+  .rig-body > .sc-cue-hint{order:-2; margin:var(--sm) var(--md) 0}
+  .rig-view{order:-1; position:sticky; top:0; z-index:5; max-height:56vh; overflow:auto; background:var(--card); border-bottom:1px solid var(--rule)}
   .rig-ctrl{border-right:0; border-bottom:1px solid var(--rule)}
   .rig-read{grid-column:auto}
   .rig-read .readout{grid-template-columns:repeat(2,1fr)}
@@ -676,6 +690,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
             <div class="pin"><span class="k">&tau; = R &times; C</span><span class="v" id="oTau">--</span></div>
             <div class="pin"><span class="k">&tau; est. V T / PEF</span><span class="v" id="oTauE">--</span></div>
           </div>
+          <p class="hold-note" id="holdNote" hidden>P plateau and driving pressure are from the last hold. Any change to a setting clears them.</p>
           <div class="flags">
             <div class="flag" id="fNone" hidden>No breath delivered at these settings.</div>
             <div class="flag" id="fTrap" hidden>End-expiratory flow present. Suspect air trapping.</div>
@@ -1582,8 +1597,9 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
   </ol>
 
   <div class="tool-footer">
-    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.2 &middot; Updated 2026-10-03 &middot;
-    Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br>
+    Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v2.3 &middot; Updated 2026-11-14 &middot;
+    Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> &middot;
+    <a class="hub-link" href="../index.html">All tools</a><br>
     Every PMID and DOI in the reference table was resolved against PubMed E-utilities on 2026-08-31, with first author, journal and year matched. <b>Correction screening, re-run 2026-09-01.</b> The earlier pass screened publication types only, which asks whether a cited record is itself a correction and cannot see an erratum published as its own record, which is the usual case. The screen was therefore re-run as an <em>erratum-linkage</em> screen: the CommentsCorrections field of every PMID printed in this tool, fetched from PubMed E-utilities and parsed for ErratumIn, RetractionIn, ExpressionOfConcernIn and CorrectedandRepublishedIn. The same screen by the same method was run over all four tools in this set. On this page 30 of 30 source PMIDs were screened, the two added on 2026-09-01 by the same method on that date, and none carries an erratum, a retraction or an expression of concern, so no reference row and no statement on this page is marked or changed by it. The only linkages these records carry are eleven CommentIn entries, which are commentaries and not corrections. Model parameters that no publication establishes are labelled MODEL CHOICE in place rather than dropped. Session-only; no data leaves this device.
   </div>
  </div>
@@ -1651,7 +1667,7 @@ function newModel(S){
   var M = { t:0, V:S.C*S.peep, phase:"EXP", pt:0, insT:0, curP:0, dp:dp0,
             inspEnd:-99, nextMand:tTot(S), breathStart:0, pendKind:"mand",
             b:null, last:null, hist:[], holdDur:S.holdDur,
-            Pplat:null, platActive:false, platIntrinsic:false,
+            Pplat:null, platActive:false, platIntrinsic:false, holdPlat:null,
             autoPeep:null, totalPeep:null, lastAuto:0,
             holdI:false, holdE:false, apnea:false, atLimit:false,
             nPat:0, nBreaths:0, bi:0, sampCount:0,
@@ -1819,6 +1835,10 @@ function step(M,S){
       if(M.pt >= M.holdDur){
         var pmh = pmusAt(S,M.t);
         M.Pplat = M.V/S.C - pmh; M.platIntrinsic = false; M.platActive = (pmh !== 0);
+        /* Keep the last VALID hold plateau (no patient effort) with the breath it came from.
+           It stays until a setting change builds a new model; a hold read during effort
+           discards it, so a stale value never sits beside an invalid one. */
+        M.holdPlat = (pmh === 0) ? { p:M.Pplat, vti:M.b.VTi, pip:M.b.PIP } : null;
         beginExp(M,S);
       } break;
     case "HOLDE":
@@ -2136,6 +2156,7 @@ function renderNoBreath(){
   setRead("oTau", fmt(S.R*S.C,2), "s");
   var room = S.pmax - S.peep - 5;
   flag("fNone", true, "warn");
+  $("holdNote").hidden = true;
   flag("fTrap", false); flag("fPlat", false); flag("fIntrinsic", false); flag("fDrive", false);
   flag("fPert", PERT.hidden, "on");
   flag("fLimit", S.mode==="PRVC" && (M.atLimit || room <= 0), "warn");
@@ -2151,20 +2172,30 @@ function renderNoBreath(){
   var html = "<b>What the rig shows.</b> No breath delivered at these settings. " + why;
   if($("simFoot").innerHTML !== html) $("simFoot").innerHTML = html;
 }
+/* The plateau the readout and footer show: the live one while it exists, otherwise
+   the last valid hold plateau, flagged as held. Cleared by any setting change. */
+function platView(b){
+  if(M.Pplat!=null) return { p:M.Pplat, act:M.platActive, held:false, vti:b.VTi, pip:b.PIP };
+  if(M.holdPlat) return { p:M.holdPlat.p, act:false, held:true, vti:M.holdPlat.vti, pip:M.holdPlat.pip };
+  return { p:null, act:false, held:false, vti:b.VTi, pip:b.PIP };
+}
 function renderReadout(){
   var b = M.last;
   if(!b || b.VTi<=0){ renderNoBreath(); return; }
   flag("fNone", false);
   var Ttot = b.tI + b.tE, rate = Ttot>0 ? 60/Ttot : NaN;
   setRead("oPip",  fmt(b.PIP,1), "cmH2O");
-  setRead("oPplat", M.Pplat==null ? "--" : fmt(M.Pplat,1), M.Pplat==null?"":"cmH2O");
+  var PV = platView(b);
+  setRead("oPplat", PV.p==null ? "--" : fmt(PV.p,1), PV.p==null?"":"cmH2O");
   setRead("oPeep", fmt(S.peep,0), "cmH2O");
   setRead("oPtot", M.totalPeep==null ? "--" : fmt(M.totalPeep,1), M.totalPeep==null?"":"cmH2O");
   setRead("oAuto", M.autoPeep==null ? "--" : fmt(Math.max(0,M.autoPeep),2), M.autoPeep==null?"":"cmH2O");
   /* Driving pressure, referenced to TOTAL PEEP where a hold has measured it and
      to set PEEP where it has not, which is the error section 16 describes. */
-  var dpMeas = (M.Pplat!=null && !M.platActive)
-    ? (M.Pplat - (M.totalPeep==null ? S.peep : M.totalPeep)) : null;
+  var dpMeas = (PV.p!=null && !PV.act)
+    ? (PV.p - (M.totalPeep==null ? S.peep : M.totalPeep)) : null;
+  var hn = $("holdNote"), showHn = PV.held && dpMeas!=null;
+  if(hn.hidden !== !showHn) hn.hidden = !showHn;
   setRead("oDrive", dpMeas==null ? "--" : fmt(dpMeas,1), dpMeas==null?"":"cmH2O");
   setRead("oVti", fmt(b.VTi*1000,0), "mL");
   setRead("oVte", fmt(b.VTe*1000,0), "mL");
@@ -2206,12 +2237,18 @@ function renderFoot(b, trapping, rate){
     out.push("Expiratory flow reaches zero before the next breath. T<sub>E</sub> is " + fmt(b.tE,2) + " s, or " + fmt(nTau,1) +
              "&tau;, and emptying is " + fmt(100*(1-Math.exp(-nTau)),1) + "% complete.");
   }
-  if(M.Pplat!=null && !M.platActive){
-    var res = b.PIP - M.Pplat, ela = M.Pplat - S.peep;
-    out.push("PIP &minus; P<sub>plat</sub> = " + fmt(res,1) + " cmH<sub>2</sub>O is the resistive term; P<sub>plat</sub> &minus; PEEP = " + fmt(ela,1) +
-             " cmH<sub>2</sub>O is the elastic term, so compliance reads " + fmt(ela>0 ? b.VTi*1000/ela : NaN,0) + " mL/cmH<sub>2</sub>O." +
-             (M.platIntrinsic ? " That plateau came from flow reaching zero on its own, not from a hold." : ""));
-  } else if(M.Pplat!=null && M.platActive){
+  var PV = platView(b);
+  if(PV.p!=null && !PV.act){
+    var usedTot = (M.totalPeep!=null), ref = usedTot ? M.totalPeep : S.peep;
+    var res = PV.pip - PV.p, ela = PV.p - ref;
+    out.push("PIP &minus; P<sub>plat</sub> = " + fmt(res,1) + " cmH<sub>2</sub>O is the resistive term; " +
+             (usedTot ? "P<sub>plat</sub> minus total PEEP = " : "P<sub>plat</sub> minus set PEEP = ") + fmt(ela,1) +
+             " cmH<sub>2</sub>O is the elastic term" + (usedTot ? "" : " (set PEEP, because no expiratory hold has run)") +
+             ", so compliance reads " + fmt(ela>0 ? PV.vti*1000/ela : NaN,0) + " mL/cmH<sub>2</sub>O." +
+             (PV.held ? " These values are from the last hold and clear when any setting changes." : "") +
+             (usedTot && trapping ? " While air is still trapped, the plateau and the total PEEP can come from different breaths, so this compliance can read below the set value." : "") +
+             (M.platIntrinsic && !PV.held ? " That plateau came from flow reaching zero on its own, not from a hold." : ""));
+  } else if(PV.p!=null && PV.act){
     out.push("The plateau shown was read while the patient was pulling, so it is not a plateau and no compliance is computed from it.");
   } else {
     out.push("No plateau yet. Run an inspiratory hold to separate the resistive term from the elastic one.");
@@ -4297,5 +4334,46 @@ document.addEventListener("DOMContentLoaded", function(){
   sub, sup { font-size: max(0.83em, 11px); }
 }
 </style>
+<!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
+<style id="sc-cue-css">
+.sc-cue-hint{display:none;margin:0 0 6px;padding:0 2px;font:600 12px/1.35 var(--nt-font-display,system-ui,-apple-system,"Segoe UI",sans-serif);letter-spacing:.01em;color:var(--nt-ink-2,var(--nt-ink,currentColor));opacity:.82}
+.sc-cue-hint.is-on{display:block}
+[data-sc-cue="more"]{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+@media print{.sc-cue-hint{display:none!important}[data-sc-cue]{-webkit-mask-image:none!important;mask-image:none!important}}
+</style>
+<script id="sc-cue-js">
+(function(){
+  if(window.__scCue)return;window.__scCue=1;
+  var TXT="Wider than the screen: swipe sideways for the rest →";
+  function state(el){
+    var over=el.scrollWidth-el.clientWidth>12;
+    var atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-6;
+    el.setAttribute("data-sc-cue",over&&!atEnd?"more":"none");
+    var h=el.__scHint;
+    if(over&&!h){h=document.createElement("p");h.className="sc-cue-hint";h.setAttribute("aria-hidden","true");h.textContent=TXT;el.parentNode.insertBefore(h,el);el.__scHint=h;}
+    if(h)h.classList.toggle("is-on",over);
+  }
+  function scan(){
+    var els=document.querySelectorAll("div,figure,section,pre");
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.getAttribute("data-sc-cue")==="off"||el.clientWidth<140)continue;
+      if(!el.__scOn){
+        if(el.scrollWidth-el.clientWidth<=12)continue;
+        var ox=getComputedStyle(el).overflowX;
+        if(ox!=="auto"&&ox!=="scroll")continue;
+        el.__scOn=1;el.addEventListener("scroll",function(){state(this)},{passive:true});
+      }
+      state(el);
+    }
+  }
+  var t;function later(ms){clearTimeout(t);t=setTimeout(scan,ms||250)}
+  if(document.readyState==="complete")later(50);else window.addEventListener("load",function(){later(50)});
+  window.addEventListener("resize",function(){later(250)});
+  document.addEventListener("click",function(){later(350)},true);
+  setTimeout(scan,1800);
+})();
+</script>
+<!-- /scroll-cue v1 -->
 </body>
 </html>
