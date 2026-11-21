@@ -61,7 +61,7 @@ anyone can make here.
 Issues and pull requests are welcome, particularly for clinical accuracy. Please keep each tool a
 single self-contained HTML file, and keep the disclaimer and the evidence labelling intact.
 
-Nine tools are plain HTML and JavaScript: edit the file in `tools/`. Three (V-V ECMO, ICU CBC,
+Ten tools are plain HTML and JavaScript: edit the file in `tools/`. Three (V-V ECMO, ICU CBC,
 Pediatric AKI) are written as JSX in `src/<name>.src.html` and compiled: edit the source, then run
 
 ```bash

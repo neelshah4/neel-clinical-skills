@@ -528,7 +528,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
       <div class="field" id="dx-ga-field" hidden>
         <label for="dx-ga">Gestational age at birth</label>
         <div class="row"><input type="number" id="dx-ga" min="20" max="44" step="any" inputmode="decimal" placeholder="not entered"><span class="unit">weeks</span></div>
-        <div class="hint" id="h-dx-ga">Below 35 weeks, adds a note for preterm infants. It does not change the ranking.</div>
+        <div class="hint" id="h-dx-ga">Below 35 weeks, adds a note for preterm infants, and the spot urine sodium is not counted toward cerebral salt wasting. Nothing else in the ranking changes.</div>
       </div>
       <div class="field">
         <label for="dx-wt">Weight</label>
@@ -981,7 +981,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
     <p>Session-only; no data leaves this device, and nothing but the color-theme preference is stored on it.</p>
     <details class="more"><summary>How every identifier and number here was checked</summary>
     <div class="mb"><p>Every PMID and every numeric claim rendered on this page was resolved against PubMed E-utilities on 2026-09-06, with first author, year and journal matched, and each number was confirmed against the abstract or, where the abstract does not carry it, against the PubMed Central full text &mdash; PMC11747752, PMC6457470, PMC7923125 and PMC10103237. The two non-PubMed sources, the Endotext SIADH chapter (NCBI Bookshelf NBK279055) and the Royal Children&rsquo;s Hospital Melbourne hyponatraemia guideline, were fetched and read the same day. Three rows carry <strong>[A]?</strong> rather than [A] &mdash; Chung 1987, Imran 2010 and Maesaka 2020. Each carries no age MeSH term and no age statement, so the adult label on them is an inference from the setting rather than a fact from the record; over-calling a cohort adult is the conservative direction here, and the marker says which three rest on inference. Values that no source establishes are either labelled as this unit&rsquo;s figures with the gap they sit in stated, or are absent.</p></div></details>
-    <p>Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.2 &middot; Updated&nbsp;2026-11-14 &middot; CC&nbsp;BY-NC&nbsp;4.0 &middot; <a class="hub-link" href="../index.html">All tools</a></p>
+    <p>Neel Shah, MD &middot; Pediatric Critical Care Medicine &middot; v1.3 &middot; Updated&nbsp;2026-11-14 &middot; CC&nbsp;BY-NC&nbsp;4.0 &middot; <a class="hub-link" href="../index.html">All tools</a></p>
   </div>
 </footer>
 
@@ -1778,6 +1778,15 @@ function scoreDiagnosis(d, i) {
        exclusive: exactly one of the two is ever live. */
     if (c.off && c.off(i)) continue;
     if (c.chk && !i.anyMeasured) continue;
+    /* The preterm gate says salt wasting will not be called on a urine sodium. The
+       scoring has to do what the banner says: under the gate the urine sodium is
+       shown on the card, in words, and is neither supporting nor opposing, so the
+       grade and the rank are computed without it. It is a neutral line and not a
+       missing one, because the value was entered. */
+    if (i.pretermGate && c.k === "una100" && PRESENT(i, "una")) {
+      neutral.push({ t: "Spot urine sodium " + fmt(i.una, 0) + " mmol/L is not counted toward salt wasting because of preterm sodium handling: below " + T.preterm + " weeks of gestation the kidney excretes more sodium at baseline and cannot retain it in negative balance", p: [6310948] });
+      continue;
+    }
     const r = evalCriterion(c, i);
     let w = c.w;
     /* Fenske 2008: a diuretic destroys the urine-sodium signal, so every
@@ -3968,6 +3977,26 @@ function runSelfTest() {
   gate("preterm gate boundary is exact at 35 weeks",
        interpretDx(mkI({ ga: 34.9, na: 126 })).gates.some(g => g.id === "gate-preterm") &&
        interpretDx(mkI({ ga: 35, na: 126 })).gates.every(g => g.id !== "gate-preterm"), "boundary wrong at 35 weeks");
+  /* The preterm banner says salt wasting will not be called on a urine sodium; the
+     scoring must do the same, and only inside the gate. */
+  const pCsw = (ga, una) => interpretDx(mkI({ ga: ga, na: 126, una: una, uosm: 400, uop: 4.2, vol: "hypo" })).diffs.filter(d => d.id === "csw")[0];
+  const cswPre = pCsw(30, 150), cswTerm = pCsw(39, 150);
+  gate("under the preterm gate the urine sodium is not listed as support for salt wasting and is shown as not counted",
+       !!cswPre && cswPre.why.every(x => !/urine sodium/i.test(x.t)) && cswPre.against.every(x => !/urine sodium/i.test(x.t)) &&
+       cswPre.neutral.some(x => /Spot urine sodium 150 mmol\/L is not counted/.test(x.t) && /preterm sodium handling/.test(x.t)),
+       "the preterm card still counts or hides the urine sodium");
+  const rawCsw = (ga, una) => scoreDiagnosis(DIAGNOSES.filter(d => d.id === "csw")[0], mkI({ ga: ga, na: 126, una: una, uosm: 400, uop: 4.2, vol: "hypo" }));
+  gate("under the preterm gate the salt wasting score is the term score minus the urine sodium weight, and a low sodium is not counted against it either",
+       rawCsw(30, 150).score === rawCsw(39, 150).score - C.unaVeryHigh.w &&
+       rawCsw(30, 40).score === rawCsw(30, 150).score && rawCsw(39, 40).score === rawCsw(39, 150).score - 2 * C.unaVeryHigh.w,
+       "preterm " + rawCsw(30, 150).score + " term " + rawCsw(39, 150).score);
+  gate("at 35 weeks and above the salt wasting card counts the urine sodium exactly as before",
+       pCsw(35, 150).why.some(x => /reaches the 100 mmol\/L level/.test(x.t)) && pCsw(35, 150).neutral.every(x => !/not counted/.test(x.t)) &&
+       pCsw(null, 150).why.some(x => /reaches the 100 mmol\/L level/.test(x.t)),
+       "a term card changed");
+  gate("under the preterm gate with no urine sodium entered, salt wasting still lists the urine sodium as missing and shows no not-counted line",
+       (() => { const c = pCsw(30, null); return c.missing.indexOf("spot urine sodium") !== -1 && c.neutral.every(x => !/not counted/.test(x.t)); })(),
+       "an absent urine sodium was reported as counted");
 
   /* ---- 5. guards ---- */
   gate("specific gravity 1010 is rejected and names the expected form",
@@ -4756,6 +4785,63 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script id="result-strip-js">
+/* Phone result strip. It reads the page's own rendered result, the #dx-verdict title and
+   the first entry of #dx-diff, so the two cannot disagree. Not a live region: #dx-verdict
+   already is one. */
+(function () {
+  var panel = document.getElementById("panel-interpret"), vd = document.getElementById("dx-verdict"),
+      df = document.getElementById("dx-diff"), gt = document.getElementById("dx-gates");
+  if (!panel || !vd || !df || !("IntersectionObserver" in window)) return;
+  var btn = document.createElement("button");
+  btn.type = "button"; btn.className = "rs-strip"; btn.id = "rs-strip";
+  var h = document.createElement("span"), d = document.createElement("span");
+  h.className = "rs-h"; d.className = "rs-d"; btn.appendChild(h); btn.appendChild(d);
+  document.body.appendChild(btn);
+  var inputsOn = false, resultOn = false;
+  function text(el) { return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; }
+  function sync() {
+    var head = text(vd.querySelector(".vtitle"));
+    var first = df.firstElementChild, dline = "";
+    if (first && first.classList.contains("dx")) {
+      var cf = first.querySelector(".conf"), g = text(first.querySelector(".conf .g"));
+      var label = text(cf); if (g && label.indexOf(g) === 0) label = label.slice(g.length).trim();
+      dline = "First ranked: " + text(first.querySelector(".dx-name")) + ", grade " + g + " (" + label + ")";
+    }
+    h.textContent = head; d.textContent = dline; d.hidden = !dline;
+    btn.setAttribute("aria-label", "Result: " + head + (dline ? ". " + dline : "") + ". Go to the full result.");
+    if (btn.classList.contains("is-on")) document.documentElement.style.setProperty("--rs-h", btn.offsetHeight + "px");
+  }
+  function show() {
+    var on = inputsOn && !resultOn && !panel.hidden && !!text(h);
+    btn.classList.toggle("is-on", on);
+    if (on) document.documentElement.style.setProperty("--rs-h", btn.offsetHeight + "px");
+  }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      e.target.__rsOn = e.isIntersecting;
+    });
+    inputsOn = Array.prototype.some.call(panel.querySelectorAll(".tier"), function (t) { return t.__rsOn; });
+    resultOn = [vd, df, gt].some(function (t) { return t && t.__rsOn; });
+    show();
+  });
+  Array.prototype.forEach.call(panel.querySelectorAll(".tier"), function (t) { io.observe(t); });
+  [vd, df, gt].forEach(function (t) { if (t) io.observe(t); });
+  var pending = false;
+  new MutationObserver(function () {
+    if (pending) return; pending = true;
+    Promise.resolve().then(function () { pending = false; sync(); show(); });
+  }).observe(panel, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden"] });
+  btn.addEventListener("click", function () {
+    var h3 = vd.previousElementSibling && vd.previousElementSibling.previousElementSibling;
+    var target = (h3 && h3.tagName === "H3") ? h3 : vd;
+    target.scrollIntoView({ block: "start" });
+    if (vd.getBoundingClientRect().bottom > window.innerHeight - btn.offsetHeight) vd.scrollIntoView({ block: "start" });
+  });
+  sync(); show();
+})();
+</script>
+
 <!-- neel-theme:body:start -->
 <script>
 /* neel-theme v1.0 — shared Light | Dark control. One key ("neel.theme") for every tool on the
@@ -4820,6 +4906,21 @@ document.addEventListener("DOMContentLoaded", function () {
      16px floor has to be restated for it or the number inputs zoom on focus. */
   input[type="number"] { font-size: 16px; }
 }
+
+/* Phone result strip (Interpret tab). Shown at 700px and below, only while an input
+   is on screen and the full result is not. Neutral surface, no severity colour. */
+.rs-strip { display:none; }
+@media (max-width: 700px) {
+  html { scroll-padding-bottom: calc(var(--rs-h, 64px) + 12px); }
+  .rs-strip { position:fixed; left:0; right:0; bottom:0; z-index:40; margin:0; width:100%; text-align:left; cursor:pointer;
+    background:var(--paper); color:var(--ink); border:0; border-top:1px solid var(--rule); border-radius:0; box-shadow:none;
+    padding:8px var(--md) calc(8px + env(safe-area-inset-bottom)); font-family:var(--sans); font-size:13px; line-height:1.35; }
+  .rs-strip.is-on { display:block; }
+  .rs-strip .rs-h { display:block; font-weight:660; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rs-strip .rs-d { display:block; color:var(--ink-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rs-strip:focus-visible { outline:2px solid var(--focus); outline-offset:-2px; }
+}
+@media print { .rs-strip { display:none !important; } }
 </style>
 <!-- scroll-cue v1: marks any sideways scroller whose content is wider than its box. Opt out with data-sc-cue="off". -->
 <style id="sc-cue-css">

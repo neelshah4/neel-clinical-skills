@@ -183,6 +183,19 @@
   svg text[font-family*="Inter"] { font-family: var(--sans); }
   .result { background: var(--nt-plate-focal); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* Phone result strip: shown only at 700px and below, only while the inputs are on screen and the full result is not. */
+  .rs-strip { display: none; }
+  @media (max-width: 700px) {
+    html { scroll-padding-bottom: 88px; }
+    .rs-strip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: var(--sm); width: 100%; min-height: 52px; margin: 0; padding: 10px var(--md) calc(10px + env(safe-area-inset-bottom)); background: var(--card); color: var(--ink); border: 0; border-top: 1px solid var(--hair-strong); border-left: 6px solid var(--hair-strong); border-radius: 0; box-shadow: none; font-family: var(--sans); font-size: 14px; font-weight: 600; line-height: 1.35; text-align: left; cursor: pointer; }
+    .rs-strip[hidden] { display: none; }
+    .rs-strip.rs-t-pos { border-left-color: var(--pos); }
+    .rs-strip.rs-t-caution { border-left-color: var(--caution); }
+    .rs-strip.rs-t-neg { border-left-color: var(--neg); }
+    .rs-strip:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+    .rs-strip .rs-go { margin-left: auto; flex: none; font-size: 12px; font-weight: 600; color: var(--ink-muted); white-space: nowrap; }
+  }
+  @media print { .rs-strip { display: none !important; } }
 </style>
 <!-- neel-theme:head:start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
@@ -321,7 +334,7 @@ if(t==='light'||t==='dark')r.setAttribute('data-theme',t);}catch(e){}})();</scri
 })();
 </script>
 <script type="text/babel" data-presets="react">
-const { useState, useMemo, useEffect, useId } = React;
+const { useState, useMemo, useEffect, useId, useRef } = React;
 
 /* ============================================================
    EVIDENCE CONSTANTS  (PMIDs and DOIs last checked against PubMed on
@@ -609,6 +622,29 @@ function AgeBanner({ag}){
 /* ============================================================
    TAB 1: RENAL ANGINA INDEX
    ============================================================ */
+/* Phone result strip. Text and tier come from the same values as the result card; it shows while the
+   inputs are on screen and the full result is not. Tapping it scrolls the full result into view. */
+function ResultStrip({text, tier, inputsRef, resultRef}){
+  const [inV,setInV]=useState(false);
+  const [resV,setResV]=useState(false);
+  useEffect(()=>{
+    if(typeof IntersectionObserver==="undefined") return;
+    const a=inputsRef.current, b=resultRef.current;
+    if(!a||!b) return;
+    const ioA=new IntersectionObserver(es=>{ const e=es[es.length-1]; setInV(e.isIntersecting); });
+    const ioB=new IntersectionObserver(es=>{ const e=es[es.length-1]; setResV(e.isIntersecting); });
+    ioA.observe(a); ioB.observe(b);
+    return ()=>{ ioA.disconnect(); ioB.disconnect(); };
+  },[]);
+  const show = inV && !resV;
+  const go = ()=>{ const r=resultRef.current; if(r) r.scrollIntoView({block:"start", behavior:(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)?"auto":"smooth"}); };
+  return (
+    <button type="button" className={"rs-strip"+(tier?" rs-t-"+tier:"")} hidden={!show} data-result-strip="1" onClick={go} aria-label={"Result: "+text+". Go to the full result."}>
+      <span className="rs-text">{text}</span><span className="rs-go" aria-hidden="true">Full result ↓</span>
+    </button>
+  );
+}
+
 function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
   const [transplant,setTransplant]=useState(false);
   const [mv,setMv]=useState(false);
@@ -618,6 +654,7 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
   const [curr,setCurr]=useState("");
   const [base,setBase]=useState("");
   const [manualInjury,setManualInjury]=useState(null);
+  const inputsRef=useRef(null), resultRef=useRef(null);
 
   const ag = ageCheck(age, ageUnit);
 
@@ -652,6 +689,8 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
 
   const tier = rai===null ? "muted" : (positive ? "neg" : (reassureSuppressed ? "caution" : "pos"));
   const stripeClass = rai===null ? "bg-caution" : (positive ? "bg-neg" : (reassureSuppressed ? "bg-caution" : "bg-pos"));
+  const withheldText = ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute" : "Out of range for this index") : problems.length>0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute";
+  const stripText = rai!==null ? `RAI ${rai} / 40 · ${positive?"positive":"negative"}${reassureSuppressed?` · KDIGO stage ${kdigoNow} already met`:""}` : withheldText;
 
   // trajectory
   const [traj,setTraj]=useState([]);
@@ -668,7 +707,8 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
 
   return (
     <div>
-      <div className="grid2">
+      <ResultStrip text={stripText} tier={rai!==null?tier:null} inputsRef={inputsRef} resultRef={resultRef} />
+      <div className="grid2" ref={inputsRef}>
         {/* Risk */}
         <section className="card">
           <div className="card-label">Step 1 · Risk stratum</div>
@@ -724,7 +764,7 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
       </div>
 
       {/* RESULT */}
-      <div className="result" style={{marginTop:"var(--md)"}}>
+      <div className="result" ref={resultRef} style={{marginTop:"var(--md)"}}>
         <div className={"stripe "+stripeClass}></div>
         <div className="result-body">
           <div className="card-label">Renal Angina Index = Risk × Injury</div>
@@ -737,7 +777,7 @@ function RaiTab({raiShared, setRaiShared, age, setAge, ageUnit, setAgeUnit}){
               {positive ? "Renal angina POSITIVE (RAI ≥ 8)" : "Renal angina negative (RAI < 8)"}
             </div>
           ) : (
-            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute" : "Out of range for this index") : problems.length>0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"}</div>
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{withheldText}</div>
           )}
           {manualInjury!==null ? (
             <div className="inline-out" role="group" aria-label="Manual injury stratum override" style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px"}}>
@@ -886,6 +926,7 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
     transplant:false, mv:false, vaso:false,
     pretestKey:"general", customP:""
   });
+  const inputsRef=useRef(null), resultRef=useRef(null);
   const up = (k,v)=> setS(p=>({...p,[k]:v}));
   const ag = ageCheck(age, ageUnit);
   // Tab 1 publishes a snapshot of its entries; it is shown only when Tab 1 has a computed RAI.
@@ -991,7 +1032,12 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
   // Until a patient factor has moved the estimate, the number is the cohort pretest rate and
   // carries no range, band label or tier colour.
   const cohortOnly = typeof posterior==="number" && steps.length===1;
+  const verdictText = lowButKdigo?`KDIGO stage ${kStage} is already met`:tier==="pos"?"Lower than the average PICU admission":tier==="caution"?"Intermediate predicted risk":"High predicted risk";
+  const withheldText = ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool.") : problems.length>0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability.";
   const factorsEntered = [s.curr,s.base,s.fo,s.uo,s.uoHrs].some(x=>x!=="") || s.mv || s.vaso || s.transplant || s.ngal!=="unknown" || s.cystatin!=="none" || s.raiMode!=="auto";
+  const cohortLine = `Pretest rate ${typeof posterior==="number"?(posterior*100).toFixed(1):""}% (${factorsEntered?"cohort rate; the factors entered do not change it":"cohort rate, no patient factor entered"}).`;
+  const stripText = typeof posterior!=="number" ? withheldText : cohortOnly ? cohortLine : `${(posterior*100).toFixed(0)}% · ${verdictText}`;
+  const stripTier = (typeof posterior==="number" && !cohortOnly) ? tier : null;
 
   return (
     <div>
@@ -1007,7 +1053,8 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
         </div>
       ) : null}
 
-      <div className="grid2">
+      <ResultStrip text={stripText} tier={stripTier} inputsRef={inputsRef} resultRef={resultRef} />
+      <div className="grid2" ref={inputsRef}>
         <section className="card">
           <div className="card-label">Inputs · baseline</div>
           <h3>Pretest severe-AKI rate</h3>
@@ -1084,14 +1131,14 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
       </div>
 
       {/* POSTERIOR */}
-      <div className="result" style={{marginTop:"var(--md)"}}>
+      <div className="result" ref={resultRef} style={{marginTop:"var(--md)"}}>
         <div className={"stripe "+(cohortOnly?"":(tier==="muted"?"bg-caution":"bg-"+tier))} style={cohortOnly?{background:"var(--hair-strong)"}:undefined}></div>
         <div className="result-body">
           <div className="card-label">Estimated probability of Day-3 severe AKI (KDIGO 2–3)</div>
           {cohortOnly ? (
             <div>
               <div className="bignum tnum">{(posterior*100).toFixed(1)}<small>%</small></div>
-              <div className="inline-out">Pretest rate {(posterior*100).toFixed(1)}% ({factorsEntered?"cohort rate; the factors entered do not change it":"cohort rate, no patient factor entered"}).</div>
+              <div className="inline-out">{cohortLine}</div>
               <p className="interp" style={{fontSize:"12.5px",color:"var(--ink-quiet)"}}>{factorsEntered?"The factors entered do not raise the estimate. Enter another patient factor to move it from this starting rate.":"Enter a patient factor to move the estimate from this starting rate."}</p>
             </div>
           ) : typeof posterior==="number" ? (
@@ -1100,13 +1147,13 @@ function CompTab({raiShared, age, setAge, ageUnit, setAgeUnit}){
               <div className="inline-out">Approximate range {(postLow*100).toFixed(0)}–{(postHigh*100).toFixed(0)}%{floorApplied?" · injury floor applied":" · from each factor's reported CI"}.</div>
               <div className={"verdict tier-"+tier} style={{marginTop:"8px"}}>
                 <span className={"dot bg-"+tier}></span>
-                {lowButKdigo?`KDIGO stage ${kStage} is already met`:tier==="pos"?"Lower than the average PICU admission":tier==="caution"?"Intermediate predicted risk":"High predicted risk"}
+                {verdictText}
               </div>
               {floorApplied? <div className={"floorbanner"+(floorApplied.definitional?" fb-severe":"")}><b>{floorApplied.title}</b> {floorApplied.detail}</div> : null}
               <p className="interp" style={{fontSize:"12.5px",color:"var(--ink-quiet)"}}>Interpretive bands (low &lt;10%, intermediate 10–30%, high &gt;30%) are heuristics anchored to the AWARE severe-AKI incidence (11.6%) and the RAI-positive rate (~42%); they are not validated decision cutoffs.</p>
             </div>
           ) : (
-            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{ag.block ? (ag.level==="missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool.") : problems.length>0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."}</div>
+            <div className="verdict" style={{color:"var(--caution)"}}><span className="dot bg-caution"></span>{withheldText}</div>
           )}
         </div>
       </div>
@@ -1247,7 +1294,7 @@ function App(){
 
       <footer>
         <div className="footer-inner">
-          Neel Shah, MD · Pediatric Critical Care Medicine · v2.3 · Updated 2026-11-14 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
+          Neel Shah, MD · Pediatric Critical Care Medicine · v2.4 · Updated 2026-11-14 · Licensed <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>.
           <div><a href="../index.html" style={{display:"inline-flex",alignItems:"center",minHeight:"44px"}}>All tools</a></div>
           <div style={{marginTop:"6px"}}>Evidence: renal angina index, AWARE, and pediatric biomarker meta-analyses. Identifiers were last checked against PubMed on 2026-08-31; this page performs no check of its own when it loads. Staging implements KDIGO 2012; the 2026 KDIGO AKI/AKD revision was in public review through 11 May 2026 and is not finally published as of this date. Session-only; no data leaves this device.</div>
         </div>

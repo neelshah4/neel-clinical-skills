@@ -184,6 +184,19 @@
   svg text[font-family*="Inter"] { font-family: var(--sans); }
   .result { background: var(--nt-plate-focal); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* Phone result strip: shown only at 700px and below, only while the inputs are on screen and the full result is not. */
+  .rs-strip { display: none; }
+  @media (max-width: 700px) {
+    html { scroll-padding-bottom: 88px; }
+    .rs-strip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: var(--sm); width: 100%; min-height: 52px; margin: 0; padding: 10px var(--md) calc(10px + env(safe-area-inset-bottom)); background: var(--card); color: var(--ink); border: 0; border-top: 1px solid var(--hair-strong); border-left: 6px solid var(--hair-strong); border-radius: 0; box-shadow: none; font-family: var(--sans); font-size: 14px; font-weight: 600; line-height: 1.35; text-align: left; cursor: pointer; }
+    .rs-strip[hidden] { display: none; }
+    .rs-strip.rs-t-pos { border-left-color: var(--pos); }
+    .rs-strip.rs-t-caution { border-left-color: var(--caution); }
+    .rs-strip.rs-t-neg { border-left-color: var(--neg); }
+    .rs-strip:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+    .rs-strip .rs-go { margin-left: auto; flex: none; font-size: 12px; font-weight: 600; color: var(--ink-muted); white-space: nowrap; }
+  }
+  @media print { .rs-strip { display: none !important; } }
 </style>
 <!-- neel-theme:head:start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/atkinson-hyperlegible-next@5.3.0/index.css" integrity="sha384-FCseDsHoKcEBM2m0ROvFzt/BHbmI1yGWHHBEiadKScJTLu/yPsDemuXEWAwmiLcM" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
@@ -627,7 +640,8 @@ const {
   useState,
   useMemo,
   useEffect,
-  useId
+  useId,
+  useRef
 } = React;
 const RAI_LR = {
   pos: 3.74,
@@ -1100,6 +1114,56 @@ function AgeBanner({
     }
   }, React.createElement("b", null, head), " ", ag.msg);
 }
+function ResultStrip({
+  text,
+  tier,
+  inputsRef,
+  resultRef
+}) {
+  const [inV, setInV] = useState(false);
+  const [resV, setResV] = useState(false);
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const a = inputsRef.current,
+      b = resultRef.current;
+    if (!a || !b) return;
+    const ioA = new IntersectionObserver(es => {
+      const e = es[es.length - 1];
+      setInV(e.isIntersecting);
+    });
+    const ioB = new IntersectionObserver(es => {
+      const e = es[es.length - 1];
+      setResV(e.isIntersecting);
+    });
+    ioA.observe(a);
+    ioB.observe(b);
+    return () => {
+      ioA.disconnect();
+      ioB.disconnect();
+    };
+  }, []);
+  const show = inV && !resV;
+  const go = () => {
+    const r = resultRef.current;
+    if (r) r.scrollIntoView({
+      block: "start",
+      behavior: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    });
+  };
+  return React.createElement("button", {
+    type: "button",
+    className: "rs-strip" + (tier ? " rs-t-" + tier : ""),
+    hidden: !show,
+    "data-result-strip": "1",
+    onClick: go,
+    "aria-label": "Result: " + text + ". Go to the full result."
+  }, React.createElement("span", {
+    className: "rs-text"
+  }, text), React.createElement("span", {
+    className: "rs-go",
+    "aria-hidden": "true"
+  }, "Full result \u2193"));
+}
 function RaiTab({
   raiShared,
   setRaiShared,
@@ -1116,6 +1180,8 @@ function RaiTab({
   const [curr, setCurr] = useState("");
   const [base, setBase] = useState("");
   const [manualInjury, setManualInjury] = useState(null);
+  const inputsRef = useRef(null),
+    resultRef = useRef(null);
   const ag = ageCheck(age, ageUnit);
   const derivedRisk = mv && vaso ? 5 : transplant ? 3 : 1;
   const risk = manualRisk !== null ? manualRisk : derivedRisk;
@@ -1152,6 +1218,8 @@ function RaiTab({
   const reassureSuppressed = kdigoMet && rai !== null && !positive;
   const tier = rai === null ? "muted" : positive ? "neg" : reassureSuppressed ? "caution" : "pos";
   const stripeClass = rai === null ? "bg-caution" : positive ? "bg-neg" : reassureSuppressed ? "bg-caution" : "bg-pos";
+  const withheldText = ag.block ? ag.level === "missing" ? "Enter the patient's age to compute" : "Out of range for this index" : problems.length > 0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute";
+  const stripText = rai !== null ? `RAI ${rai} / 40 · ${positive ? "positive" : "negative"}${reassureSuppressed ? ` · KDIGO stage ${kdigoNow} already met` : ""}` : withheldText;
   const [traj, setTraj] = useState([]);
   const [tDay, setTDay] = useState("");
   const [tRai, setTRai] = useState("");
@@ -1170,8 +1238,14 @@ function RaiTab({
   function rm(day) {
     setTraj(traj.filter(e => e.day !== day));
   }
-  return React.createElement("div", null, React.createElement("div", {
-    className: "grid2"
+  return React.createElement("div", null, React.createElement(ResultStrip, {
+    text: stripText,
+    tier: rai !== null ? tier : null,
+    inputsRef: inputsRef,
+    resultRef: resultRef
+  }), React.createElement("div", {
+    className: "grid2",
+    ref: inputsRef
   }, React.createElement("section", {
     className: "card"
   }, React.createElement("div", {
@@ -1279,6 +1353,7 @@ function RaiTab({
     onClick: () => setManualInjury(manualInjury === v ? null : v)
   }, v)))))), React.createElement("div", {
     className: "result",
+    ref: resultRef,
     style: {
       marginTop: "var(--md)"
     }
@@ -1301,7 +1376,7 @@ function RaiTab({
     }
   }, React.createElement("span", {
     className: "dot bg-caution"
-  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute" : "Out of range for this index" : problems.length > 0 ? "Correct the entry flagged above to compute" : scrBad ? "Enter SCr in mg/dL to compute" : "Enter an injury stratum to compute"), manualInjury !== null ? React.createElement("div", {
+  }), withheldText), manualInjury !== null ? React.createElement("div", {
     className: "inline-out",
     role: "group",
     "aria-label": "Manual injury stratum override",
@@ -1596,6 +1671,8 @@ function CompTab({
     pretestKey: "general",
     customP: ""
   });
+  const inputsRef = useRef(null),
+    resultRef = useRef(null);
   const up = (k, v) => setS(p => ({
     ...p,
     [k]: v
@@ -1815,7 +1892,12 @@ function CompTab({
   const lowButKdigo = kdigoMet && bandTier === "pos";
   const tier = lowButKdigo ? "caution" : bandTier;
   const cohortOnly = typeof posterior === "number" && steps.length === 1;
+  const verdictText = lowButKdigo ? `KDIGO stage ${kStage} is already met` : tier === "pos" ? "Lower than the average PICU admission" : tier === "caution" ? "Intermediate predicted risk" : "High predicted risk";
+  const withheldText = ag.block ? ag.level === "missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool." : problems.length > 0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability.";
   const factorsEntered = [s.curr, s.base, s.fo, s.uo, s.uoHrs].some(x => x !== "") || s.mv || s.vaso || s.transplant || s.ngal !== "unknown" || s.cystatin !== "none" || s.raiMode !== "auto";
+  const cohortLine = `Pretest rate ${typeof posterior === "number" ? (posterior * 100).toFixed(1) : ""}% (${factorsEntered ? "cohort rate; the factors entered do not change it" : "cohort rate, no patient factor entered"}).`;
+  const stripText = typeof posterior !== "number" ? withheldText : cohortOnly ? cohortLine : `${(posterior * 100).toFixed(0)}% · ${verdictText}`;
+  const stripTier = typeof posterior === "number" && !cohortOnly ? tier : null;
   return React.createElement("div", null, React.createElement("div", {
     className: "caveat",
     style: {
@@ -1839,8 +1921,14 @@ function CompTab({
     onClick: useTab1
   }, "Use Tab 1 values"), React.createElement("div", {
     className: "help"
-  }, "Fills Tab 2's creatinine, baseline, fluid overload and organ-support toggles from Tab 1's current entries and sets the renal angina input to Auto.")) : null, React.createElement("div", {
-    className: "grid2"
+  }, "Fills Tab 2's creatinine, baseline, fluid overload and organ-support toggles from Tab 1's current entries and sets the renal angina input to Auto.")) : null, React.createElement(ResultStrip, {
+    text: stripText,
+    tier: stripTier,
+    inputsRef: inputsRef,
+    resultRef: resultRef
+  }), React.createElement("div", {
+    className: "grid2",
+    ref: inputsRef
   }, React.createElement("section", {
     className: "card"
   }, React.createElement("div", {
@@ -2041,6 +2129,7 @@ function CompTab({
     }
   }, "Creatinine-ratio and urine-output only, per KDIGO 2012. Urine output is staged on rate ", React.createElement("b", null, "and"), " duration, so it contributes nothing until you enter both; with both, it can reach stage 2. Two pediatric stage-3 criteria are ", React.createElement("b", null, "not"), " implemented, eGFR falling below 35 mL/min/1.73 m\xB2 in a child under 18 and initiation of kidney replacement therapy, so a child on CRRT may be under-staged. Creatinine time windows (0.3 mg/dL rise within 48 h; 1.5\xD7 within 7 days) are assumed to have been applied by you. The absolute stage-3 criterion of 4.0 mg/dL is honoured here only alongside a creatinine ratio of at least 1.5, an author-chosen gate: this tool records no weight and no age-specific reference range, and an ungated absolute threshold stages a child with advanced chronic kidney disease at 3 by arithmetic alone. Such a child still reaches stage 1 on the +0.3 mg/dL limb, which is the correct read.")) : null)), React.createElement("div", {
     className: "result",
+    ref: resultRef,
     style: {
       marginTop: "var(--md)"
     }
@@ -2057,7 +2146,7 @@ function CompTab({
     className: "bignum tnum"
   }, (posterior * 100).toFixed(1), React.createElement("small", null, "%")), React.createElement("div", {
     className: "inline-out"
-  }, "Pretest rate ", (posterior * 100).toFixed(1), "% (", factorsEntered ? "cohort rate; the factors entered do not change it" : "cohort rate, no patient factor entered", ")."), React.createElement("p", {
+  }, cohortLine), React.createElement("p", {
     className: "interp",
     style: {
       fontSize: "12.5px",
@@ -2074,7 +2163,7 @@ function CompTab({
     }
   }, React.createElement("span", {
     className: "dot bg-" + tier
-  }), lowButKdigo ? `KDIGO stage ${kStage} is already met` : tier === "pos" ? "Lower than the average PICU admission" : tier === "caution" ? "Intermediate predicted risk" : "High predicted risk"), floorApplied ? React.createElement("div", {
+  }), verdictText), floorApplied ? React.createElement("div", {
     className: "floorbanner" + (floorApplied.definitional ? " fb-severe" : "")
   }, React.createElement("b", null, floorApplied.title), " ", floorApplied.detail) : null, React.createElement("p", {
     className: "interp",
@@ -2089,7 +2178,7 @@ function CompTab({
     }
   }, React.createElement("span", {
     className: "dot bg-caution"
-  }), ag.block ? ag.level === "missing" ? "Enter the patient's age to compute a probability." : "Out of range for this tool." : problems.length > 0 ? "Correct the entry flagged above to compute a probability." : scrBad ? "Enter SCr in mg/dL to compute a probability." : "Set a valid pretest rate to compute a probability."))), typeof posterior === "number" && steps.length > 0 ? React.createElement("section", {
+  }), withheldText))), typeof posterior === "number" && steps.length > 0 ? React.createElement("section", {
     className: "card"
   }, React.createElement("div", {
     className: "card-label"
@@ -2249,7 +2338,7 @@ function App() {
     setAgeUnit: setAgeUnit
   }))), React.createElement("footer", null, React.createElement("div", {
     className: "footer-inner"
-  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v2.3 \xB7 Updated 2026-11-14 \xB7 Licensed ", React.createElement("a", {
+  }, "Neel Shah, MD \xB7 Pediatric Critical Care Medicine \xB7 v2.4 \xB7 Updated 2026-11-14 \xB7 Licensed ", React.createElement("a", {
     href: "https://creativecommons.org/licenses/by-nc/4.0/",
     target: "_blank",
     rel: "noopener"
